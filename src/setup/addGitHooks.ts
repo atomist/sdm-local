@@ -30,7 +30,7 @@ export async function addGitHooksToProject(p: LocalProject) {
     // TODO setting executable status should be on the project API
     const baseDir = process.cwd();
     const atomistHookScriptPath = `${baseDir}/${AtomistHookScriptName}`;
-    const jsScriptPath = `${baseDir}/build/src/local/invocation/git/onGitHook.js`;
+    const jsScriptPath = `${baseDir}/build/src/invocation/git/onGitHook.js`;
 
     await appendOrCreateFileContent(
         {
