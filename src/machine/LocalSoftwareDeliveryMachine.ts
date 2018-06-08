@@ -1,11 +1,33 @@
+import {AbstractSoftwareDeliveryMachine} from "@atomist/sdm/api-helper/machine/AbstractSoftwareDeliveryMachine";
+import {SdmGoalImplementationMapperImpl} from "@atomist/sdm/api-helper/goal/SdmGoalImplementationMapperImpl";
+import {LocalSoftwareDeliveryMachineConfiguration} from "./localSoftwareDeliveryMachineConfiguration";
+import {Goal, GoalImplementation, GoalSetter, RunWithLogContext} from "@atomist/sdm";
+import {FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef} from "../binding/FileSystemRemoteRepoRef";
+import {addGitHooks} from "../setup/addGitHooks";
+import {localRunWithLogContext} from "../binding/localPush";
+import {chooseAndSetGoals} from "@atomist/sdm/api-helper/goal/chooseAndSetGoals";
+import {LocalTargetsParams} from "../binding/LocalTargetsParams";
+import {selfDescribingHandlers} from "@atomist/sdm/pack/info/support/commandSearch";
+import {CommandHandlerMetadata} from "@atomist/automation-client/metadata/automationMetadata";
+import {Arg} from "@atomist/automation-client/internal/invoker/Payload";
+import {toFactory} from "@atomist/automation-client/util/constructionUtils";
+import {HandlerContext} from "@atomist/automation-client";
+import {LocalHandlerContext} from "../binding/LocalHandlerContext";
+import {invokeCommandHandlerWithFreshParametersInstance} from "./parameterPopulation";
+import {GitProject} from "@atomist/automation-client/project/git/GitProject";
+import {createPushImpactListenerInvocation} from "@atomist/sdm/api-helper/listener/createPushImpactListenerInvocation";
+import {constructSdmGoal} from "@atomist/sdm/api-helper/goal/storeGoals";
+import {executeGoal} from "@atomist/sdm/api-helper/goal/executeGoal";
+import {lastLinesLogInterpreter} from "@atomist/sdm/api-helper/log/logInterpreters";
+import {GitCommandGitProject} from "@atomist/automation-client/project/git/GitCommandGitProject";
 
 export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachine<LocalSoftwareDeliveryMachineConfiguration> {
 
-    get commandHandlers(): Array<Maker<HandleCommand>> {
+    get commandHandlers() {
         return this.registrationManager.commandHandlers;
     }
 
-    get eventHandlers(): Array<Maker<HandleEvent<any>>> {
+    get eventHandlers() {
         return this.registrationManager.eventHandlers;
     }
 

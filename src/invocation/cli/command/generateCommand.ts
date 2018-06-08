@@ -1,10 +1,9 @@
 import { logger } from "@atomist/automation-client";
 import { Arg } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import { Argv } from "yargs";
-import { GeneratorTag } from "../../../../api-helper/machine/commandRegistrations";
-import { commandHandlersWithTag } from "../../../../pack/info/support/commandSearch";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { logExceptionsToConsole } from "../support/consoleOutput";
+import {commandHandlersWithTag} from "@atomist/sdm/pack/info/support/commandSearch";
 
 export function addGenerateCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     yargs.command({

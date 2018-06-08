@@ -1,13 +1,17 @@
 import { logger, Parameter } from "@atomist/automation-client";
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
-import { SoftwareDeliveryMachine } from "..";
-import { SeedDrivenGeneratorParametersSupport } from "../api/command/generator/SeedDrivenGeneratorParametersSupport";
-import { whenPushSatisfies } from "../api/dsl/goalDsl";
-import { FingerprintGoal, PushReactionGoal, ReviewGoal } from "../api/machine/wellKnownGoals";
-import { hasFileWithExtension } from "../api/mapping/support/commonPushTests";
-import { TypedFingerprint } from "../code/fingerprint/TypedFingerprint";
-import { WellKnownGoals } from "../pack/well-known-goals/addWellKnownGoals";
 import { AddressChannelsFingerprintListener } from "./invocation/cli/io/addressChannelsFingerprintListener";
+import {
+    FingerprintGoal,
+    hasFileWithExtension,
+    PushReactionGoal,
+    ReviewGoal,
+    SeedDrivenGeneratorParametersSupport,
+    SoftwareDeliveryMachine,
+    whenPushSatisfies
+} from "@atomist/sdm";
+import {WellKnownGoals} from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
+import {TypedFingerprint} from "@atomist/sdm/code/fingerprint/TypedFingerprint";
 
 /**
  * User-specific code

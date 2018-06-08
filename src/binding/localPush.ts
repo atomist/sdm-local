@@ -3,12 +3,10 @@ import { EventIncoming } from "@atomist/automation-client/internal/transport/Req
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import { LoggingProgressLog } from "@atomist/sdm/LoggingProgressLog";
-import { RunWithLogContext } from "@atomist/sdm/ExecuteGoalWithLog";
-import { ProjectLoader } from "@atomist/sdm/ProjectLoader";
-import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, StatusForExecuteGoal } from "../../typings/types";
 import { messageClientAddressChannels } from "../invocation/cli/io/messageClientAddressChannels";
 import { LocalHandlerContext } from "./LocalHandlerContext";
+import {CoreRepoFieldsAndChannels, OnPushToAnyBranch, ProjectLoader, RunWithLogContext, StatusForExecuteGoal} from "@atomist/sdm";
+import {LoggingProgressLog} from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 
 function repoFields(project: GitProject): CoreRepoFieldsAndChannels.Fragment {
     return {

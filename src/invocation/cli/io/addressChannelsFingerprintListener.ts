@@ -1,4 +1,4 @@
-import { FingerprintListener } from "../../../../api/listener/FingerprintListener";
+import { FingerprintListener } from "@atomist/sdm";
 
 /**
  * Display fingerprints to the user

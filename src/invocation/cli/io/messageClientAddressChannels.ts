@@ -1,6 +1,6 @@
 import { HandlerContext } from "@atomist/automation-client";
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
-import { AddressChannels } from "../../../../api/context/addressChannels";
+import { AddressChannels } from "@atomist/sdm";
 
 import * as assert from "power-assert";
 

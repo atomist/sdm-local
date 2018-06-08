@@ -13,7 +13,7 @@ import { logger } from "@atomist/automation-client";
 import { toStringArray } from "@atomist/automation-client/internal/util/string";
 import * as _ from "lodash";
 import * as marked from "marked";
-import { isSdmGoal } from "../../../../ingesters/sdmGoalIngester";
+import { isSdmGoal } from "@atomist/sdm/ingesters/sdmGoalIngester";
 
 import * as TerminalRenderer from "marked-terminal";
 
