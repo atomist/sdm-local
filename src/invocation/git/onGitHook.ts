@@ -11,11 +11,11 @@ import { sdm } from "../machine";
 
 /* tslint:disable */
 
-export type Event = "postCommit";
+export type GitHookEvent = "postCommit";
 
 const args = process.argv.slice(2);
 
-const event: Event = args[0] as Event;
+const event: GitHookEvent = args[0] as GitHookEvent;
 const baseDir = args[1].replace("/.git/hooks", "");
 const branch = args[2];
 const sha = args[3];

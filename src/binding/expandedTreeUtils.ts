@@ -7,12 +7,11 @@
  */
 export function parseOwnerAndRepo(repositoryOwnerParentDirectory: string,
                                   baseDir: string = determineCwd()): { owner?: string, repo?: string } {
-    // TODO support symlinks
     if (!baseDir.startsWith(repositoryOwnerParentDirectory)) {
         return {};
     }
     const ourPart = baseDir.replace(repositoryOwnerParentDirectory, "");
-    const pattern = /\/(.*)\/(.*)/;
+    const pattern = /^\/([^\/]+)\/([^\/]+)$/;
     const match = ourPart.match(pattern);
     return !!match && match.length >= 2 ?
         {owner: match[1], repo: match[2]} :
