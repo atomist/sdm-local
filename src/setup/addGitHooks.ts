@@ -1,9 +1,9 @@
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
 import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
+import {appendOrCreateFileContent} from "@atomist/sdm/util/project/appendOrCreate";
 import * as fs from "fs";
 import { writeToConsole } from "../invocation/cli/support/consoleOutput";
-import {appendOrCreateFileContent} from "@atomist/sdm/util/project/appendOrCreate";
 
 const AtomistHookScriptName = "src/local/atomist-hook.sh";
 

@@ -1,6 +1,5 @@
 import { logger, Parameter } from "@atomist/automation-client";
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
-import { AddressChannelsFingerprintListener } from "./invocation/cli/io/addressChannelsFingerprintListener";
 import {
     FingerprintGoal,
     hasFileWithExtension,
@@ -8,10 +7,11 @@ import {
     ReviewGoal,
     SeedDrivenGeneratorParametersSupport,
     SoftwareDeliveryMachine,
-    whenPushSatisfies
+    whenPushSatisfies,
 } from "@atomist/sdm";
-import {WellKnownGoals} from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
 import {TypedFingerprint} from "@atomist/sdm/code/fingerprint/TypedFingerprint";
+import {WellKnownGoals} from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
+import { AddressChannelsFingerprintListener } from "./invocation/cli/io/addressChannelsFingerprintListener";
 
 /**
  * User-specific code

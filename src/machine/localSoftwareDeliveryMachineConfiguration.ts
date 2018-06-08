@@ -1,14 +1,14 @@
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
+import {ProjectLoader, ProjectLoadingParameters, SoftwareDeliveryMachineConfiguration, WithLoadedProject} from "@atomist/sdm";
+import {createEphemeralProgressLog} from "@atomist/sdm/api-helper/log/EphemeralProgressLog";
+import {EphemeralLocalArtifactStore} from "@atomist/sdm/internal/artifact/local/EphemeralLocalArtifactStore";
+import {CachingProjectLoader} from "@atomist/sdm/project/CachingProjectLoader";
 import { execSync } from "child_process";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
 import { expandedDirectoryRepoFinder } from "../binding/expandedDirectoryRepoFinder";
 import { fileSystemProjectPersister } from "../binding/fileSystemProjectPersister";
 import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
-import {ProjectLoader, ProjectLoadingParameters, SoftwareDeliveryMachineConfiguration, WithLoadedProject} from "@atomist/sdm";
-import {EphemeralLocalArtifactStore} from "@atomist/sdm/internal/artifact/local/EphemeralLocalArtifactStore";
-import {CachingProjectLoader} from "@atomist/sdm/project/CachingProjectLoader";
-import {createEphemeralProgressLog} from "@atomist/sdm/api-helper/log/EphemeralProgressLog";
 
 export interface LocalSoftwareDeliveryMachineConfiguration extends SoftwareDeliveryMachineConfiguration {
 

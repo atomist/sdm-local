@@ -6,10 +6,10 @@ import {
     SlackDestination,
     SlackMessageClient,
 } from "@atomist/automation-client/spi/message/MessageClient";
+import { isSdmGoal } from "@atomist/sdm/ingesters/sdmGoalIngester";
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import { isArray } from "util";
-import { isSdmGoal } from "@atomist/sdm/ingesters/sdmGoalIngester";
 import { DemonPort, MessageRoute, StreamedMessage } from "../command/addSummonDemon";
 import { ConsoleMessageClient } from "./ConsoleMessageClient";
 
