@@ -5,8 +5,14 @@ import {appendOrCreateFileContent} from "@atomist/sdm/util/project/appendOrCreat
 import * as fs from "fs";
 import { writeToConsole } from "../invocation/cli/support/consoleOutput";
 
-const AtomistHookScriptName = "src/local/atomist-hook.sh";
+const AtomistHookScriptName = "script/atomist-hook.sh";
 
+/**
+ * Add Git hooks to the given repo
+ * @param {RemoteRepoRef} id
+ * @param {string} baseDir
+ * @return {Promise<void>}
+ */
 export async function addGitHooks(id: RemoteRepoRef, baseDir: string) {
     if (fs.existsSync(`${baseDir}/.git`)) {
         const p = await NodeFsLocalProject.fromExistingDirectory(id, baseDir);
