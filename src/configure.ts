@@ -9,8 +9,8 @@ import {
     SoftwareDeliveryMachine,
     whenPushSatisfies,
 } from "@atomist/sdm";
-import {TypedFingerprint} from "@atomist/sdm/code/fingerprint/TypedFingerprint";
-import {WellKnownGoals} from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
+import { TypedFingerprint } from "@atomist/sdm/code/fingerprint/TypedFingerprint";
+import { WellKnownGoals } from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
 import { AddressChannelsFingerprintListener } from "./invocation/cli/io/addressChannelsFingerprintListener";
 
 /**

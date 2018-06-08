@@ -1,7 +1,7 @@
 import { logger } from "@atomist/automation-client";
 import { Arg } from "@atomist/automation-client/internal/transport/RequestProcessor";
-import {EditorTag} from "@atomist/sdm/api-helper/machine/commandRegistrations";
-import {commandHandlersWithTag} from "@atomist/sdm/pack/info/support/commandSearch";
+import { EditorTag } from "@atomist/sdm/api-helper/machine/commandRegistrations";
+import { commandHandlersWithTag } from "@atomist/sdm/pack/info/support/commandSearch";
 import { Argv } from "yargs";
 import { determineCwd, withinExpandedTree } from "../../../binding/expandedTreeUtils";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
@@ -31,8 +31,8 @@ export function addEditCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
 
 async function edit(sdm: LocalSoftwareDeliveryMachine,
                     commandName: string,
-                    targetOwner: string | undefined,
-                    targetRepos: string | undefined,
+                    targetOwner: string|undefined,
+                    targetRepos: string|undefined,
                     extraArgs: Arg[]): Promise<any> {
     const hm = sdm.commandMetadata(commandName);
     if (!hm || !!hm.tags && !hm.tags.some(t => t.name === EditorTag)) {

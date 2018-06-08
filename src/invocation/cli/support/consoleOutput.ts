@@ -11,10 +11,10 @@ export function setCommandLineLogging() {
 
 export interface ConsoleWriteOptions {
     message: string;
-    color: "cyan" | "red" | "redBright" | "blue" | "green" | "gray" | "yellow";
+    color: "cyan"|"red"|"redBright"|"blue"|"green"|"gray"|"yellow";
 }
 
-export function writeToConsole(msg: string | ConsoleWriteOptions, ...args: any[]) {
+export function writeToConsole(msg: string|ConsoleWriteOptions, ...args: any[]) {
     const expanded = typeof msg === "string" ?
         sprintf(msg, ...args) :
         chalk[msg.color](sprintf(msg.message, ...args));

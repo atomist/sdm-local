@@ -27,14 +27,14 @@ const chalk = require("chalk");
 
 export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
 
-    public async respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any> {
+    public async respond(msg: string|SlackMessage, options?: MessageOptions): Promise<any> {
         return this.addressChannels(msg, "general", options);
     }
 
-    public async send(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
+    public async send(msg: any, destinations: Destination|Destination[], options?: MessageOptions): Promise<any> {
         if (isSdmGoal(msg)) {
             logger.info("Storing SDM goal or ingester payload %j", msg);
-            writeToConsole({ message: `Stored goal '${msg.name}'`, color: "cyan"});
+            writeToConsole({message: `Stored goal '${msg.name}'`, color: "cyan"});
             return;
         }
 
@@ -47,7 +47,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
             options);
     }
 
-    public async addressChannels(msg: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
+    public async addressChannels(msg: string|SlackMessage, channels: string|string[], options?: MessageOptions): Promise<any> {
         const chans = toStringArray(channels);
 
         const m = isSlackMessage(msg) ? msg.text : msg;
@@ -56,7 +56,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
         });
     }
 
-    public async addressUsers(msg: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
+    public async addressUsers(msg: string|SlackMessage, users: string|string[], options?: MessageOptions): Promise<any> {
         writeToConsole(`#${users} ${msg}`);
     }
 

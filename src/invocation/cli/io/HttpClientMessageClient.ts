@@ -23,7 +23,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
             () => this.delegate.respond(message, options));
     }
 
-    public async send(msg: string | SlackMessage, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
+    public async send(msg: string|SlackMessage, destinations: Destination|Destination[], options?: MessageOptions): Promise<any> {
         if (isSdmGoal(msg as any)) {
             logger.info("Storing SDM goal or ingester payload %j", msg);
             return this.respond(`Stored goal *${(msg as any).name}*`);
@@ -33,7 +33,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
             () => this.delegate.send(msg, destinations, options));
     }
 
-    public async addressChannels(message: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
+    public async addressChannels(message: string|SlackMessage, channels: string|string[], options?: MessageOptions): Promise<any> {
         return this.stream({
             message,
             options,
@@ -44,7 +44,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
         }, () => this.delegate.addressChannels(message, channels, options));
     }
 
-    public async addressUsers(message: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
+    public async addressUsers(message: string|SlackMessage, users: string|string[], options?: MessageOptions): Promise<any> {
         return this.addressChannels(message, users, options);
     }
 
@@ -59,6 +59,6 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
     }
 
     constructor(public readonly url: string = `http://localhost:${DemonPort}${MessageRoute}`,
-                private readonly delegate: MessageClient & SlackMessageClient = new ConsoleMessageClient()) {
+                private readonly delegate: MessageClient&SlackMessageClient = new ConsoleMessageClient()) {
     }
 }

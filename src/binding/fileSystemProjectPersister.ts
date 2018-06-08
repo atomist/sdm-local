@@ -20,9 +20,9 @@ export function fileSystemProjectPersister(repositoryOwnerParentDirectory: strin
             throw new Error(`Cannot write new project to [${baseDir}] as this directory already exists`);
         }
         const createdProject = await NodeFsLocalProject.copy(p, baseDir);
-        execSync("git init", { cwd: baseDir});
-        execSync("git add .", { cwd: baseDir});
-        execSync(`git commit -a -m "Initial commit from Atomist"`, { cwd: baseDir});
+        execSync("git init", {cwd: baseDir});
+        execSync("git add .", {cwd: baseDir});
+        execSync(`git commit -a -m "Initial commit from Atomist"`, {cwd: baseDir});
         await addGitHooksToProject(createdProject);
         return successOn(createdProject);
     };

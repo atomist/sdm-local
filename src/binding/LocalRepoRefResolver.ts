@@ -1,15 +1,15 @@
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
-import {CoreRepoFieldsAndChannels, OnPushToAnyBranch, RepoRefResolver, ScmProvider, StatusForExecuteGoal} from "@atomist/sdm";
-import {SdmGoal} from "@atomist/sdm/ingesters/sdmGoalIngester";
+import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, RepoRefResolver, ScmProvider, StatusForExecuteGoal } from "@atomist/sdm";
+import { SdmGoal } from "@atomist/sdm/ingesters/sdmGoalIngester";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
 export class LocalRepoRefResolver implements RepoRefResolver {
 
-    public providerIdFromPush(push: OnPushToAnyBranch.Push): string | null {
+    public providerIdFromPush(push: OnPushToAnyBranch.Push): string|null {
         return "local";
     }
 
-    public providerIdFromStatus(status: StatusForExecuteGoal.Fragment): string | null {
+    public providerIdFromStatus(status: StatusForExecuteGoal.Fragment): string|null {
         throw new Error();
     }
 
@@ -27,6 +27,7 @@ export class LocalRepoRefResolver implements RepoRefResolver {
             repo.owner, repo.name, opts.branch, opts.sha);
     }
 
-    constructor(public readonly repositoryOwnerParentDirectory: string) {}
+    constructor(public readonly repositoryOwnerParentDirectory: string) {
+    }
 
 }

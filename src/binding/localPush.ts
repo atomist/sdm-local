@@ -3,8 +3,8 @@ import { EventIncoming } from "@atomist/automation-client/internal/transport/Req
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import {CoreRepoFieldsAndChannels, OnPushToAnyBranch, ProjectLoader, RunWithLogContext, StatusForExecuteGoal} from "@atomist/sdm";
-import {LoggingProgressLog} from "@atomist/sdm/api-helper/log/LoggingProgressLog";
+import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, ProjectLoader, RunWithLogContext, StatusForExecuteGoal } from "@atomist/sdm";
+import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { messageClientAddressChannels } from "../invocation/cli/io/messageClientAddressChannels";
 import { LocalHandlerContext } from "./LocalHandlerContext";
 

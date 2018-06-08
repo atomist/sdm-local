@@ -20,7 +20,7 @@ export function addSummonDemon(yargs: Argv) {
 }
 
 export interface StreamedMessage {
-    message: string | SlackMessage;
+    message: string|SlackMessage;
     destinations: Destination[];
     options: MessageOptions;
 }

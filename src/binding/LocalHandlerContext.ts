@@ -34,7 +34,7 @@ export class LocalHandlerContext implements HandlerContext, AutomationContextAwa
 
     public ts = new Date().getTime();
 
-    constructor(public trigger: CommandIncoming | EventIncoming,
+    constructor(public trigger: CommandIncoming|EventIncoming,
                 public readonly teamId = "T1234") {
     }
 
