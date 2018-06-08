@@ -34,9 +34,10 @@ async function summonDemon() {
 
     app.get("/", (req, res) => res.send("Atomist Listener Demon\n"));
 
-    app.post(MessageRoute, async (req, res) => {
-        await messageClient.send(req.body.message, req.body.destinations).catch(err => res.sendStatus(500));
-        res.send("Read message " + JSON.stringify(req.body) + "\n");
+    app.post(MessageRoute,  (req, res, next) => {
+        return messageClient.send(req.body.message, req.body.destinations)
+            .then(() => res.send("Read message " + JSON.stringify(req.body) + "\n"))
+            .catch(next);
     });
 
     app.listen(DemonPort,
