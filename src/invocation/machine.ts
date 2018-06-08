@@ -10,10 +10,10 @@ function failWith(message: string): string {
 export const RepositoryOwnerParentDirectory = process.env.SDM_PROJECTS_ROOT ||
     failWith("Please define SDM_PROJECTS_ROOT to a directory containing git repositories, in the form of owner/repository");
 
-export const sdm = new LocalSoftwareDeliveryMachine(
+export const localSdmInstance = new LocalSoftwareDeliveryMachine(
     "gitMachine",
     localSoftwareDeliveryMachineOptions(
         RepositoryOwnerParentDirectory,
         new CliMappedParameterResolver(RepositoryOwnerParentDirectory)));
 
-configure(sdm);
+configure(localSdmInstance);

@@ -3,7 +3,7 @@ import { setCommandLineLogging } from "../cli/support/consoleOutput";
 setCommandLineLogging();
 
 import { logger } from "@atomist/automation-client";
-import { sdm } from "../machine";
+import { localSdmInstance } from "../machine";
 
 /**
  * Usage gitHookTrigger <event> <directory>
@@ -23,9 +23,9 @@ const sha = args[3];
 logger.info("Executing git hook against project at [%s], branch=%s, sha=%s",
     baseDir, branch, sha);
 
-const sdmMethod = sdm[event];
+const sdmMethod = localSdmInstance[event];
 if (!sdmMethod) {
     logger.warn("Unknown git hook event '%s'", event);
 }
 
-sdm[event](baseDir, branch, sha);
+localSdmInstance[event](baseDir, branch, sha);

@@ -1,10 +1,10 @@
+import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { Argv } from "yargs";
 import { determineCwd, withinExpandedTree } from "../../../binding/expandedTreeUtils";
-import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
-import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput";
-import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
-import { GitHookEvent } from "../../git/onGitHook";
 import { FileSystemRemoteRepoRef } from "../../../binding/FileSystemRemoteRepoRef";
+import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
+import { GitHookEvent } from "../../git/onGitHook";
+import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput";
 
 // TODO add which trigger
 export function addTriggerCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
@@ -20,7 +20,7 @@ export function addTriggerCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv
 async function trigger(sdm: LocalSoftwareDeliveryMachine, event: GitHookEvent = "postCommit") {
     const currentDir = determineCwd();
     if (withinExpandedTree(sdm.configuration.repositoryOwnerParentDirectory, currentDir)) {
-        const p = await GitCommandGitProject.fromBaseDir(FileSystemRemoteRepoRef.fromDirectory(
+        const p = GitCommandGitProject.fromBaseDir(FileSystemRemoteRepoRef.fromDirectory(
             sdm.configuration.repositoryOwnerParentDirectory,
             currentDir,
             "master",

@@ -3,8 +3,12 @@
 import { restoreOriginalConsole } from "@atomist/automation-client/internal/util/logger";
 import { setCommandLineLogging } from "./support/consoleOutput";
 
+setCommandLineLogging();
+restoreOriginalConsole();
+
 import * as yargs from "yargs";
-import { sdm } from "../machine";
+import { localSdmInstance } from "../machine";
+
 import { addGitHooksCommand } from "./command/addGitHooksCommand";
 import { addSummonDemon } from "./command/addSummonDemon";
 import { addTriggerCommand } from "./command/addTriggerCommand";
@@ -13,20 +17,17 @@ import { addGenerateCommand } from "./command/generateCommand";
 import { addImportFromGitHubCommand } from "./command/importFromGitHubCommand";
 import { addRunCommand } from "./command/runCommand";
 
-setCommandLineLogging();
-restoreOriginalConsole();
-
 /* tslint:disable */
 
 yargs.usage("Usage: $0 <command> [options]");
 
-addTriggerCommand(sdm, yargs);
+addTriggerCommand(localSdmInstance, yargs);
 addSummonDemon(yargs);
-addGitHooksCommand(yargs);
-addGenerateCommand(sdm, yargs);
-addEditCommand(sdm, yargs);
-addRunCommand(sdm, yargs);
-addImportFromGitHubCommand(sdm, yargs);
+addGitHooksCommand(localSdmInstance, yargs);
+addGenerateCommand(localSdmInstance, yargs);
+addEditCommand(localSdmInstance, yargs);
+addRunCommand(localSdmInstance, yargs);
+addImportFromGitHubCommand(localSdmInstance, yargs);
 
 yargs
     .epilog("Copyright Atomist 2018")
