@@ -18,7 +18,7 @@ import { LocalHandlerContext } from "../binding/LocalHandlerContext";
 import { localRunWithLogContext } from "../binding/localPush";
 import { LocalTargetsParams } from "../binding/LocalTargetsParams";
 import { addGitHooks } from "../setup/addGitHooks";
-import { LocalSoftwareDeliveryMachineConfiguration } from "./localSoftwareDeliveryMachineConfiguration";
+import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 import { invokeCommandHandlerWithFreshParametersInstance } from "./parameterPopulation";
 
 export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachine<LocalSoftwareDeliveryMachineConfiguration> {

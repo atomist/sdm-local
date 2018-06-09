@@ -1,6 +1,6 @@
 import { configure } from "../configure";
 import { LocalSoftwareDeliveryMachine } from "../machine/LocalSoftwareDeliveryMachine";
-import { localSoftwareDeliveryMachineOptions } from "../machine/localSoftwareDeliveryMachineConfiguration";
+import { loadConfiguration } from "../machine/loadConfiguration";
 import { CliMappedParameterResolver } from "./cli/support/CliMappedParameterResolver";
 
 function failWith(message: string): string {
@@ -12,7 +12,7 @@ export const RepositoryOwnerParentDirectory = process.env.SDM_PROJECTS_ROOT ||
 
 export const localSdmInstance = new LocalSoftwareDeliveryMachine(
     "gitMachine",
-    localSoftwareDeliveryMachineOptions(
+    loadConfiguration(
         RepositoryOwnerParentDirectory,
         new CliMappedParameterResolver(RepositoryOwnerParentDirectory)));
 
