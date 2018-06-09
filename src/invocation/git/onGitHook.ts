@@ -1,4 +1,4 @@
-import { setCommandLineLogging } from "../cli/support/consoleOutput";
+import { logExceptionsToConsole, setCommandLineLogging } from "../cli/support/consoleOutput";
 
 setCommandLineLogging();
 
@@ -28,4 +28,6 @@ if (!sdmMethod) {
     logger.warn("Unknown git hook event '%s'", event);
 }
 
-localSdmInstance[event](baseDir, branch, sha);
+logExceptionsToConsole(() =>
+    localSdmInstance[event](baseDir, branch, sha)
+);
