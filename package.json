@@ -21,9 +21,8 @@
     "url": "https://github.com/atomist/sdm/issues"
   },
   "dependencies": {
-    "@atomist/automation-client": "https://r.atomist.com/HJv2LGwwx7",
-    "@atomist/sample-sdm": "https://r.atomist.com/H1Nzl104vlQ",
-    "@atomist/sdm": "https://r.atomist.com/SyQgjVISwlm",
+    "@atomist/automation-client": "https://r.atomist.com/HJV-CGrbYx7",
+    "@atomist/sdm": "https://r.atomist.com/H17e3xsWYgX",
     "@types/yargs": "^11.0.0",
     "express": "^4.16.3",
     "marked-terminal": "^3.0.0"

@@ -1,10 +1,6 @@
 #!/usr/bin/env node
 
-import { restoreOriginalConsole } from "@atomist/automation-client/internal/util/logger";
-import { setCommandLineLogging } from "./support/consoleOutput";
-
-setCommandLineLogging();
-restoreOriginalConsole();
+process.env.ATOMIST_DISABLE_LOGGING = "true";
 
 import * as yargs from "yargs";
 import { localSdmInstance } from "../machine";

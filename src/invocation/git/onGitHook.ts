@@ -2,6 +2,8 @@ import { logExceptionsToConsole, setCommandLineLogging } from "../cli/support/co
 
 setCommandLineLogging();
 
+process.env.ATOMIST_DISABLE_LOGGING = "true";
+
 import { logger } from "@atomist/automation-client";
 import { localSdmInstance } from "../machine";
 
