@@ -11,13 +11,20 @@ export function setCommandLineLogging() {
 
 export interface ConsoleWriteOptions {
     message: string;
-    color: "cyan"|"red"|"redBright"|"blue"|"green"|"gray"|"yellow";
+    color: "cyan" | "red" | "redBright" | "blue" | "green" | "gray" | "yellow";
 }
 
-export function writeToConsole(msg: string|ConsoleWriteOptions, ...args: any[]) {
-    const expanded = typeof msg === "string" ?
-        sprintf(msg, ...args) :
-        chalk[msg.color](sprintf(msg.message, ...args));
+export function writeToConsole(msg: string | ConsoleWriteOptions, ...args: any[]) {
+    let expanded: string;
+    if (typeof msg === "string") {
+        expanded = sprintf(msg, ...args);
+    } else {
+        const fun = chalk[msg.color];
+        if (!fun) {
+            throw new Error(`No chalk function '${fun}' in ${JSON.stringify(msg)}`);
+        }
+        expanded = fun(sprintf(msg.message, ...args));
+    }
     process.stdout.write(expanded + "\n");
 }
 
@@ -25,7 +32,7 @@ export async function logExceptionsToConsole(what: () => Promise<any>) {
     try {
         await what();
     } catch (err) {
-        writeToConsole({message: `Error: ${err.message}`, color: "red"});
+        writeToConsole({ message: `Error: ${err.message}`, color: "red" });
         logger.error(`Error: ${err.message}`);
         process.exit(1);
     }

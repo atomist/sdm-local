@@ -20,7 +20,7 @@ export function addSummonDemon(yargs: Argv) {
 }
 
 export interface StreamedMessage {
-    message: string|SlackMessage;
+    message: string | SlackMessage;
     destinations: Destination[];
     options: MessageOptions;
 }
@@ -28,18 +28,21 @@ export interface StreamedMessage {
 async function summonDemon() {
     const messageClient = new ConsoleMessageClient();
 
-    writeToConsole("Your friendly neighborhood demon.\nI am here!");
+    writeToConsole({ message: "Your friendly neighborhood demon.\nI am here!", color: "cyan"});
     const app = express();
     app.use(express.json());
 
     app.get("/", (req, res) => res.send("Atomist Listener Demon\n"));
 
-    app.post(MessageRoute,  (req, res, next) => {
+    app.post(MessageRoute, (req, res, next) => {
         return messageClient.send(req.body.message, req.body.destinations)
             .then(() => res.send("Read message " + JSON.stringify(req.body) + "\n"))
             .catch(next);
     });
 
     app.listen(DemonPort,
-        () => writeToConsole(`Example app listening on port ${DemonPort}!`));
+        () => writeToConsole({
+            message: `Listening on port ${DemonPort}!`,
+            color: "cyan",
+        }));
 }
