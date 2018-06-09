@@ -1,31 +1,42 @@
 # Slalom: Local Software Delivery Machine
 
-A software delivery machine is a program that understands code. You customize it to work with the code 
+A software delivery machine is a program that understands code and delivery flows. Further description is in the Atomist sdm project and in Rod Johnson's blog [Why you need a Software Delivery Machine](https://the-composition.com/why-you-need-a-software-delivery-machine-85e8399cdfc0). This [video](https://vimeo.com/260496136) shows an SDM in action.
+
+
+The blogs and videos show an SDM that connects to Atomist's cloud service. This repository contains a *local* software delivery machine that works on your development machine and responds to your commits, performing whatever actions you decide
+should happen in response to new code. 
+
+> This project is purely
+open source and can be used without the
+Atomist service. However, the code you write it can
+run unchanged to benefit your entire team if you do
+connect to the Atomist service, as the `SoftwareDeliveryMachine` API is identical between local and cloud SDMs.
+
+You customize an SDM to work with the code 
 you care about: fix formatting errors (with commits), perform code reviews, run tests, publish artifacts, etc.
 
-This local software delivery machine responds to your commits, performing whatever actions you decide
-should happen in response to new codes.
 
 It also responds to your commands: to create new projects, edit code in existing projects, or other actions
 you program into it.
 
-The instructions here will (someday) take you through 
-   * initializing your local SDM
-   * seeing it react to a push
+The instructions here will take you through 
+
+   * Initializing your local SDM
+   * Seeing it react to a push
       * then changing how it reacts to your push
-   * creating a new project with a generator
+   * Creating a new project with a generator
       * then changing it to work from a project of your choice
-   * changing code with an editor
+   * Changing code with an editor
       * then making your own code editor
-   * running a command
+   * Running a command
       * then making your own commands
 
 Later, when they've proven useful, you can elevate your push reactions, generators, editors, 
-and commands into the cloud for your whole team to use (with Atomist).
+and commands into the cloud for your whole team to use with [Atomist](www.atomist.com).
 
 ## Setup
 
-The SDM works on projects, which are git repositories.
+The SDM works on projects that are `git` repositories.
 
 To find projects on your filesystem, the SDM looks in directories group by owner (on GitHub, the owner is an organization
 or user; on BitBucket, the owner is a user or a BitBucket Project), and it looks for each owner directory
@@ -34,7 +45,7 @@ or user; on BitBucket, the owner is a user or a BitBucket Project), and it looks
 The directory structure looks like this:
 
 ```
-SDM_PROJECTS_ROOT
+$SDM_PROJECTS_ROOT
 ├── owner1
 │   ├── repo1
 │   └── repo2
@@ -210,23 +221,6 @@ Environment variables
 
 ## Roadmap
 
-## Known Bugs
-- Autofixes produce error output
-
-### Major Tasks
-Urgent:
-
-- Goal preconditions are not respected
-- Add [git merge and fetch hooks](https://githooks.com/).
-- Mapped parameters and secrets should be sourced from the environment if not provided
-
-Less urgent:
-
 - Depend only on `sdm-api` project. This will require it to be split out and `automation-client` to be split to pull out the Project API, which is part of the SDM API.
-- Decide on how to present output to the user, especially actionable output
 - Decide how to get build results from external tools in (if we wish to)
 
-### Enhancements
-- We could pull command metadata and generate CLI completions from it at the time when we initialize `yargs`. This would require generators and editors to be tagged.
-- `yargs` can export Bash completions
-- Only public repos can be cloned at present
