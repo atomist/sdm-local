@@ -92,6 +92,11 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
     // end git binding methods
     // ---------------------------------------------------------------
 
+    /**
+     * Return metadata for the given command, or undefined if there isn't one with this name
+     * @param {string} name
+     * @return {CommandHandlerMetadata}
+     */
     public commandMetadata(name: string): CommandHandlerMetadata {
         const handlers = selfDescribingHandlers(this);
         return handlers.filter(h => h.instance.name === name)
@@ -99,6 +104,10 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             .find(() => true);
     }
 
+    /**
+     * Return metadata for all commands
+     * @return {CommandHandlerMetadata[]}
+     */
     public get commandsMetadata(): CommandHandlerMetadata[] {
         return selfDescribingHandlers(this)
             .map(hi => hi.instance);
