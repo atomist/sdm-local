@@ -1,10 +1,10 @@
-import { HandleCommand, HandleEvent, HandlerContext } from "@atomist/automation-client";
+import { HandleCommand, HandleEvent, HandlerContext, logger } from "@atomist/automation-client";
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { Maker, toFactory } from "@atomist/automation-client/util/constructionUtils";
-import { Goal, GoalImplementation, GoalSetter, RunWithLogContext } from "@atomist/sdm";
+import { Goal, GoalImplementation, Goals, GoalSetter, hasPreconditions, RunWithLogContext } from "@atomist/sdm";
 import { chooseAndSetGoals } from "@atomist/sdm/api-helper/goal/chooseAndSetGoals";
 import { executeGoal } from "@atomist/sdm/api-helper/goal/executeGoal";
 import { SdmGoalImplementationMapperImpl } from "@atomist/sdm/api-helper/goal/SdmGoalImplementationMapperImpl";
@@ -19,6 +19,7 @@ import { localRunWithLogContext } from "../binding/localPush";
 import { addGitHooks } from "../setup/addGitHooks";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 import { invokeCommandHandlerWithFreshParametersInstance } from "./parameterPopulation";
+import { writeToConsole } from "../invocation/cli/support/consoleOutput";
 
 /**
  * Local SDM implementation, designed to be driven by CLI and git hooks.
@@ -53,9 +54,6 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
         throw new Error("Not yet implemented. Looks like Atomist is here to stay");
     }
 
-    // ---------------------------------------------------------------
-    // git binding methods
-    // ---------------------------------------------------------------
     /**
      * Invoked after commit. Pretend it's a push
      * @param {string} baseDir
@@ -81,16 +79,36 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
                         push: rwlc.status.commit.pushes[0],
                     },
                 );
-
-                // TODO need to create goal execution graph
-                return Promise.all(goals.goals.map(goal =>
-                    this.execGoal(p, rwlc, goal)));
+                return this.executeGoals(goals, p, rwlc);
             });
     }
 
-    // ---------------------------------------------------------------
-    // end git binding methods
-    // ---------------------------------------------------------------
+    private async executeGoals(goals: Goals,
+                               p: GitProject,
+                               rwlc: RunWithLogContext,
+                               stillPending: Goal[] = goals.goals): Promise<any> {
+        function stillWaiting(g: Goal) {
+            return hasPreconditions(g) && g.dependsOn.some(dep => stillPending.includes(dep));
+        }
+
+        logger.info("Still pending: %s", stillPending.map(g => g.name));
+        const completedInThisRun = await Promise.all(stillPending
+            .filter(g => !stillWaiting(g))
+            .map(async goal => {
+                await this.execGoal(p, rwlc, goal);
+                return goal;
+            }),
+        );
+        logger.info("Executed this run: %s", completedInThisRun.map(g => g.name));
+
+        const stillNotDone = stillPending.filter(
+            elt => !completedInThisRun.includes(elt));
+        if (stillNotDone.length === 0) {
+            writeToConsole({ message: "Goal execution complete", color: "green" });
+        } else {
+            return this.executeGoals(goals, p, rwlc, stillNotDone);
+        }
+    }
 
     /**
      * Return metadata for the given command, or undefined if there isn't one with this name
@@ -128,7 +146,6 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             this.configuration.mappedParameterResolver);
     }
 
-    // TODO needs to consider goal state and preconditions
     private async execGoal(project: GitProject,
                            rwlc: RunWithLogContext,
                            goal: Goal) {
@@ -141,9 +158,8 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             goal,
             state: "requested",
             fulfillment: goalFulfillment.goalExecutor,
-            id: {...rwlc.id, branch: project.branch},
+            id: { ...rwlc.id, branch: project.branch },
         } as any);
-        // const execute = this.goalFulfillmentMapper.findImplementationBySdmGoal(sdmGoal);
         const goalResult = await executeGoal({
                 // tslint:disable-next-line:no-invalid-this
                 projectLoader: this.configuration.sdm.projectLoader,
@@ -153,6 +169,8 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             sdmGoal, goal, lastLinesLogInterpreter("thing"));
         if (goalResult.code !== 0) {
             throw new Error(`Code was nonzero`);
+        } else {
+            await writeToConsole({ message: goal.successDescription, color: "green" });
         }
     }
 
@@ -171,7 +189,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
 
     constructor(name: string,
                 configuration: LocalSoftwareDeliveryMachineConfiguration,
-                ...goalSetters: Array<GoalSetter|GoalSetter[]>) {
+                ...goalSetters: Array<GoalSetter | GoalSetter[]>) {
         super(name, configuration, goalSetters);
     }
 

@@ -1,8 +1,8 @@
 import { logger, Parameter } from "@atomist/automation-client";
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import {
-    FingerprintGoal,
-    hasFileWithExtension,
+    FingerprintGoal, GenericGoal, GoalWithPrecondition,
+    hasFileWithExtension, IndependentOfEnvironment,
     PushReactionGoal,
     ReviewGoal,
     SeedDrivenGeneratorParametersSupport,
@@ -13,6 +13,16 @@ import { TypedFingerprint } from "@atomist/sdm/code/fingerprint/TypedFingerprint
 import { WellKnownGoals } from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
 import { AddressChannelsFingerprintListener } from "./invocation/cli/io/addressChannelsFingerprintListener";
 
+export const RunLastGoal = new GoalWithPrecondition({
+    uniqueName: "RunLast",
+    environment: IndependentOfEnvironment,
+    orderedName: "4-tag",
+    displayName: "tag",
+    workingDescription: "Running last...",
+    completedDescription: "Ran last",
+    failedDescription: "Failed to create Tag",
+}, FingerprintGoal);
+
 /**
  * User-specific code
  * @param {} sdm
@@ -21,14 +31,21 @@ export function configure(sdm: SoftwareDeliveryMachine) {
     sdm.addGoalContributions(
         whenPushSatisfies(() => true).setGoals([
             FingerprintGoal, PushReactionGoal, ReviewGoal,
+            RunLastGoal,
         ]));
     sdm
+        .addGoalImplementation("foo", RunLastGoal,
+            async rwlc => {
+                console.log("Running last");
+                return null;
+            },
+        )
         .addFingerprintListeners(AddressChannelsFingerprintListener)
         .addExtensionPacks(WellKnownGoals)
         .addFingerprinterRegistrations({
             name: "fp1",
             action: async pu => {
-                const fp = new TypedFingerprint("name", "NM", "0.1.0", {name: "tom"});
+                const fp = new TypedFingerprint("name", "NM", "0.1.0", { name: "tom" });
                 logger.info("Computed fingerprint %j", fp);
                 return fp;
             },

@@ -26,7 +26,6 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
     public async send(msg: string|SlackMessage, destinations: Destination|Destination[], options?: MessageOptions): Promise<any> {
         if (isSdmGoal(msg as any)) {
             logger.info("Storing SDM goal or ingester payload %j", msg);
-            return this.respond(`Stored goal *${(msg as any).name}*`);
         }
         const dests = isArray(destinations) ? destinations : [destinations];
         return this.stream({message: msg, options, destinations: dests},
