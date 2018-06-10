@@ -16,7 +16,6 @@ import { selfDescribingHandlers } from "@atomist/sdm/pack/info/support/commandSe
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
 import { LocalHandlerContext } from "../binding/LocalHandlerContext";
 import { localRunWithLogContext } from "../binding/localPush";
-import { LocalTargetsParams } from "../binding/LocalTargetsParams";
 import { addGitHooks } from "../setup/addGitHooks";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 import { invokeCommandHandlerWithFreshParametersInstance } from "./parameterPopulation";
@@ -37,7 +36,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
     public readonly goalFulfillmentMapper = new SdmGoalImplementationMapperImpl(undefined);
 
     /**
-     * Install git hooks in all git projects under our local directory
+     * Install git hooks in all git projects under our expanded directory structure
      * @return {Promise<void>}
      */
     public async installGitHooks() {
@@ -52,16 +51,6 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
 
     public async removeGitHooks() {
         throw new Error("Not yet implemented. Looks like Atomist is here to stay");
-    }
-
-    public addEditors(...eds): this {
-        // Transparently change targets so that repos to be edited will default locally
-        const edsToUse = eds.map(ed => {
-            // Set our own target
-            ed.targets = new LocalTargetsParams(this.configuration.repositoryOwnerParentDirectory);
-            return ed;
-        });
-        return super.addEditors(...edsToUse);
     }
 
     // ---------------------------------------------------------------

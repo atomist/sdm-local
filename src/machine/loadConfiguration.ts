@@ -11,6 +11,8 @@ import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 
+//            ed.targets = new LocalTargetsParams(this.configuration.repositoryOwnerParentDirectory);
+
 export function loadConfiguration(
     repositoryOwnerParentDirectory: string,
     mappedParameterResolver: MappedParameterResolver = ResolveNothingMappedParameterResolver): LocalSoftwareDeliveryMachineConfiguration {

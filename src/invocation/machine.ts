@@ -1,6 +1,6 @@
 import { configure } from "../configure";
-import { LocalSoftwareDeliveryMachine } from "../machine/LocalSoftwareDeliveryMachine";
 import { loadConfiguration } from "../machine/loadConfiguration";
+import { LocalSoftwareDeliveryMachine } from "../machine/LocalSoftwareDeliveryMachine";
 import { CliMappedParameterResolver } from "./cli/support/CliMappedParameterResolver";
 
 function failWith(message: string): string {

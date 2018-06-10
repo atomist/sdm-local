@@ -6,13 +6,17 @@ import { RemoteRepoRef, RepoRef } from "@atomist/automation-client/operations/co
 import { Configurable } from "@atomist/automation-client/project/git/Configurable";
 import { parseOwnerAndRepo } from "./expandedTreeUtils";
 
+/**
+ * RemoteRepoRef working against our expanded directory structure.
+ * Supports cloning and pushing.
+ */
 export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
 
     public static fromDirectory(repositoryOwnerParentDirectory: string,
                                 baseDir: string,
                                 branch: string,
                                 sha: string): RemoteRepoRef {
-        const {owner, repo} = parseOwnerAndRepo(repositoryOwnerParentDirectory, baseDir);
+        const { owner, repo } = parseOwnerAndRepo(repositoryOwnerParentDirectory, baseDir);
         if (!(!!owner && !!repo)) {
             throw new Error(`Cannot resolve directory ${baseDir}`);
         }
@@ -53,7 +57,8 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
                 repo: string,
                 public readonly branch: string,
                 sha: string) {
-        super(null, "http://not.a.real.remote", "http://not.a.real.apiBase",
+        super(null, "http://not.a.real.remote",
+            "http://not.a.real.apiBase",
             owner, repo, sha);
     }
 

@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@atomist/automation-client": "https://r.atomist.com/HJV-CGrbYx7",
-    "@atomist/sdm": "https://r.atomist.com/H17e3xsWYgX",
+    "@atomist/sdm": "https://r.atomist.com/SJ7gxRb-9xX",
     "@types/yargs": "^11.0.0",
     "express": "^4.16.3",
     "marked-terminal": "^3.0.0"
