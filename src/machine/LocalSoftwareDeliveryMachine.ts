@@ -168,9 +168,16 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             rwlc,
             sdmGoal, goal, lastLinesLogInterpreter("thing"));
         if (goalResult.code !== 0) {
+            await writeToConsole({
+                message: `✖︎︎ ${goal.successDescription}`,
+                color: "red",
+            });
             throw new Error(`Code was nonzero`);
         } else {
-            await writeToConsole({ message: goal.successDescription, color: "green" });
+            await writeToConsole({
+                message: `✔ ${goal.successDescription}`,
+                color: "green",
+            });
         }
     }
 
