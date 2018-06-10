@@ -10,7 +10,7 @@ import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput
 export function addTriggerCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     yargs.command({
         command: "trigger",
-        describe: "Install git hooks",
+        describe: "Trigger commit action on the current repository",
         handler: () => {
             return logExceptionsToConsole(() => trigger(sdm));
         },
