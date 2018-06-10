@@ -21,6 +21,9 @@ import { addGitHooks } from "../setup/addGitHooks";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 import { invokeCommandHandlerWithFreshParametersInstance } from "./parameterPopulation";
 
+/**
+ * Local SDM implementation, designed to be driven by CLI and git hooks.
+ */
 export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachine<LocalSoftwareDeliveryMachineConfiguration> {
 
     get commandHandlers(): Array<Maker<HandleCommand>> {
@@ -51,12 +54,24 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
         throw new Error("Not yet implemented. Looks like Atomist is here to stay");
     }
 
+    public addEditors(...eds): this {
+        // Transparently change targets so that repos to be edited will default locally
+        const edsToUse = eds.map(ed => {
+            // Set our own target
+            ed.targets = new LocalTargetsParams(this.configuration.repositoryOwnerParentDirectory);
+            return ed;
+        });
+        return super.addEditors(...edsToUse);
+    }
+
     // ---------------------------------------------------------------
     // git binding methods
     // ---------------------------------------------------------------
     /**
      * Invoked after commit. Pretend it's a push
      * @param {string} baseDir
+     * @param branch base
+     * @param sha sha
      * @return {Promise<Promise<any>>}
      */
     public async postCommit(baseDir: string, branch: string, sha: string) {
@@ -82,16 +97,6 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
                 return Promise.all(goals.goals.map(goal =>
                     this.execGoal(p, rwlc, goal)));
             });
-    }
-
-    public addEditors(...eds): this {
-        // Transparently change targets so that repos to be edited will default locally
-        const edsToUse = eds.map(ed => {
-            // Set our own target
-            ed.targets = new LocalTargetsParams(this.configuration.repositoryOwnerParentDirectory);
-            return ed;
-        });
-        return super.addEditors(...edsToUse);
     }
 
     // ---------------------------------------------------------------
