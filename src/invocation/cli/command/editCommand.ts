@@ -56,5 +56,5 @@ async function edit(sdm: LocalSoftwareDeliveryMachine,
 
     logger.warn("Executing edit command %s with args %j", commandName, args);
 
-    return sdm.executeCommand(commandName, args);
+    return sdm.executeCommand({ name: commandName, args });
 }

@@ -1,5 +1,5 @@
 import { HandleCommand, HandleEvent, HandlerContext, logger } from "@atomist/automation-client";
-import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
+import { Arg, CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
@@ -132,7 +132,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
     }
 
     // TODO break dependency on client
-    public async executeCommand(name: string, args: Arg[]): Promise<any> {
+    public async executeCommand(invocation: CommandInvocation): Promise<any> {
         const handlers = selfDescribingHandlers(this);
         const handler = handlers.find(h => h.instance.name === name);
         if (!handler) {
@@ -142,7 +142,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
         const context: HandlerContext = new LocalHandlerContext(null);
         const parameters = !!instance.freshParametersInstance ? instance.freshParametersInstance() : instance;
         await invokeCommandHandlerWithFreshParametersInstance(instance,
-            handler.instance, parameters, args, context,
+            handler.instance, parameters, invocation.args, context,
             this.configuration.mappedParameterResolver);
     }
 

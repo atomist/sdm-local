@@ -1,6 +1,6 @@
 {
   "name": "@atomist/slalom",
-  "version": "0.2.1",
+  "version": "0.1.0",
   "description": "Atomist Local Software Delivery Machine",
   "author": "Atomist, Inc.",
   "license": "Apache-2.0",
@@ -16,9 +16,9 @@
     "automation",
     "github"
   ],
-  "homepage": "https://github.com/atomist/sdm#readme",
+  "homepage": "https://github.com/atomist/slalom#readme",
   "bugs": {
-    "url": "https://github.com/atomist/sdm/issues"
+    "url": "https://github.com/atomist/slalom/issues"
   },
   "dependencies": {
     "@atomist/automation-client": "https://r.atomist.com/HJV-CGrbYx7",

@@ -22,7 +22,7 @@ export function addGenerateCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Arg
         handler: argv => {
             logger.debug("Args are %j", argv);
             const extraArgs = Object.getOwnPropertyNames(argv)
-                .map(name => ({name, value: argv[name]}));
+                .map(name => ({ name, value: argv[name] }));
             return logExceptionsToConsole(() => generateCommand(sdm, argv.generator, argv.owner, argv.repo, extraArgs));
         },
     });
@@ -38,11 +38,11 @@ async function generateCommand(sdm: LocalSoftwareDeliveryMachine,
         process.exit(1);
     }
     const args = [
-        {name: "target.owner", value: targetOwner},
-        {name: "target.repo", value: targetRepo},
+        { name: "target.owner", value: targetOwner },
+        { name: "target.repo", value: targetRepo },
     ].concat(extraArgs);
 
     // TODO should come from environment
-    args.push({name: "github://user_token?scopes=repo,user:email,read:user", value: null});
-    return sdm.executeCommand(commandName, args);
+    args.push({ name: "github://user_token?scopes=repo,user:email,read:user", value: null });
+    return sdm.executeCommand({ name: commandName, args });
 }

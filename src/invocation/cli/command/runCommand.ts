@@ -12,7 +12,7 @@ export function addRunCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
         handler: argv => {
             logger.debug("Args are %j", argv);
             const command = Object.getOwnPropertyNames(argv)
-                .map(name => ({name, value: argv[name]}));
+                .map(name => ({ name, value: argv[name] }));
             return logExceptionsToConsole(() => runRunCommand(sdm, argv.command, command));
         },
     });
@@ -26,6 +26,6 @@ async function runRunCommand(sdm: LocalSoftwareDeliveryMachine, commandName: str
     }
 
     // TODO should come from environment
-    args.push({name: "github://user_token?scopes=repo,user:email,read:user", value: null});
-    return sdm.executeCommand(commandName, args);
+    args.push({ name: "github://user_token?scopes=repo,user:email,read:user", value: null });
+    return sdm.executeCommand({ name: commandName, args });
 }

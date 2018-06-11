@@ -5,16 +5,19 @@ import { Destination, MessageOptions } from "@atomist/automation-client/spi/mess
 import { SlackMessage } from "@atomist/slack-messages";
 import * as express from "express";
 import { ConsoleMessageClient } from "../io/ConsoleMessageClient";
+import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
+import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
+import { Express } from "express";
 
 export const DemonPort = 6660;
 export const MessageRoute = "/message";
 
-export function addSummonDemon(yargs: Argv) {
+export function addSummonDemon(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     yargs.command({
         command: "summon-demon",
         describe: "Summon the Atomist listener demon",
         handler: () => {
-            return logExceptionsToConsole(() => summonDemon());
+            return logExceptionsToConsole(() => summonDemon(sdm));
         },
     });
 }
@@ -25,7 +28,7 @@ export interface StreamedMessage {
     options: MessageOptions;
 }
 
-async function summonDemon() {
+async function summonDemon(sdm: LocalSoftwareDeliveryMachine) {
     const messageClient = new ConsoleMessageClient();
 
     writeToConsole({ message: "Your friendly neighborhood demon.\nI am here!", color: "cyan"});
@@ -40,9 +43,15 @@ async function summonDemon() {
             .catch(next);
     });
 
+    sdm.commandsMetadata.forEach(hmd => exportHandlerRoute(app, hmd));
+
     app.listen(DemonPort,
         () => writeToConsole({
             message: `Listening on port ${DemonPort}!`,
             color: "cyan",
         }));
+}
+
+function exportHandlerRoute(e: Express, hmd: CommandHandlerMetadata) {
+
 }

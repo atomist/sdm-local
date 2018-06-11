@@ -18,7 +18,7 @@ import { addRunCommand } from "./command/runCommand";
 yargs.usage("Usage: $0 <command> [options]");
 
 addTriggerCommand(localSdmInstance, yargs);
-addSummonDemon(yargs);
+addSummonDemon(localSdmInstance, yargs);
 addGitHooksCommand(localSdmInstance, yargs);
 addGenerateCommand(localSdmInstance, yargs);
 addEditCommand(localSdmInstance, yargs);
