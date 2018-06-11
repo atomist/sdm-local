@@ -8,6 +8,7 @@ import { ConsoleMessageClient } from "../io/ConsoleMessageClient";
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { Express } from "express";
+import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
 
 export const DemonPort = 6660;
 export const MessageRoute = "/message";
@@ -43,7 +44,7 @@ async function summonDemon(sdm: LocalSoftwareDeliveryMachine) {
             .catch(next);
     });
 
-    sdm.commandsMetadata.forEach(hmd => exportHandlerRoute(app, hmd));
+    sdm.commandsMetadata.forEach(hmd => exportHandlerRoute(app, hmd, sdm));
 
     app.listen(DemonPort,
         () => writeToConsole({
@@ -52,6 +53,14 @@ async function summonDemon(sdm: LocalSoftwareDeliveryMachine) {
         }));
 }
 
-function exportHandlerRoute(e: Express, hmd: CommandHandlerMetadata) {
-
+function exportHandlerRoute(e: Express, hmd: CommandHandlerMetadata, sdm: LocalSoftwareDeliveryMachine) {
+    e.get(`/command/${hmd.name}`, async (req, res) => {
+        const ci: CommandInvocation = {
+            name: hmd.name,
+            args: [],
+        };
+        // TODO redirect output??
+        await sdm.executeCommand(ci);
+        return res.send(`Executed command '${hmd.name}'`);
+    });
 }

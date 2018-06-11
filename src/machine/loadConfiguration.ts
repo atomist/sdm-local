@@ -10,8 +10,7 @@ import { fileSystemProjectPersister } from "../binding/fileSystemProjectPersiste
 import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
-
-//            ed.targets = new LocalTargetsParams(this.configuration.repositoryOwnerParentDirectory);
+import { LocalTargetsParams } from "../binding/LocalTargetsParams";
 
 export function loadConfiguration(
     repositoryOwnerParentDirectory: string,
@@ -26,6 +25,7 @@ export function loadConfiguration(
             repoRefResolver,
             repoFinder: expandedDirectoryRepoFinder(repositoryOwnerParentDirectory),
             projectPersister: fileSystemProjectPersister(repositoryOwnerParentDirectory),
+            targets: new LocalTargetsParams(repositoryOwnerParentDirectory),
         },
         repositoryOwnerParentDirectory,
         mappedParameterResolver,

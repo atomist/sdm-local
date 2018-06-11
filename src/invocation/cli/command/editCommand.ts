@@ -23,7 +23,7 @@ export function addEditCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
         handler: argv => {
             logger.debug("Args are %j", argv);
             const extraArgs = Object.getOwnPropertyNames(argv)
-                .map(name => ({name, value: argv[name]}));
+                .map(name => ({ name, value: argv[name] }));
             return logExceptionsToConsole(() => edit(sdm, argv.editor, argv.owner, argv.repos, extraArgs));
         },
     });
@@ -31,8 +31,8 @@ export function addEditCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
 
 async function edit(sdm: LocalSoftwareDeliveryMachine,
                     commandName: string,
-                    targetOwner: string|undefined,
-                    targetRepos: string|undefined,
+                    targetOwner: string | undefined,
+                    targetRepos: string | undefined,
                     extraArgs: Arg[]): Promise<any> {
     const hm = sdm.commandMetadata(commandName);
     if (!hm || !!hm.tags && !hm.tags.some(t => t.name === EditorTag)) {
@@ -46,13 +46,13 @@ async function edit(sdm: LocalSoftwareDeliveryMachine,
     }
 
     const args = [
-        {name: "targets.owner", value: targetOwner},
-        {name: "targets.repos", value: targetRepos},
+        { name: "targets.owner", value: targetOwner },
+        { name: "targets.repos", value: targetRepos },
     ].concat(extraArgs)
         .filter(a => a.value !== undefined);
 
     // TODO should come from environment
-    args.push({name: "github://user_token?scopes=repo,user:email,read:user", value: null});
+    args.push({ name: "github://user_token?scopes=repo,user:email,read:user", value: null });
 
     logger.warn("Executing edit command %s with args %j", commandName, args);
 

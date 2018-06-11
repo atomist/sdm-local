@@ -134,15 +134,19 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
     // TODO break dependency on client
     public async executeCommand(invocation: CommandInvocation): Promise<any> {
         const handlers = selfDescribingHandlers(this);
-        const handler = handlers.find(h => h.instance.name === name);
+        const handler = handlers.find(h => h.instance.name === invocation.name);
         if (!handler) {
-            throw new Error(`No command found with name '${name}'`);
+            throw new Error(`No command found with name '${invocation.name}'`);
         }
         const instance = toFactory(handler.maker)();
         const context: HandlerContext = new LocalHandlerContext(null);
-        const parameters = !!instance.freshParametersInstance ? instance.freshParametersInstance() : instance;
-        await invokeCommandHandlerWithFreshParametersInstance(instance,
-            handler.instance, parameters, invocation.args, context,
+        const parameters = !!instance.freshParametersInstance ?
+            instance.freshParametersInstance() :
+            instance;
+        await invokeCommandHandlerWithFreshParametersInstance(
+            instance,
+            handler.instance, parameters,
+            invocation.args, context,
             this.configuration.mappedParameterResolver);
     }
 
