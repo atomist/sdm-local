@@ -7,7 +7,7 @@ import { WellKnownGoals } from "@atomist/sdm/pack/well-known-goals/addWellKnownG
 import * as assert from "power-assert";
 import { AddressChannelsFingerprintListener } from "../../src/invocation/cli/io/addressChannelsFingerprintListener";
 import { RepositoryOwnerParentDirectory } from "../../src/invocation/machine";
-import { loadConfiguration } from "../../src/machine/loadConfiguration";
+import { loadConfiguration, ResolveNothingMappedParameterResolver } from "../../src/machine/loadConfiguration";
 import { LocalSoftwareDeliveryMachine } from "../../src/machine/LocalSoftwareDeliveryMachine";
 
 describe("LocalSoftwareDeliveryMachine push", () => {
@@ -16,7 +16,10 @@ describe("LocalSoftwareDeliveryMachine push", () => {
         const repoOwnerDirectory = RepositoryOwnerParentDirectory;
         const sdm = new LocalSoftwareDeliveryMachine(
             "name",
-            loadConfiguration(repoOwnerDirectory),
+            loadConfiguration(repoOwnerDirectory, {
+                mergeAutofixes: true,
+                mappedParameterResolver: ResolveNothingMappedParameterResolver,
+            }),
             whenPushSatisfies(() => true).setGoals([
                 AutofixGoal,
                 // FingerprintGoal, ReviewGoal, PushReactionGoal
@@ -26,7 +29,7 @@ describe("LocalSoftwareDeliveryMachine push", () => {
             .addFingerprinterRegistrations({
                 name: "fp1",
                 action: async pu => {
-                    const fp = new TypedFingerprint("name", "NM", "0.1.0", {name: "tom"});
+                    const fp = new TypedFingerprint("name", "NM", "0.1.0", { name: "tom" });
                     logger.info("Computed fingerprint %j", fp);
                     return fp;
                 },
@@ -59,7 +62,7 @@ export const AddThingAutofix: AutofixRegistration = {
     name: "AddThing",
     action: async cri => {
         await cri.project.addFile("thing", "1");
-        return {edited: true, success: true, target: cri.project};
+        return { edited: true, success: true, target: cri.project };
     },
 };
 
@@ -77,5 +80,5 @@ const HatesTheWorld: ReviewerRegistration = {
                     offset: -1,
                 })),
     }),
-    options: {considerOnlyChangedFiles: false},
+    options: { considerOnlyChangedFiles: false },
 };

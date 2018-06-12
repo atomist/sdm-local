@@ -6,24 +6,26 @@ import { CachingProjectLoader } from "@atomist/sdm/project/CachingProjectLoader"
 import { execSync } from "child_process";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
 import { expandedDirectoryRepoFinder } from "../binding/expandedDirectoryRepoFinder";
+import { dirFor } from "../binding/expandedTreeUtils";
 import { fileSystemProjectPersister } from "../binding/fileSystemProjectPersister";
 import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { LocalTargetsParams } from "../binding/LocalTargetsParams";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
 import { writeToConsole } from "../invocation/cli/support/consoleOutput";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
-import { dirFor } from "../binding/expandedTreeUtils";
 
 export function loadConfiguration(
-    repositoryOwnerParentDirectory: string,
-    mappedParameterResolver: MappedParameterResolver = ResolveNothingMappedParameterResolver): LocalSoftwareDeliveryMachineConfiguration {
+    repositoryOwnerParentDirectory: string, opts: {
+        mergeAutofixes: boolean,
+        mappedParameterResolver: MappedParameterResolver,
+    }): LocalSoftwareDeliveryMachineConfiguration {
     const repoRefResolver = new LocalRepoRefResolver(repositoryOwnerParentDirectory);
     return {
         sdm: {
             artifactStore: new EphemeralLocalArtifactStore(),
             projectLoader: new MonkeyingProjectLoader(
                 new CachingProjectLoader(),
-                changeToPushToAtomistBranch(repositoryOwnerParentDirectory)),
+                changeToPushToAtomistBranch(repositoryOwnerParentDirectory, opts.mergeAutofixes)),
             logFactory: async (context, goal) => new LoggingProgressLog(goal.name),
             credentialsResolver: EnvironmentTokenCredentialsResolver,
             repoRefResolver,
@@ -32,11 +34,11 @@ export function loadConfiguration(
             targets: new LocalTargetsParams(repositoryOwnerParentDirectory),
         },
         repositoryOwnerParentDirectory,
-        mappedParameterResolver,
+        ...opts,
     };
 }
 
-const ResolveNothingMappedParameterResolver: MappedParameterResolver = {
+export const ResolveNothingMappedParameterResolver: MappedParameterResolver = {
     resolve: () => undefined,
 };
 
@@ -62,8 +64,10 @@ class MonkeyingProjectLoader implements ProjectLoader {
 /**
  * Change the behavior of our project to push to an Atomist branch and merge if it cannot
  * push to the checked out branch.
+ * @param repositoryOwnerParentDirectory root of expanded tree
+ * @param automerge whether to automatically merge the new branch
  */
-function changeToPushToAtomistBranch(repositoryOwnerParentDirectory: string): (p: GitProject) => Promise<GitProject> {
+function changeToPushToAtomistBranch(repositoryOwnerParentDirectory: string, automerge: boolean): (p: GitProject) => Promise<GitProject> {
     return async p => {
         p.push = async opts => {
             try {
@@ -80,10 +84,12 @@ function changeToPushToAtomistBranch(repositoryOwnerParentDirectory: string): (p
                 await p.createBranch(newBranch);
                 execSync(`git push --force --set-upstream origin ${p.branch}`, { cwd: p.baseDir });
 
-                const originalRepoDir = dirFor(repositoryOwnerParentDirectory, p.id.owner, p.id.repo);
-                writeToConsole({message: `Trying merge in ${originalRepoDir}`, color: "yellow"});
-                // Automerge it
-                execSync(`git merge ${newBranch}`, { cwd: originalRepoDir });
+                if (automerge) {
+                    const originalRepoDir = dirFor(repositoryOwnerParentDirectory, p.id.owner, p.id.repo);
+                    writeToConsole({ message: `Trying merge in ${originalRepoDir}`, color: "yellow" });
+                    // Automerge it
+                    execSync(`git merge ${newBranch}`, { cwd: originalRepoDir });
+                }
             }
             return { target: p, success: true };
         };

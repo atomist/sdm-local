@@ -14,6 +14,9 @@ export const localSdmInstance = new LocalSoftwareDeliveryMachine(
     "gitMachine",
     loadConfiguration(
         RepositoryOwnerParentDirectory,
-        new CliMappedParameterResolver(RepositoryOwnerParentDirectory)));
+        {
+            mergeAutofixes: true,
+            mappedParameterResolver: new CliMappedParameterResolver(RepositoryOwnerParentDirectory),
+        }));
 
 configure(localSdmInstance);

@@ -9,4 +9,9 @@ export interface LocalSoftwareDeliveryMachineConfiguration extends SoftwareDeliv
     repositoryOwnerParentDirectory: string;
 
     mappedParameterResolver: MappedParameterResolver;
+
+    /**
+     * Whether to merge autofixes automatically
+     */
+    mergeAutofixes: boolean;
 }
