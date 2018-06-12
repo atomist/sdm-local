@@ -11,7 +11,7 @@ import { addSummonDemon } from "./command/addSummonDemon";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addEditCommand } from "./command/editCommand";
 import { addGenerateCommand } from "./command/generateCommand";
-import { addImportFromGitHubCommand } from "./command/importFromGitHubCommand";
+import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 import { addRunCommand } from "./command/runCommand";
 
 /* tslint:disable */
@@ -24,11 +24,12 @@ addGitHooksCommands(localSdmInstance, yargs);
 addGenerateCommand(localSdmInstance, yargs);
 addEditCommand(localSdmInstance, yargs);
 addRunCommand(localSdmInstance, yargs);
-addImportFromGitHubCommand(localSdmInstance, yargs);
+addImportFromGitRemoteCommand(localSdmInstance, yargs);
 
 yargs
     .epilog("Copyright Atomist 2018")
     .demandCommand(1, `Please provide a command for local SDM ${localSdmInstance.name}`)
     .help()
+    .demandCommand(1)
     .argv;
 

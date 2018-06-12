@@ -15,8 +15,8 @@ export const MessageRoute = "/message";
 
 export function addSummonDemon(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     yargs.command({
-        command: "summon-demon",
-        describe: "Summon the Atomist listener demon",
+        command: "listen",
+        describe: "Start listener daemon to display messages and expose commands",
         handler: () => {
             return logExceptionsToConsole(() => summonDemon(sdm));
         },
