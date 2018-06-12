@@ -32,6 +32,7 @@ async function importFromGitHub(sdm: LocalSoftwareDeliveryMachine, org: string, 
         fs.mkdirSync(orgDir);
     }
     execSync(`git clone http://github.com/${org}/${repo}`,
-        {cwd: orgDir});
-    return addGitHooks(new GitHubRepoRef(org, repo), `${orgDir}/${repo}`);
+        { cwd: orgDir });
+    return addGitHooks(new GitHubRepoRef(org, repo),
+        `${orgDir}/${repo}`);
 }

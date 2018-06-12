@@ -46,7 +46,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             if (!isFileSystemRemoteRepoRef(rr)) {
                 throw new Error(`Unexpected return from repo ref resolver: ${JSON.stringify(rr)}`);
             }
-            await addGitHooks(rr, rr.fileSystemLocation, this.sdmBaseDirectory);
+            await addGitHooks(rr, rr.fileSystemLocation);
         }
     }
 
@@ -58,16 +58,6 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             }
             await removeGitHooks(rr, rr.fileSystemLocation);
         }
-    }
-
-    /**
-     * Base directory of this SDM. Used in installing hooks
-     * @return {string}
-     */
-    get sdmBaseDirectory(): string {
-        // We want the base directory, not our path.
-        // Warning: Won't survive refactoring.
-        return __dirname.replace("/build/src/machine", "");
     }
 
     /**
