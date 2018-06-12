@@ -12,6 +12,8 @@ import { SecretResolver } from "@atomist/automation-client/spi/env/SecretResolve
 import * as _ from "lodash";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
 
+// args.push({ name: "github://user_token?scopes=repo,user:email,read:user", value: null });
+
 /**
  * Try to resolve secrets from arguments
  */

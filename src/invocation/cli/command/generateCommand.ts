@@ -42,7 +42,5 @@ async function generateCommand(sdm: LocalSoftwareDeliveryMachine,
         { name: "target.repo", value: targetRepo },
     ].concat(extraArgs);
 
-    // TODO should come from environment
-    args.push({ name: "github://user_token?scopes=repo,user:email,read:user", value: null });
     return sdm.executeCommand({ name: commandName, args });
 }

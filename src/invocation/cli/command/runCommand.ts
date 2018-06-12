@@ -24,8 +24,5 @@ async function runRunCommand(sdm: LocalSoftwareDeliveryMachine, commandName: str
         logger.error(`No command with name [${commandName}]: Known commands are [${sdm.commandsMetadata.map(m => m.name)}]`);
         process.exit(1);
     }
-
-    // TODO should come from environment
-    args.push({ name: "github://user_token?scopes=repo,user:email,read:user", value: null });
     return sdm.executeCommand({ name: commandName, args });
 }

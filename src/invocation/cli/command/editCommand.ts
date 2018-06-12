@@ -51,10 +51,6 @@ async function edit(sdm: LocalSoftwareDeliveryMachine,
     ].concat(extraArgs)
         .filter(a => a.value !== undefined);
 
-    // TODO should come from environment
-    args.push({ name: "github://user_token?scopes=repo,user:email,read:user", value: null });
-
-    logger.warn("Executing edit command %s with args %j", commandName, args);
-
+    logger.info("Executing edit command %s with args %j", commandName, args);
     return sdm.executeCommand({ name: commandName, args });
 }
