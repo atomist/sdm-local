@@ -1,9 +1,8 @@
 import { HandlerContext } from "@atomist/automation-client";
 import { EventIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
-import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, ProjectLoader, RunWithLogContext, StatusForExecuteGoal } from "@atomist/sdm";
+import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, RunWithLogContext, StatusForExecuteGoal } from "@atomist/sdm";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { messageClientAddressChannels } from "../invocation/cli/io/messageClientAddressChannels";
 import { LocalHandlerContext } from "./LocalHandlerContext";
@@ -78,22 +77,6 @@ export async function localRunWithLogContext(project: GitProject): Promise<RunWi
         status: {
             commit,
         },
-        progressLog: new LoggingProgressLog("name"),
-    };
-}
-
-/**
- * ProjectLoader that can clone a local project
- * @param {GitProject} p
- * @return {ProjectLoader}
- */
-export function cloneLocalProjectProjectLoader(p: GitProject): ProjectLoader {
-    return {
-        async doWithProject(coords, action) {
-            const id = coords.id;
-            id.cloneUrl = () => `file://${p.baseDir}`;
-            const p1 = await GitCommandGitProject.cloned(coords.credentials, id, {alwaysDeep: true});
-            return action(p1);
-        },
+        progressLog: new LoggingProgressLog(`${id.owner}/${id.repo}`),
     };
 }

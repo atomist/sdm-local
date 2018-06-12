@@ -5,6 +5,10 @@ import { MappedParameterResolver } from "../../../binding/MappedParameterResolve
 
 import * as os from "os";
 
+/**
+ * Resolve mapped parameters based on where we are in the directory tree
+ * when the command was invoked.
+ */
 export class CliMappedParameterResolver implements MappedParameterResolver {
 
     public resolve(md: MappedParameterDeclaration): string|undefined {

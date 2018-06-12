@@ -2,6 +2,7 @@ import { logger, Parameter, Parameters } from "@atomist/automation-client";
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import { buttonForCommand } from "@atomist/automation-client/spi/message/MessageClient";
 import {
+    AutofixGoal,
     FingerprintGoal, GoalWithPrecondition,
     hasFileWithExtension, IndependentOfEnvironment,
     PushReactionGoal,
@@ -32,6 +33,7 @@ export const RunLastGoal = new GoalWithPrecondition({
 export function configure(sdm: SoftwareDeliveryMachine) {
     sdm.addGoalContributions(
         whenPushSatisfies(() => true).setGoals([
+            AutofixGoal,
             FingerprintGoal, PushReactionGoal, ReviewGoal,
             RunLastGoal,
         ]));
@@ -41,6 +43,20 @@ export function configure(sdm: SoftwareDeliveryMachine) {
                 return rwlc.addressChannels("Running last");
             },
         )
+        .addAutofixes({
+            name: "addThing",
+            action: async p => {
+                await p.project.addFile("thing", "1");
+                return { edited: true, success: true, target: p.project };
+            },
+        })
+        // .addAutofixes(editorAutofixRegistration({
+        //     name: "addThing",
+        //     editor: async p => {
+        //         return p.addFile("thing", "1");
+        //         // return { edited: true, success: true, target: p.project };
+        //     },
+        // }))
         .addFingerprintListeners(AddressChannelsFingerprintListener)
         .addExtensionPacks(WellKnownGoals)
         .addFingerprinterRegistrations({
