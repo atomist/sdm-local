@@ -44,19 +44,12 @@ export function configure(sdm: SoftwareDeliveryMachine) {
             },
         )
         .addAutofixes({
-            name: "addThing",
+            name: "ensureHasThing2",
             action: async p => {
-                await p.project.addFile("thing", "1");
+                await p.project.addFile("thing2", "2");
                 return { edited: true, success: true, target: p.project };
             },
         })
-        // .addAutofixes(editorAutofixRegistration({
-        //     name: "addThing",
-        //     editor: async p => {
-        //         return p.addFile("thing", "1");
-        //         // return { edited: true, success: true, target: p.project };
-        //     },
-        // }))
         .addFingerprintListeners(AddressChannelsFingerprintListener)
         .addExtensionPacks(WellKnownGoals)
         .addFingerprinterRegistrations({

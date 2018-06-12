@@ -1,4 +1,15 @@
 /**
+ * Return the directory in our expanded structure for the given directory
+ * @param {string} repositoryOwnerParentDirectory
+ * @param {string} owner
+ * @param {string} repo
+ * @return {string}
+ */
+export function dirFor(repositoryOwnerParentDirectory: string, owner: string, repo: string) {
+    return `${repositoryOwnerParentDirectory}/${owner}/${repo}`;
+}
+
+/**
  * Find the owner and repo from the given directory, returning the empty
  * object if it isn't within our expanded directory structure
  * @param {string} repositoryOwnerParentDirectory
@@ -14,7 +25,7 @@ export function parseOwnerAndRepo(repositoryOwnerParentDirectory: string,
     const pattern = /^\/([^\/]+)\/([^\/]+)$/;
     const match = ourPart.match(pattern);
     return !!match && match.length >= 2 ?
-        {owner: match[1], repo: match[2]} :
+        { owner: match[1], repo: match[2] } :
         {};
 }
 
@@ -26,7 +37,7 @@ export function parseOwnerAndRepo(repositoryOwnerParentDirectory: string,
  */
 export function withinExpandedTree(repositoryOwnerParentDirectory: string,
                                    baseDir: string = determineCwd()): boolean {
-    const {owner, repo} = parseOwnerAndRepo(repositoryOwnerParentDirectory, baseDir);
+    const { owner, repo } = parseOwnerAndRepo(repositoryOwnerParentDirectory, baseDir);
     return !!owner && !!repo;
 }
 

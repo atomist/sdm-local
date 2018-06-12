@@ -12,6 +12,7 @@ import { LocalTargetsParams } from "../binding/LocalTargetsParams";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
 import { writeToConsole } from "../invocation/cli/support/consoleOutput";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
+import { dirFor } from "../binding/expandedTreeUtils";
 
 export function loadConfiguration(
     repositoryOwnerParentDirectory: string,
@@ -20,7 +21,9 @@ export function loadConfiguration(
     return {
         sdm: {
             artifactStore: new EphemeralLocalArtifactStore(),
-            projectLoader: new MonkeyingProjectLoader(new CachingProjectLoader(), changeToPushToAtomistBranch),
+            projectLoader: new MonkeyingProjectLoader(
+                new CachingProjectLoader(),
+                changeToPushToAtomistBranch(repositoryOwnerParentDirectory)),
             logFactory: async (context, goal) => new LoggingProgressLog(goal.name),
             credentialsResolver: EnvironmentTokenCredentialsResolver,
             repoRefResolver,
@@ -57,17 +60,33 @@ class MonkeyingProjectLoader implements ProjectLoader {
 }
 
 /**
- * Change the behavior of our project to push to an Atomist branch
- * @param {GitProject} p
- * @return {Promise<GitProject>}
+ * Change the behavior of our project to push to an Atomist branch and merge if it cannot
+ * push to the checked out branch.
  */
-async function changeToPushToAtomistBranch(p: GitProject): Promise<GitProject> {
-    p.push = async opts => {
-        const newBranch = `atomist/${p.branch}`;
-        writeToConsole({ message: `Pushing to new local branch ${newBranch}`, color: "yellow" });
-        await p.createBranch(newBranch);
-        execSync(`git push --force --set-upstream origin ${p.branch}`, { cwd: p.baseDir });
-        return { target: p, success: true };
+function changeToPushToAtomistBranch(repositoryOwnerParentDirectory: string): (p: GitProject) => Promise<GitProject> {
+    return async p => {
+        p.push = async opts => {
+            try {
+                // First try to push this branch. If it's the checked out branch
+                // We'll get an error
+                writeToConsole({ message: `Pushing to branch ${p.branch}`, color: "yellow" });
+                execSync(`git push --force --set-upstream origin ${p.branch}`, { cwd: p.baseDir });
+            } catch (err) {
+                // If this throws an exception it's because we can't push to the checked out branch.
+                // Autofix will attempt to do this.
+                // So we create a new branch, push that, and then go to the original directory and merge it.
+                const newBranch = `atomist/${p.branch}`;
+                writeToConsole({ message: `Pushing to new local branch ${newBranch}`, color: "yellow" });
+                await p.createBranch(newBranch);
+                execSync(`git push --force --set-upstream origin ${p.branch}`, { cwd: p.baseDir });
+
+                const originalRepoDir = dirFor(repositoryOwnerParentDirectory, p.id.owner, p.id.repo);
+                writeToConsole({message: `Trying merge in ${originalRepoDir}`, color: "yellow"});
+                // Automerge it
+                execSync(`git merge ${newBranch}`, { cwd: originalRepoDir });
+            }
+            return { target: p, success: true };
+        };
+        return p;
     };
-    return p;
 }
