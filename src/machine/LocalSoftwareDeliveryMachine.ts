@@ -16,7 +16,7 @@ import { selfDescribingHandlers } from "@atomist/sdm/pack/info/support/commandSe
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
 import { LocalHandlerContext } from "../binding/LocalHandlerContext";
 import { localRunWithLogContext } from "../binding/localPush";
-import { addGitHooks } from "../setup/addGitHooks";
+import { addGitHooks, removeGitHooks } from "../setup/addGitHooks";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 import { invokeCommandHandlerWithFreshParametersInstance } from "./parameterPopulation";
 import { writeToConsole } from "../invocation/cli/support/consoleOutput";
@@ -51,7 +51,13 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
     }
 
     public async removeGitHooks() {
-        throw new Error("Not yet implemented. Looks like Atomist is here to stay");
+        const allRepos = await this.configuration.sdm.repoFinder(undefined);
+        for (const rr of allRepos) {
+            if (!isFileSystemRemoteRepoRef(rr)) {
+                throw new Error(`Unexpected return from repo ref resolver: ${JSON.stringify(rr)}`);
+            }
+            await removeGitHooks(rr, rr.fileSystemLocation);
+        }
     }
 
     /**

@@ -45,3 +45,59 @@ export async function addGitHooksToProject(p: LocalProject) {
         },
         p.baseDir);
 }
+
+export async function removeGitHooks(id: RemoteRepoRef, baseDir: string) {
+    if (fs.existsSync(`${baseDir}/.git`)) {
+        const p = await NodeFsLocalProject.fromExistingDirectory(id, baseDir);
+        await deatomizeScript(p, "/.git/hooks/post-commit");
+    } else {
+        writeToConsole({
+                message: "removeGitHooks: Ignoring directory at %s as it is not a git project",
+                color: "gray",
+            },
+            baseDir);
+    }
+}
+
+/**
+ * Remove Atomist hook from this script
+ * @param {LocalProject} p
+ * @param {string} path
+ * @return {Promise<void>}
+ */
+async function deatomizeScript(p: LocalProject, path: string) {
+    const script = await p.getFile(path);
+    if (!script) {
+        writeToConsole({
+                message: "removeGitHooks: No git hook %s in project at %s",
+                color: "gray",
+            },
+            path,
+            p.baseDir);
+    } else {
+        const content = await script.getContent();
+        const lines = content.split("\n");
+        const nonAtomist = lines
+            .filter(line => !line.includes("atomist"))
+            .filter(line => line.trim() !== "")
+            .join("\n");
+        if (nonAtomist.length > 0) {
+            await script.setContent(nonAtomist);
+            writeToConsole({
+                    message: "removeGitHooks: Removing Atomist content from git hook %s in project at %s: Leaving \n%s",
+                    color: "gray",
+                },
+                path,
+                p.baseDir,
+                nonAtomist);
+        } else {
+            await p.deleteFile(path);
+            writeToConsole({
+                    message: "removeGitHooks: Removing git hook %s in project at %s",
+                    color: "gray",
+                },
+                path,
+                p.baseDir);
+        }
+    }
+}

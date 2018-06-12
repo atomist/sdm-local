@@ -6,7 +6,7 @@ process.env.ATOMIST_DISABLE_LOGGING = "true";
 import * as yargs from "yargs";
 import { localSdmInstance } from "../machine";
 
-import { addGitHooksCommand } from "./command/addGitHooksCommand";
+import { addGitHooksCommands } from "./command/addGitHooksCommands";
 import { addSummonDemon } from "./command/addSummonDemon";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addEditCommand } from "./command/editCommand";
@@ -20,7 +20,7 @@ yargs.usage("Usage: $0 <command> [options]");
 
 addTriggerCommand(localSdmInstance, yargs);
 addSummonDemon(localSdmInstance, yargs);
-addGitHooksCommand(localSdmInstance, yargs);
+addGitHooksCommands(localSdmInstance, yargs);
 addGenerateCommand(localSdmInstance, yargs);
 addEditCommand(localSdmInstance, yargs);
 addRunCommand(localSdmInstance, yargs);
