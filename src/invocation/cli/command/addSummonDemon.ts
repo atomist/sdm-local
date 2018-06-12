@@ -57,7 +57,7 @@ function exportHandlerRoute(e: Express, hmd: CommandHandlerMetadata, sdm: LocalS
     e.get(`/command/${hmd.name}`, async (req, res) => {
         const ci: CommandInvocation = {
             name: hmd.name,
-            args: [],
+            args: Object.getOwnPropertyNames(req.query).map(prop => ({ name: prop, value: req.query[prop]})),
         };
         // TODO redirect output??
         await sdm.executeCommand(ci);
