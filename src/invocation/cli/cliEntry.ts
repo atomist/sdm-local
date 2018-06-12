@@ -28,8 +28,8 @@ addImportFromGitRemoteCommand(localSdmInstance, yargs);
 
 yargs
     .epilog("Copyright Atomist 2018")
-    .demandCommand(1, `Please provide a command for local SDM ${localSdmInstance.name}`)
+    .demandCommand(1, `Please provide a command for local SDM ${localSdmInstance.name} handling projects under ${
+        localSdmInstance.configuration.repositoryOwnerParentDirectory}`)
     .help()
-    .demandCommand(1)
     .argv;
 

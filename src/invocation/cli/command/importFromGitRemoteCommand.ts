@@ -8,8 +8,9 @@ import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput
 
 export function addImportFromGitRemoteCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     yargs.command({
-        command: "import <owner> <repo> [remote base, default https://github.com]",
-        describe: "Import from Git remote",
+        command: "import <owner> <repo> [remoteBase]",
+        aliases: "i",
+        describe: "Import from Git remote. Remote base defaults to https://github.com",
         handler: argv => {
             return logExceptionsToConsole(async () => {
                 const remoteBase = !!argv.base ? argv.base : "https://github.com";

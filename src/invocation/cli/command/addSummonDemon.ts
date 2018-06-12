@@ -32,7 +32,6 @@ export interface StreamedMessage {
 async function summonDemon(sdm: LocalSoftwareDeliveryMachine) {
     const messageClient = new ConsoleMessageClient();
 
-    writeToConsole({ message: "Your friendly neighborhood demon.\nI am here!", color: "cyan"});
     const app = express();
     app.use(express.json());
 
@@ -48,7 +47,7 @@ async function summonDemon(sdm: LocalSoftwareDeliveryMachine) {
 
     app.listen(DemonPort,
         () => writeToConsole({
-            message: `Listening on port ${DemonPort}!`,
+            message: `Atomist Slalom: Listening on port ${DemonPort}...`,
             color: "cyan",
         }));
 }
