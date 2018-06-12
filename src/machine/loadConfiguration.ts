@@ -20,7 +20,7 @@ export function loadConfiguration(
     return {
         sdm: {
             artifactStore: new EphemeralLocalArtifactStore(),
-            projectLoader: new MonkeyingProjectLoader(new CachingProjectLoader(), pushToAtomistBranch),
+            projectLoader: new MonkeyingProjectLoader(new CachingProjectLoader(), changeToPushToAtomistBranch),
             logFactory: async (context, goal) => new LoggingProgressLog(goal.name),
             credentialsResolver: EnvironmentTokenCredentialsResolver,
             repoRefResolver,
@@ -56,7 +56,12 @@ class MonkeyingProjectLoader implements ProjectLoader {
 
 }
 
-async function pushToAtomistBranch(p: GitProject): Promise<GitProject> {
+/**
+ * Change the behavior of our project to push to an Atomist branch
+ * @param {GitProject} p
+ * @return {Promise<GitProject>}
+ */
+async function changeToPushToAtomistBranch(p: GitProject): Promise<GitProject> {
     p.push = async opts => {
         const newBranch = `atomist/${p.branch}`;
         writeToConsole({ message: `Pushing to new local branch ${newBranch}`, color: "yellow" });

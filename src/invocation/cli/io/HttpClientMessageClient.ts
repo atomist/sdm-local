@@ -9,12 +9,12 @@ import {
 import { isSdmGoal } from "@atomist/sdm/ingesters/sdmGoalIngester";
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
-import { isArray } from "util";
 import { DemonPort, MessageRoute, StreamedMessage } from "../command/addSummonDemon";
 import { ConsoleMessageClient } from "./ConsoleMessageClient";
 
 /**
- * Message client that POSTS to an Atomist server and logs to console otherwise.
+ * Message client that POSTS to an Atomist server and logs to a fallback (usually console)
+ * otherwise.
  */
 export class HttpClientMessageClient implements MessageClient, SlackMessageClient {
 
@@ -26,7 +26,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
         if (isSdmGoal(msg as any)) {
             logger.info("Storing SDM goal or ingester payload %j", msg);
         }
-        const dests = isArray(destinations) ? destinations : [destinations];
+        const dests = Array.isArray(destinations) ? destinations : [destinations];
         return this.stream({ message: msg, options, destinations: dests },
             () => this.delegate.send(msg, destinations, options));
     }

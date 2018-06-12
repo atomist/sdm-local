@@ -1,12 +1,12 @@
 import {
-    Destination, isSlackMessage,
+    Destination,
+    isSlackMessage,
     MessageClient,
     MessageOptions,
     SlackDestination,
     SlackMessageClient,
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
-import { isArray } from "util";
 import { writeToConsole } from "../support/consoleOutput";
 
 import { logger } from "@atomist/automation-client";
@@ -27,6 +27,9 @@ marked.setOptions({
 // tslint:disable-next-line:no-var-requires
 const chalk = require("chalk");
 
+/**
+ * Message client logging to the console. Uses color and renders markdown
+ */
 export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
 
     public async respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any> {
@@ -40,7 +43,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
         }
 
         const dests: SlackDestination[] =
-            (isArray(destinations) ? destinations : [destinations] as any)
+            (Array.isArray(destinations) ? destinations : [destinations] as any)
                 .filter(a => a.userAgent !== "ingester");
         return this.addressChannels(
             msg,

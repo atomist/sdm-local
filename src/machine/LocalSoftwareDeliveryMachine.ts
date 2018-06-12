@@ -89,6 +89,15 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             });
     }
 
+    /**
+     * Execute as many goals as we can at this time, recursing
+     * until done
+     * @param {Goals} goals
+     * @param {GitProject} p
+     * @param {RunWithLogContext} rwlc
+     * @param {Goal[]} stillPending
+     * @return {Promise<any>}
+     */
     private async executeGoals(goals: Goals,
                                p: GitProject,
                                rwlc: RunWithLogContext,
@@ -107,8 +116,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
         );
         logger.info("Executed this run: %s", completedInThisRun.map(g => g.name));
 
-        const stillNotDone = stillPending.filter(
-            elt => !completedInThisRun.includes(elt));
+        const stillNotDone = stillPending.filter(elt => !completedInThisRun.includes(elt));
         if (stillNotDone.length === 0) {
             writeToConsole({ message: "Goal execution complete", color: "green" });
         } else {
@@ -178,13 +186,13 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             },
             goalFulfillment.goalExecutor,
             rwlc,
-            sdmGoal, goal, lastLinesLogInterpreter("thing"));
+            sdmGoal, goal, lastLinesLogInterpreter(goal.name));
         if (goalResult.code !== 0) {
             writeToConsole({
                 message: `✖︎︎ ${goal.successDescription}`,
                 color: "red",
             });
-            throw new Error(`Code was nonzero: Goal execution failed`);
+            throw new Error(`Goal execution failed`);
         } else {
             writeToConsole({
                 message: `✔ ${goal.successDescription}`,
