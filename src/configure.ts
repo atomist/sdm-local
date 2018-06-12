@@ -1,7 +1,8 @@
 import { logger, Parameter, Parameters } from "@atomist/automation-client";
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
+import { buttonForCommand } from "@atomist/automation-client/spi/message/MessageClient";
 import {
-    FingerprintGoal, GenericGoal, GoalWithPrecondition,
+    FingerprintGoal, GoalWithPrecondition,
     hasFileWithExtension, IndependentOfEnvironment,
     PushReactionGoal,
     ReviewGoal,
@@ -11,9 +12,8 @@ import {
 } from "@atomist/sdm";
 import { TypedFingerprint } from "@atomist/sdm/code/fingerprint/TypedFingerprint";
 import { WellKnownGoals } from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
-import { AddressChannelsFingerprintListener } from "./invocation/cli/io/addressChannelsFingerprintListener";
-import { buttonForCommand } from "@atomist/automation-client/spi/message/MessageClient";
 import * as slack from "@atomist/slack-messages/SlackMessages";
+import { AddressChannelsFingerprintListener } from "./invocation/cli/io/addressChannelsFingerprintListener";
 
 export const RunLastGoal = new GoalWithPrecondition({
     uniqueName: "RunLast",
@@ -38,8 +38,7 @@ export function configure(sdm: SoftwareDeliveryMachine) {
     sdm
         .addGoalImplementation("foo", RunLastGoal,
             async rwlc => {
-                console.log("Running last");
-                return null;
+                return rwlc.addressChannels("Running last");
             },
         )
         .addFingerprintListeners(AddressChannelsFingerprintListener)
@@ -76,7 +75,7 @@ export function configure(sdm: SoftwareDeliveryMachine) {
             name: "hello",
             paramsMaker: HelloParameters,
             listener: async ci => ci.addressChannels(
-                !!ci.parameters.name ? `Hello _${ci.parameters.name}_` : "Hello world!"
+                !!ci.parameters.name ? `Hello _${ci.parameters.name}_` : "Hello world!",
             ),
         })
         .addCommands({

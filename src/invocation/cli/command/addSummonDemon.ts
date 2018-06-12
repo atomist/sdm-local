@@ -1,14 +1,14 @@
 import { Argv } from "yargs";
 import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput";
 
+import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
+import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { Destination, MessageOptions } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as express from "express";
-import { ConsoleMessageClient } from "../io/ConsoleMessageClient";
-import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
-import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { Express } from "express";
-import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
+import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
+import { ConsoleMessageClient } from "../io/ConsoleMessageClient";
 
 export const DemonPort = 6660;
 export const MessageRoute = "/message";

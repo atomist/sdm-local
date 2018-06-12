@@ -17,9 +17,7 @@ import * as marked from "marked";
 
 import * as slack from "@atomist/slack-messages/SlackMessages";
 
-
 import * as TerminalRenderer from "marked-terminal";
-import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
 
 marked.setOptions({
     // Define custom renderer

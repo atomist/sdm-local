@@ -8,9 +8,9 @@ import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentToken
 import { expandedDirectoryRepoFinder } from "../binding/expandedDirectoryRepoFinder";
 import { fileSystemProjectPersister } from "../binding/fileSystemProjectPersister";
 import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
+import { LocalTargetsParams } from "../binding/LocalTargetsParams";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
-import { LocalTargetsParams } from "../binding/LocalTargetsParams";
 
 export function loadConfiguration(
     repositoryOwnerParentDirectory: string,

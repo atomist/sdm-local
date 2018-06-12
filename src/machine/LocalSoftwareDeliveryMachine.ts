@@ -16,10 +16,10 @@ import { selfDescribingHandlers } from "@atomist/sdm/pack/info/support/commandSe
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
 import { LocalHandlerContext } from "../binding/LocalHandlerContext";
 import { localRunWithLogContext } from "../binding/localPush";
+import { writeToConsole } from "../invocation/cli/support/consoleOutput";
 import { addGitHooks, removeGitHooks } from "../setup/addGitHooks";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 import { invokeCommandHandlerWithFreshParametersInstance } from "./parameterPopulation";
-import { writeToConsole } from "../invocation/cli/support/consoleOutput";
 
 /**
  * Local SDM implementation, designed to be driven by CLI and git hooks.
@@ -190,13 +190,13 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             rwlc,
             sdmGoal, goal, lastLinesLogInterpreter("thing"));
         if (goalResult.code !== 0) {
-            await writeToConsole({
+            writeToConsole({
                 message: `✖︎︎ ${goal.successDescription}`,
                 color: "red",
             });
-            throw new Error(`Code was nonzero`);
+            throw new Error(`Code was nonzero: Goal execution failed`);
         } else {
-            await writeToConsole({
+            writeToConsole({
                 message: `✔ ${goal.successDescription}`,
                 color: "green",
             });
