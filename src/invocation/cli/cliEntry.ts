@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // TODO pull out into config
-//process.env.ATOMIST_DISABLE_LOGGING = "true";
+process.env.ATOMIST_DISABLE_LOGGING = "true";
 
 import * as yargs from "yargs";
 import { localSdmInstance } from "../machine";
