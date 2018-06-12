@@ -7,12 +7,12 @@ import * as yargs from "yargs";
 import { localSdmInstance } from "../machine";
 
 import { addGitHooksCommands } from "./command/addGitHooksCommands";
+import { addRunCommand } from "./command/addRunCommand";
 import { addSummonDemon } from "./command/addSummonDemon";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addEditCommand } from "./command/editCommand";
 import { addGenerateCommand } from "./command/generateCommand";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
-import { addRunCommand } from "./command/runCommand";
 
 /* tslint:disable */
 
