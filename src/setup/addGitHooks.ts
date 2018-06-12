@@ -10,27 +10,25 @@ const AtomistHookScriptName = "script/atomist-hook.sh";
 /**
  * Add Git hooks to the given repo
  * @param {RemoteRepoRef} id
- * @param {string} baseDir
+ * @param {string} projectBaseDir
  * @return {Promise<void>}
  */
-export async function addGitHooks(id: RemoteRepoRef, baseDir: string) {
-    if (fs.existsSync(`${baseDir}/.git`)) {
-        const p = await NodeFsLocalProject.fromExistingDirectory(id, baseDir);
-        return addGitHooksToProject(p);
+export async function addGitHooks(id: RemoteRepoRef, projectBaseDir: string, sdmBaseDir: string) {
+    if (fs.existsSync(`${projectBaseDir}/.git`)) {
+        const p = await NodeFsLocalProject.fromExistingDirectory(id, projectBaseDir);
+        return addGitHooksToProject(p, sdmBaseDir);
     } else {
         writeToConsole({
                 message: "addGitHooks: Ignoring directory at %s as it is not a git project",
                 color: "gray",
             },
-            baseDir);
+            projectBaseDir);
     }
 }
 
-export async function addGitHooksToProject(p: LocalProject) {
-    // TODO setting executable status should be on the project API
-    const baseDir = process.cwd();
-    const atomistHookScriptPath = `${baseDir}/${AtomistHookScriptName}`;
-    const jsScriptPath = `${baseDir}/build/src/invocation/git/onGitHook.js`;
+export async function addGitHooksToProject(p: LocalProject, sdmBaseDir: string) {
+    const atomistHookScriptPath = `${sdmBaseDir}/${AtomistHookScriptName}`;
+    const jsScriptPath = `${sdmBaseDir}/build/src/invocation/git/onGitHook.js`;
 
     await appendOrCreateFileContent(
         {
@@ -38,6 +36,7 @@ export async function addGitHooksToProject(p: LocalProject) {
             path: "/.git/hooks/post-commit",
             leaveAlone: oldContent => oldContent.includes(atomistHookScriptPath),
         })(p);
+    // TODO setting executable status should be on the project API
     fs.chmodSync(`${p.baseDir}/.git/hooks/post-commit`, 0o755);
     writeToConsole({
             message: "addGitHooks: Adding git post-commit script to project at %s",
