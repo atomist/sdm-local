@@ -19,20 +19,20 @@ import { ConsoleMessageClient } from "./ConsoleMessageClient";
 export class HttpClientMessageClient implements MessageClient, SlackMessageClient {
 
     public async respond(message: any, options?: MessageOptions): Promise<any> {
-        return this.stream({message, options, destinations: []},
-            () => this.delegate.respond(message, options));
+        return this.addressChannels(message, "general", options);
+
     }
 
-    public async send(msg: string|SlackMessage, destinations: Destination|Destination[], options?: MessageOptions): Promise<any> {
+    public async send(msg: string | SlackMessage, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
         if (isSdmGoal(msg as any)) {
             logger.info("Storing SDM goal or ingester payload %j", msg);
         }
         const dests = isArray(destinations) ? destinations : [destinations];
-        return this.stream({message: msg, options, destinations: dests},
+        return this.stream({ message: msg, options, destinations: dests },
             () => this.delegate.send(msg, destinations, options));
     }
 
-    public async addressChannels(message: string|SlackMessage, channels: string|string[], options?: MessageOptions): Promise<any> {
+    public async addressChannels(message: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
         return this.stream({
             message,
             options,
@@ -43,7 +43,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
         }, () => this.delegate.addressChannels(message, channels, options));
     }
 
-    public async addressUsers(message: string|SlackMessage, users: string|string[], options?: MessageOptions): Promise<any> {
+    public async addressUsers(message: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
         return this.addressChannels(message, users, options);
     }
 
@@ -58,6 +58,6 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
     }
 
     constructor(public readonly url: string = `http://localhost:${DemonPort}${MessageRoute}`,
-                private readonly delegate: MessageClient&SlackMessageClient = new ConsoleMessageClient()) {
+                private readonly delegate: MessageClient & SlackMessageClient = new ConsoleMessageClient()) {
     }
 }

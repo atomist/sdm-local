@@ -1,5 +1,5 @@
 import { HandleCommand, HandleEvent, HandlerContext, logger } from "@atomist/automation-client";
-import { Arg, CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
+import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
@@ -145,8 +145,10 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             instance;
         await invokeCommandHandlerWithFreshParametersInstance(
             instance,
-            handler.instance, parameters,
-            invocation.args, context,
+            handler.instance,
+            parameters,
+            invocation.args,
+            context,
             this.configuration.mappedParameterResolver);
     }
 

@@ -48,7 +48,6 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
 
     public async addressChannels(msg: string|SlackMessage, channels: string|string[], options?: MessageOptions): Promise<any> {
         const chans = toStringArray(channels);
-
         const m = isSlackMessage(msg) ? msg.text : msg;
         chans.forEach(channel => {
             writeToConsole(chalk.green("#") + marked(` **${channel}** ` + m));
