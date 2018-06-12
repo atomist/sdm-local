@@ -1,4 +1,4 @@
-import { logger, Parameter } from "@atomist/automation-client";
+import { logger, Parameter, Parameters } from "@atomist/automation-client";
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import {
     FingerprintGoal, GenericGoal, GoalWithPrecondition,
@@ -12,6 +12,8 @@ import {
 import { TypedFingerprint } from "@atomist/sdm/code/fingerprint/TypedFingerprint";
 import { WellKnownGoals } from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
 import { AddressChannelsFingerprintListener } from "./invocation/cli/io/addressChannelsFingerprintListener";
+import { buttonForCommand } from "@atomist/automation-client/spi/message/MessageClient";
+import * as slack from "@atomist/slack-messages/SlackMessages";
 
 export const RunLastGoal = new GoalWithPrecondition({
     uniqueName: "RunLast",
@@ -72,7 +74,28 @@ export function configure(sdm: SoftwareDeliveryMachine) {
         })
         .addCommands({
             name: "hello",
-            listener: async ci => ci.addressChannels("Hello world!"),
+            paramsMaker: HelloParameters,
+            listener: async ci => ci.addressChannels(
+                !!ci.parameters.name ? `Hello _${ci.parameters.name}_` : "Hello world!"
+            ),
+        })
+        .addCommands({
+            name: "button",
+            listener: async inv => {
+                const attachment: slack.Attachment = {
+                    text: "Greeting?",
+                    fallback: "show greeting",
+                    actions: [buttonForCommand({ text: "Say hello" },
+                        "hello",
+                        { name: "Rod" },
+                    ),
+                    ],
+                };
+                const message: slack.SlackMessage = {
+                    attachments: [attachment],
+                };
+                return inv.addressChannels(message);
+            },
         });
 }
 
@@ -80,4 +103,11 @@ class MyParameters extends SeedDrivenGeneratorParametersSupport {
 
     @Parameter()
     public grommit;
+}
+
+@Parameters()
+class HelloParameters {
+
+    @Parameter({ required: false })
+    public name;
 }

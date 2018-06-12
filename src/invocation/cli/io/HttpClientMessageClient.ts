@@ -20,7 +20,6 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
 
     public async respond(message: any, options?: MessageOptions): Promise<any> {
         return this.addressChannels(message, "general", options);
-
     }
 
     public async send(msg: string | SlackMessage, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
