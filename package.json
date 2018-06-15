@@ -30,7 +30,7 @@
     "@atomist/sdm": "^0.2.1"
   },
   "devDependencies": {
-    "@atomist/sdm": "https://r.atomist.com/BJWM1jXLgZQ",
+    "@atomist/sdm": "^0.2.2",
     "@types/lodash": "^4.14.109",
     "@types/mocha": "^2.2.48",
     "@types/node": "^8.10.17",
