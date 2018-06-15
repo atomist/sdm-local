@@ -33,11 +33,11 @@ export const localSdmInstance = new LocalSoftwareDeliveryMachine(
         }));
 localSdmInstance.addExtensionPacks(WellKnownGoals);
 
-const modulePath = `${sdmRoot}/build/src/atomist.config.js`;
+const modulePath = `${sdmRoot}/build/src/local.js`;
 
 logger.info("Loading config from " + modulePath);
 
 // tslint:disable-next-line:no-var-requires
-const configureFun = require(modulePath).setup;
+const configureFun = require(modulePath).configureLocalMachine;
 
 configureFun(localSdmInstance);
