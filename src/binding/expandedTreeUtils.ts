@@ -1,3 +1,5 @@
+import * as fs from "fs";
+
 /**
  * Return the directory in our expanded structure for the given directory
  * @param {string} repositoryOwnerParentDirectory
@@ -5,8 +7,6 @@
  * @param {string} repo
  * @return {string}
  */
-import * as fs from "fs";
-
 export function dirFor(repositoryOwnerParentDirectory: string, owner: string, repo: string) {
     return `${repositoryOwnerParentDirectory}/${owner}/${repo}`;
 }
@@ -56,18 +56,20 @@ export function determineCwd(): string {
  * What's the current SDM root?
  * @return {string}
  */
-export function determineSdmRoot(): string {
+export function determineSdmRoot(): string | undefined {
     const currentDir = determineCwd();
     if (fs.existsSync(`${currentDir}/node_modules/@atomist/slalom/package.json`)) {
         // We're in an SDM directory
         return determineCwd();
     }
-    // Look for git hook
-    const hookContent = fs.readFileSync(`${currentDir}/.git/hooks/post-commit`).toString();
+    try {
+        // Look for git hook
+        const hookContent = fs.readFileSync(`${currentDir}/.git/hooks/post-commit`).toString();
 
-    // TODO this is fragile as it doesn't allow content before the Atomist path
-    const sdmRoot = hookContent.slice(0, hookContent.indexOf("node_modules")).trim();
-    return sdmRoot;
-
-    // throw new Error("Unable to determine SDM root for " + currentDir);
+        // TODO this is fragile as it doesn't allow content before the Atomist path
+        const sdmRoot = hookContent.slice(0, hookContent.indexOf("node_modules")).trim();
+        return sdmRoot;
+    } catch (err) {
+        return undefined;
+    }
 }

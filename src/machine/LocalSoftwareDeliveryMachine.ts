@@ -4,7 +4,7 @@ import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/auto
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { Maker, toFactory } from "@atomist/automation-client/util/constructionUtils";
-import { Goal, GoalImplementation, Goals, GoalSetter, hasPreconditions, RunWithLogContext } from "@atomist/sdm";
+import { GeneratorRegistration, Goal, GoalImplementation, Goals, GoalSetter, hasPreconditions, RunWithLogContext } from "@atomist/sdm";
 import { chooseAndSetGoals } from "@atomist/sdm/api-helper/goal/chooseAndSetGoals";
 import { executeGoal } from "@atomist/sdm/api-helper/goal/executeGoal";
 import { SdmGoalImplementationMapperImpl } from "@atomist/sdm/api-helper/goal/SdmGoalImplementationMapperImpl";
@@ -20,6 +20,7 @@ import { writeToConsole } from "../invocation/cli/support/consoleOutput";
 import { addGitHooks, removeGitHooks } from "../setup/addGitHooks";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 import { invokeCommandHandlerWithFreshParametersInstance } from "./parameterPopulation";
+import { successOn } from "@atomist/automation-client/action/ActionResult";
 
 /**
  * Local SDM implementation, designed to be driven by CLI and git hooks.
@@ -35,6 +36,20 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
     }
 
     public readonly goalFulfillmentMapper = new SdmGoalImplementationMapperImpl(undefined);
+
+    public addGenerators(...gens: Array<GeneratorRegistration<any>>): this {
+        // We need to override this to disable web hook addition that fires graph client
+        gens.forEach(gen => {
+            const oldAction = gen.afterAction;
+            gen.afterAction = async (p, params) => {
+                params.addAtomistWebhook = false;
+                return !!oldAction ?
+                    oldAction(p, params) :
+                    successOn(p);
+            };
+        });
+        return super.addGenerators(...gens);
+    }
 
     /**
      * Install git hooks in all git projects under our expanded directory structure
@@ -85,6 +100,10 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
                         push: rwlc.status.commit.pushes[0],
                     },
                 );
+                if (!goals) {
+                    writeToConsole({ message: "No goals set for push", color: "yellow"});
+                    return;
+                }
                 return this.executeGoals(goals, p, rwlc);
             });
     }
@@ -173,6 +192,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
         const pli = await createPushImpactListenerInvocation(rwlc, project);
         const goalFulfillment: GoalImplementation = await this.goalFulfillmentMapper.findFulfillmentByPush(goal, pli as any) as GoalImplementation;
         if (!goalFulfillment) {
+            // Warn the user. Don't fail.
             // throw new Error(`Error: No implementation for goal '${goal.uniqueCamelCaseName}'`);
             writeToConsole({
                 message: `Warning: No implementation for goal '${goal.uniqueCamelCaseName}'`,

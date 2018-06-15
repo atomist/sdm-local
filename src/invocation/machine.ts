@@ -1,6 +1,10 @@
+import { writeToConsole } from "./cli/support/consoleOutput";
+
+process.env.ATOMIST_DISABLE_LOGGING = "true";
+
 import { logger } from "@atomist/automation-client";
 import { WellKnownGoals } from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
-import { determineSdmRoot } from "../binding/expandedTreeUtils";
+import { determineCwd, determineSdmRoot } from "../binding/expandedTreeUtils";
 import { loadConfiguration } from "../machine/loadConfiguration";
 import { LocalSoftwareDeliveryMachine } from "../machine/LocalSoftwareDeliveryMachine";
 import { CliMappedParameterResolver } from "./cli/support/CliMappedParameterResolver";
@@ -10,6 +14,11 @@ function failWith(message: string): string {
 }
 
 const sdmRoot = determineSdmRoot();
+
+if (!sdmRoot) {
+    writeToConsole({ message: `Cannot determine SDM root in ${determineCwd()}`, color: "red" });
+    process.exit(1);
+}
 
 export const RepositoryOwnerParentDirectory = process.env.SDM_PROJECTS_ROOT ||
     failWith("Please define SDM_PROJECTS_ROOT to a directory containing git repositories, in the form of owner/repository");
@@ -33,4 +42,4 @@ logger.info("Loading config from " + modulePath);
 // tslint:disable-next-line:no-var-requires
 const configureFun = require(modulePath).setup;
 
-configureFun(localSdmInstance);
+//configureFun(localSdmInstance);

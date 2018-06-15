@@ -8,16 +8,8 @@ import { logExceptionsToConsole } from "../support/consoleOutput";
 
 export function addGenerateCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     yargs.command({
-        command: "generate <generator>",
+        command: "generate <generator> <owner> <repo>",
         aliases: ["g"],
-        builder: {
-            owner: {
-                required: true,
-            },
-            repo: {
-                required: true,
-            },
-        },
         describe: "Generate",
         handler: argv => {
             logger.debug("Args are %j", argv);
@@ -40,6 +32,7 @@ async function generateCommand(sdm: LocalSoftwareDeliveryMachine,
     const args = [
         { name: "target.owner", value: targetOwner },
         { name: "target.repo", value: targetRepo },
+        { name: "github://user_token?scopes=repo,user:email,read:user", value: null },
     ].concat(extraArgs);
 
     return sdm.executeCommand({ name: commandName, args });

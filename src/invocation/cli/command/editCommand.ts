@@ -9,17 +9,9 @@ import { logExceptionsToConsole } from "../support/consoleOutput";
 
 export function addEditCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     yargs.command({
-        command: "edit <editor>",
+        command: "edit <editor> [owner] [repos]",
         aliases: ["e"],
-        builder: {
-            owner: {
-                required: false,
-            },
-            repos: {
-                required: false,
-            },
-        },
-        describe: "Edit <editorName>",
+        describe: "Edit <editorName> [owner] [repos]",
         handler: argv => {
             logger.debug("Args are %j", argv);
             const extraArgs = Object.getOwnPropertyNames(argv)
@@ -48,6 +40,7 @@ async function edit(sdm: LocalSoftwareDeliveryMachine,
     const args = [
         { name: "targets.owner", value: targetOwner },
         { name: "targets.repos", value: targetRepos },
+        { name: "github://user_token?scopes=repo,user:email,read:user", value: null },
     ].concat(extraArgs)
         .filter(a => a.value !== undefined);
 

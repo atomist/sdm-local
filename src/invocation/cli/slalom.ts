@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 
 // TODO pull out into config
-
-import { addShowSkills } from "./command/showSkills";
-
 process.env.ATOMIST_DISABLE_LOGGING = "true";
 
 process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
+
+import { addShowSkills } from "./command/showSkills";
 
 import * as yargs from "yargs";
 import { localSdmInstance } from "../machine";
