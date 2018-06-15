@@ -1,7 +1,5 @@
 import { writeToConsole } from "./cli/support/consoleOutput";
 
-process.env.ATOMIST_DISABLE_LOGGING = "true";
-
 import { logger } from "@atomist/automation-client";
 import { WellKnownGoals } from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
 import { determineCwd, determineSdmRoot } from "../binding/expandedTreeUtils";
@@ -42,4 +40,4 @@ logger.info("Loading config from " + modulePath);
 // tslint:disable-next-line:no-var-requires
 const configureFun = require(modulePath).setup;
 
-//configureFun(localSdmInstance);
+configureFun(localSdmInstance);
