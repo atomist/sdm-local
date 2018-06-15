@@ -15,6 +15,7 @@ import { writeToConsole } from "../invocation/cli/support/consoleOutput";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 
 export function loadConfiguration(
+    sdmDir: string,
     repositoryOwnerParentDirectory: string, opts: {
         mergeAutofixes: boolean,
         mappedParameterResolver: MappedParameterResolver,
@@ -30,7 +31,7 @@ export function loadConfiguration(
             credentialsResolver: EnvironmentTokenCredentialsResolver,
             repoRefResolver,
             repoFinder: expandedDirectoryRepoFinder(repositoryOwnerParentDirectory),
-            projectPersister: fileSystemProjectPersister(repositoryOwnerParentDirectory),
+            projectPersister: fileSystemProjectPersister(repositoryOwnerParentDirectory, sdmDir),
             targets: new LocalTargetsParams(repositoryOwnerParentDirectory),
         },
         repositoryOwnerParentDirectory,

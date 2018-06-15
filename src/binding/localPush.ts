@@ -17,6 +17,7 @@ function repoFields(project: GitProject): CoreRepoFieldsAndChannels.Fragment {
                 providerType: "github_com" as any,
                 apiUrl: "just.not.there",
                 url: "and.nor.is.this",
+                providerId: "foo",
             },
         },
         channels: [],
@@ -30,10 +31,11 @@ function repoFields(project: GitProject): CoreRepoFieldsAndChannels.Fragment {
  */
 async function pushFromLastCommit(project: GitProject): Promise<OnPushToAnyBranch.Push> {
     const status = await project.gitStatus();
+    const repo = repoFields(project);
     return {
         id: new Date().getTime() + "_",
         branch: project.branch,
-        repo: repoFields(project),
+        repo,
         commits: [
             {
                 sha: status.sha,

@@ -1,0 +1,19 @@
+import { Argv } from "yargs";
+import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput";
+import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
+
+export function addShowSkills(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
+    yargs.command({
+        command: "show skills",
+        aliases: "s",
+        describe: "Show skills",
+        handler: argv => {
+            return logExceptionsToConsole(async () => {
+                const commands = sdm.commandsMetadata;
+                commands.forEach(md => {
+                    writeToConsole({message: `\t${md.name}`, color: "cyan"});
+                });
+            });
+        },
+    });
+}

@@ -32,5 +32,6 @@ async function importFromGitRemote(sdm: LocalSoftwareDeliveryMachine,
     execSync(`git clone ${remoteBase}/${org}/${repo}`,
         { cwd: orgDir });
     return addGitHooks(new GitHubRepoRef(org, repo),
-        `${orgDir}/${repo}`);
+        `${orgDir}/${repo}`,
+        sdm.sdmDir);
 }

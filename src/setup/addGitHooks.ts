@@ -4,7 +4,6 @@ import { NodeFsLocalProject } from "@atomist/automation-client/project/local/Nod
 import { appendOrCreateFileContent } from "@atomist/sdm/util/project/appendOrCreate";
 import * as fs from "fs";
 import { writeToConsole } from "../invocation/cli/support/consoleOutput";
-import { sdmBaseDirectory } from "../machine/sdmBaseDirectory";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";
 
@@ -12,12 +11,15 @@ const AtomistHookScriptName = "script/atomist-hook.sh";
  * Add Git hooks to the given repo
  * @param {RemoteRepoRef} id
  * @param {string} projectBaseDir
+ * @param sdmBaseDir base directory to install
  * @return {Promise<void>}
  */
-export async function addGitHooks(id: RemoteRepoRef, projectBaseDir: string) {
+export async function addGitHooks(id: RemoteRepoRef,
+                                  projectBaseDir: string,
+                                  sdmBaseDir: string) {
     if (fs.existsSync(`${projectBaseDir}/.git`)) {
         const p = await NodeFsLocalProject.fromExistingDirectory(id, projectBaseDir);
-        return addGitHooksToProject(p);
+        return addGitHooksToProject(p, sdmBaseDir);
     } else {
         writeToConsole({
                 message: "addGitHooks: Ignoring directory at %s as it is not a git project",
@@ -27,10 +29,9 @@ export async function addGitHooks(id: RemoteRepoRef, projectBaseDir: string) {
     }
 }
 
-export async function addGitHooksToProject(p: LocalProject) {
-    const sdmBaseDir = sdmBaseDirectory();
-    const atomistHookScriptPath = `${sdmBaseDir}/${AtomistHookScriptName}`;
-    const jsScriptPath = `${sdmBaseDir}/build/src/invocation/git/onGitHook.js`;
+export async function addGitHooksToProject(p: LocalProject, sdmBaseDir: string) {
+    const atomistHookScriptPath = `${sdmBaseDir}/node_modules/@atomist/slalom/${AtomistHookScriptName}`;
+    const jsScriptPath = `${sdmBaseDir}/node_modules/@atomist/slalom/build/src/invocation/git/onGitHook.js`;
 
     await appendOrCreateFileContent(
         {

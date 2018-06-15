@@ -1,7 +1,12 @@
 #!/usr/bin/env node
 
 // TODO pull out into config
+
+import { addShowSkills } from "./command/showSkills";
+
 process.env.ATOMIST_DISABLE_LOGGING = "true";
+
+process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
 
 import * as yargs from "yargs";
 import { localSdmInstance } from "../machine";
@@ -16,7 +21,7 @@ import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteComm
 
 /* tslint:disable */
 
-yargs.usage("Usage: $0 <command> [options]");
+yargs.usage("Usage: slalom <command> [options]");
 
 addTriggerCommand(localSdmInstance, yargs);
 addSummonDemon(localSdmInstance, yargs);
@@ -25,11 +30,13 @@ addGenerateCommand(localSdmInstance, yargs);
 addEditCommand(localSdmInstance, yargs);
 addRunCommand(localSdmInstance, yargs);
 addImportFromGitRemoteCommand(localSdmInstance, yargs);
+addShowSkills(localSdmInstance, yargs);
 
 yargs
     .epilog("Copyright Atomist 2018")
     .demandCommand(1, `Please provide a command for local SDM ${localSdmInstance.name} handling projects under ${
         localSdmInstance.configuration.repositoryOwnerParentDirectory}`)
     .help()
+    .wrap(100)
     .argv;
 

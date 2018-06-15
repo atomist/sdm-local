@@ -46,7 +46,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             if (!isFileSystemRemoteRepoRef(rr)) {
                 throw new Error(`Unexpected return from repo ref resolver: ${JSON.stringify(rr)}`);
             }
-            await addGitHooks(rr, rr.fileSystemLocation);
+            await addGitHooks(rr, rr.fileSystemLocation, this.sdmDir);
         }
     }
 
@@ -169,10 +169,16 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
     private async execGoal(project: GitProject,
                            rwlc: RunWithLogContext,
                            goal: Goal) {
-        const pli = createPushImpactListenerInvocation(rwlc, project);
+        logger.info("Executing goal %s", goal.name);
+        const pli = await createPushImpactListenerInvocation(rwlc, project);
         const goalFulfillment: GoalImplementation = await this.goalFulfillmentMapper.findFulfillmentByPush(goal, pli as any) as GoalImplementation;
         if (!goalFulfillment) {
-            throw new Error(`Error: No implementation for goal '${goal.uniqueCamelCaseName}'`);
+            // throw new Error(`Error: No implementation for goal '${goal.uniqueCamelCaseName}'`);
+            writeToConsole({
+                message: `Warning: No implementation for goal '${goal.uniqueCamelCaseName}'`,
+                color: "red",
+            });
+            return;
         }
         const sdmGoal = constructSdmGoal(rwlc.context, {
             goal,
@@ -214,7 +220,8 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
         return action(p);
     }
 
-    constructor(name: string,
+    constructor(public readonly sdmDir,
+                name: string,
                 configuration: LocalSoftwareDeliveryMachineConfiguration,
                 ...goalSetters: Array<GoalSetter | GoalSetter[]>) {
         super(name, configuration, goalSetters);

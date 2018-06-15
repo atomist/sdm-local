@@ -15,8 +15,10 @@ describe("LocalSoftwareDeliveryMachine push", () => {
     it("should expose push reaction", async () => {
         const repoOwnerDirectory = RepositoryOwnerParentDirectory;
         const sdm = new LocalSoftwareDeliveryMachine(
+            __dirname,
             "name",
-            loadConfiguration(repoOwnerDirectory, {
+            loadConfiguration(__dirname,
+                repoOwnerDirectory, {
                 mergeAutofixes: true,
                 mappedParameterResolver: ResolveNothingMappedParameterResolver,
             }),

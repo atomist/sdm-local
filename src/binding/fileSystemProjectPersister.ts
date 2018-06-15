@@ -12,7 +12,8 @@ import { addGitHooksToProject } from "../setup/addGitHooks";
  * @param {string} repositoryOwnerParentDirectory
  * @return {ProjectPersister}
  */
-export function fileSystemProjectPersister(repositoryOwnerParentDirectory: string): ProjectPersister {
+export function fileSystemProjectPersister(repositoryOwnerParentDirectory: string,
+                                           sdmBaseDir: string): ProjectPersister {
     return async (p, _, id) => {
         const baseDir = `${repositoryOwnerParentDirectory}/${id.owner}/${id.repo}`;
         logger.info("Persisting to [%s]", baseDir);
@@ -20,10 +21,10 @@ export function fileSystemProjectPersister(repositoryOwnerParentDirectory: strin
             throw new Error(`Cannot write new project to [${baseDir}] as this directory already exists`);
         }
         const createdProject = await NodeFsLocalProject.copy(p, baseDir);
-        execSync("git init", {cwd: baseDir});
-        execSync("git add .", {cwd: baseDir});
-        execSync(`git commit -a -m "Initial commit from Atomist"`, {cwd: baseDir});
-        await addGitHooksToProject(createdProject);
+        execSync("git init", { cwd: baseDir });
+        execSync("git add .", { cwd: baseDir });
+        execSync(`git commit -a -m "Initial commit from Atomist"`, { cwd: baseDir });
+        await addGitHooksToProject(createdProject, sdmBaseDir);
         return successOn(createdProject);
     };
 }
