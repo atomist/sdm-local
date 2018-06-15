@@ -19,7 +19,8 @@ if (!sdmRoot) {
 }
 
 export const RepositoryOwnerParentDirectory = process.env.SDM_PROJECTS_ROOT ||
-    failWith("Please define SDM_PROJECTS_ROOT to a directory containing git repositories, in the form of owner/repository");
+    failWith(process.env.SDM_PROJECT_ROOT ? "Please define SDM_PROJECTS_ROOT (with an S)" :
+        "Please define SDM_PROJECTS_ROOT to a directory containing git repositories, in the form of owner/repository");
 
 export const localSdmInstance = new LocalSoftwareDeliveryMachine(
     determineSdmRoot(),
