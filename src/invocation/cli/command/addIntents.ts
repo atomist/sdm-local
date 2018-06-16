@@ -40,7 +40,7 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
     if (pe.kids.length > 0) {
         nested.command(
             pe.name,
-            `Start intent ${pe.name}`,
+            `${pe.name} -> ${pe.kids.map(k => k.name).join("/")}`,
             yargs => {
                 pe.kids.forEach(kid => exposeAsCommands(sdm, kid, yargs, previous.concat(pe.name)));
                 return yargs;
@@ -52,7 +52,7 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
     } else {
         nested.command({
             command: pe.name,
-            describe: `Start intent ${intent}`,
+            describe: hi.description ,
             handler: async argv => {
                 logger.debug("Args are %j", argv);
                 return logExceptionsToConsole(() => runByIntent(sdm, intent, argv));

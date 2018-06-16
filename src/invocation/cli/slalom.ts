@@ -38,5 +38,6 @@ yargs
     .wrap(100)
     .strict()
     .completion()
+    .version()
     .argv;
 
