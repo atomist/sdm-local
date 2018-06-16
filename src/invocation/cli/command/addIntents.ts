@@ -1,9 +1,10 @@
 import { HandleCommand, logger } from "@atomist/automation-client";
+import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import * as _ from "lodash";
 import { Argv } from "yargs";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
+import { PathElement, toPaths } from "../../../util/PathElement";
 import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput";
-import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 
 export function addListIntents(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     yargs.command({
@@ -26,7 +27,7 @@ export function addCommandsByName(sdm: LocalSoftwareDeliveryMachine, yargs: Argv
             commandNames.forEach(command => args.command({
                 command,
                 handler: async argv => {
-                    return logExceptionsToConsole(() => runByCommandName(sdm, command, argv as any));
+                    return logExceptionsToConsole(() => runByCommandName(sdm, command, argv));
                 },
             }));
             return args;
@@ -72,18 +73,7 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
         });
         hi.parameters
             .forEach(p => {
-                let nameToUse;
-                switch (p.name) {
-                    case "target.owner":
-                        nameToUse = "owner";
-                        break;
-                    case "target.repo" :
-                        nameToUse = "repo";
-                        break;
-                    default:
-                        nameToUse = p.name;
-                        break;
-                }
+                const nameToUse = p.name.replace(".", "-");
                 next.option(nameToUse, {
                     required: p.required && !paramsInstance[p.name],
                 });
@@ -92,7 +82,8 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
 }
 
 async function runByIntent(sdm: LocalSoftwareDeliveryMachine,
-                           intent: string, command: { owner: string, repo: string }): Promise<any> {
+                           intent: string,
+                           command: any): Promise<any> {
     writeToConsole({ message: `Recognized intent "${intent}"...`, color: "cyan" });
     const hm = sdm.commandsMetadata.find(h => !!h.intent && h.intent.includes(intent));
     if (!hm) {
@@ -104,7 +95,8 @@ async function runByIntent(sdm: LocalSoftwareDeliveryMachine,
 }
 
 async function runByCommandName(sdm: LocalSoftwareDeliveryMachine,
-                                name: string, command: { owner: string, repo: string }): Promise<any> {
+                                name: string,
+                                command: any): Promise<any> {
     const hm = sdm.commandsMetadata.find(h => h.name === name);
     if (!hm) {
         writeToConsole(`No command with name [${name}]: Known command names are \n${sdm.commandsMetadata
@@ -118,29 +110,9 @@ async function runCommand(sdm: LocalSoftwareDeliveryMachine,
                           hm: CommandHandlerMetadata,
                           command: { owner: string, repo: string }): Promise<any> {
     const extraArgs = Object.getOwnPropertyNames(command)
-        .map(name => ({ name, value: command[name] }));
+        .map(name => ({ name: name.replace("-", "."), value: command[name] }));
     const args = [
-        { name: "target.owner", value: command.owner },
-        { name: "target.repo", value: command.repo },
         { name: "github://user_token?scopes=repo,user:email,read:user", value: null },
     ].concat(extraArgs);
     return sdm.executeCommand({ name: hm.name, args });
-}
-
-export interface PathElement {
-    name: string;
-    kids: PathElement[];
-}
-
-export function toPaths(arr: string[][]): PathElement[] {
-    if (arr.length === 0) {
-        return [];
-    }
-    const uniq0 = _.uniq(arr.map(a => a[0]));
-    return uniq0.map(name => ({
-        name,
-        kids: toPaths(
-            arr.filter(a => a.length > 1 && a[0] === name)
-                .map(a => a.slice(1))),
-    }));
 }

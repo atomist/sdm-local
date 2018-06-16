@@ -1,5 +1,5 @@
 import * as assert from "power-assert";
-import { toPaths } from "../../src/invocation/cli/command/addIntents";
+import { toPaths } from "../../src/util/PathElement";
 
 describe("pathElement", () => {
 
