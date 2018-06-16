@@ -12,6 +12,9 @@ const sdmRoot = determineSdmRoot();
 
 if (!sdmRoot) {
     writeToConsole({ message: `Cannot determine SDM root in ${determineCwd()}`, color: "red" });
+    if (determineCwd().endsWith("sdm")) {
+        writeToConsole("You might need to `npm link @atomist/slalom`");
+    }
     process.exit(1);
 }
 
