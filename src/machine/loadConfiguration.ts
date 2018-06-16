@@ -74,7 +74,7 @@ function changeToPushToAtomistBranch(repositoryOwnerParentDirectory: string, aut
             try {
                 // First try to push this branch. If it's the checked out branch
                 // We'll get an error
-                writeToConsole({ message: `Pushing to branch ${p.branch}`, color: "yellow" });
+                writeToConsole({ message: `Pushing to branch ${p.branch} on ${p.id.owner}:${p.id.repo}`, color: "yellow" });
                 execSync(`git push --force --set-upstream origin ${p.branch}`, {
                     cwd: p.baseDir,
                     stdio: "ignore",
