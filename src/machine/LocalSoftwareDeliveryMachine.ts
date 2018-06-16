@@ -1,4 +1,5 @@
 import { HandleCommand, HandleEvent, HandlerContext, logger } from "@atomist/automation-client";
+import { successOn } from "@atomist/automation-client/action/ActionResult";
 import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
@@ -20,7 +21,6 @@ import { writeToConsole } from "../invocation/cli/support/consoleOutput";
 import { addGitHooks, removeGitHooks } from "../setup/addGitHooks";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 import { invokeCommandHandlerWithFreshParametersInstance } from "./parameterPopulation";
-import { successOn } from "@atomist/automation-client/action/ActionResult";
 
 /**
  * Local SDM implementation, designed to be driven by CLI and git hooks.

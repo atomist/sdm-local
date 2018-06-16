@@ -1,6 +1,6 @@
 import { Argv } from "yargs";
-import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
+import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput";
 
 export function addShowSkills(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     yargs.command({

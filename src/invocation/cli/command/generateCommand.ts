@@ -1,5 +1,4 @@
 import { logger } from "@atomist/automation-client";
-import { Arg } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import { GeneratorTag } from "@atomist/sdm/api-helper/machine/commandRegistrations";
 import { commandHandlersWithTag } from "@atomist/sdm/pack/info/support/commandSearch";
 import { Argv } from "yargs";
