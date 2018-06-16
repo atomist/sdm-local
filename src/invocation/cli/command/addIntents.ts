@@ -55,7 +55,6 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
             },
         });
         hi.parameters
-            .filter(p => p.required && !paramsInstance[p.name])
             .forEach(p => {
                 let nameToUse;
                 switch (p.name) {
@@ -70,7 +69,7 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
                         break;
                 }
                 next.option(nameToUse, {
-                    required: true,
+                    required: p.required && !paramsInstance[p.name],
                 });
             });
     }

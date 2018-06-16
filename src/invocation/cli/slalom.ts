@@ -41,5 +41,7 @@ yargs
         localSdmInstance.configuration.repositoryOwnerParentDirectory}`)
     .help()
     .wrap(100)
+    .strict()
+    .completion()
     .argv;
 
