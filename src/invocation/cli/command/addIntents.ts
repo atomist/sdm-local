@@ -3,6 +3,7 @@ import * as _ from "lodash";
 import { Argv } from "yargs";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput";
+import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 
 export function addListIntents(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     yargs.command({
@@ -15,6 +16,21 @@ export function addListIntents(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
             });
         },
     });
+}
+
+export function addCommandsByName(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
+    const commandNames = sdm.commandsMetadata
+        .map(h => h.name);
+    yargs.command("run", "Run a command",
+        args => {
+            commandNames.forEach(command => args.command({
+                command,
+                handler: async argv => {
+                    return logExceptionsToConsole(() => runByCommandName(sdm, command, argv as any));
+                },
+            }));
+            return args;
+        });
 }
 
 export function addIntents(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
@@ -42,7 +58,7 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
             },
             !!hi ? async argv => {
                 logger.debug("Args are %j", argv);
-                return logExceptionsToConsole(() => runIntent(sdm, intent, argv as any));
+                return logExceptionsToConsole(() => runByIntent(sdm, intent, argv as any));
             } : undefined);
     } else {
         const paramsInstance = (hi as any as HandleCommand).freshParametersInstance();
@@ -51,7 +67,7 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
             describe: `Start intent ${intent}`,
             handler: async argv => {
                 logger.debug("Args are %j", argv);
-                return logExceptionsToConsole(() => runIntent(sdm, intent, argv));
+                return logExceptionsToConsole(() => runByIntent(sdm, intent, argv));
             },
         });
         hi.parameters
@@ -75,8 +91,8 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
     }
 }
 
-async function runIntent(sdm: LocalSoftwareDeliveryMachine,
-                         intent: string, command: { owner: string, repo: string }): Promise<any> {
+async function runByIntent(sdm: LocalSoftwareDeliveryMachine,
+                           intent: string, command: { owner: string, repo: string }): Promise<any> {
     writeToConsole({ message: `Recognized intent "${intent}"...`, color: "cyan" });
     const hm = sdm.commandsMetadata.find(h => !!h.intent && h.intent.includes(intent));
     if (!hm) {
@@ -84,7 +100,23 @@ async function runIntent(sdm: LocalSoftwareDeliveryMachine,
             .map(m => "\t" + m.intent).sort().join("\n")}`);
         process.exit(1);
     }
+    return runCommand(sdm, hm, command);
+}
 
+async function runByCommandName(sdm: LocalSoftwareDeliveryMachine,
+                                name: string, command: { owner: string, repo: string }): Promise<any> {
+    const hm = sdm.commandsMetadata.find(h => h.name === name);
+    if (!hm) {
+        writeToConsole(`No command with name [${name}]: Known command names are \n${sdm.commandsMetadata
+            .map(m => "\t" + m.name).sort().join("\n")}`);
+        process.exit(1);
+    }
+    return runCommand(sdm, hm, command);
+}
+
+async function runCommand(sdm: LocalSoftwareDeliveryMachine,
+                          hm: CommandHandlerMetadata,
+                          command: { owner: string, repo: string }): Promise<any> {
     const extraArgs = Object.getOwnPropertyNames(command)
         .map(name => ({ name, value: command[name] }));
     const args = [
