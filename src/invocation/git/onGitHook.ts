@@ -1,4 +1,5 @@
 process.env.ATOMIST_DISABLE_LOGGING = "true";
+process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
 
 import { logExceptionsToConsole, setCommandLineLogging } from "../cli/support/consoleOutput";
 
