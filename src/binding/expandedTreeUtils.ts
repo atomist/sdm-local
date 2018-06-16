@@ -1,3 +1,5 @@
+import * as fs from "fs";
+
 /**
  * Return the directory in our expanded structure for the given directory
  * @param {string} repositoryOwnerParentDirectory
@@ -41,7 +43,33 @@ export function withinExpandedTree(repositoryOwnerParentDirectory: string,
     return !!owner && !!repo;
 }
 
-export function determineCwd() {
+/**
+ * Where are we running? Respecting symlinks
+ * @return {string}
+ */
+export function determineCwd(): string {
     // Be sure to respect symlinks
     return process.env.PWD;
+}
+
+/**
+ * What's the current SDM root?
+ * @return {string}
+ */
+export function determineSdmRoot(): string | undefined {
+    const currentDir = determineCwd();
+    if (fs.existsSync(`${currentDir}/node_modules/@atomist/slalom/package.json`)) {
+        // We're in an SDM directory
+        return determineCwd();
+    }
+    try {
+        // Look for git hook
+        const hookContent = fs.readFileSync(`${currentDir}/.git/hooks/post-commit`).toString();
+
+        // TODO this is fragile as it doesn't allow content before the Atomist path
+        const sdmRoot = hookContent.slice(0, hookContent.indexOf("node_modules")).trim();
+        return sdmRoot;
+    } catch (err) {
+        return undefined;
+    }
 }

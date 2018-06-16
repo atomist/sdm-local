@@ -9,7 +9,8 @@
     "url": "https://github.com/atomist/slalom.git"
   },
   "bin": {
-    "slalom": "./build/src/invocation/cli/cliEntry.js"
+    "slalom": "./build/src/invocation/cli/dispatcher.js",
+    "slalom-itself": "./build/src/invocation/cli/slalom.js"
   },
   "keywords": [
     "atomist",
@@ -21,13 +22,16 @@
     "url": "https://github.com/atomist/slalom/issues"
   },
   "dependencies": {
-    "@atomist/automation-client": "https://r.atomist.com/HJV-CGrbYx7",
-    "@atomist/sdm": "https://r.atomist.com/SJ7gxRb-9xX",
+    "@atomist/automation-client": "https://r.atomist.com/HkV5LonCx7",
     "@types/yargs": "^11.0.0",
     "express": "^4.16.3",
     "marked-terminal": "^3.0.0"
   },
+  "peerDependencies": {
+    "@atomist/sdm": "^0.2.1"
+  },
   "devDependencies": {
+    "@atomist/sdm": "^0.2.2",
     "@types/lodash": "^4.14.109",
     "@types/mocha": "^2.2.48",
     "@types/node": "^8.10.17",

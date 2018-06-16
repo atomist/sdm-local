@@ -32,8 +32,8 @@ export async function logExceptionsToConsole(what: () => Promise<any>) {
     try {
         await what();
     } catch (err) {
-        writeToConsole({ message: `Error: ${err.message}`, color: "red" });
-        logger.error(`Error: ${err.message}`);
+        writeToConsole({ message: `Error: ${err.message} - \n${err.stack}`, color: "red" });
+        logger.error(`Error: ${err.message} - ${err.stack}`);
         process.exit(1);
     }
 }

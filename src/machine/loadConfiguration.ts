@@ -15,6 +15,7 @@ import { writeToConsole } from "../invocation/cli/support/consoleOutput";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 
 export function loadConfiguration(
+    sdmDir: string,
     repositoryOwnerParentDirectory: string, opts: {
         mergeAutofixes: boolean,
         mappedParameterResolver: MappedParameterResolver,
@@ -30,7 +31,7 @@ export function loadConfiguration(
             credentialsResolver: EnvironmentTokenCredentialsResolver,
             repoRefResolver,
             repoFinder: expandedDirectoryRepoFinder(repositoryOwnerParentDirectory),
-            projectPersister: fileSystemProjectPersister(repositoryOwnerParentDirectory),
+            projectPersister: fileSystemProjectPersister(repositoryOwnerParentDirectory, sdmDir),
             targets: new LocalTargetsParams(repositoryOwnerParentDirectory),
         },
         repositoryOwnerParentDirectory,
@@ -73,8 +74,11 @@ function changeToPushToAtomistBranch(repositoryOwnerParentDirectory: string, aut
             try {
                 // First try to push this branch. If it's the checked out branch
                 // We'll get an error
-                writeToConsole({ message: `Pushing to branch ${p.branch}`, color: "yellow" });
-                execSync(`git push --force --set-upstream origin ${p.branch}`, { cwd: p.baseDir });
+                writeToConsole({ message: `Pushing to branch ${p.branch} on ${p.id.owner}:${p.id.repo}`, color: "yellow" });
+                execSync(`git push --force --set-upstream origin ${p.branch}`, {
+                    cwd: p.baseDir,
+                    stdio: "ignore",
+                });
             } catch (err) {
                 // If this throws an exception it's because we can't push to the checked out branch.
                 // Autofix will attempt to do this.
