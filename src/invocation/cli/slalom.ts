@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
 // TODO pull out into config
-import { addCommandsByName, addIntents, addListIntents } from "./command/addIntents";
 
 process.env.ATOMIST_DISABLE_LOGGING = "true";
 
 process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
+
+import { addCommandsByName, addIntents } from "./command/addIntents";
 
 import { addShowSkills } from "./command/showSkills";
 
@@ -25,7 +26,6 @@ addTriggerCommand(localSdmInstance, yargs);
 addSummonDemon(localSdmInstance, yargs);
 addGitHooksCommands(localSdmInstance, yargs);
 addCommandsByName(localSdmInstance, yargs);
-addListIntents(localSdmInstance, yargs);
 addIntents(localSdmInstance, yargs);
 addImportFromGitRemoteCommand(localSdmInstance, yargs);
 addShowSkills(localSdmInstance, yargs);

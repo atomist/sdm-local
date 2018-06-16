@@ -6,30 +6,18 @@ import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeli
 import { PathElement, toPaths } from "../../../util/PathElement";
 import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput";
 
-export function addListIntents(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
-    yargs.command({
-        command: "list-intents",
-        describe: `List intents`,
-        handler: async argv => {
-            writeToConsole("Intents are:\n");
-            sdm.commandsMetadata.forEach(hm => {
-                writeToConsole({ message: "\t" + hm.intent, color: "cyan" });
-            });
-        },
-    });
-}
-
 export function addCommandsByName(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
-    const commandNames = sdm.commandsMetadata
-        .map(h => h.name);
     yargs.command("run", "Run a command",
         args => {
-            commandNames.forEach(command => args.command({
-                command,
-                handler: async argv => {
-                    return logExceptionsToConsole(() => runByCommandName(sdm, command, argv));
-                },
-            }));
+            sdm.commandsMetadata.forEach(hi => {
+                args.command({
+                    command: hi.name,
+                    handler: async argv => {
+                        return logExceptionsToConsole(() => runByCommandName(sdm, hi.name, argv));
+                    },
+                    builder: yargs => exposeParameters(hi, yargs),
+                });
+            });
             return args;
         });
 }
@@ -62,23 +50,33 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
                 return logExceptionsToConsole(() => runByIntent(sdm, intent, argv as any));
             } : undefined);
     } else {
-        const paramsInstance = (hi as any as HandleCommand).freshParametersInstance();
-        const next = nested.command({
+        nested.command({
             command: pe.name,
             describe: `Start intent ${intent}`,
             handler: async argv => {
                 logger.debug("Args are %j", argv);
                 return logExceptionsToConsole(() => runByIntent(sdm, intent, argv));
             },
+            builder: yargs => exposeParameters(hi, yargs),
         });
-        hi.parameters
-            .forEach(p => {
-                const nameToUse = p.name.replace(".", "-");
-                next.option(nameToUse, {
-                    required: p.required && !paramsInstance[p.name],
-                });
-            });
     }
+}
+
+/**
+ * Expose the parameters for this command
+ * @param {CommandHandlerMetadata} hi
+ * @param {yargs.Argv} args
+ */
+function exposeParameters(hi: CommandHandlerMetadata, args: Argv) {
+    const paramsInstance = (hi as any as HandleCommand).freshParametersInstance();
+    hi.parameters
+        .forEach(p => {
+            const nameToUse = p.name.replace(".", "-");
+            args.option(nameToUse, {
+                required: p.required && !paramsInstance[p.name],
+            });
+        });
+    return args;
 }
 
 async function runByIntent(sdm: LocalSoftwareDeliveryMachine,
