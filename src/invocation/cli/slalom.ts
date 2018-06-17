@@ -11,7 +11,7 @@ import { addCommandsByName, addIntents } from "./command/addIntents";
 import { addShowSkills } from "./command/showSkills";
 
 import * as yargs from "yargs";
-import { localSdmInstance } from "../machine";
+import { localSdmInstance } from "../machineLoader";
 
 import { addGitHooksCommands } from "./command/addGitHooksCommands";
 import { addSummonDemon } from "./command/addSummonDemon";

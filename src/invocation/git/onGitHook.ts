@@ -6,7 +6,7 @@ import { logExceptionsToConsole, setCommandLineLogging } from "../cli/support/co
 setCommandLineLogging();
 
 import { logger } from "@atomist/automation-client";
-import { localSdmInstance } from "../machine";
+import { localSdmInstance } from "../machineLoader";
 
 /**
  * Usage gitHookTrigger <event> <directory>

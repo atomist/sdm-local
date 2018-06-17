@@ -6,9 +6,13 @@ import { TypedFingerprint } from "@atomist/sdm/code/fingerprint/TypedFingerprint
 import { WellKnownGoals } from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
 import * as assert from "power-assert";
 import { AddressChannelsFingerprintListener } from "../../src/invocation/cli/io/addressChannelsFingerprintListener";
-import { RepositoryOwnerParentDirectory } from "../../src/invocation/machine";
 import { loadConfiguration, ResolveNothingMappedParameterResolver } from "../../src/machine/loadConfiguration";
 import { LocalSoftwareDeliveryMachine } from "../../src/machine/LocalSoftwareDeliveryMachine";
+import { failWith } from "../util/failWith";
+
+export const RepositoryOwnerParentDirectory = process.env.SDM_PROJECTS_ROOT ||
+    failWith(process.env.SDM_PROJECT_ROOT ? "Please define SDM_PROJECTS_ROOT (with an S)" :
+        "Please define SDM_PROJECTS_ROOT to a directory containing git repositories, in the form of owner/repository");
 
 describe("LocalSoftwareDeliveryMachine push", () => {
 

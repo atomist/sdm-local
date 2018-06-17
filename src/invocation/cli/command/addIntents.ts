@@ -15,7 +15,7 @@ export function addCommandsByName(sdm: LocalSoftwareDeliveryMachine, yargs: Argv
                     handler: async argv => {
                         return logExceptionsToConsole(() => runByCommandName(sdm, hi.name, argv));
                     },
-                    builder: yargs => exposeParameters(hi, yargs),
+                    builder: argv => exposeParameters(hi, argv),
                 });
             });
             return args;
