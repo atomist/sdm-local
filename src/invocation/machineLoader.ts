@@ -19,7 +19,8 @@ const modulePath = `${sdmRoot}/build/src/local.js`;
 
 logger.info("Loading config from " + modulePath);
 
-// TODO different machine name options
+// TODO different machine name options - as command line argument (how that early)
+// or in env variable?
 
 // tslint:disable-next-line:no-var-requires
 const config: LocalMachineConfig = require(modulePath).Config;

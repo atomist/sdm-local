@@ -218,7 +218,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
                 message: `✖︎︎ ${goal.successDescription}`,
                 color: "red",
             });
-            throw new Error(`Goal execution failed`);
+            throw new Error(`Goal execution failed: ${goalResult.message}`);
         } else {
             writeToConsole({
                 message: `✔ ${goal.successDescription}`,

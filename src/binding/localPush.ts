@@ -2,10 +2,11 @@ import { HandlerContext } from "@atomist/automation-client";
 import { EventIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, RunWithLogContext, StatusForExecuteGoal } from "@atomist/sdm";
+import { CoreRepoFieldsAndChannels, OnPush, OnPushToAnyBranch, RunWithLogContext, StatusForExecuteGoal } from "@atomist/sdm";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { messageClientAddressChannels } from "../invocation/cli/io/messageClientAddressChannels";
 import { LocalHandlerContext } from "./LocalHandlerContext";
+import Commits = OnPush.Commits;
 
 function repoFields(project: GitProject): CoreRepoFieldsAndChannels.Fragment {
     return {
@@ -32,20 +33,19 @@ function repoFields(project: GitProject): CoreRepoFieldsAndChannels.Fragment {
 async function pushFromLastCommit(project: GitProject): Promise<OnPushToAnyBranch.Push> {
     const status = await project.gitStatus();
     const repo = repoFields(project);
+    const lastCommit: Commits = {
+        // TODO fill in commit message
+        message: "Should fill in message!",
+        sha: status.sha,
+    };
     return {
         id: new Date().getTime() + "_",
         branch: project.branch,
         repo,
         commits: [
-            {
-                sha: status.sha,
-            },
+            lastCommit,
         ],
-        after: {
-            // TODO take from the commit
-            sha: status.sha,
-            // TODO message from the commit
-        },
+        after: lastCommit,
     };
 }
 
@@ -56,7 +56,7 @@ async function pushFromLastCommit(project: GitProject): Promise<OnPushToAnyBranc
 function coreInvocation(context: HandlerContext) {
     return {
         context,
-        credentials: {token: "ABCD"},
+        credentials: { token: "ABCD" },
     };
 }
 
