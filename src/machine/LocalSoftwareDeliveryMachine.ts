@@ -215,7 +215,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             sdmGoal, goal, lastLinesLogInterpreter(goal.name));
         if (goalResult.code !== 0) {
             writeToConsole({
-                message: `✖︎︎ ${goal.successDescription}`,
+                message: `✖︎︎ ${goal.failureDescription}`,
                 color: "red",
             });
             throw new Error(`Goal execution failed: ${goalResult.message}`);
