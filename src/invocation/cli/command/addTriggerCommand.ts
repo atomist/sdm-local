@@ -20,12 +20,11 @@ export function addTriggerCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv
 async function trigger(sdm: LocalSoftwareDeliveryMachine, event: GitHookEvent = "postCommit") {
     const currentDir = determineCwd();
     if (withinExpandedTree(sdm.configuration.repositoryOwnerParentDirectory, currentDir)) {
-        const p = GitCommandGitProject.fromBaseDir(FileSystemRemoteRepoRef.fromDirectory(
-            sdm.configuration.repositoryOwnerParentDirectory,
-            currentDir,
-            "master",
-            undefined,
-            ),
+        const p = GitCommandGitProject.fromBaseDir(FileSystemRemoteRepoRef.fromDirectory({
+                repositoryOwnerParentDirectory: sdm.configuration.repositoryOwnerParentDirectory,
+                baseDir: currentDir,
+                branch: "master",
+            }),
             currentDir, null, () => null);
         const { branch, sha } = await p.gitStatus();
         return sdm[event](currentDir, branch, sha);

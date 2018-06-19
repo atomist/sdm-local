@@ -101,7 +101,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
                     },
                 );
                 if (!goals) {
-                    writeToConsole({ message: "No goals set for push", color: "yellow"});
+                    writeToConsole({ message: "No goals set for push", color: "yellow" });
                     return;
                 }
                 return this.executeGoals(goals, p, rwlc);
@@ -232,8 +232,10 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
                                                           sha: string,
                                                           action: (p: GitProject) => Promise<any>) {
         const p = GitCommandGitProject.fromBaseDir(
-            FileSystemRemoteRepoRef.fromDirectory(this.configuration.repositoryOwnerParentDirectory,
-                baseDir, branch, sha),
+            FileSystemRemoteRepoRef.fromDirectory({
+                repositoryOwnerParentDirectory: this.configuration.repositoryOwnerParentDirectory,
+                baseDir, branch, sha,
+            }),
             baseDir,
             {},
             () => null);

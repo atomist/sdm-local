@@ -22,7 +22,7 @@ export function expandedDirectoryRepoFinder(repositoryOwnerParentDirectory: stri
                 }),
             );
         return eligibleDirectories.map(dir =>
-            FileSystemRemoteRepoRef.fromDirectory(repositoryOwnerParentDirectory,
-                dir, "master", undefined));
+            FileSystemRemoteRepoRef.fromDirectory({repositoryOwnerParentDirectory,
+                baseDir: dir, branch: "master"}));
     };
 }

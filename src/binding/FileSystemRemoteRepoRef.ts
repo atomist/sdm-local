@@ -12,15 +12,22 @@ import { parseOwnerAndRepo } from "./expandedTreeUtils";
  */
 export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
 
-    public static fromDirectory(repositoryOwnerParentDirectory: string,
-                                baseDir: string,
-                                branch: string,
-                                sha: string): RemoteRepoRef {
-        const { owner, repo } = parseOwnerAndRepo(repositoryOwnerParentDirectory, baseDir);
+    public static fromDirectory(opts: {
+        repositoryOwnerParentDirectory: string,
+        baseDir: string,
+        branch: string,
+        sha?: string,
+    }): RemoteRepoRef {
+        const { owner, repo } = parseOwnerAndRepo(opts.repositoryOwnerParentDirectory, opts.baseDir);
         if (!(!!owner && !!repo)) {
-            throw new Error(`Cannot resolve directory ${baseDir}`);
+            throw new Error(`Cannot resolve directory ${opts.baseDir}`);
         }
-        return new FileSystemRemoteRepoRef(repositoryOwnerParentDirectory, owner, repo, branch, sha);
+        return new FileSystemRemoteRepoRef({
+            repositoryOwnerParentDirectory: opts.repositoryOwnerParentDirectory,
+            branch: opts.branch,
+            sha: opts.sha,
+            owner, repo,
+        });
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
@@ -52,14 +59,24 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
         return `${this.repositoryOwnerParentDirectory}/${this.owner}/${this.repo}`;
     }
 
-    constructor(private readonly repositoryOwnerParentDirectory,
-                owner: string,
-                repo: string,
-                public readonly branch: string,
-                sha: string) {
+    get repositoryOwnerParentDirectory(): string {
+        return this.opts.repositoryOwnerParentDirectory;
+    }
+
+    get branch(): string {
+        return this.opts.branch;
+    }
+
+    constructor(private readonly opts: {
+        repositoryOwnerParentDirectory: string,
+        owner: string,
+        repo: string,
+        branch: string,
+        sha: string,
+    }) {
         super(null, "http://not.a.real.remote",
             "http://not.a.real.apiBase",
-            owner, repo, sha);
+            opts.owner, opts.repo, opts.sha);
     }
 
 }
