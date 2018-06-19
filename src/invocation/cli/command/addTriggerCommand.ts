@@ -23,7 +23,6 @@ async function trigger(sdm: LocalSoftwareDeliveryMachine, event: GitHookEvent = 
         const p = GitCommandGitProject.fromBaseDir(FileSystemRemoteRepoRef.fromDirectory({
                 repositoryOwnerParentDirectory: sdm.configuration.repositoryOwnerParentDirectory,
                 baseDir: currentDir,
-                branch: "master",
             }),
             currentDir, null, () => null);
         const { branch, sha } = await p.gitStatus();

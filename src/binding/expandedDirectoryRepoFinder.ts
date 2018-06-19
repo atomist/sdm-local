@@ -23,6 +23,9 @@ export function expandedDirectoryRepoFinder(repositoryOwnerParentDirectory: stri
             );
         return eligibleDirectories.map(dir =>
             FileSystemRemoteRepoRef.fromDirectory({repositoryOwnerParentDirectory,
-                baseDir: dir, branch: "master"}));
+                baseDir: dir,
+                // TODO interesting question: Should this be checked out directory, or master
+                // branch: "master"
+                }));
     };
 }

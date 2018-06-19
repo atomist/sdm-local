@@ -40,7 +40,7 @@ async function pushFromLastCommit(project: GitProject): Promise<OnPushToAnyBranc
     };
     return {
         id: new Date().getTime() + "_",
-        branch: project.branch,
+        branch: project.id.branch,
         repo,
         commits: [
             lastCommit,

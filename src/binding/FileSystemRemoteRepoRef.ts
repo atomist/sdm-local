@@ -15,7 +15,7 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
     public static fromDirectory(opts: {
         repositoryOwnerParentDirectory: string,
         baseDir: string,
-        branch: string,
+        branch?: string,
         sha?: string,
     }): RemoteRepoRef {
         const { owner, repo } = parseOwnerAndRepo(opts.repositoryOwnerParentDirectory, opts.baseDir);
