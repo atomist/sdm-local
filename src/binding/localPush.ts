@@ -7,6 +7,7 @@ import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressL
 import { messageClientAddressChannels } from "../invocation/cli/io/messageClientAddressChannels";
 import { LocalHandlerContext } from "./LocalHandlerContext";
 import Commits = OnPush.Commits;
+import { lastCommitMessage } from "../util/lastMessage";
 
 function repoFields(project: GitProject): CoreRepoFieldsAndChannels.Fragment {
     return {
@@ -34,8 +35,7 @@ async function pushFromLastCommit(project: GitProject): Promise<OnPushToAnyBranc
     const status = await project.gitStatus();
     const repo = repoFields(project);
     const lastCommit: Commits = {
-        // TODO fill in commit message
-        message: "Should fill in message!",
+        message: await lastCommitMessage(project),
         sha: status.sha,
     };
     return {
