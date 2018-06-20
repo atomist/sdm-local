@@ -67,6 +67,11 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
         return this.opts.branch;
     }
 
+    // TODO this should go. It's questionable code in the SDM deploy implementation that hits it
+    set branch(branch: string) {
+        this.opts.branch = branch;
+    }
+
     constructor(private readonly opts: {
         repositoryOwnerParentDirectory: string,
         owner: string,
