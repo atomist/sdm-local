@@ -12,7 +12,12 @@ export interface LocalMachineConfig extends Partial<LocalSoftwareDeliveryMachine
     repositoryOwnerParentDirectory: string;
 
     /**
-     * Functino to initialize machine
+     * Override local seeds?
+     */
+    preferLocalSeeds: boolean;
+
+    /**
+     * Function to initialize machine
      */
     init: ConfigureMachine;
 

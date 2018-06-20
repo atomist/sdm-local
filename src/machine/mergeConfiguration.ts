@@ -13,29 +13,29 @@ import { LocalTargetsParams } from "../binding/LocalTargetsParams";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
 import { writeToConsole } from "../invocation/cli/support/consoleOutput";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
+import { LocalMachineConfig } from "./LocalMachineConfig";
+import { CliMappedParameterResolver } from "../invocation/cli/support/CliMappedParameterResolver";
 
-export function loadConfiguration(
+export function mergeConfiguration(
     sdmDir: string,
-    repositoryOwnerParentDirectory: string, opts: {
-        mergeAutofixes: boolean,
-        mappedParameterResolver: MappedParameterResolver,
-    }): LocalSoftwareDeliveryMachineConfiguration {
-    const repoRefResolver = new LocalRepoRefResolver(repositoryOwnerParentDirectory);
+    userConfig: LocalMachineConfig): LocalSoftwareDeliveryMachineConfiguration {
+    const repoRefResolver = new LocalRepoRefResolver(userConfig.repositoryOwnerParentDirectory);
     return {
         sdm: {
             artifactStore: new EphemeralLocalArtifactStore(),
             projectLoader: new MonkeyingProjectLoader(
                 new CachingProjectLoader(),
-                changeToPushToAtomistBranch(repositoryOwnerParentDirectory, opts.mergeAutofixes)),
+                changeToPushToAtomistBranch(userConfig.repositoryOwnerParentDirectory, userConfig.mergeAutofixes)),
             logFactory: async (context, goal) => new LoggingProgressLog(goal.name),
             credentialsResolver: EnvironmentTokenCredentialsResolver,
             repoRefResolver,
-            repoFinder: expandedDirectoryRepoFinder(repositoryOwnerParentDirectory),
-            projectPersister: fileSystemProjectPersister(repositoryOwnerParentDirectory, sdmDir),
-            targets: new LocalTargetsParams(repositoryOwnerParentDirectory),
+            repoFinder: expandedDirectoryRepoFinder(userConfig.repositoryOwnerParentDirectory),
+            projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory, sdmDir),
+            targets: new LocalTargetsParams(userConfig.repositoryOwnerParentDirectory),
         },
-        repositoryOwnerParentDirectory,
-        ...opts,
+        mappedParameterResolver: new CliMappedParameterResolver(userConfig.repositoryOwnerParentDirectory),
+        mergeAutofixes: true,
+        ...userConfig,
     };
 }
 

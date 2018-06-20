@@ -11,6 +11,11 @@ export interface LocalSoftwareDeliveryMachineConfiguration extends SoftwareDeliv
     mappedParameterResolver: MappedParameterResolver;
 
     /**
+     * Override local seeds?
+     */
+    preferLocalSeeds: boolean;
+
+    /**
      * Whether to merge autofixes automatically
      */
     mergeAutofixes: boolean;

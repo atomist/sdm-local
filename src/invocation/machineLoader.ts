@@ -3,7 +3,7 @@ import { writeToConsole } from "./cli/support/consoleOutput";
 import { logger } from "@atomist/automation-client";
 import { WellKnownGoals } from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
 import { determineCwd, determineSdmRoot } from "../binding/expandedTreeUtils";
-import { loadConfiguration } from "../machine/loadConfiguration";
+import { mergeConfiguration } from "../machine/mergeConfiguration";
 import { LocalMachineConfig } from "../machine/LocalMachineConfig";
 import { LocalSoftwareDeliveryMachine } from "../machine/LocalSoftwareDeliveryMachine";
 import { CliMappedParameterResolver } from "./cli/support/CliMappedParameterResolver";
@@ -30,17 +30,9 @@ const config: LocalMachineConfig = require(modulePath).Config;
 export const localSdmInstance = new LocalSoftwareDeliveryMachine(
     sdmRoot,
     config.name,
-    {
-        ...loadConfiguration(
-            sdmRoot,
-            config.repositoryOwnerParentDirectory,
-            {
-                mergeAutofixes: true,
-                mappedParameterResolver: new CliMappedParameterResolver(config.repositoryOwnerParentDirectory),
-            },
-        ),
-        ...config,
-    });
+    mergeConfiguration(
+        sdmRoot,
+        config));
 localSdmInstance.addExtensionPacks(WellKnownGoals);
 
 config.init(localSdmInstance);
