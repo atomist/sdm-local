@@ -1,5 +1,7 @@
 import * as fs from "fs";
 
+import * as _ from "lodash";
+
 /**
  * Return the directory in our expanded structure for the given directory
  * @param {string} repositoryOwnerParentDirectory
@@ -57,19 +59,40 @@ export function determineCwd(): string {
  * @return {string}
  */
 export function determineSdmRoot(): string | undefined {
-    const currentDir = determineCwd();
-    if (fs.existsSync(`${currentDir}/node_modules/@atomist/slalom/package.json`)) {
+    let maybeSdmDir = determineCwd();
+    if (isSdmDir(maybeSdmDir)) {
         // We're in an SDM directory
-        return determineCwd();
+        return maybeSdmDir;
     }
+
+    // Check out directories 2 down
+    const grandkids: string[] = _.flatten(fs.readdirSync(maybeSdmDir)
+        .map(subdir => `${maybeSdmDir}/${subdir}`)
+        .filter(kid => fs.statSync(kid).isDirectory())
+        .map(kid => ({ kid, grandkids: fs.readdirSync(kid).map(gk => `${kid}/${gk}`).filter(g => fs.statSync(g).isDirectory()) }))
+        .map(path => path.grandkids),
+    );
+
+    const oneToUse = grandkids.find(isCheckedOutDir);
+    if (!!oneToUse) {
+        maybeSdmDir = oneToUse;
+    }
+
     try {
         // Look for git hook
-        const hookContent = fs.readFileSync(`${currentDir}/.git/hooks/post-commit`).toString();
-
+        const hookContent = fs.readFileSync(`${maybeSdmDir}/.git/hooks/post-commit`).toString();
         // TODO this is fragile as it doesn't allow content before the Atomist path
         const sdmRoot = hookContent.slice(0, hookContent.indexOf("node_modules")).trim();
         return sdmRoot;
     } catch (err) {
         return undefined;
     }
+}
+
+function isCheckedOutDir(currentDir: string) {
+    return fs.existsSync(`${currentDir}/.git/hooks/post-commit`);
+}
+
+function isSdmDir(currentDir: string) {
+    return fs.existsSync(`${currentDir}/node_modules/@atomist/slalom/package.json`);
 }

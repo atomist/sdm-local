@@ -5,9 +5,9 @@ import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { CoreRepoFieldsAndChannels, OnPush, OnPushToAnyBranch, RunWithLogContext, StatusForExecuteGoal } from "@atomist/sdm";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { messageClientAddressChannels } from "../invocation/cli/io/messageClientAddressChannels";
-import { LocalHandlerContext } from "./LocalHandlerContext";
 import Commits = OnPush.Commits;
 import { lastCommitMessage } from "../util/lastMessage";
+import { LocalHandlerContext } from "./LocalHandlerContext";
 
 function repoFields(project: GitProject): CoreRepoFieldsAndChannels.Fragment {
     return {

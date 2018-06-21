@@ -6,8 +6,8 @@ import { TypedFingerprint } from "@atomist/sdm/code/fingerprint/TypedFingerprint
 import { WellKnownGoals } from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
 import * as assert from "power-assert";
 import { AddressChannelsFingerprintListener } from "../../src/invocation/cli/io/addressChannelsFingerprintListener";
-import { mergeConfiguration, ResolveNothingMappedParameterResolver } from "../../src/machine/mergeConfiguration";
 import { LocalSoftwareDeliveryMachine } from "../../src/machine/LocalSoftwareDeliveryMachine";
+import { mergeConfiguration, ResolveNothingMappedParameterResolver } from "../../src/machine/mergeConfiguration";
 import { failWith } from "../util/failWith";
 
 export const RepositoryOwnerParentDirectory = process.env.SDM_PROJECTS_ROOT ||

@@ -8,14 +8,14 @@ import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentToken
 import { expandedDirectoryRepoFinder } from "../binding/expandedDirectoryRepoFinder";
 import { dirFor } from "../binding/expandedTreeUtils";
 import { fileSystemProjectPersister } from "../binding/fileSystemProjectPersister";
+import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
 import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { LocalTargetsParams } from "../binding/LocalTargetsParams";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
-import { writeToConsole } from "../invocation/cli/support/consoleOutput";
-import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
-import { LocalMachineConfig } from "./LocalMachineConfig";
 import { CliMappedParameterResolver } from "../invocation/cli/support/CliMappedParameterResolver";
-import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
+import { writeToConsole } from "../invocation/cli/support/consoleOutput";
+import { LocalMachineConfig } from "./LocalMachineConfig";
+import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 
 export function mergeConfiguration(
     sdmDir: string,
@@ -65,7 +65,7 @@ class MonkeyingProjectLoader implements ProjectLoader {
     }
 
     constructor(private readonly delegate: ProjectLoader,
-                private config: LocalMachineConfig,
+                private readonly config: LocalMachineConfig,
                 private readonly monkeyWith: (p: GitProject) => Promise<GitProject>) {
     }
 

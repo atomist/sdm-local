@@ -3,10 +3,9 @@ import { writeToConsole } from "./cli/support/consoleOutput";
 import { logger } from "@atomist/automation-client";
 import { WellKnownGoals } from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
 import { determineCwd, determineSdmRoot } from "../binding/expandedTreeUtils";
-import { mergeConfiguration } from "../machine/mergeConfiguration";
 import { LocalMachineConfig } from "../machine/LocalMachineConfig";
 import { LocalSoftwareDeliveryMachine } from "../machine/LocalSoftwareDeliveryMachine";
-import { CliMappedParameterResolver } from "./cli/support/CliMappedParameterResolver";
+import { mergeConfiguration } from "../machine/mergeConfiguration";
 
 const sdmRoot = determineSdmRoot();
 
