@@ -72,6 +72,7 @@ function exposeParameters(hi: CommandHandlerMetadata, args: Argv) {
     hi.parameters
         .forEach(p => {
             const nameToUse = p.name.replace(".", "-");
+            console.log("EXposing " + p.name)
             args.option(nameToUse, {
                 required: p.required && !paramsInstance[p.name],
             });

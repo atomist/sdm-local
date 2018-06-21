@@ -4,7 +4,7 @@ import { AbstractRemoteRepoRef } from "@atomist/automation-client/operations/com
 import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
 import { RemoteRepoRef, RepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { Configurable } from "@atomist/automation-client/project/git/Configurable";
-import { parseOwnerAndRepo } from "./expandedTreeUtils";
+import { dirFor, parseOwnerAndRepo } from "./expandedTreeUtils";
 
 /**
  * RemoteRepoRef working against our expanded directory structure.
@@ -28,6 +28,20 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
             sha: opts.sha,
             owner, repo,
         });
+    }
+
+    /**
+     * Remote RepoRef for the given owner and directory. Not guaranteed
+     * to exist.
+     * @param {string} repositoryOwnerParentDirectory
+     * @param {string} owner
+     * @param {string} repo
+     * @return {RemoteRepoRef}
+     */
+    public static implied(repositoryOwnerParentDirectory: string,
+                          owner: string, repo: string): RemoteRepoRef {
+        const baseDir = dirFor(repositoryOwnerParentDirectory, owner, repo);
+        return this.fromDirectory({ repositoryOwnerParentDirectory, baseDir});
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {

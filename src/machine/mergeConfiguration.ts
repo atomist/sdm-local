@@ -15,6 +15,7 @@ import { writeToConsole } from "../invocation/cli/support/consoleOutput";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { CliMappedParameterResolver } from "../invocation/cli/support/CliMappedParameterResolver";
+import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
 
 export function mergeConfiguration(
     sdmDir: string,
@@ -25,6 +26,7 @@ export function mergeConfiguration(
             artifactStore: new EphemeralLocalArtifactStore(),
             projectLoader: new MonkeyingProjectLoader(
                 new CachingProjectLoader(),
+                userConfig,
                 changeToPushToAtomistBranch(userConfig.repositoryOwnerParentDirectory, userConfig.mergeAutofixes)),
             logFactory: async (context, goal) => new LoggingProgressLog(goal.name),
             credentialsResolver: EnvironmentTokenCredentialsResolver,
@@ -49,6 +51,12 @@ export const ResolveNothingMappedParameterResolver: MappedParameterResolver = {
 class MonkeyingProjectLoader implements ProjectLoader {
 
     public doWithProject<T>(params: ProjectLoadingParameters, action: WithLoadedProject<T>): Promise<T> {
+        // Use local seed as preference if possible
+        // TODO could check if it's here
+        if (this.config.preferLocalSeeds && !isFileSystemRemoteRepoRef(params.id)) {
+            params.id = FileSystemRemoteRepoRef.implied(this.config.repositoryOwnerParentDirectory,
+                params.id.owner, params.id.repo);
+        }
         const action2 = async p => {
             const p2 = await this.monkeyWith(p);
             return action(p2);
@@ -57,6 +65,7 @@ class MonkeyingProjectLoader implements ProjectLoader {
     }
 
     constructor(private readonly delegate: ProjectLoader,
+                private config: LocalMachineConfig,
                 private readonly monkeyWith: (p: GitProject) => Promise<GitProject>) {
     }
 
