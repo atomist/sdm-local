@@ -43,6 +43,9 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
             `${pe.name} -> ${pe.kids.map(k => k.name).join("/")}`,
             yargs => {
                 pe.kids.forEach(kid => exposeAsCommands(sdm, kid, yargs, previous.concat(pe.name)));
+                if (!!hi) {
+                    exposeParameters(hi, yargs);
+                }
                 return yargs;
             },
             !!hi ? async argv => {
