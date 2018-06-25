@@ -11,13 +11,13 @@ import { writeToConsole } from "../support/consoleOutput";
 
 import { logger } from "@atomist/automation-client";
 import { toStringArray } from "@atomist/automation-client/internal/util/string";
-import { isSdmGoal } from "@atomist/sdm/api/goal/SdmGoal";
 import * as _ from "lodash";
 import * as marked from "marked";
 
 import * as slack from "@atomist/slack-messages/SlackMessages";
 
 import * as TerminalRenderer from "marked-terminal";
+import { isSdmGoal } from "@atomist/sdm/api-helper/goal/sdmGoal";
 
 marked.setOptions({
     // Define custom renderer
