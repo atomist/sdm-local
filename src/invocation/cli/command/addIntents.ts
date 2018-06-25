@@ -1,12 +1,21 @@
 import { HandleCommand, logger } from "@atomist/automation-client";
-import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
+import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/metadata/automationMetadata";
 import * as _ from "lodash";
 import { Argv } from "yargs";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { PathElement, toPaths } from "../../../util/PathElement";
 import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput";
 
-export function addCommandsByName(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
+import * as inquirer from "inquirer";
+import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
+
+/**
+ *
+ * @param {LocalSoftwareDeliveryMachine} sdm
+ * @param {yargs.Argv} yargs
+ * @param {boolean} allowUserInput whether to make all parameters optional, allowing user input to supply them
+ */
+export function addCommandsByName(sdm: LocalSoftwareDeliveryMachine, yargs: Argv, allowUserInput: boolean = true) {
     yargs.command("run", "Run a command",
         args => {
             sdm.commandsMetadata.forEach(hi => {
@@ -15,14 +24,20 @@ export function addCommandsByName(sdm: LocalSoftwareDeliveryMachine, yargs: Argv
                     handler: async argv => {
                         return logExceptionsToConsole(() => runByCommandName(sdm, hi.name, argv));
                     },
-                    builder: argv => exposeParameters(hi, argv),
+                    builder: argv => exposeParameters(hi, argv, allowUserInput),
                 });
             });
             return args;
         });
 }
 
-export function addIntents(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
+/**
+ *
+ * @param {LocalSoftwareDeliveryMachine} sdm
+ * @param {yargs.Argv} yargs
+ * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
+ */
+export function addIntents(sdm: LocalSoftwareDeliveryMachine, yargs: Argv, allowUserInput: boolean = true) {
     const handlers = sdm.commandsMetadata
         .filter(hm => !!hm.intent && hm.intent.length > 0);
 
@@ -30,10 +45,11 @@ export function addIntents(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     const sentences: string[][] =
         _.flatten(handlers.map(hm => hm.intent)).map(words => words.split(" "));
     const paths: PathElement[] = toPaths(sentences);
-    paths.forEach(pe => exposeAsCommands(sdm, pe, yargs, []));
+    paths.forEach(pe => exposeAsCommands(sdm, pe, yargs, [], allowUserInput));
 }
 
-function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, nested: Argv, previous: string[]) {
+function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, nested: Argv, previous: string[],
+                          allowUserInput: boolean) {
     const intent = previous.concat([pe.name]).join(" ");
     const hi = sdm.commandsMetadata.find(hm => hm.intent.includes(intent));
 
@@ -42,9 +58,9 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
             pe.name,
             `${pe.name} -> ${pe.kids.map(k => k.name).join("/")}`,
             yargs => {
-                pe.kids.forEach(kid => exposeAsCommands(sdm, kid, yargs, previous.concat(pe.name)));
+                pe.kids.forEach(kid => exposeAsCommands(sdm, kid, yargs, previous.concat(pe.name), allowUserInput));
                 if (!!hi) {
-                    exposeParameters(hi, yargs);
+                    exposeParameters(hi, yargs, allowUserInput);
                 }
                 return yargs;
             },
@@ -55,12 +71,12 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
     } else {
         nested.command({
             command: pe.name,
-            describe: hi.description ,
+            describe: hi.description,
             handler: async argv => {
                 logger.debug("Args are %j", argv);
                 return logExceptionsToConsole(() => runByIntent(sdm, intent, argv));
             },
-            builder: yargs => exposeParameters(hi, yargs),
+            builder: yargs => exposeParameters(hi, yargs, allowUserInput),
         });
     }
 }
@@ -69,14 +85,15 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
  * Expose the parameters for this command
  * @param {CommandHandlerMetadata} hi
  * @param {yargs.Argv} args
+ * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
-function exposeParameters(hi: CommandHandlerMetadata, args: Argv) {
+function exposeParameters(hi: CommandHandlerMetadata, args: Argv, allowUserInput: boolean) {
     const paramsInstance = (hi as any as HandleCommand).freshParametersInstance();
     hi.parameters
         .forEach(p => {
-            const nameToUse = p.name.replace(".", "-");
+            const nameToUse = convertToDisplayable(p.name);
             args.option(nameToUse, {
-                required: p.required && !paramsInstance[p.name],
+                required: !allowUserInput && p.required && !paramsInstance[p.name],
             });
         });
     return args;
@@ -111,9 +128,42 @@ async function runCommand(sdm: LocalSoftwareDeliveryMachine,
                           hm: CommandHandlerMetadata,
                           command: { owner: string, repo: string }): Promise<any> {
     const extraArgs = Object.getOwnPropertyNames(command)
-        .map(name => ({ name: name.replace("-", "."), value: command[name] }));
+        .map(name => ({ name: convertToUsable(name), value: command[name] }));
     const args = [
         { name: "github://user_token?scopes=repo,user:email,read:user", value: null },
-    ].concat(extraArgs);
+    ]
+        .concat(extraArgs);
+    await promptForMissingParameters(hm, args);
+    // writeToConsole(`Using arguments:\n${args.map(a => `\t${a.name}=${a.value}`).join("\n")}`)
     return sdm.executeCommand({ name: hm.name, args });
+}
+
+/**
+ * Gather missing parameters from the command line
+ * @param {CommandHandlerMetadata} hi
+ * @return {object}
+ */
+async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[]): Promise<void> {
+    const questions =
+        hi.parameters
+            .filter(p => p.required && (args.find(a => a.name === p.name) === undefined || args.find(a => a.name === p.name).value === undefined))
+            .map(p => {
+                const nameToUse = convertToDisplayable(p.name);
+                return {
+                    name: nameToUse,
+                };
+            });
+    const fromPrompt = await inquirer.prompt(questions);
+    Object.getOwnPropertyNames(fromPrompt)
+        .forEach(enteredName => {
+            args.push({ name: convertToUsable(enteredName), value: fromPrompt[enteredName] });
+        });
+}
+
+function convertToDisplayable(name: string): string {
+    return name.replace(".", "-");
+}
+
+function convertToUsable(entered: string): string {
+    return entered.replace("-", ".");
 }
