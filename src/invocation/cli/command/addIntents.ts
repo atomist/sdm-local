@@ -141,16 +141,29 @@ async function runCommand(sdm: LocalSoftwareDeliveryMachine,
 /**
  * Gather missing parameters from the command line
  * @param {CommandHandlerMetadata} hi
+ * @param args Args we've already found
  * @return {object}
  */
 async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[]): Promise<void> {
+    function isOptional(p: Parameter) {
+        return p.required && (args.find(a => a.name === p.name) === undefined || args.find(a => a.name === p.name).value === undefined);
+    }
+
     const questions =
         hi.parameters
-            .filter(p => p.required && (args.find(a => a.name === p.name) === undefined || args.find(a => a.name === p.name).value === undefined))
+            .filter(isOptional)
             .map(p => {
                 const nameToUse = convertToDisplayable(p.name);
                 return {
                     name: nameToUse,
+                    default: p.default_value,
+                    validate: value => {
+                        const pass = !p.pattern || value.match(new RegExp(p.pattern));
+                        if (pass) {
+                            return true;
+                        }
+                        return `Please enter a valid ${nameToUse} - ${p.valid_input}`;
+                    },
                 };
             });
     const fromPrompt = await inquirer.prompt(questions);
