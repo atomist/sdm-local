@@ -22,7 +22,7 @@
     "url": "https://github.com/atomist/slalom/issues"
   },
   "dependencies": {
-    "@atomist/automation-client": "https://r.atomist.com/HkV5LonCx7",
+    "@atomist/automation-client": "^0.17.4-20180621144910",
     "@types/inquirer": "0.0.42",
     "@types/yargs": "^11.0.0",
     "express": "^4.16.3",
