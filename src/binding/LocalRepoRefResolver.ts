@@ -1,6 +1,6 @@
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, RepoRefResolver, ScmProvider, StatusForExecuteGoal } from "@atomist/sdm";
-import { SdmGoal } from "@atomist/sdm/ingesters/sdmGoalIngester";
+import { SdmGoal } from "@atomist/sdm/api/goal/SdmGoal";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
 export class LocalRepoRefResolver implements RepoRefResolver {

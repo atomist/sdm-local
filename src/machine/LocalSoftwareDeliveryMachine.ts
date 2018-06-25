@@ -13,7 +13,7 @@ import { constructSdmGoal } from "@atomist/sdm/api-helper/goal/storeGoals";
 import { createPushImpactListenerInvocation } from "@atomist/sdm/api-helper/listener/createPushImpactListenerInvocation";
 import { lastLinesLogInterpreter } from "@atomist/sdm/api-helper/log/logInterpreters";
 import { AbstractSoftwareDeliveryMachine } from "@atomist/sdm/api-helper/machine/AbstractSoftwareDeliveryMachine";
-import { selfDescribingHandlers } from "@atomist/sdm/pack/info/support/commandSearch";
+import { selfDescribingHandlers } from "@atomist/sdm-core";
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
 import { LocalHandlerContext } from "../binding/LocalHandlerContext";
 import { localRunWithLogContext } from "../binding/localPush";

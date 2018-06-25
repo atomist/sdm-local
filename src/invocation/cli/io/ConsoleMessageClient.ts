@@ -11,7 +11,7 @@ import { writeToConsole } from "../support/consoleOutput";
 
 import { logger } from "@atomist/automation-client";
 import { toStringArray } from "@atomist/automation-client/internal/util/string";
-import { isSdmGoal } from "@atomist/sdm/ingesters/sdmGoalIngester";
+import { isSdmGoal } from "@atomist/sdm/api/goal/SdmGoal";
 import * as _ from "lodash";
 import * as marked from "marked";
 

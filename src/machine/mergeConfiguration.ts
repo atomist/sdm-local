@@ -1,8 +1,8 @@
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { ProjectLoader, ProjectLoadingParameters, WithLoadedProject } from "@atomist/sdm";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
-import { EphemeralLocalArtifactStore } from "@atomist/sdm/internal/artifact/local/EphemeralLocalArtifactStore";
-import { CachingProjectLoader } from "@atomist/sdm/project/CachingProjectLoader";
+import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
+import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
 import { execSync } from "child_process";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
 import { expandedDirectoryRepoFinder } from "../binding/expandedDirectoryRepoFinder";

@@ -1,7 +1,7 @@
 import { writeToConsole } from "./cli/support/consoleOutput";
 
 import { logger } from "@atomist/automation-client";
-import { WellKnownGoals } from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
+import { WellKnownGoals } from "@atomist/sdm-core";
 import { determineCwd, determineSdmRoot } from "../binding/expandedTreeUtils";
 import { LocalMachineConfig } from "../machine/LocalMachineConfig";
 import { LocalSoftwareDeliveryMachine } from "../machine/LocalSoftwareDeliveryMachine";
