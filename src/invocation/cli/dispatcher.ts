@@ -4,18 +4,17 @@ import { suppressConsoleLogging } from "./support/configureLogging";
 
 suppressConsoleLogging();
 
-import { writeToConsole } from "./support/consoleOutput";
-
 import { logger } from "@atomist/automation-client";
 import { execSync } from "child_process";
 import { determineCwd, determineSdmRoot } from "../../binding/expandedTreeUtils";
+import { errorMessage } from "./support/consoleOutput";
 
 const sdmRoot = determineSdmRoot();
 
 if (!sdmRoot) {
-    writeToConsole({ message: `Cannot determine SDM root in ${determineCwd()}`, color: "red" });
+    errorMessage(`Cannot determine SDM root in ${determineCwd()}`);
     if (determineCwd().endsWith("sdm")) {
-        writeToConsole("You might need to `npm link @atomist/slalom`");
+        errorMessage("You might need to `npm link @atomist/slalom`");
     }
     process.exit(1);
 }

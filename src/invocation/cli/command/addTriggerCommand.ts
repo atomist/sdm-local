@@ -4,7 +4,7 @@ import { determineCwd, withinExpandedTree } from "../../../binding/expandedTreeU
 import { FileSystemRemoteRepoRef } from "../../../binding/FileSystemRemoteRepoRef";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { GitHookEvent } from "../../git/onGitHook";
-import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput";
+import { errorMessage, logExceptionsToConsole } from "../support/consoleOutput";
 
 // TODO add which trigger
 export function addTriggerCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
@@ -28,10 +28,8 @@ async function trigger(sdm: LocalSoftwareDeliveryMachine, event: GitHookEvent = 
         const { branch, sha } = await p.gitStatus();
         return sdm[event](currentDir, branch, sha);
     } else {
-        writeToConsole({
-            message: `Working directory ${currentDir} is not within expanded working tree under ${sdm.configuration.repositoryOwnerParentDirectory}`,
-            color: "red",
-        });
+        errorMessage(
+            `Working directory ${currentDir} is not within expanded working tree under ${sdm.configuration.repositoryOwnerParentDirectory}`);
         process.exit(1);
     }
 }

@@ -12,7 +12,7 @@ import * as yargs from "yargs";
 import { localSdmInstance } from "../machineLoader";
 
 import { addGitHooksCommands } from "./command/addGitHooksCommands";
-import { addSummonDemon } from "./command/addSummonDemon";
+import { addStartListener } from "./command/addStartListener";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 
@@ -21,7 +21,7 @@ import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteComm
 yargs.usage("Usage: slalom <command> [options]");
 
 addTriggerCommand(localSdmInstance, yargs);
-addSummonDemon(localSdmInstance, yargs);
+addStartListener(localSdmInstance, yargs);
 addGitHooksCommands(localSdmInstance, yargs);
 addCommandsByName(localSdmInstance, yargs);
 addIntents(localSdmInstance, yargs);

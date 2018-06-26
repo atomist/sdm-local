@@ -1,7 +1,7 @@
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { ProjectLoader, ProjectLoadingParameters, WithLoadedProject } from "@atomist/sdm";
-import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
+import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
 import { execSync } from "child_process";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
@@ -13,9 +13,10 @@ import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { LocalTargetsParams } from "../binding/LocalTargetsParams";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
 import { CliMappedParameterResolver } from "../invocation/cli/support/CliMappedParameterResolver";
-import { writeToConsole } from "../invocation/cli/support/consoleOutput";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
+
+import { warning } from "../invocation/cli/support/consoleOutput";
 
 export function mergeConfiguration(
     sdmDir: string,
@@ -83,7 +84,7 @@ function changeToPushToAtomistBranch(repositoryOwnerParentDirectory: string, aut
             try {
                 // First try to push this branch. If it's the checked out branch
                 // We'll get an error
-                writeToConsole({ message: `Pushing to branch ${p.branch} on ${p.id.owner}:${p.id.repo}`, color: "yellow" });
+                warning(`Pushing to branch ${p.branch} on ${p.id.owner}:${p.id.repo}\n`);
                 execSync(`git push --force --set-upstream origin ${p.branch}`, {
                     cwd: p.baseDir,
                     stdio: "ignore",
@@ -93,13 +94,13 @@ function changeToPushToAtomistBranch(repositoryOwnerParentDirectory: string, aut
                 // Autofix will attempt to do this.
                 // So we create a new branch, push that, and then go to the original directory and merge it.
                 const newBranch = `atomist/${p.branch}`;
-                writeToConsole({ message: `Pushing to new local branch ${newBranch}`, color: "yellow" });
+                warning(`Pushing to new local branch ${newBranch}\n`);
                 await p.createBranch(newBranch);
                 execSync(`git push --force --set-upstream origin ${p.branch}`, { cwd: p.baseDir });
 
                 if (automerge) {
                     const originalRepoDir = dirFor(repositoryOwnerParentDirectory, p.id.owner, p.id.repo);
-                    writeToConsole({ message: `Trying merge in ${originalRepoDir}`, color: "yellow" });
+                    warning(`Trying merge in ${originalRepoDir}`);
                     // Automerge it
                     execSync(`git merge ${newBranch}`, { cwd: originalRepoDir });
                 }

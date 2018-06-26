@@ -1,4 +1,3 @@
-import { writeToConsole } from "./cli/support/consoleOutput";
 
 import { logger } from "@atomist/automation-client";
 import { WellKnownGoals } from "@atomist/sdm-core";
@@ -7,10 +6,13 @@ import { LocalMachineConfig } from "../machine/LocalMachineConfig";
 import { LocalSoftwareDeliveryMachine } from "../machine/LocalSoftwareDeliveryMachine";
 import { mergeConfiguration } from "../machine/mergeConfiguration";
 
+// tslint:disable-next-line:no-var-requires
+const chalk = require("chalk");
+
 const sdmRoot = determineSdmRoot();
 
 if (!sdmRoot) {
-    writeToConsole({ message: `Cannot determine SDM root in ${determineCwd()}`, color: "red" });
+    process.stdout.write(chalk.red(`Cannot determine SDM root in ${determineCwd()}`));
     process.exit(1);
 }
 

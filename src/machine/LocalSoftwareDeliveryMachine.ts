@@ -6,6 +6,7 @@ import { GitCommandGitProject } from "@atomist/automation-client/project/git/Git
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { Maker, toFactory } from "@atomist/automation-client/util/constructionUtils";
 import { GeneratorRegistration, Goal, GoalImplementation, Goals, GoalSetter, hasPreconditions, RunWithLogContext } from "@atomist/sdm";
+import { selfDescribingHandlers } from "@atomist/sdm-core";
 import { chooseAndSetGoals } from "@atomist/sdm/api-helper/goal/chooseAndSetGoals";
 import { executeGoal } from "@atomist/sdm/api-helper/goal/executeGoal";
 import { SdmGoalImplementationMapperImpl } from "@atomist/sdm/api-helper/goal/SdmGoalImplementationMapperImpl";
@@ -13,14 +14,16 @@ import { constructSdmGoal } from "@atomist/sdm/api-helper/goal/storeGoals";
 import { createPushImpactListenerInvocation } from "@atomist/sdm/api-helper/listener/createPushImpactListenerInvocation";
 import { lastLinesLogInterpreter } from "@atomist/sdm/api-helper/log/logInterpreters";
 import { AbstractSoftwareDeliveryMachine } from "@atomist/sdm/api-helper/machine/AbstractSoftwareDeliveryMachine";
-import { selfDescribingHandlers } from "@atomist/sdm-core";
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
 import { LocalHandlerContext } from "../binding/LocalHandlerContext";
 import { localRunWithLogContext } from "../binding/localPush";
-import { writeToConsole } from "../invocation/cli/support/consoleOutput";
+import { errorMessage, warning } from "../invocation/cli/support/consoleOutput";
 import { addGitHooks, removeGitHooks } from "../setup/addGitHooks";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 import { invokeCommandHandlerWithFreshParametersInstance } from "./parameterPopulation";
+
+// tslint:disable-next-line:no-var-requires
+const chalk = require("chalk");
 
 /**
  * Local SDM implementation, designed to be driven by CLI and git hooks.
@@ -101,7 +104,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
                     },
                 );
                 if (!goals) {
-                    writeToConsole({ message: "No goals set for push", color: "yellow" });
+                    warning("No goals set for push");
                     return;
                 }
                 return this.executeGoals(goals, p, rwlc);
@@ -137,7 +140,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
 
         const stillNotDone = stillPending.filter(elt => !completedInThisRun.includes(elt));
         if (stillNotDone.length === 0) {
-            writeToConsole({ message: "Goal execution complete", color: "green" });
+            process.stdout.write(chalk.green("Goal execution complete"));
         } else {
             return this.executeGoals(goals, p, rwlc, stillNotDone);
         }
@@ -194,10 +197,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
         if (!goalFulfillment) {
             // Warn the user. Don't fail.
             // throw new Error(`Error: No implementation for goal '${goal.uniqueCamelCaseName}'`);
-            writeToConsole({
-                message: `Warning: No implementation for goal '${goal.uniqueCamelCaseName}'`,
-                color: "red",
-            });
+            errorMessage(`Warning: No implementation for goal '${goal.uniqueCamelCaseName}'`);
             return;
         }
         const sdmGoal = constructSdmGoal(rwlc.context, {
@@ -214,16 +214,11 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             rwlc,
             sdmGoal, goal, lastLinesLogInterpreter(goal.name));
         if (goalResult.code !== 0) {
-            writeToConsole({
-                message: `✖︎︎ ${goal.failureDescription}`,
-                color: "red",
-            });
+            errorMessage(`✖︎︎ ${goal.failureDescription}`);
             throw new Error(`Goal execution failed: ${goalResult.message}`);
         } else {
-            writeToConsole({
-                message: `✔ ${goal.successDescription}`,
-                color: "green",
-            });
+            process.stdout.write(chalk.green(
+                `✔ ${goal.successDescription}`));
         }
     }
 

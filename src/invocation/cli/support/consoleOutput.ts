@@ -9,31 +9,24 @@ export function setCommandLineLogging() {
     (logger as any).transports.console.silent = true;
 }
 
-export interface ConsoleWriteOptions {
-    message: string;
-    color: "cyan" | "red" | "redBright" | "blue" | "green" | "gray" | "yellow";
-}
-
-export function writeToConsole(msg: string | ConsoleWriteOptions, ...args: any[]) {
-    let expanded: string;
-    if (typeof msg === "string") {
-        expanded = sprintf(msg, ...args);
-    } else {
-        const fun = chalk[msg.color];
-        if (!fun) {
-            throw new Error(`No chalk function '${fun}' in ${JSON.stringify(msg)}`);
-        }
-        expanded = fun(sprintf(msg.message, ...args));
-    }
-    process.stdout.write(expanded + "\n");
-}
-
 export async function logExceptionsToConsole(what: () => Promise<any>) {
     try {
         await what();
     } catch (err) {
-        writeToConsole({ message: `Error: ${err.message} - \n${err.stack}`, color: "red" });
+        process.stdout.write(chalk.red(`Error: ${err.message} - \n${err.stack}`));
         logger.error(`Error: ${err.message} - ${err.stack}`);
         process.exit(1);
     }
+}
+
+export function errorMessage(msg: string, ...args: any[]) {
+    process.stdout.write(chalk.red(sprintf(msg, args)));
+}
+
+export function warning(msg: string, ...args: any[]) {
+    process.stdout.write(chalk.yellow(sprintf(msg, args)));
+}
+
+export function infoMessage(msg: string, ...args: any[]) {
+    process.stdout.write(chalk.cyan(sprintf(msg, args)));
 }

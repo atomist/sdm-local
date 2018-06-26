@@ -1,6 +1,8 @@
 import { logger } from "@atomist/automation-client";
 import { GraphClient, MutationOptions, QueryOptions } from "@atomist/automation-client/spi/graph/GraphClient";
-import { writeToConsole } from "../invocation/cli/support/consoleOutput";
+
+// tslint:disable-next-line:no-var-requires
+const chalk = require("chalk");
 
 export class LocalGraphClient implements GraphClient {
 
@@ -15,7 +17,7 @@ export class LocalGraphClient implements GraphClient {
     }
 
     public async executeQuery<T, Q>(query: string, variables?: Q, options?: any): Promise<T> {
-        writeToConsole({ message: "Returning empty object for query " + query, color: "red" });
+        process.stdout.write(chalk.red("Returning empty object for query " + query));
         return {} as T;
     }
 

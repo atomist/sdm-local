@@ -1,5 +1,5 @@
 import { Argv } from "yargs";
-import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput";
+import { infoMessage, logExceptionsToConsole } from "../support/consoleOutput";
 
 import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
@@ -13,7 +13,7 @@ import { ConsoleMessageClient } from "../io/ConsoleMessageClient";
 export const DemonPort = 6660;
 export const MessageRoute = "/message";
 
-export function addSummonDemon(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
+export function addStartListener(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     yargs.command({
         command: "listen",
         describe: "Start listener daemon to display messages and expose commands",
@@ -46,17 +46,15 @@ async function summonDemon(sdm: LocalSoftwareDeliveryMachine) {
     sdm.commandsMetadata.forEach(hmd => exportHandlerRoute(app, hmd, sdm));
 
     app.listen(DemonPort,
-        () => writeToConsole({
-            message: `Atomist Slalom: Listening on port ${DemonPort}...`,
-            color: "cyan",
-        }));
+        () => infoMessage(`Atomist Slalom: Listening on port ${DemonPort}...\n`),
+    );
 }
 
 function exportHandlerRoute(e: Express, hmd: CommandHandlerMetadata, sdm: LocalSoftwareDeliveryMachine) {
     e.get(`/command/${hmd.name}`, async (req, res) => {
         const ci: CommandInvocation = {
             name: hmd.name,
-            args: Object.getOwnPropertyNames(req.query).map(prop => ({ name: prop, value: req.query[prop]})),
+            args: Object.getOwnPropertyNames(req.query).map(prop => ({ name: prop, value: req.query[prop] })),
         };
         // TODO redirect output??
         await sdm.executeCommand(ci);

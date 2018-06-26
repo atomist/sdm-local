@@ -4,10 +4,10 @@ import * as _ from "lodash";
 import { Argv } from "yargs";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { PathElement, toPaths } from "../../../util/PathElement";
-import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput";
+import { logExceptionsToConsole } from "../support/consoleOutput";
 
-import * as inquirer from "inquirer";
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
+import * as inquirer from "inquirer";
 
 /**
  *
@@ -105,7 +105,7 @@ async function runByIntent(sdm: LocalSoftwareDeliveryMachine,
     // writeToConsole({ message: `Recognized intent "${intent}"...`, color: "cyan" });
     const hm = sdm.commandsMetadata.find(h => !!h.intent && h.intent.includes(intent));
     if (!hm) {
-        writeToConsole(`No command with intent [${intent}]: Known intents are \n${sdm.commandsMetadata
+        process.stdout.write(`No command with intent [${intent}]: Known intents are \n${sdm.commandsMetadata
             .map(m => "\t" + m.intent).sort().join("\n")}`);
         process.exit(1);
     }
@@ -117,7 +117,7 @@ async function runByCommandName(sdm: LocalSoftwareDeliveryMachine,
                                 command: any): Promise<any> {
     const hm = sdm.commandsMetadata.find(h => h.name === name);
     if (!hm) {
-        writeToConsole(`No command with name [${name}]: Known command names are \n${sdm.commandsMetadata
+        process.stdout.write(`No command with name [${name}]: Known command names are \n${sdm.commandsMetadata
             .map(m => "\t" + m.name).sort().join("\n")}`);
         process.exit(1);
     }

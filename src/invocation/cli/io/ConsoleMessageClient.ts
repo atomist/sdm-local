@@ -16,8 +16,8 @@ import { MarkedOptions } from "marked";
 
 import * as slack from "@atomist/slack-messages/SlackMessages";
 
-import * as TerminalRenderer from "marked-terminal";
 import { isSdmGoal } from "@atomist/sdm/api-helper/goal/sdmGoal";
+import * as TerminalRenderer from "marked-terminal";
 
 marked.setOptions({
     // Define custom renderer

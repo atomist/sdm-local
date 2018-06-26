@@ -4,7 +4,7 @@ import * as fs from "fs";
 import { Argv } from "yargs";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { addGitHooks } from "../../../setup/addGitHooks";
-import { logExceptionsToConsole, writeToConsole } from "../support/consoleOutput";
+import { logExceptionsToConsole } from "../support/consoleOutput";
 
 export function addImportFromGitRemoteCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     yargs.command({
@@ -24,7 +24,7 @@ async function importFromGitRemote(sdm: LocalSoftwareDeliveryMachine,
                                    org: string,
                                    repo: string,
                                    remoteBase: string): Promise<any> {
-    writeToConsole(`Importing Git remote project ${remoteBase}/${org}/${repo}`);
+    process.stdout.write(`Importing Git remote project ${remoteBase}/${org}/${repo}`);
     const orgDir = `${sdm.configuration.repositoryOwnerParentDirectory}/${org}`;
     if (!fs.existsSync(orgDir)) {
         fs.mkdirSync(orgDir);

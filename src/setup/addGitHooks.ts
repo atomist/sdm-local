@@ -5,9 +5,11 @@ import { LocalProject } from "@atomist/automation-client/project/local/LocalProj
 import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
 import { appendOrCreateFileContent } from "@atomist/sdm/api-helper/project/appendOrCreate";
 import * as fs from "fs";
-import { writeToConsole } from "../invocation/cli/support/consoleOutput";
+import { sprintf } from "sprintf-js";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";
+// tslint:disable-next-line:no-var-requires
+const chalk = require("chalk");
 
 /**
  * Add Git hooks to the given repo
@@ -23,11 +25,9 @@ export async function addGitHooks(id: RemoteRepoRef,
         const p = await NodeFsLocalProject.fromExistingDirectory(id, projectBaseDir);
         return addGitHooksToProject(p, sdmBaseDir);
     } else {
-        writeToConsole({
-                message: "addGitHooks: Ignoring directory at %s as it is not a git project",
-                color: "gray",
-            },
-            projectBaseDir);
+        process.stdin.write(
+            chalk.gray(sprintf("addGitHooks: Ignoring directory at %s as it is not a git project"),
+                projectBaseDir));
     }
 }
 
@@ -43,11 +43,9 @@ export async function addGitHooksToProject(p: LocalProject, sdmBaseDir: string) 
         })(p);
     // TODO setting executable status should be on the project API
     fs.chmodSync(`${p.baseDir}/.git/hooks/post-commit`, 0o755);
-    writeToConsole({
-            message: "addGitHooks: Adding git post-commit script to project at %s",
-            color: "gray",
-        },
-        p.baseDir);
+    process.stdout.write(chalk.gray(sprintf(
+        "addGitHooks: Adding git post-commit script to project at %s",
+        p.baseDir)));
 }
 
 export async function removeGitHooks(id: RemoteRepoRef, baseDir: string) {
@@ -55,11 +53,9 @@ export async function removeGitHooks(id: RemoteRepoRef, baseDir: string) {
         const p = await NodeFsLocalProject.fromExistingDirectory(id, baseDir);
         await deatomizeScript(p, "/.git/hooks/post-commit");
     } else {
-        writeToConsole({
-                message: "removeGitHooks: Ignoring directory at %s as it is not a git project",
-                color: "gray",
-            },
-            baseDir);
+        process.stdout.write(chalk.gray(sprintf(
+            "removeGitHooks: Ignoring directory at %s as it is not a git project",
+            baseDir)));
     }
 }
 
@@ -72,12 +68,10 @@ export async function removeGitHooks(id: RemoteRepoRef, baseDir: string) {
 async function deatomizeScript(p: LocalProject, path: string) {
     const script = await p.getFile(path);
     if (!script) {
-        writeToConsole({
-                message: "removeGitHooks: No git hook %s in project at %s",
-                color: "gray",
-            },
+        process.stdout.write(chalk.gray(sprintf(
+            "removeGitHooks: No git hook %s in project at %s",
             path,
-            p.baseDir);
+            p.baseDir)));
     } else {
         const content = await script.getContent();
         const lines = content.split("\n");
@@ -87,21 +81,17 @@ async function deatomizeScript(p: LocalProject, path: string) {
             .join("\n");
         if (nonAtomist.length > 0) {
             await script.setContent(nonAtomist);
-            writeToConsole({
-                    message: "removeGitHooks: Removing Atomist content from git hook %s in project at %s: Leaving \n%s",
-                    color: "gray",
-                },
+            process.stdout.write(chalk.gray(sprintf(
+                "removeGitHooks: Removing Atomist content from git hook %s in project at %s: Leaving \n%s",
                 path,
                 p.baseDir,
-                nonAtomist);
+                nonAtomist)));
         } else {
             await p.deleteFile(path);
-            writeToConsole({
-                    message: "removeGitHooks: Removing git hook %s in project at %s",
-                    color: "gray",
-                },
+            process.stdout.write(chalk.gray(sprintf(
+                "removeGitHooks: Removing git hook %s in project at %s",
                 path,
-                p.baseDir);
+                p.baseDir)));
         }
     }
 }
