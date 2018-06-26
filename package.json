@@ -22,7 +22,7 @@
     "url": "https://github.com/atomist/slalom/issues"
   },
   "dependencies": {
-    "@atomist/automation-client": "https://r.atomist.com/HkV5LonCx7",
+    "@atomist/automation-client": "^0.17.4-20180621144910",
     "@types/inquirer": "0.0.42",
     "@types/yargs": "^11.0.0",
     "express": "^4.16.3",
@@ -30,10 +30,12 @@
     "marked-terminal": "^3.0.0"
   },
   "peerDependencies": {
-    "@atomist/sdm": "^0.2.1"
+    "@atomist/sdm": "^0.3.0",
+    "@atomist/sdm-core": "^0.3.1"
   },
   "devDependencies": {
-    "@atomist/sdm": "^0.2.2",
+    "@atomist/sdm": "0.3.1-20180625215920",
+    "@atomist/sdm-core": "^0.3.2-20180625233150",
     "@types/lodash": "^4.14.109",
     "@types/mocha": "^2.2.48",
     "@types/node": "^8.10.17",

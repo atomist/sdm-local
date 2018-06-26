@@ -6,11 +6,11 @@ import {
     SlackDestination,
     SlackMessageClient,
 } from "@atomist/automation-client/spi/message/MessageClient";
-import { isSdmGoal } from "@atomist/sdm/ingesters/sdmGoalIngester";
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import { DemonPort, MessageRoute, StreamedMessage } from "../command/addSummonDemon";
 import { ConsoleMessageClient } from "./ConsoleMessageClient";
+import { isSdmGoal } from "@atomist/sdm/api-helper/goal/sdmGoal";
 
 /**
  * Message client that POSTS to an Atomist server and logs to a fallback (usually console)

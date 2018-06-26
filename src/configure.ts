@@ -11,8 +11,8 @@ import {
     SoftwareDeliveryMachine,
     whenPushSatisfies,
 } from "@atomist/sdm";
-import { TypedFingerprint } from "@atomist/sdm/code/fingerprint/TypedFingerprint";
-import { WellKnownGoals } from "@atomist/sdm/pack/well-known-goals/addWellKnownGoals";
+import { TypedFingerprint } from "@atomist/sdm/api-helper/code/fingerprint/TypedFingerprint";
+import { WellKnownGoals } from "@atomist/sdm-core";
 import * as slack from "@atomist/slack-messages/SlackMessages";
 import { AddressChannelsFingerprintListener } from "./invocation/cli/io/addressChannelsFingerprintListener";
 
@@ -73,7 +73,7 @@ export function configure(sdm: SoftwareDeliveryMachine) {
             name: "foo",
             editor: async p => p.addFile("local", "stuff"),
             paramsMaker: () => new MyParameters({
-                seed: new GitHubRepoRef("spring-team", "spring-rest-seed"),
+                seed: () =>  new GitHubRepoRef("spring-team", "spring-rest-seed"),
             }),
         })
         .addEditors({
