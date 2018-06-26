@@ -8,9 +8,10 @@ setCommandLineLogging();
 
 import { logger } from "@atomist/automation-client";
 import { localSdmInstance } from "../machineLoader";
+import { camelize } from "tslint/lib/utils";
 
 /**
- * Usage gitHookTrigger <event> <directory>
+ * Usage gitHookTrigger <git hook name> <directory>
  */
 
 /* tslint:disable */
@@ -33,5 +34,5 @@ if (!sdmMethod) {
 }
 
 logExceptionsToConsole(() =>
-    localSdmInstance[event](baseDir, branch, sha)
+    localSdmInstance[camelize(event)](baseDir, branch, sha)
 );

@@ -19,7 +19,7 @@ export async function logExceptionsToConsole(what: () => Promise<any>) {
 }
 
 export function errorMessage(msg: string, ...args: any[]) {
-    process.stdout.write(chalk.red(sprintf("💀" + msg, args)));
+    process.stdout.write(chalk.red(sprintf("✘ " + msg, args)));
 }
 
 export function warning(msg: string, ...args: any[]) {
