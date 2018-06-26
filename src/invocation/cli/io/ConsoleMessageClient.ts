@@ -33,10 +33,12 @@ const chalk = require("chalk");
 export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
 
     public async respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any> {
-        return this.addressChannels(msg, "general", options);
+        logger.info("MessageClient.respond: Raw mesg=\n%j\n", msg);
+        return this.addressChannels(msg, this.linkedChannel, options);
     }
 
     public async send(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
+        logger.info("MessageClient.send: Raw mesg=\n%j\n", msg);
         if (isSdmGoal(msg)) {
             logger.info("Storing SDM goal or ingester payload %j", msg);
             return;
@@ -52,25 +54,35 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
     }
 
     public async addressChannels(msg: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
+        logger.info("MessageClient.addressChannels: Raw mesg=\n%j\nChannels=%s\n", msg, channels);
         const chans = toStringArray(channels);
         chans.forEach(channel => {
+            // TODO isSlackMessage doesn't return right
             if (isSlackMessage(msg)) {
                 if (!!msg.text) {
-                    process.stdout.write(chalk.gray("#") + marked(` **${channel}** ` + msg, this.markedOptions));
+                    this.writeToChannel(channel, msg.text);
                 }
                 msg.attachments.forEach(att => {
-                    process.stdout.write(chalk.gray("#") + marked(` **${channel}** ` + att.text, this.markedOptions));
+                    this.writeToChannel(channel, att.text);
                     att.actions.forEach(action => {
                         this.renderAction(channel, action);
                     });
                 });
+            } else if (typeof msg === "string") {
+                this.writeToChannel(channel, msg);
             } else {
-                process.stdout.write(chalk.gray("#") + marked(` **${channel}** ` + msg, this.markedOptions));
+                const m = msg as any;
+                if (!!m.content) {
+                    this.writeToChannel(channel, m.content);
+                } else {
+                    this.writeToChannel(channel, "???? What is " + JSON.stringify(msg));
+                }
             }
         });
     }
 
     public async addressUsers(msg: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
+        logger.info("MessageClient.addressUsers: Raw mesg=\n%j\nUsers=%s", msg, users);
         process.stdout.write(`#${users} ${msg}\n`);
     }
 
@@ -82,15 +94,25 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
             Object.getOwnPropertyNames(a.command.parameters).forEach(prop => {
                 url += `${prop}=${a.command.parameters[prop]}`;
             });
-            process.stdout.write(chalk.green("#") + marked(` **${channel}** ${action.text} - ${url}`, this.markedOptions));
+            this.writeToChannel(channel, `${action.text} - ${url}`);
         } else {
             process.stdout.write(JSON.stringify(action) + "\n");
         }
     }
 
-    constructor(public readonly markedOptions: MarkedOptions = {
-        breaks: false,
-    }) {
+    /**
+     * Apply consistent formatting to mimic writing to a Slack channel
+     * @param {string[] | string} channels
+     * @param {string} markdown
+     */
+    private writeToChannel(channels: string[] | string, markdown: string) {
+        process.stdout.write(chalk.gray("#") + marked(` **${channels}** ` + markdown, this.markedOptions));
+    }
+
+    constructor(private readonly linkedChannel: string,
+                public readonly markedOptions: MarkedOptions = {
+                    breaks: false,
+                }) {
     }
 
 }

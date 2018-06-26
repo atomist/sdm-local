@@ -13,7 +13,7 @@ export async function logExceptionsToConsole(what: () => Promise<any>) {
     try {
         await what();
     } catch (err) {
-        process.stdout.write(chalk.red(`Error: ${err.message} - \n${err.stack}`));
+        errorMessage(`Error: ${err.message} - \n${err.stack}\n`);
         logger.error(`Error: ${err.message} - ${err.stack}`);
         process.exit(1);
     }

@@ -19,7 +19,7 @@ import { ConsoleMessageClient } from "./ConsoleMessageClient";
 export class HttpClientMessageClient implements MessageClient, SlackMessageClient {
 
     public async respond(message: any, options?: MessageOptions): Promise<any> {
-        return this.addressChannels(message, "general", options);
+        return this.addressChannels(message, this.linkedChannel, options);
     }
 
     public async send(msg: string | SlackMessage, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
@@ -56,7 +56,8 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
         }
     }
 
-    constructor(public readonly url: string = `http://localhost:${DemonPort}${MessageRoute}`,
-                private readonly delegate: MessageClient & SlackMessageClient = new ConsoleMessageClient()) {
+    constructor(private readonly linkedChannel: string,
+                public readonly url: string = `http://localhost:${DemonPort}${MessageRoute}`,
+                private readonly delegate: MessageClient & SlackMessageClient = new ConsoleMessageClient(linkedChannel)) {
     }
 }

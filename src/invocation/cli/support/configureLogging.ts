@@ -8,3 +8,9 @@ export function suppressConsoleLogging() {
         // ignore
     };
 }
+
+// Fake an empty configuration object for automation-client
+// We can get rid of this if we break our dependency on client
+(global as any).__runningAutomationClient = {
+    configuration: {},
+};

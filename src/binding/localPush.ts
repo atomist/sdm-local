@@ -70,7 +70,7 @@ export async function localRunWithLogContext(project: GitProject): Promise<RunWi
         ],
     };
     const trigger = {} as EventIncoming;
-    const context = new LocalHandlerContext(trigger);
+    const context = new LocalHandlerContext(project.id.repo, trigger);
     const id = project.id as any as RemoteRepoRef;
     return {
         id,

@@ -175,7 +175,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             throw new Error(`No command found with name '${invocation.name}'`);
         }
         const instance = toFactory(handler.maker)();
-        const context: HandlerContext = new LocalHandlerContext(null);
+        const context: HandlerContext = new LocalHandlerContext("general", null);
         const parameters = !!instance.freshParametersInstance ?
             instance.freshParametersInstance() :
             instance;
@@ -197,7 +197,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
         if (!goalFulfillment) {
             // Warn the user. Don't fail.
             // throw new Error(`Error: No implementation for goal '${goal.uniqueCamelCaseName}'`);
-            errorMessage(`Warning: No implementation for goal '${goal.uniqueCamelCaseName}'`);
+            errorMessage(`Warning: No implementation for goal '${goal.uniqueCamelCaseName}'\n`);
             return;
         }
         const sdmGoal = constructSdmGoal(rwlc.context, {
@@ -214,11 +214,10 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             rwlc,
             sdmGoal, goal, lastLinesLogInterpreter(goal.name));
         if (goalResult.code !== 0) {
-            errorMessage(`✖︎︎ ${goal.failureDescription}`);
+            errorMessage(`✖︎︎ ${goal.failureDescription}\n`);
             throw new Error(`Goal execution failed: ${goalResult.message}`);
         } else {
-            process.stdout.write(chalk.green(
-                `✔ ${goal.successDescription}`));
+            process.stdout.write(chalk.green(`✔ ${goal.successDescription}\n`));
         }
     }
 

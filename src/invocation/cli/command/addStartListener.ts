@@ -30,7 +30,7 @@ export interface StreamedMessage {
 }
 
 async function summonDemon(sdm: LocalSoftwareDeliveryMachine) {
-    const messageClient = new ConsoleMessageClient();
+    const messageClient = new ConsoleMessageClient("general");
 
     const app = express();
     app.use(express.json());

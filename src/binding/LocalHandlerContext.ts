@@ -12,7 +12,7 @@ export class LocalHandlerContext implements HandlerContext, AutomationContextAwa
     // TODO need to parameterize this
     get messageClient() {
         // return new ConsoleMessageClient();
-        return new HttpClientMessageClient();
+        return new HttpClientMessageClient(this.linkedChannel);
     }
 
     get graphClient(): GraphClient {
@@ -35,7 +35,8 @@ export class LocalHandlerContext implements HandlerContext, AutomationContextAwa
 
     public ts = new Date().getTime();
 
-    constructor(public trigger: CommandIncoming | EventIncoming,
+    constructor(public readonly linkedChannel: string,
+                public readonly trigger: CommandIncoming | EventIncoming,
                 public readonly teamId = "T1234") {
     }
 
