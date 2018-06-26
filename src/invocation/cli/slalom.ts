@@ -1,10 +1,8 @@
 #!/usr/bin/env node
 
-// TODO pull out into config
+import { suppressConsoleLogging } from "./support/configureLogging";
 
-process.env.ATOMIST_DISABLE_LOGGING = "true";
-
-process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
+suppressConsoleLogging();
 
 import { addCommandsByName, addIntents } from "./command/addIntents";
 

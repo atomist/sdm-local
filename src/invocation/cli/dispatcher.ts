@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-process.env.ATOMIST_DISABLE_LOGGING = "true";
+import { suppressConsoleLogging } from "./support/configureLogging";
+
+suppressConsoleLogging();
 
 import { writeToConsole } from "./support/consoleOutput";
 
