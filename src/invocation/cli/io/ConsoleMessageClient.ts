@@ -7,12 +7,12 @@ import {
     SlackMessageClient,
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
-import { writeToConsole } from "../support/consoleOutput";
 
 import { logger } from "@atomist/automation-client";
 import { toStringArray } from "@atomist/automation-client/internal/util/string";
 import * as _ from "lodash";
 import * as marked from "marked";
+import { MarkedOptions } from "marked";
 
 import * as slack from "@atomist/slack-messages/SlackMessages";
 
@@ -56,22 +56,22 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
         chans.forEach(channel => {
             if (isSlackMessage(msg)) {
                 if (!!msg.text) {
-                    writeToConsole(chalk.green("#") + marked(` **${channel}** ` + msg));
+                    process.stdout.write(chalk.gray("#") + marked(` **${channel}** ` + msg, this.markedOptions));
                 }
                 msg.attachments.forEach(att => {
-                    writeToConsole(chalk.green("#") + marked(` **${channel}** ` + att.text));
+                    process.stdout.write(chalk.gray("#") + marked(` **${channel}** ` + att.text, this.markedOptions));
                     att.actions.forEach(action => {
                         this.renderAction(channel, action);
                     });
                 });
             } else {
-                writeToConsole(chalk.green("#") + marked(` **${channel}** ` + msg));
+                process.stdout.write(chalk.gray("#") + marked(` **${channel}** ` + msg, this.markedOptions));
             }
         });
     }
 
     public async addressUsers(msg: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
-        writeToConsole(`#${users} ${msg}`);
+        process.stdout.write(`#${users} ${msg}\n`);
     }
 
     private renderAction(channel: string, action: slack.Action) {
@@ -82,10 +82,15 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
             Object.getOwnPropertyNames(a.command.parameters).forEach(prop => {
                 url += `${prop}=${a.command.parameters[prop]}`;
             });
-            writeToConsole(chalk.green("#") + marked(` **${channel}** ${action.text} - ${url}`));
+            process.stdout.write(chalk.green("#") + marked(` **${channel}** ${action.text} - ${url}`, this.markedOptions));
         } else {
-            writeToConsole(JSON.stringify(action));
+            process.stdout.write(JSON.stringify(action) + "\n");
         }
+    }
+
+    constructor(public readonly markedOptions: MarkedOptions = {
+        breaks: false,
+    }) {
     }
 
 }
