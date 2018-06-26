@@ -17,13 +17,12 @@ import { AbstractSoftwareDeliveryMachine } from "@atomist/sdm/api-helper/machine
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
 import { LocalHandlerContext } from "../binding/LocalHandlerContext";
 import { localRunWithLogContext } from "../binding/localPush";
-import { errorMessage, warning } from "../invocation/cli/support/consoleOutput";
+import { warning } from "../invocation/cli/support/consoleOutput";
 import { addGitHooks, removeGitHooks } from "../setup/addGitHooks";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 import { invokeCommandHandlerWithFreshParametersInstance } from "./parameterPopulation";
 
-// tslint:disable-next-line:no-var-requires
-const chalk = require("chalk");
+import chalk from "chalk";
 
 /**
  * Local SDM implementation, designed to be driven by CLI and git hooks.
@@ -107,6 +106,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
                     warning("No goals set for push");
                     return;
                 }
+                this.configuration.goalDisplayer.displayGoalsSet(goals);
                 return this.executeGoals(goals, p, rwlc);
             });
     }
@@ -132,7 +132,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
         const completedInThisRun = await Promise.all(stillPending
             .filter(g => !stillWaiting(g))
             .map(async goal => {
-                await this.execGoal(p, rwlc, goal);
+                await this.execGoal(p, rwlc, goal, goals);
                 return goal;
             }),
         );
@@ -140,7 +140,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
 
         const stillNotDone = stillPending.filter(elt => !completedInThisRun.includes(elt));
         if (stillNotDone.length === 0) {
-            process.stdout.write(chalk.green("Goal execution complete"));
+            process.stdout.write(chalk.green("■ Goal execution complete"));
         } else {
             return this.executeGoals(goals, p, rwlc, stillNotDone);
         }
@@ -190,14 +190,16 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
 
     private async execGoal(project: GitProject,
                            rwlc: RunWithLogContext,
-                           goal: Goal) {
+                           goal: Goal,
+                           goals: Goals) {
         logger.info("Executing goal %s", goal.name);
+        this.configuration.goalDisplayer.displayGoalWorking(goal, goals);
         const pli = await createPushImpactListenerInvocation(rwlc, project);
         const goalFulfillment: GoalImplementation = await this.goalFulfillmentMapper.findFulfillmentByPush(goal, pli as any) as GoalImplementation;
         if (!goalFulfillment) {
             // Warn the user. Don't fail.
             // throw new Error(`Error: No implementation for goal '${goal.uniqueCamelCaseName}'`);
-            errorMessage(`Warning: No implementation for goal '${goal.uniqueCamelCaseName}'\n`);
+            warning(`No implementation for goal '${goal.uniqueCamelCaseName}'\n`);
             return;
         }
         const sdmGoal = constructSdmGoal(rwlc.context, {
@@ -213,12 +215,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             goalFulfillment.goalExecutor,
             rwlc,
             sdmGoal, goal, lastLinesLogInterpreter(goal.name));
-        if (goalResult.code !== 0) {
-            errorMessage(`✖︎︎ ${goal.failureDescription}\n`);
-            throw new Error(`Goal execution failed: ${goalResult.message}`);
-        } else {
-            process.stdout.write(chalk.green(`✔ ${goal.successDescription}\n`));
-        }
+        this.configuration.goalDisplayer.displayGoalResult(goal, goalResult, goals);
     }
 
     private async doWithProjectUnderExpandedDirectoryTree(baseDir: string,

@@ -17,6 +17,7 @@ import { LocalMachineConfig } from "./LocalMachineConfig";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 
 import { warning } from "../invocation/cli/support/consoleOutput";
+import { WriteLineGoalDisplayer } from "../invocation/cli/support/WriteLineGoalDisplayer";
 
 export function mergeConfiguration(
     sdmDir: string,
@@ -38,6 +39,7 @@ export function mergeConfiguration(
         },
         mappedParameterResolver: new CliMappedParameterResolver(userConfig.repositoryOwnerParentDirectory),
         mergeAutofixes: true,
+        goalDisplayer: new WriteLineGoalDisplayer(),
         ...userConfig,
     };
 }
@@ -53,7 +55,7 @@ class MonkeyingProjectLoader implements ProjectLoader {
 
     public doWithProject<T>(params: ProjectLoadingParameters, action: WithLoadedProject<T>): Promise<T> {
         // Use local seed as preference if possible
-        // TODO could check if it's here
+        // TODO could check if it's here and try remote after that
         if (this.config.preferLocalSeeds && !isFileSystemRemoteRepoRef(params.id)) {
             params.id = FileSystemRemoteRepoRef.implied(this.config.repositoryOwnerParentDirectory,
                 params.id.owner, params.id.repo);

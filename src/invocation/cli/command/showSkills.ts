@@ -2,8 +2,7 @@ import { Argv } from "yargs";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { logExceptionsToConsole } from "../support/consoleOutput";
 
-// tslint:disable-next-line:no-var-requires
-const chalk = require("chalk");
+import chalk from "chalk";
 
 export function addShowSkills(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     yargs.command({

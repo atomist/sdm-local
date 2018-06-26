@@ -1,8 +1,6 @@
 import { logger } from "@atomist/automation-client";
 import { GraphClient, MutationOptions, QueryOptions } from "@atomist/automation-client/spi/graph/GraphClient";
-
-// tslint:disable-next-line:no-var-requires
-const chalk = require("chalk");
+import chalk from "chalk";
 
 export class LocalGraphClient implements GraphClient {
 

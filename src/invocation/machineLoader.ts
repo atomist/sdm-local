@@ -6,8 +6,7 @@ import { LocalMachineConfig } from "../machine/LocalMachineConfig";
 import { LocalSoftwareDeliveryMachine } from "../machine/LocalSoftwareDeliveryMachine";
 import { mergeConfiguration } from "../machine/mergeConfiguration";
 
-// tslint:disable-next-line:no-var-requires
-const chalk = require("chalk");
+import chalk from "chalk";
 
 const sdmRoot = determineSdmRoot();
 

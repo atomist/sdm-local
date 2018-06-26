@@ -1,8 +1,7 @@
 import { logger } from "@atomist/automation-client";
 import { sprintf } from "sprintf-js";
 
-// tslint:disable-next-line:no-var-requires
-const chalk = require("chalk");
+import chalk from "chalk";
 
 export function setCommandLineLogging() {
     // Relies on being Winston logging
@@ -20,11 +19,11 @@ export async function logExceptionsToConsole(what: () => Promise<any>) {
 }
 
 export function errorMessage(msg: string, ...args: any[]) {
-    process.stdout.write(chalk.red(sprintf(msg, args)));
+    process.stdout.write(chalk.red(sprintf("💀" + msg, args)));
 }
 
 export function warning(msg: string, ...args: any[]) {
-    process.stdout.write(chalk.yellow(sprintf(msg, args)));
+    process.stdout.write(chalk.yellowBright(sprintf("⚠︎ " + msg, args)));
 }
 
 export function infoMessage(msg: string, ...args: any[]) {

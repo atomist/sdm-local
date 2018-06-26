@@ -7,7 +7,7 @@ import { Configurable } from "@atomist/automation-client/project/git/Configurabl
 import { dirFor, parseOwnerAndRepo } from "./expandedTreeUtils";
 
 /**
- * RemoteRepoRef working against our expanded directory structure.
+ * RemoteRepoRef displayGoalWorking against our expanded directory structure.
  * Supports cloning and pushing.
  */
 export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {

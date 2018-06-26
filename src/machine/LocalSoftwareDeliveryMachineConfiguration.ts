@@ -1,5 +1,6 @@
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
+import { GoalDisplayer } from "../invocation/cli/support/GoalDisplayer";
 
 export interface LocalSoftwareDeliveryMachineConfiguration extends SoftwareDeliveryMachineConfiguration {
 
@@ -19,4 +20,6 @@ export interface LocalSoftwareDeliveryMachineConfiguration extends SoftwareDeliv
      * Whether to merge autofixes automatically
      */
     mergeAutofixes: boolean;
+
+    goalDisplayer: GoalDisplayer;
 }

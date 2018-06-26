@@ -24,8 +24,7 @@ marked.setOptions({
     renderer: new TerminalRenderer(),
 });
 
-// tslint:disable-next-line:no-var-requires
-const chalk = require("chalk");
+import chalk from "chalk";
 
 /**
  * Message client logging to the console. Uses color and renders markdown

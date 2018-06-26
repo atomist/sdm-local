@@ -4,12 +4,11 @@ import { RemoteRepoRef } from "@atomist/automation-client/operations/common/Repo
 import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
 import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
 import { appendOrCreateFileContent } from "@atomist/sdm/api-helper/project/appendOrCreate";
+import chalk from "chalk";
 import * as fs from "fs";
 import { sprintf } from "sprintf-js";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";
-// tslint:disable-next-line:no-var-requires
-const chalk = require("chalk");
 
 /**
  * Add Git hooks to the given repo

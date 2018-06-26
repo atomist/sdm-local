@@ -1,4 +1,5 @@
 import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
+import { GoalDisplayer } from "../invocation/cli/support/GoalDisplayer";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 
 /**
@@ -20,5 +21,7 @@ export interface LocalMachineConfig extends Partial<LocalSoftwareDeliveryMachine
      * Function to initialize machine
      */
     init: ConfigureMachine;
+
+    goalDisplayer?: GoalDisplayer;
 
 }
