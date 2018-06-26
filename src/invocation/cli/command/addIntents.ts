@@ -102,7 +102,7 @@ function exposeParameters(hi: CommandHandlerMetadata, args: Argv, allowUserInput
 async function runByIntent(sdm: LocalSoftwareDeliveryMachine,
                            intent: string,
                            command: any): Promise<any> {
-    writeToConsole({ message: `Recognized intent "${intent}"...`, color: "cyan" });
+    // writeToConsole({ message: `Recognized intent "${intent}"...`, color: "cyan" });
     const hm = sdm.commandsMetadata.find(h => !!h.intent && h.intent.includes(intent));
     if (!hm) {
         writeToConsole(`No command with intent [${intent}]: Known intents are \n${sdm.commandsMetadata
@@ -157,6 +157,7 @@ async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[
                 return {
                     name: nameToUse,
                     default: p.default_value,
+                    message: p.description,
                     validate: value => {
                         const pass = !p.pattern || value.match(new RegExp(p.pattern));
                         if (pass) {
