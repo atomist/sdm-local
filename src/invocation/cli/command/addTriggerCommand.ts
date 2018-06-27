@@ -3,21 +3,30 @@ import { Argv } from "yargs";
 import { determineCwd, withinExpandedTree } from "../../../binding/expandedTreeUtils";
 import { FileSystemRemoteRepoRef } from "../../../binding/FileSystemRemoteRepoRef";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
-import { GitHookEvent } from "../../git/onGitHook";
+import { handleGitHookEvent, HookEvents } from "../../../setup/gitHooks";
 import { errorMessage, logExceptionsToConsole } from "../support/consoleOutput";
 
-// TODO add which trigger
+/**
+ * Add a command to trigger execution following a git event
+ * @param {LocalSoftwareDeliveryMachine} sdm
+ * @param {yargs.Argv} yargs
+ */
 export function addTriggerCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     yargs.command({
-        command: "trigger",
+        command: "trigger <event>",
         describe: "Trigger commit action on the current repository",
-        handler: () => {
-            return logExceptionsToConsole(() => trigger(sdm));
+        builder: ra => {
+            return ra.positional("event", {
+                choices: HookEvents,
+            });
+        },
+        handler: ya => {
+            return logExceptionsToConsole(() => trigger(sdm, ya.event));
         },
     });
 }
 
-async function trigger(sdm: LocalSoftwareDeliveryMachine, event: GitHookEvent = "postCommit") {
+async function trigger(sdm: LocalSoftwareDeliveryMachine, event: string) {
     const currentDir = determineCwd();
     if (withinExpandedTree(sdm.configuration.repositoryOwnerParentDirectory, currentDir)) {
         const p = GitCommandGitProject.fromBaseDir(FileSystemRemoteRepoRef.fromDirectory({
@@ -26,7 +35,7 @@ async function trigger(sdm: LocalSoftwareDeliveryMachine, event: GitHookEvent = 
             }),
             currentDir, null, () => null);
         const { branch, sha } = await p.gitStatus();
-        return sdm[event](currentDir, branch, sha);
+        return handleGitHookEvent(sdm, event, {baseDir: currentDir, branch, sha});
     } else {
         errorMessage(
             `Working directory ${currentDir} is not within expanded working tree under ${sdm.configuration.repositoryOwnerParentDirectory}`);

@@ -1,5 +1,3 @@
-process.env.ATOMIST_DISABLE_LOGGING = "true";
-
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
 import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
@@ -7,10 +5,11 @@ import { appendOrCreateFileContent } from "@atomist/sdm/api-helper/project/appen
 import chalk from "chalk";
 import * as fs from "fs";
 import { sprintf } from "sprintf-js";
+import { HookEvents } from "./gitHooks";
+
+process.env.ATOMIST_DISABLE_LOGGING = "true";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";
-
-const HookFiles = [ "post-commit" ];
 
 /**
  * Add Git hooks to the given repo
@@ -36,7 +35,7 @@ export async function addGitHooksToProject(p: LocalProject, sdmBaseDir: string) 
     const atomistHookScriptPath = `${sdmBaseDir}/node_modules/@atomist/slalom/${AtomistHookScriptName}`;
     const jsScriptPath = `${sdmBaseDir}/node_modules/@atomist/slalom/build/src/invocation/git/onGitHook.js`;
 
-    for (const hookFile of HookFiles) {
+    for (const hookFile of HookEvents) {
         await appendOrCreateFileContent(
             {
                 path: `/.git/hooks/${hookFile}`,
@@ -53,7 +52,7 @@ export async function addGitHooksToProject(p: LocalProject, sdmBaseDir: string) 
 export async function removeGitHooks(id: RemoteRepoRef, baseDir: string) {
     if (fs.existsSync(`${baseDir}/.git`)) {
         const p = await NodeFsLocalProject.fromExistingDirectory(id, baseDir);
-        for (const hookFile of HookFiles) {
+        for (const hookFile of HookEvents) {
             await deatomizeScript(p, `/.git/hooks/${hookFile}`);
         }
     } else {
