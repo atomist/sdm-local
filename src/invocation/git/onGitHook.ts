@@ -7,8 +7,8 @@ import { logExceptionsToConsole, setCommandLineLogging } from "../cli/support/co
 setCommandLineLogging();
 
 import { logger } from "@atomist/automation-client";
-import { localSdmInstance } from "../machineLoader";
 import { camelize } from "tslint/lib/utils";
+import { localSdmInstance } from "../machineLoader";
 
 /**
  * Usage gitHookTrigger <git hook name> <directory>
