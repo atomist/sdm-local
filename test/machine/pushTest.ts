@@ -35,9 +35,9 @@ describe("LocalSoftwareDeliveryMachine push", () => {
                 AutofixGoal,
                 // FingerprintGoal, ReviewGoal, PushReactionGoal
             ]))
-            .addFingerprintListeners(AddressChannelsFingerprintListener)
+            .addFingerprintListener(AddressChannelsFingerprintListener)
             .addExtensionPacks(WellKnownGoals)
-            .addFingerprinterRegistrations({
+            .addFingerprinterRegistration({
                 name: "fp1",
                 action: async pu => {
                     const fp = new TypedFingerprint("name", "NM", "0.1.0", { name: "tom" });
@@ -45,13 +45,13 @@ describe("LocalSoftwareDeliveryMachine push", () => {
                     return fp;
                 },
             })
-            .addAutofixes(AddThingAutofix)
-            .addReviewerRegistrations(HatesTheWorld)
-            .addReviewListeners(async r => {
+            .addAutofix(AddThingAutofix)
+            .addReviewerRegistration(HatesTheWorld)
+            .addReviewListener(async r => {
                 logger.info("REVIEW: %j", r.review);
             })
-            .addPushReactions(async p => p.addressChannels("Gotcha!"))
-            .addPushReactions({
+            .addPushReaction(async p => p.addressChannels("Gotcha!"))
+            .addPushReaction({
                 name: "thing",
                 pushTest: hasFileWithExtension("md"),
                 action: async pu => {

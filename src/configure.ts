@@ -43,16 +43,16 @@ export function configure(sdm: SoftwareDeliveryMachine) {
                 return rwlc.addressChannels("Running last");
             },
         )
-        .addAutofixes({
+        .addAutofix({
             name: "ensureHasThing2",
             action: async p => {
                 await p.project.addFile("thing2", "2");
                 return { edited: true, success: true, target: p.project };
             },
         })
-        .addFingerprintListeners(AddressChannelsFingerprintListener)
+        .addFingerprintListener(AddressChannelsFingerprintListener)
         .addExtensionPacks(WellKnownGoals)
-        .addFingerprinterRegistrations({
+        .addFingerprinterRegistration({
             name: "fp1",
             action: async pu => {
                 const fp = new TypedFingerprint("name", "NM", "0.1.0", { name: "tom" });
@@ -60,8 +60,8 @@ export function configure(sdm: SoftwareDeliveryMachine) {
                 return fp;
             },
         })
-        .addPushReactions(async p => p.addressChannels("Gotcha!"))
-        .addPushReactions({
+        .addPushReaction(async p => p.addressChannels("Gotcha!"))
+        .addPushReaction({
             name: "thing",
             pushTest: hasFileWithExtension("md"),
             action: async pu => {
@@ -69,25 +69,25 @@ export function configure(sdm: SoftwareDeliveryMachine) {
                 return pu.addressChannels(`Project at ${pu.id.url} has README=${hasReadme}`);
             },
         })
-        .addGenerators({
+        .addGenerator({
             name: "foo",
             editor: async p => p.addFile("local", "stuff"),
             paramsMaker: () => new MyParameters({
                 seed: () =>  new GitHubRepoRef("spring-team", "spring-rest-seed"),
             }),
         })
-        .addEditors({
+        .addEditor({
             name: "addThing",
             editor: async p => p.addFile("thing", "1"),
         })
-        .addCommands({
+        .addCommand({
             name: "hello",
             paramsMaker: HelloParameters,
             listener: async ci => ci.addressChannels(
                 !!ci.parameters.name ? `Hello _${ci.parameters.name}_` : "Hello world!",
             ),
         })
-        .addCommands({
+        .addCommand({
             name: "button",
             listener: async inv => {
                 const attachment: slack.Attachment = {

@@ -37,20 +37,22 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
         return this.registrationManager.eventHandlers;
     }
 
+    get ingesters(): string[] {
+        throw new Error("Ingesters are not supported in local SDM");
+    }
+
     public readonly goalFulfillmentMapper = new SdmGoalImplementationMapperImpl(undefined);
 
-    public addGenerators(...gens: Array<GeneratorRegistration<any>>): this {
+    public addGenerator(gen: GeneratorRegistration<any>): this {
         // We need to override this to disable web hook addition that fires graph client
-        gens.forEach(gen => {
-            const oldAction = gen.afterAction;
-            gen.afterAction = async (p, params) => {
-                params.addAtomistWebhook = false;
-                return !!oldAction ?
-                    oldAction(p, params) :
-                    successOn(p);
-            };
-        });
-        return super.addGenerators(...gens);
+        const oldAction = gen.afterAction;
+        gen.afterAction = async (p, params) => {
+            params.addAtomistWebhook = false;
+            return !!oldAction ?
+                oldAction(p, params) :
+                successOn(p);
+        };
+        return super.addGenerator(gen);
     }
 
     /**
