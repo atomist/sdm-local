@@ -35,7 +35,7 @@
     "@atomist/sdm-core": "^0.3.1"
   },
   "devDependencies": {
-    "@atomist/sdm": "https://r.atomist.com/2175753302",
+    "@atomist/sdm": "https://r.atomist.com/2248571156",
     "@atomist/sdm-core": "https://r.atomist.com/3470503841",
     "@types/lodash": "^4.14.109",
     "@types/mocha": "^2.2.48",
