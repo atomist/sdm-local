@@ -7,8 +7,6 @@ import * as fs from "fs";
 import { sprintf } from "sprintf-js";
 import { HookEvents } from "./gitHooks";
 
-process.env.ATOMIST_DISABLE_LOGGING = "true";
-
 const AtomistHookScriptName = "script/atomist-hook.sh";
 
 /**

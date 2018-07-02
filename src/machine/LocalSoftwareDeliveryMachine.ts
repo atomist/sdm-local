@@ -1,11 +1,10 @@
 import { HandleCommand, HandleEvent, HandlerContext, logger } from "@atomist/automation-client";
-import { successOn } from "@atomist/automation-client/action/ActionResult";
 import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { Maker, toFactory } from "@atomist/automation-client/util/constructionUtils";
-import { GeneratorRegistration, Goal, GoalImplementation, Goals, GoalSetter, hasPreconditions, RunWithLogContext } from "@atomist/sdm";
+import { Goal, GoalImplementation, Goals, GoalSetter, hasPreconditions, RunWithLogContext } from "@atomist/sdm";
 import { selfDescribingHandlers } from "@atomist/sdm-core";
 import { chooseAndSetGoals } from "@atomist/sdm/api-helper/goal/chooseAndSetGoals";
 import { executeGoal } from "@atomist/sdm/api-helper/goal/executeGoal";
@@ -42,18 +41,6 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
     }
 
     public readonly goalFulfillmentMapper = new SdmGoalImplementationMapperImpl(undefined);
-
-    public addGenerator(gen: GeneratorRegistration<any>): this {
-        // We need to override this to disable web hook addition that fires graph client
-        const oldAction = gen.afterAction;
-        gen.afterAction = async (p, params) => {
-            params.addAtomistWebhook = false;
-            return !!oldAction ?
-                oldAction(p, params) :
-                successOn(p);
-        };
-        return super.addGenerator(gen);
-    }
 
     /**
      * Install git hooks in all git projects under our expanded directory structure
