@@ -18,15 +18,20 @@ export function addTriggerCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv
         builder: ra => {
             return ra.positional("event", {
                 choices: HookEvents,
+            }).option("depth", {
+                required: false,
+                type: "number",
+                default: 1,
             });
         },
         handler: ya => {
-            return logExceptionsToConsole(() => trigger(sdm, ya.event));
+            return logExceptionsToConsole(() => trigger(sdm, ya.event, ya.depth));
         },
     });
 }
 
-async function trigger(sdm: LocalSoftwareDeliveryMachine, event: string) {
+async function trigger(sdm: LocalSoftwareDeliveryMachine, event: string, depth: number) {
+    console.log("Depth=" + depth)
     const currentDir = determineCwd();
     if (withinExpandedTree(sdm.configuration.repositoryOwnerParentDirectory, currentDir)) {
         const p = GitCommandGitProject.fromBaseDir(FileSystemRemoteRepoRef.fromDirectory({
