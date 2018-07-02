@@ -4,7 +4,8 @@ import { determineCwd, withinExpandedTree } from "../../../binding/expandedTreeU
 import { FileSystemRemoteRepoRef } from "../../../binding/FileSystemRemoteRepoRef";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { handleGitHookEvent, HookEvents } from "../../../setup/gitHooks";
-import { errorMessage, logExceptionsToConsole } from "../support/consoleOutput";
+import { shaHistory } from "../../../util/git";
+import { errorMessage, infoMessage, logExceptionsToConsole } from "../support/consoleOutput";
 
 /**
  * Add a command to trigger execution following a git event
@@ -13,13 +14,12 @@ import { errorMessage, logExceptionsToConsole } from "../support/consoleOutput";
  */
 export function addTriggerCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
     yargs.command({
-        command: "trigger <event>",
+        command: "trigger <event> [depth]",
         describe: "Trigger commit action on the current repository",
         builder: ra => {
             return ra.positional("event", {
                 choices: HookEvents,
-            }).option("depth", {
-                required: false,
+            }).positional("depth", {
                 type: "number",
                 default: 1,
             });
@@ -31,7 +31,6 @@ export function addTriggerCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv
 }
 
 async function trigger(sdm: LocalSoftwareDeliveryMachine, event: string, depth: number) {
-    console.log("Depth=" + depth)
     const currentDir = determineCwd();
     if (withinExpandedTree(sdm.configuration.repositoryOwnerParentDirectory, currentDir)) {
         const p = GitCommandGitProject.fromBaseDir(FileSystemRemoteRepoRef.fromDirectory({
@@ -39,8 +38,15 @@ async function trigger(sdm: LocalSoftwareDeliveryMachine, event: string, depth: 
                 baseDir: currentDir,
             }),
             currentDir, null, () => null);
-        const { branch, sha } = await p.gitStatus();
-        return handleGitHookEvent(sdm, event, {baseDir: currentDir, branch, sha});
+        const { branch } = await p.gitStatus();
+        // Go back on the current branch
+        const shas = (await shaHistory(p))
+            .slice(0, depth)
+            .reverse();
+        for (const sha of shas) {
+            infoMessage("Sha [%s]\n", sha);
+            await handleGitHookEvent(sdm, event, { baseDir: currentDir, branch, sha });
+        }
     } else {
         errorMessage(
             `Working directory ${currentDir} is not within expanded working tree under ${sdm.configuration.repositoryOwnerParentDirectory}`);

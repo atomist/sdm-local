@@ -6,7 +6,7 @@ import { CoreRepoFieldsAndChannels, OnPush, OnPushToAnyBranch, RunWithLogContext
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { messageClientAddressChannels } from "../invocation/cli/io/messageClientAddressChannels";
 import Commits = OnPush.Commits;
-import { lastCommitMessage } from "../util/lastMessage";
+import { lastCommitMessage } from "../util/git";
 import { LocalHandlerContext } from "./LocalHandlerContext";
 
 function repoFields(project: GitProject): CoreRepoFieldsAndChannels.Fragment {

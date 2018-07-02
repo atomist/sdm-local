@@ -11,3 +11,8 @@ export async function lastCommitMessage(p: GitProject): Promise<string> {
     const r = await promisify(exec)("git log -1 --pretty=%B", { cwd: p.baseDir});
     return r.stdout.trim();
 }
+
+export async function shaHistory(p: GitProject): Promise<string[]> {
+    const r = await promisify(exec)("git log --format=format:%H", { cwd: p.baseDir});
+    return r.stdout.trim().split("\n");
+}
