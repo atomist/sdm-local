@@ -69,6 +69,10 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
         return `file://${this.repositoryOwnerParentDirectory}/${this.owner}/${this.repo}`;
     }
 
+    public get url(): string {
+        return `file:/${this.repositoryOwnerParentDirectory}/${this.owner}/${this.repo}`;
+    }
+
     public get fileSystemLocation(): string {
         return `${this.repositoryOwnerParentDirectory}/${this.owner}/${this.repo}`;
     }

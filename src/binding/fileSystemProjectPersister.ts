@@ -5,6 +5,7 @@ import { NodeFsLocalProject } from "@atomist/automation-client/project/local/Nod
 import { execSync } from "child_process";
 import * as fs from "fs";
 import { addGitHooksToProject } from "../setup/addGitHooks";
+import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
 /**
  * Persist the project to the given local directory given expanded directory
@@ -14,8 +15,13 @@ import { addGitHooksToProject } from "../setup/addGitHooks";
  */
 export function fileSystemProjectPersister(repositoryOwnerParentDirectory: string,
                                            sdmBaseDir: string): ProjectPersister {
-    return async (p, _, id) => {
+    return async (p, _, id, params) => {
         const baseDir = `${repositoryOwnerParentDirectory}/${id.owner}/${id.repo}`;
+        const frr = FileSystemRemoteRepoRef.fromDirectory({
+            repositoryOwnerParentDirectory, baseDir});
+        // Override target repo to get file url
+        // TODO this is a bit nasty
+        Object.defineProperty((params as any).target, "repoRef", {get() { return frr; }});
         logger.info("Persisting to [%s]", baseDir);
         if (fs.existsSync(baseDir)) {
             throw new Error(`Cannot write new project to [${baseDir}] as this directory already exists`);
