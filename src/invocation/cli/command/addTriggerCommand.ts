@@ -44,7 +44,9 @@ async function trigger(sdm: LocalSoftwareDeliveryMachine, event: string, depth: 
             .slice(0, depth)
             .reverse();
         for (const sha of shas) {
-            infoMessage("Sha [%s]\n", sha);
+            if (depth > 1) {
+                infoMessage("Sha [%s]\n", sha);
+            }
             await handleGitHookEvent(sdm, event, { baseDir: currentDir, branch, sha });
         }
     } else {

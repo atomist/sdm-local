@@ -55,32 +55,39 @@ export function determineCwd(): string {
 }
 
 /**
- * What's the current SDM root?
+ * What's the current SDM root, given a directory. That is, the base of the SDM project.
+ * We can match the SDM root itself, or a project within it.
  * @return {string}
  */
 export function determineSdmRoot(): string | undefined {
-    let maybeSdmDir = determineCwd();
-    if (isSdmDir(maybeSdmDir)) {
+    let candidate = determineCwd();
+    if (isSdmDir(candidate)) {
         // We're in an SDM directory
-        return maybeSdmDir;
+        return candidate;
     }
 
-    // Check out directories 2 down
-    const grandkids: string[] = _.flatten(fs.readdirSync(maybeSdmDir)
-        .map(subdir => `${maybeSdmDir}/${subdir}`)
-        .filter(kid => fs.statSync(kid).isDirectory())
-        .map(kid => ({ kid, grandkids: fs.readdirSync(kid).map(gk => `${kid}/${gk}`).filter(g => fs.statSync(g).isDirectory()) }))
-        .map(path => path.grandkids),
-    );
-
-    const oneToUse = grandkids.find(isCheckedOutDir);
-    if (!!oneToUse) {
-        maybeSdmDir = oneToUse;
+    if (!isCheckedOutDir(candidate)) {
+        // Check out directories 2 down
+        const grandkids: string[] = _.flatten(fs.readdirSync(candidate)
+            .map(subdir => `${candidate}/${subdir}`)
+            .filter(kid => fs.statSync(kid).isDirectory())
+            .map(kid => ({ kid, grandkids: fs.readdirSync(kid).map(gk => `${kid}/${gk}`).filter(g => fs.statSync(g).isDirectory()) }))
+            .map(path => path.grandkids),
+        );
+        const oneToUse = grandkids.find(isCheckedOutDir);
+        if (!!oneToUse) {
+            candidate = oneToUse;
+        } else {
+            return undefined;
+        }
     }
 
     try {
         // Look for git hook
-        const hookContent = fs.readFileSync(`${maybeSdmDir}/.git/hooks/post-commit`).toString();
+        const hookContent = fs.readFileSync(`${candidate}/.git/hooks/post-commit`).toString();
+        if (!hookContent.includes("node_modules")) {
+            return undefined;
+        }
         // TODO this is fragile as it doesn't allow content before the Atomist path
         const sdmRoot = hookContent.slice(0, hookContent.indexOf("node_modules")).trim();
         return sdmRoot;

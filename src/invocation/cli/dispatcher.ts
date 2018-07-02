@@ -12,7 +12,7 @@ import { errorMessage } from "./support/consoleOutput";
 const sdmRoot = determineSdmRoot();
 
 if (!sdmRoot) {
-    errorMessage(`Cannot determine SDM root in ${determineCwd()}`);
+    errorMessage(`Cannot determine SDM root in ${determineCwd()}\n`);
     if (determineCwd().endsWith("sdm")) {
         errorMessage("You might need to `npm link @atomist/slalom`");
     }
