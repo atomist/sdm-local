@@ -10,6 +10,7 @@
   },
   "bin": {
     "slalom": "./build/src/invocation/cli/dispatcher.js",
+    "@atomist": "./build/src/invocation/cli/dispatcher.js",
     "slalom-itself": "./build/src/invocation/cli/slalom.js"
   },
   "keywords": [
@@ -35,8 +36,7 @@
     "@atomist/sdm-core": "^0.3.1"
   },
   "devDependencies": {
-    "@atomist/sdm": "https://r.atomist.com/2248571156",
-    "@atomist/sdm-core": "https://r.atomist.com/3470503841",
+    "@atomist/sdm": "^0.3.1-20180703221152",
     "@types/lodash": "^4.14.109",
     "@types/mocha": "^2.2.48",
     "@types/node": "^8.10.17",

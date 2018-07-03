@@ -29,6 +29,8 @@ export async function addGitHooks(id: RemoteRepoRef,
     }
 }
 
+// TODO addGitHook to current project, and work it from where we are, going up if needed
+
 export async function addGitHooksToProject(p: LocalProject, sdmBaseDir: string) {
     const atomistHookScriptPath = `${sdmBaseDir}/node_modules/@atomist/slalom/${AtomistHookScriptName}`;
     const jsScriptPath = `${sdmBaseDir}/node_modules/@atomist/slalom/build/src/invocation/git/onGitHook.js`;
