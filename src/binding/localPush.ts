@@ -7,7 +7,7 @@ import {
     GoalInvocation, Goals,
     OnPushToAnyBranch,
     PushFields,
-    RunWithLogContext,
+    GoalInvocation,
     SdmGoalEvent, SdmGoalMessage, SdmGoalState,
     StatusForExecuteGoal,
 } from "@atomist/sdm";

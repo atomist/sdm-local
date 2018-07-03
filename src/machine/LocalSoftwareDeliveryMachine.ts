@@ -4,7 +4,7 @@ import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/auto
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { Maker, toFactory } from "@atomist/automation-client/util/constructionUtils";
-import { Goal, GoalImplementation, Goals, GoalSetter, hasPreconditions, PushFields, RunWithLogContext } from "@atomist/sdm";
+import { Goal, GoalImplementation, Goals, GoalSetter, hasPreconditions, PushFields, GoalInvocation } from "@atomist/sdm";
 import { selfDescribingHandlers } from "@atomist/sdm-core";
 import { chooseAndSetGoals } from "@atomist/sdm/api-helper/goal/chooseAndSetGoals";
 import { executeGoal } from "@atomist/sdm/api-helper/goal/executeGoal";
@@ -110,7 +110,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
      * until done
      * @param {Goals} goals
      * @param {GitProject} p
-     * @param {RunWithLogContext} rwlc
+     * @param {GoalInvocation} goalInvocation
      * @param {Goal[]} stillPending
      * @return {Promise<any>}
      */
