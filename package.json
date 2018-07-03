@@ -23,7 +23,8 @@
     "url": "https://github.com/atomist/slalom/issues"
   },
   "dependencies": {
-    "@atomist/automation-client": "^0.17.4-20180621144910",
+    "@atomist/automation-client": "^0.18.0-20180703135350",
+    "@atomist/sdm-core": "^0.3.2-nortissej.deprecate-status.20180703231450",
     "@types/inquirer": "0.0.42",
     "@types/yargs": "^11.0.0",
     "express": "^4.16.3",
