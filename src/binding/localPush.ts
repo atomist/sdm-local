@@ -2,12 +2,20 @@ import { HandlerContext } from "@atomist/automation-client";
 import { EventIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import { CoreRepoFieldsAndChannels, OnPush, OnPushToAnyBranch, RunWithLogContext, StatusForExecuteGoal } from "@atomist/sdm";
+import {
+    CoreRepoFieldsAndChannels, Goal, GoalImplementation,
+    GoalInvocation, Goals,
+    OnPushToAnyBranch,
+    PushFields,
+    SdmGoalEvent, SdmGoalMessage, SdmGoalState,
+    StatusForExecuteGoal,
+} from "@atomist/sdm";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { messageClientAddressChannels } from "../invocation/cli/io/messageClientAddressChannels";
-import Commits = OnPush.Commits;
 import { lastCommitMessage } from "../util/git";
-import { LocalHandlerContext } from "./LocalHandlerContext";
+import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
+import { guid } from "@atomist/automation-client/internal/util/string";
+import { constructSdmGoal } from "@atomist/sdm/api-helper/goal/storeGoals";
 
 function repoFields(project: GitProject): CoreRepoFieldsAndChannels.Fragment {
     return {
@@ -31,10 +39,10 @@ function repoFields(project: GitProject): CoreRepoFieldsAndChannels.Fragment {
  * @param {GitProject} project
  * @return {OnPushToAnyBranch.Push}
  */
-async function pushFromLastCommit(project: GitProject): Promise<OnPushToAnyBranch.Push> {
+export async function pushFromLastCommit(project: GitProject): Promise<OnPushToAnyBranch.Push> {
     const status = await project.gitStatus();
     const repo = repoFields(project);
-    const lastCommit: Commits = {
+    const lastCommit: PushFields.Commits = {
         message: await lastCommitMessage(project),
         sha: status.sha,
     };
@@ -49,36 +57,45 @@ async function pushFromLastCommit(project: GitProject): Promise<OnPushToAnyBranc
     };
 }
 
-/**
- * Core invocation fields
- * @return {SdmContext}
- */
-function coreInvocation(context: HandlerContext) {
-    return {
-        context,
-        credentials: { token: "ABCD" },
-    };
-}
-
-export async function localRunWithLogContext(project: GitProject): Promise<RunWithLogContext> {
+export async function localGoalInvocation(project: GitProject,
+                                          context: HandlerContext,
+                                          credentials: ProjectOperationCredentials,
+                                          push: PushFields.Fragment,
+                                          goal: Goal,
+                                          goals: Goals,
+): Promise<GoalInvocation> {
     const status = await project.gitStatus();
+    const repoF = repoFields(project);
     const commit: StatusForExecuteGoal.Commit = {
         sha: status.sha,
-        repo: repoFields(project),
+        repo: repoF,
         pushes: [
-            await pushFromLastCommit(project),
+            push,
         ],
     };
-    const trigger = {} as EventIncoming;
-    const context = new LocalHandlerContext(project.id.repo, trigger);
+    const sdmGoalMessage: SdmGoalMessage = constructSdmGoal(context, {
+        goalSet: goals.name,
+        goalSetId: guid(),
+        goal,
+        state: SdmGoalState.requested,
+        id: project.id as any as RemoteRepoRef,
+        providerId: repoF.org.provider.providerId
+    });
+    const sdmGoalEvent: SdmGoalEvent = {
+        ...sdmGoalMessage,
+        push,
+    };
+
     const id = project.id as any as RemoteRepoRef;
-    return {
+    const result: GoalInvocation = {
+        sdmGoal: sdmGoalEvent,
         id,
-        ...coreInvocation(context),
+        context, credentials,
         addressChannels: messageClientAddressChannels(id, context),
         status: {
             commit,
         },
         progressLog: new LoggingProgressLog(`${id.owner}/${id.repo}`),
     };
+    return result;
 }
