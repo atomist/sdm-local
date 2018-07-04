@@ -36,8 +36,8 @@
     "@atomist/sdm-core": "^0.3.1"
   },
   "devDependencies": {
-    "@atomist/sdm": "^0.3.1-20180703221152",
-    "@atomist/sdm-core": "^0.3.2-nortissej.deprecate-status.20180703231450",
+    "@atomist/sdm": "https://r.atomist.com/4163482476",
+    "@atomist/sdm-core": "https://r.atomist.com/1387347290",
     "@types/lodash": "^4.14.109",
     "@types/mocha": "^2.2.48",
     "@types/node": "^8.10.17",

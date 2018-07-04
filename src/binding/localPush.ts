@@ -1,13 +1,16 @@
 import { HandlerContext } from "@atomist/automation-client";
-import { EventIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import {
-    CoreRepoFieldsAndChannels, Goal, GoalImplementation,
-    GoalInvocation, Goals,
+    CoreRepoFieldsAndChannels,
+    Goal,
+    GoalInvocation,
+    Goals,
     OnPushToAnyBranch,
     PushFields,
-    SdmGoalEvent, SdmGoalMessage, SdmGoalState,
+    SdmGoalEvent,
+    SdmGoalMessage,
+    SdmGoalState,
     StatusForExecuteGoal,
 } from "@atomist/sdm";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
