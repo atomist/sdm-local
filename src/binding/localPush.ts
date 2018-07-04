@@ -7,7 +7,6 @@ import {
     GoalInvocation, Goals,
     OnPushToAnyBranch,
     PushFields,
-    GoalInvocation,
     SdmGoalEvent, SdmGoalMessage, SdmGoalState,
     StatusForExecuteGoal,
 } from "@atomist/sdm";
@@ -59,9 +58,9 @@ export async function pushFromLastCommit(project: GitProject): Promise<OnPushToA
 }
 
 export async function localGoalInvocation(project: GitProject,
-                                             context: HandlerContext,
-                                             credentials: ProjectOperationCredentials,
-                                             push: PushFields.Fragment,
+                                          context: HandlerContext,
+                                          credentials: ProjectOperationCredentials,
+                                          push: PushFields.Fragment,
                                           goal: Goal,
                                           goals: Goals,
 ): Promise<GoalInvocation> {
@@ -76,11 +75,12 @@ export async function localGoalInvocation(project: GitProject,
     };
     const sdmGoalMessage: SdmGoalMessage = constructSdmGoal(context, {
         goalSet: goals.name,
-            goalSetId: guid(),
-            goal,
-            state:  SdmGoalState.requested,
-            id: project.id as any as RemoteRepoRef,
-            providerId: repoF.org.provider.providerId});
+        goalSetId: guid(),
+        goal,
+        state: SdmGoalState.requested,
+        id: project.id as any as RemoteRepoRef,
+        providerId: repoF.org.provider.providerId
+    });
     const sdmGoalEvent: SdmGoalEvent = {
         ...sdmGoalMessage,
         push,
