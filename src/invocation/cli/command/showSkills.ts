@@ -16,7 +16,7 @@ export function addShowSkills(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
                     let msg = "\t" + chalk.cyan(md.intent.map(intent => `"${intent}"`).join(","));
                     msg += "\t" + chalk.green(md.name);
                     msg += "\t" + chalk.gray(md.description);
-                    process.stdout.write(msg);
+                    process.stdout.write(msg + "\n");
                 });
             });
         },
