@@ -4,7 +4,17 @@ import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/auto
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { Maker, toFactory } from "@atomist/automation-client/util/constructionUtils";
-import { Goal, GoalImplementation, Goals, GoalSetter, hasPreconditions, PushFields, GoalInvocation } from "@atomist/sdm";
+import {
+    Goal,
+    GoalImplementation,
+    Goals,
+    GoalSetter,
+    hasPreconditions,
+    PushFields,
+    GoalInvocation,
+    BuildListenerInvocation,
+    AddressChannels, BuildStatus
+} from "@atomist/sdm";
 import { selfDescribingHandlers } from "@atomist/sdm-core";
 import { chooseAndSetGoals } from "@atomist/sdm/api-helper/goal/chooseAndSetGoals";
 import { executeGoal } from "@atomist/sdm/api-helper/goal/executeGoal";
@@ -23,11 +33,17 @@ import { invokeCommandHandlerWithFreshParametersInstance } from "./parameterPopu
 import chalk from "chalk";
 import { EventIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
+import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
+import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
+import { messageClientAddressChannels } from "../invocation/cli/io/messageClientAddressChannels";
+import { fakeContext } from "@atomist/sdm/api-helper/test/fakeContext";
 
 /**
  * Local SDM implementation, designed to be driven by CLI and git hooks.
  */
-export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachine<LocalSoftwareDeliveryMachineConfiguration> {
+export class LocalSoftwareDeliveryMachine
+    extends AbstractSoftwareDeliveryMachine<LocalSoftwareDeliveryMachineConfiguration>
+    implements BuildStatusUpdater {
 
     get commandHandlers(): Array<Maker<HandleCommand>> {
         return this.registrationManager.commandHandlers;
@@ -99,8 +115,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
                     warning("No goals set for push");
                     return;
                 }
-                this.configuration.goalDisplayer.displayGoalsSet(goals);
-
+                this.configuration.goalDisplayer.displayGoalsSet(sha, goals);
                 return this.executeGoals(goals, p, context, credentials, push);
             });
     }
@@ -136,10 +151,31 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
 
         const stillNotDone = stillPending.filter(elt => !completedInThisRun.includes(elt));
         if (stillNotDone.length === 0) {
-            process.stdout.write(chalk.green("■ Goal execution complete"));
+            process.stdout.write(chalk.green("■ Goal execution complete\n"));
         } else {
             return this.executeGoals(goals, p, context, credentials, push, stillNotDone);
         }
+    }
+
+    public async updateBuildStatus(runningBuild: { repoRef: RemoteRepoRef; url: string; team: string },
+                                   status: string,
+                                   branch: string,
+                                   buildNo: string): Promise<any> {
+        const id = runningBuild.repoRef;
+        const context = new LocalHandlerContext(
+            runningBuild.repoRef.repo,
+            {} as EventIncoming);
+        const addressChannels: AddressChannels = messageClientAddressChannels(id, context);
+        const bli: BuildListenerInvocation = {
+            context,
+            id,
+            credentials: null,
+            addressChannels,
+            build: { buildId: buildNo, status: status as any as BuildStatus },
+        };
+        await Promise.all(this.buildListeners
+            .map(l => l(bli)),
+        );
     }
 
     /**
@@ -189,7 +225,8 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
                            goal: Goal,
                            goals: Goals) {
         logger.info("Executing goal %s", goal.name);
-        this.configuration.goalDisplayer.displayGoalWorking(goal, goals);
+        const sha = (await project.gitStatus()).sha;
+        this.configuration.goalDisplayer.displayGoalWorking(sha, goal, goals);
         const goalInvocation = await localGoalInvocation(project, context, credentials, push, goal, goals);
         const pli = await createPushImpactListenerInvocation(goalInvocation, project);
         const goalFulfillment: GoalImplementation = await this.goalFulfillmentMapper.findFulfillmentByPush(goal, pli as any) as GoalImplementation;
@@ -207,7 +244,7 @@ export class LocalSoftwareDeliveryMachine extends AbstractSoftwareDeliveryMachin
             goalInvocation,
             goalInvocation.sdmGoal,
             goal, lastLinesLogInterpreter(goal.name));
-        this.configuration.goalDisplayer.displayGoalResult(goal, goalResult, goals);
+        this.configuration.goalDisplayer.displayGoalResult(sha, goal, goalResult, goals);
     }
 
 

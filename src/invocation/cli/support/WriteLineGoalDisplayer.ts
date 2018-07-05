@@ -8,15 +8,15 @@ import chalk from "chalk";
  */
 export class WriteLineGoalDisplayer implements GoalDisplayer {
 
-    public displayGoalsSet(goals: Goals) {
-        process.stdout.write(chalk.yellow(`▶ Goals: ${goals.goals.map(g => chalk.italic(g.name)).join(" ⏦ ")}\n`));
+    public displayGoalsSet(sha: string, goals: Goals) {
+        process.stdout.write(chalk.yellow(`▶ Goals for ${sha}: ${goals.goals.map(g => chalk.italic(g.name)).join(" ⏦ ")}\n`));
     }
 
-    public displayGoalWorking(goal: Goal, goals: Goals) {
+    public displayGoalWorking(sha: string, goal: Goal, goals: Goals) {
         process.stdout.write(chalk.yellow(`⚙︎ ${goal.inProcessDescription}\n`));
     }
 
-    public displayGoalResult(goal: Goal, ger: ExecuteGoalResult, goals: Goals) {
+    public displayGoalResult(sha: string, goal: Goal, ger: ExecuteGoalResult, goals: Goals) {
         if (ger.code !== 0) {
             process.stdout.write(chalk.red(`✖︎︎ ${goal.failureDescription}\n`));
         } else {

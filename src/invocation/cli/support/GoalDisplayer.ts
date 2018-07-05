@@ -5,9 +5,9 @@ import { ExecuteGoalResult, Goal, Goals } from "@atomist/sdm";
 
 export interface GoalDisplayer {
 
-    displayGoalsSet(goals: Goals);
+    displayGoalsSet(sha: string, goals: Goals);
 
-    displayGoalWorking(goal: Goal, goals: Goals);
+    displayGoalWorking(sha: string, goal: Goal, goals: Goals);
 
-    displayGoalResult(goal: Goal, ger: ExecuteGoalResult, goals: Goals);
+    displayGoalResult(sha: string, goal: Goal, ger: ExecuteGoalResult, goals: Goals);
 }
