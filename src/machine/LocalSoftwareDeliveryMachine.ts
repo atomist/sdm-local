@@ -97,6 +97,10 @@ export class LocalSoftwareDeliveryMachine
                 const credentials: ProjectOperationCredentials = { token: "ABCD" };
                 const push = await pushFromLastCommit(p);
 
+                if (!this.pushMapping) {
+                    logger.debug("Push received, but there are no pushMappings");
+                    return;
+                }
                 const goals = await chooseAndSetGoals(
                     {
                         repoRefResolver: this.configuration.sdm.repoRefResolver,
