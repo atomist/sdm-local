@@ -16,9 +16,9 @@ import { CliMappedParameterResolver } from "../invocation/cli/support/CliMappedP
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 
+import * as fs from "fs";
 import { infoMessage } from "../invocation/cli/support/consoleOutput";
 import { WriteLineGoalDisplayer } from "../invocation/cli/support/WriteLineGoalDisplayer";
-import * as fs from "fs";
 
 export function mergeConfiguration(
     sdmDir: string,
