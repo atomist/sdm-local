@@ -33,5 +33,5 @@ async function importFromGitRemote(sdm: LocalSoftwareDeliveryMachine,
         { cwd: orgDir });
     return addGitHooks(new GitHubRepoRef(org, repo),
         `${orgDir}/${repo}`,
-        sdm.sdmDir);
+        sdm.configuration.gitHookScript);
 }

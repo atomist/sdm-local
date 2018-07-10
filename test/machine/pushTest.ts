@@ -23,6 +23,7 @@ describe("LocalSoftwareDeliveryMachine push", () => {
             mergeConfiguration(__dirname,
                 {
                     name: "x",
+                    gitHookScript: __filename,
                     preferLocalSeeds: true,
                     repositoryOwnerParentDirectory: repoOwnerDirectory,
                     mergeAutofixes: true,
