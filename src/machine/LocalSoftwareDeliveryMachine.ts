@@ -68,7 +68,7 @@ export class LocalSoftwareDeliveryMachine
             if (!isFileSystemRemoteRepoRef(rr)) {
                 throw new Error(`Unexpected return from repo ref resolver: ${JSON.stringify(rr)}`);
             }
-            await addGitHooks(rr, rr.fileSystemLocation, this.sdmDir);
+            await addGitHooks(rr, rr.fileSystemLocation, this.configuration.gitHookScript);
         }
     }
 

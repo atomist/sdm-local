@@ -6,6 +6,7 @@ import chalk from "chalk";
 import * as fs from "fs";
 import { sprintf } from "sprintf-js";
 import { HookEvents } from "./gitHooks";
+import * as path from "path";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";
 
@@ -18,10 +19,10 @@ const AtomistHookScriptName = "script/atomist-hook.sh";
  */
 export async function addGitHooks(id: RemoteRepoRef,
                                   projectBaseDir: string,
-                                  sdmBaseDir: string) {
+                                  gitHookScript: string) {
     if (fs.existsSync(`${projectBaseDir}/.git`)) {
         const p = await NodeFsLocalProject.fromExistingDirectory(id, projectBaseDir);
-        return addGitHooksToProject(p, sdmBaseDir);
+        return addGitHooksToProject(p, gitHookScript);
     } else {
         process.stdout.write(
             chalk.gray(sprintf("addGitHooks: Ignoring directory at %s as it is not a git project\n"),
@@ -29,11 +30,12 @@ export async function addGitHooks(id: RemoteRepoRef,
     }
 }
 
+
 // TODO addGitHook to current project, and work it from where we are, going up if needed
 
-export async function addGitHooksToProject(p: LocalProject, sdmBaseDir: string) {
-    const atomistHookScriptPath = `${sdmBaseDir}/node_modules/@atomist/slalom/${AtomistHookScriptName}`;
-    const jsScriptPath = `${sdmBaseDir}/node_modules/@atomist/slalom/build/src/invocation/git/onGitHook.js`;
+export async function addGitHooksToProject(p: LocalProject, gitHookScript: string) {
+    const atomistHookScriptPath = path.join(__dirname, "../../", AtomistHookScriptName);
+    const jsScriptPath = gitHookScript;
 
     for (const hookFile of HookEvents) {
         await appendOrCreateFileContent(
