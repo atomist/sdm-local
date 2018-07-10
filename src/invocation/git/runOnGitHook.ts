@@ -6,13 +6,13 @@ setCommandLineLogging();
 
 import { logger } from "@atomist/automation-client";
 import { handleGitHookEvent } from "../../setup/gitHooks";
-import { localSdmInstance } from "../machineLoader";
+import { LocalSoftwareDeliveryMachine } from "../../machine/LocalSoftwareDeliveryMachine";
 
 /**
  * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
  */
 
-export function runOnGitHook(argv: string[]) {
+export function runOnGitHook(argv: string[], sdm: LocalSoftwareDeliveryMachine) {
     const args = argv.slice(2);
 
     const event: string = args[0];
@@ -26,6 +26,6 @@ export function runOnGitHook(argv: string[]) {
     /* tslint:disable */
 
     logExceptionsToConsole(() =>
-        handleGitHookEvent(localSdmInstance, event, { baseDir, branch, sha }),
+        handleGitHookEvent(sdm, event, { baseDir, branch, sha }),
     );
 }

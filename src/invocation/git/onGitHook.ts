@@ -1,3 +1,4 @@
 import { runOnGitHook } from "./runOnGitHook";
+import { localSdmInstance } from "../machineLoader";
 
-runOnGitHook(process.argv);
+runOnGitHook(process.argv, localSdmInstance);
