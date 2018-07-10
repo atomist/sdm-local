@@ -5,15 +5,15 @@ import { GitCommandGitProject } from "@atomist/automation-client/project/git/Git
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { Maker, toFactory } from "@atomist/automation-client/util/constructionUtils";
 import {
-    AddressChannels,
-    BuildListenerInvocation,
-    BuildStatus,
     Goal,
     GoalImplementation,
-    GoalInvocation,
     Goals,
     GoalSetter,
-    hasPreconditions, PushFields,
+    hasPreconditions,
+    PushFields,
+    GoalInvocation,
+    BuildListenerInvocation,
+    AddressChannels, BuildStatus,
 } from "@atomist/sdm";
 import { selfDescribingHandlers } from "@atomist/sdm-core";
 import { chooseAndSetGoals } from "@atomist/sdm/api-helper/goal/chooseAndSetGoals";
@@ -30,11 +30,11 @@ import { addGitHooks, removeGitHooks } from "../setup/addGitHooks";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 import { invokeCommandHandlerWithFreshParametersInstance } from "./parameterPopulation";
 
+import chalk from "chalk";
 import { EventIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
-import chalk from "chalk";
 import { messageClientAddressChannels } from "../invocation/cli/io/messageClientAddressChannels";
 
 /**
@@ -250,6 +250,7 @@ export class LocalSoftwareDeliveryMachine
         this.configuration.goalDisplayer.displayGoalResult(sha, goal, goalResult, goals);
     }
 
+
     private async doWithProjectUnderExpandedDirectoryTree(baseDir: string,
                                                           branch: string,
                                                           sha: string,
@@ -265,8 +266,7 @@ export class LocalSoftwareDeliveryMachine
         return action(p);
     }
 
-    constructor(public readonly sdmDir,
-                name: string,
+    constructor(name: string,
                 configuration: LocalSoftwareDeliveryMachineConfiguration,
                 ...goalSetters: Array<GoalSetter | GoalSetter[]>) {
         super(name, configuration, goalSetters);

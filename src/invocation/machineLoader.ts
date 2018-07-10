@@ -28,7 +28,6 @@ const config: LocalMachineConfig = require(modulePath).Config;
 // TODO could use multiple if necessary - with a command line argument
 
 export const localSdmInstance = new LocalSoftwareDeliveryMachine(
-    sdmRoot,
     config.name,
     mergeConfiguration(
         sdmRoot,
