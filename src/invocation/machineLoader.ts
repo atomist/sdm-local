@@ -1,12 +1,9 @@
-
 import { logger } from "@atomist/automation-client";
-import { WellKnownGoals } from "@atomist/sdm-core";
 import { determineCwd, determineSdmRoot } from "../binding/expandedTreeUtils";
 import { LocalMachineConfig } from "../machine/LocalMachineConfig";
-import { LocalSoftwareDeliveryMachine } from "../machine/LocalSoftwareDeliveryMachine";
-import { mergeConfiguration } from "../machine/mergeConfiguration";
 
 import chalk from "chalk";
+import { newLocalSdm } from "../machine/newLocalSdm";
 
 const sdmRoot = determineSdmRoot();
 
@@ -24,17 +21,5 @@ logger.info("Loading config from " + modulePath);
 
 // tslint:disable-next-line:no-var-requires
 const config: LocalMachineConfig = require(modulePath).Config;
-
-export function newLocalSdm(config: LocalMachineConfig): LocalSoftwareDeliveryMachine {
-    const sdm = new LocalSoftwareDeliveryMachine(
-        config.name,
-        mergeConfiguration(
-            config));
-    sdm.addExtensionPacks(WellKnownGoals);
-
-    config.init(sdm);
-
-    return sdm;
-}
 
 export const localSdmInstance = newLocalSdm(config);
