@@ -66,15 +66,7 @@ export async function localGoalInvocation(project: GitProject,
                                           goal: Goal,
                                           goals: Goals,
 ): Promise<GoalInvocation> {
-    const status = await project.gitStatus();
     const repoF = repoFields(project);
-    // const commit: StatusForExecuteGoal.Commit = {
-    //     sha: status.sha,
-    //     repo: repoF,
-    //     pushes: [
-    //         push,
-    //     ],
-    // };
     const sdmGoalMessage: SdmGoalMessage = constructSdmGoal(context, {
         goalSet: goals.name,
         goalSetId: guid(),

@@ -16,10 +16,10 @@ import { CliMappedParameterResolver } from "../invocation/cli/support/CliMappedP
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 
-import { infoMessage } from "../invocation/cli/support/consoleOutput";
-import { WriteLineGoalDisplayer } from "../invocation/cli/support/WriteLineGoalDisplayer";
 import * as fs from "fs";
 import * as path from "path";
+import { infoMessage } from "../invocation/cli/support/consoleOutput";
+import { WriteLineGoalDisplayer } from "../invocation/cli/support/WriteLineGoalDisplayer";
 
 export function mergeConfiguration(
     userConfig: LocalMachineConfig): LocalSoftwareDeliveryMachineConfiguration {
