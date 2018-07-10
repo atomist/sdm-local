@@ -14,7 +14,7 @@ import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
  * @return {ProjectPersister}
  */
 export function fileSystemProjectPersister(repositoryOwnerParentDirectory: string,
-                                           sdmBaseDir: string): ProjectPersister {
+                                           gitHookScript: string): ProjectPersister {
     return async (p, _, id, params) => {
         const baseDir = `${repositoryOwnerParentDirectory}/${id.owner}/${id.repo}`;
         const frr = FileSystemRemoteRepoRef.fromDirectory({
@@ -30,7 +30,7 @@ export function fileSystemProjectPersister(repositoryOwnerParentDirectory: strin
         execSync("git init", { cwd: baseDir });
         execSync("git add .", { cwd: baseDir });
         execSync(`git commit -a -m "Initial commit from Atomist"`, { cwd: baseDir });
-        await addGitHooksToProject(createdProject, sdmBaseDir);
+        await addGitHooksToProject(createdProject, gitHookScript);
         return successOn(createdProject);
     };
 }
