@@ -9,7 +9,7 @@ import { handleGitHookEvent } from "../../setup/gitHooks";
 import { localSdmInstance } from "../machineLoader";
 
 /**
- * Usage gitHookTrigger <git hook name> <directory>
+ * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
  */
 
 const args = process.argv.slice(2);

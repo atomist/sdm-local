@@ -25,12 +25,16 @@ logger.info("Loading config from " + modulePath);
 // tslint:disable-next-line:no-var-requires
 const config: LocalMachineConfig = require(modulePath).Config;
 
-// TODO could use multiple if necessary - with a command line argument
+export function newLocalSdm(config: LocalMachineConfig): LocalSoftwareDeliveryMachine {
+    const sdm = new LocalSoftwareDeliveryMachine(
+        config.name,
+        mergeConfiguration(
+            config));
+    sdm.addExtensionPacks(WellKnownGoals);
 
-export const localSdmInstance = new LocalSoftwareDeliveryMachine(
-    config.name,
-    mergeConfiguration(
-        config));
-localSdmInstance.addExtensionPacks(WellKnownGoals);
+    config.init(sdm);
 
-config.init(localSdmInstance);
+    return sdm;
+}
+
+export const localSdmInstance = newLocalSdm(config);
