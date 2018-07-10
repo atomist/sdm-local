@@ -1,4 +1,6 @@
 import { HandlerContext } from "@atomist/automation-client";
+import { guid } from "@atomist/automation-client/internal/util/string";
+import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import {
@@ -12,12 +14,10 @@ import {
     SdmGoalMessage,
     SdmGoalState,
 } from "@atomist/sdm";
+import { constructSdmGoal } from "@atomist/sdm/api-helper/goal/storeGoals";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { messageClientAddressChannels } from "../invocation/cli/io/messageClientAddressChannels";
 import { lastCommitMessage } from "../util/git";
-import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
-import { guid } from "@atomist/automation-client/internal/util/string";
-import { constructSdmGoal } from "@atomist/sdm/api-helper/goal/storeGoals";
 
 function repoFields(project: GitProject): CoreRepoFieldsAndChannels.Fragment {
     return {
@@ -66,15 +66,7 @@ export async function localGoalInvocation(project: GitProject,
                                           goal: Goal,
                                           goals: Goals,
 ): Promise<GoalInvocation> {
-    const status = await project.gitStatus();
     const repoF = repoFields(project);
-    // const commit: StatusForExecuteGoal.Commit = {
-    //     sha: status.sha,
-    //     repo: repoF,
-    //     pushes: [
-    //         push,
-    //     ],
-    // };
     const sdmGoalMessage: SdmGoalMessage = constructSdmGoal(context, {
         goalSet: goals.name,
         goalSetId: guid(),

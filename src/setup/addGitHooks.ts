@@ -4,9 +4,9 @@ import { NodeFsLocalProject } from "@atomist/automation-client/project/local/Nod
 import { appendOrCreateFileContent } from "@atomist/sdm/api-helper/project/appendOrCreate";
 import chalk from "chalk";
 import * as fs from "fs";
+import * as path from "path";
 import { sprintf } from "sprintf-js";
 import { HookEvents } from "./gitHooks";
-import * as path from "path";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";
 
@@ -29,7 +29,6 @@ export async function addGitHooks(id: RemoteRepoRef,
                 projectBaseDir));
     }
 }
-
 
 // TODO addGitHook to current project, and work it from where we are, going up if needed
 
@@ -70,12 +69,12 @@ export async function removeGitHooks(id: RemoteRepoRef, baseDir: string) {
  * @param {string} path
  * @return {Promise<void>}
  */
-async function deatomizeScript(p: LocalProject, path: string) {
-    const script = await p.getFile(path);
+async function deatomizeScript(p: LocalProject, scriptPath: string) {
+    const script = await p.getFile(scriptPath);
     if (!script) {
         process.stdout.write(chalk.gray(sprintf(
             "removeGitHooks: No git hook %s in project at %s\n",
-            path,
+            scriptPath,
             p.baseDir)));
     } else {
         const content = await script.getContent();
@@ -88,14 +87,14 @@ async function deatomizeScript(p: LocalProject, path: string) {
             await script.setContent(nonAtomist);
             process.stdout.write(chalk.gray(sprintf(
                 "removeGitHooks: Removing Atomist content from git hook %s in project at %s: Leaving \n%s",
-                path,
+                scriptPath,
                 p.baseDir,
                 nonAtomist)));
         } else {
-            await p.deleteFile(path);
+            await p.deleteFile(scriptPath);
             process.stdout.write(chalk.gray(sprintf(
                 "removeGitHooks: Removing git hook %s in project at %s\n",
-                path,
+                scriptPath,
                 p.baseDir)));
         }
     }
