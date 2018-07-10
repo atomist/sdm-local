@@ -36,7 +36,6 @@ import { ProjectOperationCredentials } from "@atomist/automation-client/operatio
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
 import { messageClientAddressChannels } from "../invocation/cli/io/messageClientAddressChannels";
-import { fakeContext } from "@atomist/sdm/api-helper/test/fakeContext";
 
 /**
  * Local SDM implementation, designed to be driven by CLI and git hooks.

@@ -45,9 +45,9 @@ export function configure(sdm: SoftwareDeliveryMachine) {
         )
         .addAutofix({
             name: "ensureHasThing2",
-            action: async p => {
-                await p.project.addFile("thing2", "2");
-                return { edited: true, success: true, target: p.project };
+            transform: async p => {
+                await p.addFile("thing2", "2");
+                return { edited: true, success: true, target: p };
             },
         })
         .addFingerprintListener(AddressChannelsFingerprintListener)
@@ -69,16 +69,16 @@ export function configure(sdm: SoftwareDeliveryMachine) {
                 return pu.addressChannels(`Project at ${pu.id.url} has README=${hasReadme}`);
             },
         })
-        .addGenerator({
+        .addGeneratorCommand({
             name: "foo",
-            editor: async p => p.addFile("local", "stuff"),
+            transform: async p => p.addFile("local", "stuff"),
             paramsMaker: () => new MyParameters({
                 seed: () =>  new GitHubRepoRef("spring-team", "spring-rest-seed"),
             }),
         })
-        .addEditor({
+        .addCodeTransformCommand({
             name: "addThing",
-            editor: async p => p.addFile("thing", "1"),
+            transform: async p => p.addFile("thing", "1"),
         })
         .addCommand({
             name: "hello",

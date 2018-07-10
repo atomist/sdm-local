@@ -36,7 +36,7 @@ export function mergeConfiguration(
             repoRefResolver,
             repoFinder: expandedDirectoryRepoFinder(userConfig.repositoryOwnerParentDirectory),
             projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory, sdmDir),
-            targets: new LocalTargetsParams(userConfig.repositoryOwnerParentDirectory),
+            targets: () => new LocalTargetsParams(userConfig.repositoryOwnerParentDirectory),
         },
         mappedParameterResolver: new CliMappedParameterResolver(userConfig.repositoryOwnerParentDirectory),
         mergeAutofixes: true,

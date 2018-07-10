@@ -71,9 +71,9 @@ describe("LocalSoftwareDeliveryMachine push", () => {
 
 export const AddThingAutofix: AutofixRegistration = {
     name: "AddThing",
-    action: async cri => {
-        await cri.project.addFile("thing", "1");
-        return { edited: true, success: true, target: cri.project };
+    transform: async project => {
+        await project.addFile("thing", "1");
+        return { edited: true, success: true, target: project };
     },
 };
 

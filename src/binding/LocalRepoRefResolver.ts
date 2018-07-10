@@ -1,5 +1,5 @@
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
-import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, RepoRefResolver, ScmProvider, StatusForExecuteGoal } from "@atomist/sdm";
+import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, RepoRefResolver, ScmProvider } from "@atomist/sdm";
 import { SdmGoal } from "@atomist/sdm/api/goal/SdmGoal";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
@@ -7,10 +7,6 @@ export class LocalRepoRefResolver implements RepoRefResolver {
 
     public providerIdFromPush(push: OnPushToAnyBranch.Push): string|null {
         return "local";
-    }
-
-    public providerIdFromStatus(status: StatusForExecuteGoal.Fragment): string|null {
-        throw new Error();
     }
 
     public repoRefFromPush(push: OnPushToAnyBranch.Push): RemoteRepoRef {

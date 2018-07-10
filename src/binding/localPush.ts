@@ -11,7 +11,6 @@ import {
     SdmGoalEvent,
     SdmGoalMessage,
     SdmGoalState,
-    StatusForExecuteGoal,
 } from "@atomist/sdm";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { messageClientAddressChannels } from "../invocation/cli/io/messageClientAddressChannels";
@@ -69,20 +68,20 @@ export async function localGoalInvocation(project: GitProject,
 ): Promise<GoalInvocation> {
     const status = await project.gitStatus();
     const repoF = repoFields(project);
-    const commit: StatusForExecuteGoal.Commit = {
-        sha: status.sha,
-        repo: repoF,
-        pushes: [
-            push,
-        ],
-    };
+    // const commit: StatusForExecuteGoal.Commit = {
+    //     sha: status.sha,
+    //     repo: repoF,
+    //     pushes: [
+    //         push,
+    //     ],
+    // };
     const sdmGoalMessage: SdmGoalMessage = constructSdmGoal(context, {
         goalSet: goals.name,
         goalSetId: guid(),
         goal,
         state: SdmGoalState.requested,
         id: project.id as any as RemoteRepoRef,
-        providerId: repoF.org.provider.providerId
+        providerId: repoF.org.provider.providerId,
     });
     const sdmGoalEvent: SdmGoalEvent = {
         ...sdmGoalMessage,
@@ -95,9 +94,9 @@ export async function localGoalInvocation(project: GitProject,
         id,
         context, credentials,
         addressChannels: messageClientAddressChannels(id, context),
-        status: {
-            commit,
-        },
+        // status: {
+        //     commit,
+        // },
         progressLog: new LoggingProgressLog(`${id.owner}/${id.repo}`),
     };
     return result;
