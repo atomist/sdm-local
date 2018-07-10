@@ -13,7 +13,7 @@ import {
     PushFields,
     GoalInvocation,
     BuildListenerInvocation,
-    AddressChannels, BuildStatus
+    AddressChannels, BuildStatus,
 } from "@atomist/sdm";
 import { selfDescribingHandlers } from "@atomist/sdm-core";
 import { chooseAndSetGoals } from "@atomist/sdm/api-helper/goal/chooseAndSetGoals";
@@ -266,8 +266,7 @@ export class LocalSoftwareDeliveryMachine
         return action(p);
     }
 
-    constructor(public readonly sdmDir,
-                name: string,
+    constructor(name: string,
                 configuration: LocalSoftwareDeliveryMachineConfiguration,
                 ...goalSetters: Array<GoalSetter | GoalSetter[]>) {
         super(name, configuration, goalSetters);
