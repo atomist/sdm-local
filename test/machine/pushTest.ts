@@ -20,7 +20,7 @@ describe("LocalSoftwareDeliveryMachine push", () => {
         const repoOwnerDirectory = RepositoryOwnerParentDirectory;
         const sdm = new LocalSoftwareDeliveryMachine(
             "name",
-            mergeConfiguration(__dirname,
+            mergeConfiguration(
                 {
                     name: "x",
                     gitHookScript: __filename,

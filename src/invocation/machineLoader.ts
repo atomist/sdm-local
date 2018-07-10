@@ -30,7 +30,6 @@ const config: LocalMachineConfig = require(modulePath).Config;
 export const localSdmInstance = new LocalSoftwareDeliveryMachine(
     config.name,
     mergeConfiguration(
-        sdmRoot,
         config));
 localSdmInstance.addExtensionPacks(WellKnownGoals);
 
