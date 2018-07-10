@@ -23,7 +23,7 @@ import { WriteLineGoalDisplayer } from "../invocation/cli/support/WriteLineGoalD
 
 export function mergeConfiguration(
     userConfig: LocalMachineConfig): LocalSoftwareDeliveryMachineConfiguration {
-    const gitHookScript = userConfig.gitHookScript || path.join(__dirname, "../invocation/git/onGitHook.ts");
+    const gitHookScript = userConfig.gitHookScript || path.join(__dirname, "../invocation/git/onGitHook.js");
     const repoRefResolver = new LocalRepoRefResolver(userConfig.repositoryOwnerParentDirectory);
     return {
         sdm: {

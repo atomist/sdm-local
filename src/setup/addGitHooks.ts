@@ -14,7 +14,7 @@ const AtomistHookScriptName = "script/atomist-hook.sh";
  * Add Git hooks to the given repo
  * @param {RemoteRepoRef} id
  * @param {string} projectBaseDir
- * @param sdmBaseDir base directory to install
+ * @param gitHookScript absolute path to the script to run when a hook fires
  * @return {Promise<void>}
  */
 export async function addGitHooks(id: RemoteRepoRef,
@@ -33,7 +33,7 @@ export async function addGitHooks(id: RemoteRepoRef,
 // TODO addGitHook to current project, and work it from where we are, going up if needed
 
 export async function addGitHooksToProject(p: LocalProject, gitHookScript: string) {
-    const atomistHookScriptPath = path.join(__dirname, "../../", AtomistHookScriptName);
+    const atomistHookScriptPath = path.join(__dirname, "../../../", AtomistHookScriptName);
     const jsScriptPath = gitHookScript;
 
     for (const hookFile of HookEvents) {
