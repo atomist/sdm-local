@@ -22,7 +22,6 @@ import * as fs from "fs";
 import * as path from "path";
 
 export function mergeConfiguration(
-    sdmDir: string,
     userConfig: LocalMachineConfig): LocalSoftwareDeliveryMachineConfiguration {
     const gitHookScript = userConfig.gitHookScript || path.join(__dirname, "../invocation/git/onGitHook.ts");
     const repoRefResolver = new LocalRepoRefResolver(userConfig.repositoryOwnerParentDirectory);
