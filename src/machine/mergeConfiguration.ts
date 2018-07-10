@@ -16,13 +16,15 @@ import { CliMappedParameterResolver } from "../invocation/cli/support/CliMappedP
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 
-import * as fs from "fs";
 import { infoMessage } from "../invocation/cli/support/consoleOutput";
 import { WriteLineGoalDisplayer } from "../invocation/cli/support/WriteLineGoalDisplayer";
+import * as fs from "fs";
+import * as path from "path";
 
 export function mergeConfiguration(
     sdmDir: string,
     userConfig: LocalMachineConfig): LocalSoftwareDeliveryMachineConfiguration {
+    const gitHookScript = userConfig.gitHookScript || path.join(__dirname, "../invocation/git/onGitHook.ts");
     const repoRefResolver = new LocalRepoRefResolver(userConfig.repositoryOwnerParentDirectory);
     return {
         sdm: {
@@ -35,12 +37,13 @@ export function mergeConfiguration(
             credentialsResolver: EnvironmentTokenCredentialsResolver,
             repoRefResolver,
             repoFinder: expandedDirectoryRepoFinder(userConfig.repositoryOwnerParentDirectory),
-            projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory, sdmDir),
+            projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory, gitHookScript),
             targets: () => new LocalTargetsParams(userConfig.repositoryOwnerParentDirectory),
         },
         mappedParameterResolver: new CliMappedParameterResolver(userConfig.repositoryOwnerParentDirectory),
         mergeAutofixes: true,
         goalDisplayer: new WriteLineGoalDisplayer(),
+        gitHookScript,
         ...userConfig,
     };
 }
