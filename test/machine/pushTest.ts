@@ -19,11 +19,11 @@ describe("LocalSoftwareDeliveryMachine push", () => {
     it("should expose push reaction", async () => {
         const repoOwnerDirectory = RepositoryOwnerParentDirectory;
         const sdm = new LocalSoftwareDeliveryMachine(
-            __dirname,
             "name",
-            mergeConfiguration(__dirname,
+            mergeConfiguration(
                 {
                     name: "x",
+                    gitHookScript: __filename,
                     preferLocalSeeds: true,
                     repositoryOwnerParentDirectory: repoOwnerDirectory,
                     mergeAutofixes: true,
@@ -50,8 +50,8 @@ describe("LocalSoftwareDeliveryMachine push", () => {
             .addReviewListener(async r => {
                 logger.info("REVIEW: %j", r.review);
             })
-            .addPushReaction(async p => p.addressChannels("Gotcha!"))
-            .addPushReaction({
+            .addPushImpactListener(async p => p.addressChannels("Gotcha!"))
+            .addPushImpactListener({
                 name: "thing",
                 pushTest: hasFileWithExtension("md"),
                 action: async pu => {
@@ -59,7 +59,7 @@ describe("LocalSoftwareDeliveryMachine push", () => {
                     return pu.addressChannels(`Project at ${pu.id.url} has readme=${hasReadme}`);
                 },
             });
-        assert.equal(sdm.pushReactionRegistrations.length, 2);
+        assert.equal(sdm.pushImpactListenerRegistrations.length, 2);
 
         await sdm.postCommit(
             `${sdm.configuration.repositoryOwnerParentDirectory}/spring-team/spring-rest-seed`,

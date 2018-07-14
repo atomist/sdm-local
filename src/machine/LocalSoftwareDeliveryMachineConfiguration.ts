@@ -12,6 +12,12 @@ export interface LocalSoftwareDeliveryMachineConfiguration extends SoftwareDeliv
     mappedParameterResolver: MappedParameterResolver;
 
     /**
+     * Full path to local script to call from git hooks.
+     * typically <SDM project home>/src/local/build/src/gitHook.js
+     */
+    gitHookScript: string;
+
+    /**
      * Override local seeds?
      */
     preferLocalSeeds: boolean;

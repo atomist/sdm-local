@@ -1,12 +1,12 @@
 import { MappedParameter, MappedParameters, Parameter, Parameters } from "@atomist/automation-client";
-import { FallbackParams } from "@atomist/automation-client/operations/common/params/FallbackParams";
 import { GitBranchRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
 import { TargetsParams } from "@atomist/automation-client/operations/common/params/TargetsParams";
 import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
+import { RepoTargets } from "@atomist/sdm";
 
 @Parameters()
-export class LocalTargetsParams extends TargetsParams implements FallbackParams {
+export class LocalRepoTargets extends TargetsParams implements RepoTargets {
 
     @MappedParameter(MappedParameters.GitHubApiUrl, false)
     public apiUrl: string;
@@ -45,6 +45,9 @@ export class LocalTargetsParams extends TargetsParams implements FallbackParams 
                 sha: undefined,
             }) :
             undefined;
+    }
+
+    public bindAndValidate() {
     }
 
 }

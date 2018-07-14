@@ -4,6 +4,7 @@ import { NodeFsLocalProject } from "@atomist/automation-client/project/local/Nod
 import { appendOrCreateFileContent } from "@atomist/sdm/api-helper/project/appendOrCreate";
 import chalk from "chalk";
 import * as fs from "fs";
+import * as path from "path";
 import { sprintf } from "sprintf-js";
 import { HookEvents } from "./gitHooks";
 
@@ -13,15 +14,15 @@ const AtomistHookScriptName = "script/atomist-hook.sh";
  * Add Git hooks to the given repo
  * @param {RemoteRepoRef} id
  * @param {string} projectBaseDir
- * @param sdmBaseDir base directory to install
+ * @param gitHookScript absolute path to the script to run when a hook fires
  * @return {Promise<void>}
  */
 export async function addGitHooks(id: RemoteRepoRef,
                                   projectBaseDir: string,
-                                  sdmBaseDir: string) {
+                                  gitHookScript: string) {
     if (fs.existsSync(`${projectBaseDir}/.git`)) {
         const p = await NodeFsLocalProject.fromExistingDirectory(id, projectBaseDir);
-        return addGitHooksToProject(p, sdmBaseDir);
+        return addGitHooksToProject(p, gitHookScript);
     } else {
         process.stdout.write(
             chalk.gray(sprintf("addGitHooks: Ignoring directory at %s as it is not a git project\n"),
@@ -31,9 +32,9 @@ export async function addGitHooks(id: RemoteRepoRef,
 
 // TODO addGitHook to current project, and work it from where we are, going up if needed
 
-export async function addGitHooksToProject(p: LocalProject, sdmBaseDir: string) {
-    const atomistHookScriptPath = `${sdmBaseDir}/node_modules/@atomist/slalom/${AtomistHookScriptName}`;
-    const jsScriptPath = `${sdmBaseDir}/node_modules/@atomist/slalom/build/src/invocation/git/onGitHook.js`;
+export async function addGitHooksToProject(p: LocalProject, gitHookScript: string) {
+    const atomistHookScriptPath = path.join(__dirname, "../../../", AtomistHookScriptName);
+    const jsScriptPath = gitHookScript;
 
     for (const hookFile of HookEvents) {
         await appendOrCreateFileContent(
@@ -68,12 +69,12 @@ export async function removeGitHooks(id: RemoteRepoRef, baseDir: string) {
  * @param {string} path
  * @return {Promise<void>}
  */
-async function deatomizeScript(p: LocalProject, path: string) {
-    const script = await p.getFile(path);
+async function deatomizeScript(p: LocalProject, scriptPath: string) {
+    const script = await p.getFile(scriptPath);
     if (!script) {
         process.stdout.write(chalk.gray(sprintf(
             "removeGitHooks: No git hook %s in project at %s\n",
-            path,
+            scriptPath,
             p.baseDir)));
     } else {
         const content = await script.getContent();
@@ -86,14 +87,14 @@ async function deatomizeScript(p: LocalProject, path: string) {
             await script.setContent(nonAtomist);
             process.stdout.write(chalk.gray(sprintf(
                 "removeGitHooks: Removing Atomist content from git hook %s in project at %s: Leaving \n%s",
-                path,
+                scriptPath,
                 p.baseDir,
                 nonAtomist)));
         } else {
-            await p.deleteFile(path);
+            await p.deleteFile(scriptPath);
             process.stdout.write(chalk.gray(sprintf(
                 "removeGitHooks: Removing git hook %s in project at %s\n",
-                path,
+                scriptPath,
                 p.baseDir)));
         }
     }

@@ -10,19 +10,20 @@ import { dirFor } from "../binding/expandedTreeUtils";
 import { fileSystemProjectPersister } from "../binding/fileSystemProjectPersister";
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
 import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
-import { LocalTargetsParams } from "../binding/LocalTargetsParams";
+import { LocalRepoTargets } from "../binding/LocalRepoTargets";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
 import { CliMappedParameterResolver } from "../invocation/cli/support/CliMappedParameterResolver";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 
 import * as fs from "fs";
+import * as path from "path";
 import { infoMessage } from "../invocation/cli/support/consoleOutput";
 import { WriteLineGoalDisplayer } from "../invocation/cli/support/WriteLineGoalDisplayer";
 
 export function mergeConfiguration(
-    sdmDir: string,
     userConfig: LocalMachineConfig): LocalSoftwareDeliveryMachineConfiguration {
+    const gitHookScript = userConfig.gitHookScript || path.join(__dirname, "../invocation/git/onGitHook.js");
     const repoRefResolver = new LocalRepoRefResolver(userConfig.repositoryOwnerParentDirectory);
     return {
         sdm: {
@@ -35,12 +36,13 @@ export function mergeConfiguration(
             credentialsResolver: EnvironmentTokenCredentialsResolver,
             repoRefResolver,
             repoFinder: expandedDirectoryRepoFinder(userConfig.repositoryOwnerParentDirectory),
-            projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory, sdmDir),
-            targets: () => new LocalTargetsParams(userConfig.repositoryOwnerParentDirectory),
+            projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory, gitHookScript),
+            targets: () => new LocalRepoTargets(userConfig.repositoryOwnerParentDirectory),
         },
         mappedParameterResolver: new CliMappedParameterResolver(userConfig.repositoryOwnerParentDirectory),
         mergeAutofixes: true,
         goalDisplayer: new WriteLineGoalDisplayer(),
+        gitHookScript,
         ...userConfig,
     };
 }

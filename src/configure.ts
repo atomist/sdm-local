@@ -60,8 +60,8 @@ export function configure(sdm: SoftwareDeliveryMachine) {
                 return fp;
             },
         })
-        .addPushReaction(async p => p.addressChannels("Gotcha!"))
-        .addPushReaction({
+        .addPushImpactListener(async p => p.addressChannels("Gotcha!"))
+        .addPushImpactListener({
             name: "thing",
             pushTest: hasFileWithExtension("md"),
             action: async pu => {

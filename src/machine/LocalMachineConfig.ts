@@ -13,6 +13,12 @@ export interface LocalMachineConfig extends Partial<LocalSoftwareDeliveryMachine
     repositoryOwnerParentDirectory: string;
 
     /**
+     * Full path to local script to call from git hooks.
+     * typically <SDM project home>/src/local/build/src/gitHook.js
+     */
+    gitHookScript: string;
+
+    /**
      * Override local seeds?
      */
     preferLocalSeeds: boolean;
