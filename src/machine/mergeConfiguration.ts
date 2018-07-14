@@ -10,7 +10,7 @@ import { dirFor } from "../binding/expandedTreeUtils";
 import { fileSystemProjectPersister } from "../binding/fileSystemProjectPersister";
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
 import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
-import { LocalTargetsParams } from "../binding/LocalTargetsParams";
+import { LocalRepoTargets } from "../binding/LocalRepoTargets";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
 import { CliMappedParameterResolver } from "../invocation/cli/support/CliMappedParameterResolver";
 import { LocalMachineConfig } from "./LocalMachineConfig";
@@ -37,7 +37,7 @@ export function mergeConfiguration(
             repoRefResolver,
             repoFinder: expandedDirectoryRepoFinder(userConfig.repositoryOwnerParentDirectory),
             projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory, gitHookScript),
-            targets: () => new LocalTargetsParams(userConfig.repositoryOwnerParentDirectory),
+            targets: () => new LocalRepoTargets(userConfig.repositoryOwnerParentDirectory),
         },
         mappedParameterResolver: new CliMappedParameterResolver(userConfig.repositoryOwnerParentDirectory),
         mergeAutofixes: true,
