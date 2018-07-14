@@ -58,10 +58,9 @@ class MonkeyingProjectLoader implements ProjectLoader {
 
     public doWithProject<T>(params: ProjectLoadingParameters, action: WithLoadedProject<T>): Promise<T> {
         // Use local seed as preference if possible
-        // TODO could check if it's here and try remote after that
-        if (this.config.preferLocalSeeds &&
-            !isFileSystemRemoteRepoRef(params.id) &&
-            fs.existsSync(dirFor(this.config.repositoryOwnerParentDirectory, params.id.owner, params.id.repo))) {
+        const localDir = dirFor(this.config.repositoryOwnerParentDirectory, params.id.owner, params.id.repo);
+        const foundLocally = fs.existsSync(localDir);
+        if (this.config.preferLocalSeeds && !isFileSystemRemoteRepoRef(params.id) && foundLocally) {
             params.id = FileSystemRemoteRepoRef.implied(this.config.repositoryOwnerParentDirectory,
                 params.id.owner, params.id.repo);
         }
