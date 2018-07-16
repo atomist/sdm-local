@@ -22,7 +22,7 @@ export function addCommandsByName(sdm: LocalSoftwareDeliveryMachine, yargs: Argv
                 args.command({
                     command: hi.name,
                     handler: async argv => {
-                        return logExceptionsToConsole(() => runByCommandName(sdm, hi.name, argv));
+                        return logExceptionsToConsole(() => runByCommandName(sdm, hi.name, argv), sdm.configuration.showErrorStacks);
                     },
                     builder: argv => exposeParameters(hi, argv, allowUserInput),
                 });
@@ -66,7 +66,7 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
             },
             !!hi ? async argv => {
                 logger.debug("Args are %j", argv);
-                return logExceptionsToConsole(() => runByIntent(sdm, intent, argv as any));
+                return logExceptionsToConsole(() => runByIntent(sdm, intent, argv as any), sdm.configuration.showErrorStacks);
             } : undefined);
     } else {
         nested.command({
@@ -74,7 +74,7 @@ function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, ne
             describe: hi.description,
             handler: async argv => {
                 logger.debug("Args are %j", argv);
-                return logExceptionsToConsole(() => runByIntent(sdm, intent, argv));
+                return logExceptionsToConsole(() => runByIntent(sdm, intent, argv), sdm.configuration.showErrorStacks);
             },
             builder: yargs => exposeParameters(hi, yargs, allowUserInput),
         });

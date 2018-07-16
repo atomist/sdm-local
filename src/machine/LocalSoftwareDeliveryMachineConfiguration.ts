@@ -28,4 +28,9 @@ export interface LocalSoftwareDeliveryMachineConfiguration extends SoftwareDeliv
     mergeAutofixes: boolean;
 
     goalDisplayer: GoalDisplayer;
+
+    /**
+     * Whether to display error stacks to console
+     */
+    showErrorStacks?: boolean;
 }

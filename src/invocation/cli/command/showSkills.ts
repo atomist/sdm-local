@@ -9,7 +9,7 @@ export function addShowSkills(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
         command: "show skills",
         aliases: "s",
         describe: "Show skills",
-        handler: argv => {
+        handler: () => {
             return logExceptionsToConsole(async () => {
                 const commands = sdm.commandsMetadata;
                 commands.forEach(md => {
@@ -18,7 +18,7 @@ export function addShowSkills(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
                     msg += "\t" + chalk.gray(md.description);
                     process.stdout.write(msg + "\n");
                 });
-            });
+            }, sdm.configuration.showErrorStacks);
         },
     });
 }

@@ -5,8 +5,8 @@ suppressConsoleLogging();
 setCommandLineLogging();
 
 import { logger } from "@atomist/automation-client";
-import { handleGitHookEvent } from "../../setup/gitHooks";
 import { LocalSoftwareDeliveryMachine } from "../../machine/LocalSoftwareDeliveryMachine";
+import { handleGitHookEvent } from "../../setup/gitHooks";
 
 /**
  * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
@@ -26,6 +26,7 @@ export function runOnGitHook(argv: string[], sdm: LocalSoftwareDeliveryMachine) 
     /* tslint:disable */
 
     logExceptionsToConsole(() =>
-        handleGitHookEvent(sdm, event, { baseDir, branch, sha }),
+            handleGitHookEvent(sdm, event, { baseDir, branch, sha }),
+        sdm.configuration.showErrorStacks,
     );
 }

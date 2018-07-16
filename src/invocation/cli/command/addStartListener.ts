@@ -18,7 +18,7 @@ export function addStartListener(sdm: LocalSoftwareDeliveryMachine, yargs: Argv)
         command: "listen",
         describe: "Start listener daemon to display messages and expose commands",
         handler: () => {
-            return logExceptionsToConsole(() => summonDemon(sdm));
+            return logExceptionsToConsole(() => summonDemon(sdm), sdm.configuration.showErrorStacks);
         },
     });
 }

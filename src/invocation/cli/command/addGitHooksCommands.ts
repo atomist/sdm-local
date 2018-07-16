@@ -7,13 +7,13 @@ export function addGitHooksCommands(sdm: LocalSoftwareDeliveryMachine, yargs: Ar
         command: "add-git-hooks",
         describe: `Install git hooks for projects under ${sdm.configuration.repositoryOwnerParentDirectory}`,
         handler: () => {
-            return logExceptionsToConsole(() => sdm.installGitHooks());
+            return logExceptionsToConsole(() => sdm.installGitHooks(), sdm.configuration.showErrorStacks);
         },
     }).command({
         command: "remove-git-hooks",
         describe: `Remove git hooks for projects under ${sdm.configuration.repositoryOwnerParentDirectory}`,
         handler: () => {
-            return logExceptionsToConsole(() => sdm.removeGitHooks());
+            return logExceptionsToConsole(() => sdm.removeGitHooks(), sdm.configuration.showErrorStacks);
         },
     });
 }

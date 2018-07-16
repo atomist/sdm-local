@@ -15,7 +15,7 @@ export function addImportFromGitRemoteCommand(sdm: LocalSoftwareDeliveryMachine,
             return logExceptionsToConsole(async () => {
                 const remoteBase = !!argv.base ? argv.base : "https://github.com";
                 await importFromGitRemote(sdm, argv.owner, argv.repo, remoteBase);
-            });
+            }, sdm.configuration.showErrorStacks);
         },
     });
 }

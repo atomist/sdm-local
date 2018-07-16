@@ -8,11 +8,18 @@ export function setCommandLineLogging() {
     (logger as any).transports.console.silent = true;
 }
 
-export async function logExceptionsToConsole(what: () => Promise<any>) {
+/**
+ * Perform the given action, logging exceptions to the console
+ * @param {() => Promise<any>} what
+ * @param showStack whether or not to show the stack
+ * @return {Promise<void>}
+ */
+export async function logExceptionsToConsole(what: () => Promise<any>, showStack: boolean) {
     try {
         await what();
     } catch (err) {
-        errorMessage(`Error: ${err.message} - \n${err.stack}\n`);
+        const msg = `Error: ${err.message}` + (showStack ? `- \n${err.stack}\n` : "\n");
+        errorMessage(msg);
         logger.error(`Error: ${err.message} - ${err.stack}`);
         process.exit(1);
     }

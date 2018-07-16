@@ -2,8 +2,8 @@ import { MappedParameter, MappedParameters, Parameter, Parameters } from "@atomi
 import { GitBranchRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
 import { TargetsParams } from "@atomist/automation-client/operations/common/params/TargetsParams";
 import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
-import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 import { RepoTargets } from "@atomist/sdm";
+import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
 @Parameters()
 export class LocalRepoTargets extends TargetsParams implements RepoTargets {
@@ -48,6 +48,7 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
     }
 
     public bindAndValidate() {
+        // nothing to do
     }
 
 }

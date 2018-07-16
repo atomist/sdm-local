@@ -25,7 +25,7 @@ export function addTriggerCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv
             });
         },
         handler: ya => {
-            return logExceptionsToConsole(() => trigger(sdm, ya.event, ya.depth));
+            return logExceptionsToConsole(() => trigger(sdm, ya.event, ya.depth), sdm.configuration.showErrorStacks);
         },
     });
 }
