@@ -1,0 +1,10 @@
+{
+  "sdm": {
+    "enabled": ["@atomist/atomist-sdm"]
+  },
+  "npm": {
+    "publish": {
+      "access": "restricted"
+    }
+  }
+}
