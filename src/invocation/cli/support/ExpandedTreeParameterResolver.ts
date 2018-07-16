@@ -9,15 +9,15 @@ import * as os from "os";
  * Resolve mapped parameters based on where we are in the directory tree
  * when the command was invoked.
  */
-export class CliMappedParameterResolver implements MappedParameterResolver {
+export class ExpandedTreeParameterResolver implements MappedParameterResolver {
 
-    public resolve(md: MappedParameterDeclaration): string|undefined {
+    public resolve(md: MappedParameterDeclaration): string | undefined {
         switch (md.uri) {
             case MappedParameters.GitHubRepository :
-                const {repo} = parseOwnerAndRepo(this.repositoryOwnerParentDirectory);
+                const { repo } = parseOwnerAndRepo(this.repositoryOwnerParentDirectory);
                 return repo;
             case MappedParameters.GitHubOwner :
-                const {owner} = parseOwnerAndRepo(this.repositoryOwnerParentDirectory);
+                const { owner } = parseOwnerAndRepo(this.repositoryOwnerParentDirectory);
                 return owner;
             case MappedParameters.SlackTeam :
                 return process.env.SLACK_TEAM || "local";

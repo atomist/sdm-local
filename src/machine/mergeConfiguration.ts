@@ -12,7 +12,7 @@ import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/F
 import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { LocalRepoTargets } from "../binding/LocalRepoTargets";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
-import { CliMappedParameterResolver } from "../invocation/cli/support/CliMappedParameterResolver";
+import { ExpandedTreeParameterResolver } from "../invocation/cli/support/ExpandedTreeParameterResolver";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 
@@ -39,7 +39,7 @@ export function mergeConfiguration(
             projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory, gitHookScript),
             targets: () => new LocalRepoTargets(userConfig.repositoryOwnerParentDirectory),
         },
-        mappedParameterResolver: new CliMappedParameterResolver(userConfig.repositoryOwnerParentDirectory),
+        mappedParameterResolver: new ExpandedTreeParameterResolver(userConfig.repositoryOwnerParentDirectory),
         mergeAutofixes: true,
         goalDisplayer: new WriteLineGoalDisplayer(),
         gitHookScript,
