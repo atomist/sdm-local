@@ -21,6 +21,11 @@ import * as path from "path";
 import { infoMessage } from "../invocation/cli/support/consoleOutput";
 import { WriteLineGoalDisplayer } from "../invocation/cli/support/WriteLineGoalDisplayer";
 
+/**
+ * Merge user-supplied configuration with defaults
+ * @param {LocalMachineConfig} userConfig
+ * @return {LocalSoftwareDeliveryMachineConfiguration}
+ */
 export function mergeConfiguration(
     userConfig: LocalMachineConfig): LocalSoftwareDeliveryMachineConfiguration {
     const gitHookScript = userConfig.gitHookScript || path.join(__dirname, "../invocation/git/onGitHook.js");
@@ -28,7 +33,7 @@ export function mergeConfiguration(
     return {
         sdm: {
             artifactStore: new EphemeralLocalArtifactStore(),
-            projectLoader: new MonkeyingProjectLoader(
+            projectLoader: new DecoratingProjectLoader(
                 new CachingProjectLoader(),
                 userConfig,
                 changeToPushToAtomistBranch(userConfig.repositoryOwnerParentDirectory, userConfig.mergeAutofixes)),
@@ -54,7 +59,7 @@ export const ResolveNothingMappedParameterResolver: MappedParameterResolver = {
 /**
  * Project loader that performs additional steps before acting on the project
  */
-class MonkeyingProjectLoader implements ProjectLoader {
+class DecoratingProjectLoader implements ProjectLoader {
 
     public doWithProject<T>(params: ProjectLoadingParameters, action: WithLoadedProject<T>): Promise<T> {
         // Use local seed as preference if possible
@@ -64,16 +69,16 @@ class MonkeyingProjectLoader implements ProjectLoader {
             params.id = FileSystemRemoteRepoRef.implied(this.config.repositoryOwnerParentDirectory,
                 params.id.owner, params.id.repo);
         }
-        const action2 = async p => {
-            const p2 = await this.monkeyWith(p);
+        const decoratedAction = async p => {
+            const p2 = await this.preprocess(p);
             return action(p2);
         };
-        return this.delegate.doWithProject(params, action2);
+        return this.delegate.doWithProject(params, decoratedAction);
     }
 
     constructor(private readonly delegate: ProjectLoader,
                 private readonly config: LocalMachineConfig,
-                private readonly monkeyWith: (p: GitProject) => Promise<GitProject>) {
+                private readonly preprocess: (p: GitProject) => Promise<GitProject>) {
     }
 
 }
