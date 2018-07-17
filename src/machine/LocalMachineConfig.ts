@@ -7,7 +7,6 @@ import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDelive
  */
 export interface LocalMachineConfig extends Partial<LocalSoftwareDeliveryMachineConfiguration> {
 
-    // TODO could come from package.JSON or we could have multiple?
     name: string;
 
     repositoryOwnerParentDirectory: string;
@@ -19,7 +18,7 @@ export interface LocalMachineConfig extends Partial<LocalSoftwareDeliveryMachine
     gitHookScript: string;
 
     /**
-     * Override local seeds?
+     * Use local seeds (in whatever git state) vs cloning if possible?
      */
     preferLocalSeeds: boolean;
 

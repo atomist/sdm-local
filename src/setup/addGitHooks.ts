@@ -30,17 +30,13 @@ export async function addGitHooks(id: RemoteRepoRef,
     }
 }
 
-// TODO addGitHook to current project, and work it from where we are, going up if needed
-
 export async function addGitHooksToProject(p: LocalProject, gitHookScript: string) {
     const atomistHookScriptPath = path.join(__dirname, "../../../", AtomistHookScriptName);
-    const jsScriptPath = gitHookScript;
-
     for (const hookFile of HookEvents) {
         await appendOrCreateFileContent(
             {
                 path: `/.git/hooks/${hookFile}`,
-                toAppend: `\n${atomistHookScriptPath} ${jsScriptPath} ${hookFile} \${PWD}`,
+                toAppend: `\n${atomistHookScriptPath} ${gitHookScript} ${hookFile} \${PWD}`,
                 leaveAlone: oldContent => oldContent.includes(atomistHookScriptPath),
             })(p);
         await p.makeExecutable(`.git/hooks/${hookFile}`);
@@ -66,7 +62,7 @@ export async function removeGitHooks(id: RemoteRepoRef, baseDir: string) {
 /**
  * Remove Atomist hook from this script
  * @param {LocalProject} p
- * @param {string} path
+ * @param {string} scriptPath
  * @return {Promise<void>}
  */
 async function deatomizeScript(p: LocalProject, scriptPath: string) {

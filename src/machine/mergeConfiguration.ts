@@ -106,7 +106,7 @@ function changeToPushToAtomistBranch(repositoryOwnerParentDirectory: string, aut
 
                 if (automerge) {
                     const originalRepoDir = dirFor(repositoryOwnerParentDirectory, p.id.owner, p.id.repo);
-                    infoMessage(`Trying merge in ${originalRepoDir}`);
+                    // infoMessage(`Trying merge in ${originalRepoDir}\n`);
                     // Automerge it
                     execSync(`git merge ${newBranch}`, { cwd: originalRepoDir });
                 }

@@ -82,6 +82,8 @@ export class LocalSoftwareDeliveryMachine
         }
     }
 
+    public postMerge = this.postCommit;
+
     /**
      * Invoked after commit. Pretend it's a push
      * @param {string} baseDir
@@ -93,6 +95,7 @@ export class LocalSoftwareDeliveryMachine
         return this.doWithProjectUnderExpandedDirectoryTree(baseDir, branch, sha,
             async p => {
                 const context = new LocalHandlerContext(p.id.repo, {} as EventIncoming);
+                // TODO fix this. But shouldn't be checked in in case it's real
                 const credentials: ProjectOperationCredentials = { token: "ABCD" };
                 const push = await pushFromLastCommit(p);
 

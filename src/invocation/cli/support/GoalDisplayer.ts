@@ -1,8 +1,9 @@
+
+import { ExecuteGoalResult, Goal, Goals } from "@atomist/sdm";
+
 /**
  * Interface allowing goals to be displayed
  */
-import { ExecuteGoalResult, Goal, Goals } from "@atomist/sdm";
-
 export interface GoalDisplayer {
 
     displayGoalsSet(sha: string, goals: Goals);

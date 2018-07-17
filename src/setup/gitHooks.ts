@@ -6,7 +6,7 @@ import { LocalSoftwareDeliveryMachine } from "../machine/LocalSoftwareDeliveryMa
  * Git hooks we support
  * @type {string[]}
  */
-export const HookEvents = ["post-commit"];
+export const HookEvents = ["post-commit", "post-merge"];
 
 export async function handleGitHookEvent(sdm: LocalSoftwareDeliveryMachine,
                                          event: string,
