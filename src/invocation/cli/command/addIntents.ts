@@ -4,7 +4,7 @@ import * as _ from "lodash";
 import { Argv } from "yargs";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { PathElement, toPaths } from "../../../util/PathElement";
-import { infoMessage, logExceptionsToConsole } from "../support/consoleOutput";
+import { logExceptionsToConsole } from "../support/consoleOutput";
 
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import * as inquirer from "inquirer";
