@@ -5,6 +5,16 @@ export interface PathElement {
     kids: PathElement[];
 }
 
+/**
+ * Given the array of string arrays, return all possible
+ * paths through. For example, if we have "create spring", "create node" and "create spring kotlin"
+ * the result would be [
+ *    create -> node
+ *           -> spring -> kotlin
+ * ]
+ * @param {string[][]} arr
+ * @return {PathElement[]}
+ */
 export function toPaths(arr: string[][]): PathElement[] {
     if (arr.length === 0) {
         return [];

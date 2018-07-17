@@ -4,7 +4,7 @@ import * as _ from "lodash";
 import { Argv } from "yargs";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { PathElement, toPaths } from "../../../util/PathElement";
-import { logExceptionsToConsole } from "../support/consoleOutput";
+import { infoMessage, logExceptionsToConsole } from "../support/consoleOutput";
 
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import * as inquirer from "inquirer";
@@ -134,7 +134,7 @@ async function runCommand(sdm: LocalSoftwareDeliveryMachine,
     ]
         .concat(extraArgs);
     await promptForMissingParameters(hm, args);
-    // writeToConsole(`Using arguments:\n${args.map(a => `\t${a.name}=${a.value}`).join("\n")}`)
+    // infoMessage(`Using arguments:\n${args.map(a => `\t${a.name}=${a.value}`).join("\n")}\n`);
     return sdm.executeCommand({ name: hm.name, args });
 }
 
@@ -145,13 +145,13 @@ async function runCommand(sdm: LocalSoftwareDeliveryMachine,
  * @return {object}
  */
 async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[]): Promise<void> {
-    function isOptional(p: Parameter) {
-        return p.required && (args.find(a => a.name === p.name) === undefined || args.find(a => a.name === p.name).value === undefined);
+    function mustBeSupplied(p: Parameter) {
+        return p.required; // && (args.find(a => a.name === p.name) === undefined || args.find(a => a.name === p.name).value === undefined);
     }
 
     const questions =
         hi.parameters
-            .filter(isOptional)
+            .filter(mustBeSupplied)
             .map(p => {
                 const nameToUse = convertToDisplayable(p.name);
                 return {
@@ -170,12 +170,15 @@ async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[
     const fromPrompt = await inquirer.prompt(questions);
     Object.getOwnPropertyNames(fromPrompt)
         .forEach(enteredName => {
+            // Replace any existing argument with this name that yargs has
+            _.remove(args, arg => arg.name === enteredName);
             args.push({ name: convertToUsable(enteredName), value: fromPrompt[enteredName] });
         });
 }
 
 function convertToDisplayable(name: string): string {
-    return name.replace(".", "-");
+    const display = name.replace(".", "-");
+    return display;
 }
 
 function convertToUsable(entered: string): string {
