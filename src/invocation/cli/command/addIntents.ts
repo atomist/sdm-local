@@ -48,36 +48,54 @@ export function addIntents(sdm: LocalSoftwareDeliveryMachine, yargs: Argv, allow
     paths.forEach(pe => exposeAsCommands(sdm, pe, yargs, [], allowUserInput));
 }
 
-function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine, pe: PathElement, nested: Argv, previous: string[],
+/**
+ * Expose commands for the given path. We expose both the exact
+ * case (e.g. "Do Thing now") and the lower case ("do thing now")
+ * as it's not feasible to be case insensitive like the Atomist bot.
+ * @param {LocalSoftwareDeliveryMachine} sdm
+ * @param {PathElement} pe
+ * @param {yargs.Argv} nested
+ * @param {string[]} previous
+ * @param {boolean} allowUserInput
+ */
+function exposeAsCommands(sdm: LocalSoftwareDeliveryMachine,
+                          pe: PathElement,
+                          nested: Argv,
+                          previous: string[],
                           allowUserInput: boolean) {
     const intent = previous.concat([pe.name]).join(" ");
     const hi = sdm.commandsMetadata.find(hm => hm.intent.includes(intent));
 
     if (pe.kids.length > 0) {
-        nested.command(
-            pe.name,
-            `${pe.name} -> ${pe.kids.map(k => k.name).join("/")}`,
-            yargs => {
-                pe.kids.forEach(kid => exposeAsCommands(sdm, kid, yargs, previous.concat(pe.name), allowUserInput));
-                if (!!hi) {
-                    exposeParameters(hi, yargs, allowUserInput);
-                }
-                return yargs;
-            },
-            !!hi ? async argv => {
-                logger.debug("Args are %j", argv);
-                return logExceptionsToConsole(() => runByIntent(sdm, intent, argv as any), sdm.configuration.showErrorStacks);
-            } : undefined);
+        // Expose both lower case and actual case name
+        const names = _.uniq([pe.name, pe.name.toLowerCase()]);
+        names.forEach(name =>
+            nested.command(
+                name,
+                `${name} -> ${pe.kids.map(k => k.name).join("/")}`,
+                yargs => {
+                    pe.kids.forEach(kid => exposeAsCommands(sdm, kid, yargs, previous.concat(pe.name), allowUserInput));
+                    if (!!hi) {
+                        exposeParameters(hi, yargs, allowUserInput);
+                    }
+                    return yargs;
+                },
+                !!hi ? async argv => {
+                    logger.debug("Args are %j", argv);
+                    return logExceptionsToConsole(() => runByIntent(sdm, intent, argv as any), sdm.configuration.showErrorStacks);
+                } : undefined));
     } else {
-        nested.command({
-            command: pe.name,
-            describe: hi.description,
-            handler: async argv => {
-                logger.debug("Args are %j", argv);
-                return logExceptionsToConsole(() => runByIntent(sdm, intent, argv), sdm.configuration.showErrorStacks);
-            },
-            builder: yargs => exposeParameters(hi, yargs, allowUserInput),
-        });
+        const names = _.uniq([pe.name, pe.name.toLowerCase()]);
+        names.forEach(name =>
+            nested.command({
+                command: name,
+                describe: hi.description,
+                handler: async argv => {
+                    logger.debug("Args are %j", argv);
+                    return logExceptionsToConsole(() => runByIntent(sdm, intent, argv), sdm.configuration.showErrorStacks);
+                },
+                builder: yargs => exposeParameters(hi, yargs, allowUserInput),
+            }));
     }
 }
 
