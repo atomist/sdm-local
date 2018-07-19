@@ -132,7 +132,7 @@ export class LocalSoftwareDeliveryMachine
                     warning("No goals set for push");
                     return;
                 }
-                this.configuration.goalDisplayer.displayGoalsSet(sha, goals);
+                this.configuration.goalDisplayer.displayGoalsSet(push, goals);
                 return this.executeGoals(goals, p, context, credentials, push);
             });
     }
@@ -238,12 +238,14 @@ export class LocalSoftwareDeliveryMachine
     }
 
     private async execGoal(project: GitProject,
-                           context: HandlerContext, credentials: ProjectOperationCredentials, push: PushFields.Fragment,
+                           context: HandlerContext,
+                           credentials: ProjectOperationCredentials,
+                           push: PushFields.Fragment,
                            goal: Goal,
                            goals: Goals) {
         logger.info("Executing goal %s", goal.name);
         const sha = (await project.gitStatus()).sha;
-        this.configuration.goalDisplayer.displayGoalWorking(sha, goal, goals);
+        this.configuration.goalDisplayer.displayGoalWorking(push, goal, goals);
         const goalInvocation = await localGoalInvocation(project, context, credentials, push, goal, goals);
         const pli = await createPushImpactListenerInvocation(goalInvocation, project);
         const goalFulfillment: GoalImplementation = await this.goalFulfillmentMapper.findFulfillmentByPush(goal, pli as any) as GoalImplementation;
@@ -261,7 +263,7 @@ export class LocalSoftwareDeliveryMachine
             goalInvocation,
             goalInvocation.sdmGoal,
             goal, lastLinesLogInterpreter(goal.name));
-        this.configuration.goalDisplayer.displayGoalResult(sha, goal, goalResult, goals);
+        this.configuration.goalDisplayer.displayGoalResult(push, goal, goalResult, goals);
     }
 
     private async doWithProjectUnderExpandedDirectoryTree(baseDir: string,

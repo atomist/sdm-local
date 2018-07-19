@@ -1,14 +1,14 @@
 
-import { ExecuteGoalResult, Goal, Goals } from "@atomist/sdm";
+import { ExecuteGoalResult, Goal, Goals, OnPushToAnyBranch } from "@atomist/sdm";
 
 /**
  * Interface allowing goals to be displayed
  */
 export interface GoalDisplayer {
 
-    displayGoalsSet(sha: string, goals: Goals);
+    displayGoalsSet(push: OnPushToAnyBranch.Push, goals: Goals);
 
-    displayGoalWorking(sha: string, goal: Goal, goals: Goals);
+    displayGoalWorking(push: OnPushToAnyBranch.Push, goal: Goal, goals: Goals);
 
-    displayGoalResult(sha: string, goal: Goal, ger: ExecuteGoalResult, goals: Goals);
+    displayGoalResult(push: OnPushToAnyBranch.Push, goal: Goal, ger: ExecuteGoalResult, goals: Goals);
 }
