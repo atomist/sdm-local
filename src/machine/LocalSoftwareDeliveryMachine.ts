@@ -36,6 +36,7 @@ import { RemoteRepoRef } from "@atomist/automation-client/operations/common/Repo
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
 import chalk from "chalk";
 import { messageClientAddressChannels } from "../invocation/cli/io/messageClientAddressChannels";
+import { GitHookPayload } from "../setup/gitHooks";
 
 /**
  * Local SDM implementation, designed to be driven by CLI and git hooks.
@@ -97,12 +98,11 @@ export class LocalSoftwareDeliveryMachine
 
     /**
      * Invoked after commit. Pretend it's a push
-     * @param {string} baseDir
-     * @param branch base
-     * @param sha sha
+     * @param payload invocation payload
      * @return {Promise<Promise<any>>}
      */
-    public async postCommit(baseDir: string, branch: string, sha: string) {
+    public async postCommit(payload: GitHookPayload) {
+        const { baseDir, branch, sha } = payload;
         return this.doWithProjectUnderExpandedDirectoryTree(baseDir, branch, sha,
             async p => {
                 const context = new LocalHandlerContext(p.id.repo, {} as EventIncoming);

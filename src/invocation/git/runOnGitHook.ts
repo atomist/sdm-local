@@ -26,7 +26,7 @@ export function runOnGitHook(argv: string[], sdm: LocalSoftwareDeliveryMachine) 
     /* tslint:disable */
 
     return logExceptionsToConsole(() =>
-            handleGitHookEvent(sdm, event, { baseDir, branch, sha }),
+            handleGitHookEvent(sdm, { event, baseDir, branch, sha }),
         sdm.configuration.showErrorStacks,
     );
 }

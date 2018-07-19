@@ -61,10 +61,11 @@ describe("LocalSoftwareDeliveryMachine push", () => {
             });
         assert.equal(sdm.pushImpactListenerRegistrations.length, 2);
 
-        await sdm.postCommit(
-            `${sdm.configuration.repositoryOwnerParentDirectory}/spring-team/spring-rest-seed`,
-            "master",
-            "821af713301ac56a921b0d6014a2e2da08cb73ac");
+        await sdm.postCommit({
+            baseDir: `${sdm.configuration.repositoryOwnerParentDirectory}/spring-team/spring-rest-seed`,
+            branch: "master",
+            sha: "821af713301ac56a921b0d6014a2e2da08cb73ac"
+        });
     }).timeout(40000);
 
 });

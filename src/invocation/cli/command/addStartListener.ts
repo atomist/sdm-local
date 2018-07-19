@@ -9,6 +9,7 @@ import * as express from "express";
 import { Express } from "express";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { ConsoleMessageClient } from "../io/ConsoleMessageClient";
+import { HookEvents } from "../../../setup/gitHooks";
 
 export const DemonPort = 6660;
 export const MessageRoute = "/message";
@@ -44,7 +45,9 @@ async function summonDemon(sdm: LocalSoftwareDeliveryMachine) {
     });
 
     sdm.commandsMetadata.forEach(hmd => exportHandlerRoute(app, hmd, sdm));
-
+    for (const event of HookEvents) {
+        exportGitHookRoute(app, event, sdm);
+    }
     app.listen(DemonPort,
         () => infoMessage(`Atomist Slalom: Listening on port ${DemonPort}...\n`),
     );
@@ -59,5 +62,11 @@ function exportHandlerRoute(e: Express, hmd: CommandHandlerMetadata, sdm: LocalS
         // TODO redirect output??
         await sdm.executeCommand(ci);
         return res.send(`Executed command '${hmd.name}'`);
+    });
+}
+
+function exportGitHookRoute(e: Express, event: string, sdm: LocalSoftwareDeliveryMachine) {
+    e.get(`/git/${event}`, async (req, res) => {
+        return res.send(`Executed event '${event}'`);
     });
 }
