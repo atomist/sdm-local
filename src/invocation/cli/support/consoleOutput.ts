@@ -18,7 +18,7 @@ export async function logExceptionsToConsole(what: () => Promise<any>, showStack
     try {
         await what();
     } catch (err) {
-        const msg = `Error: ${err.message}` + (showStack ? `- \n${err.stack}\n` : "\n");
+        const msg = (showStack ? err.stack : `Error: ${err.message}`) + "\n";
         errorMessage(msg);
         logger.error(`Error: ${err.message} - ${err.stack}`);
         process.exit(1);

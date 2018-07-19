@@ -28,6 +28,15 @@ describe("expandedTreeUtils", () => {
                 repo: undefined,
             });
         });
+
+        it("works with org with trailing / after repo", () => {
+            const base = "/Users/rodjohnson/temp/local-sdm";
+            const dir = base + "/spring-team/melb1/";
+            assert.deepEqual(parseOwnerAndRepo(base, dir), {
+                owner: "spring-team",
+                repo: "melb1",
+            });
+        });
     });
 
     describe("withinExpandedTree", () => {

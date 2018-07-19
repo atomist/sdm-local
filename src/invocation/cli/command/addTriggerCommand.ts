@@ -6,6 +6,7 @@ import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeli
 import { handleGitHookEvent, HookEvents } from "../../../setup/gitHooks";
 import { shaHistory } from "../../../util/git";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "../support/consoleOutput";
+import { logger } from "@atomist/automation-client";
 
 /**
  * Add a command to trigger execution following a git event
@@ -38,6 +39,7 @@ async function trigger(sdm: LocalSoftwareDeliveryMachine, event: string, depth: 
                 baseDir: currentDir,
             }),
             currentDir, null, () => null);
+        logger.info("Trigger %s within [%s], depth=%d", event, currentDir, depth);
         const { branch } = await p.gitStatus();
         // Go back on the current branch
         const shas = (await shaHistory(p))

@@ -16,6 +16,7 @@ export function dirFor(repositoryOwnerParentDirectory: string, owner: string, re
 const OwnerAndRepoPattern = /^\/([^\/]+)\/([^\/]+)$/;
 
 const OwnerOnlyPattern = /^\/([^\/]+)$/;
+
 /**
  * Find the owner and repo from the given directory, returning the empty
  * object if it isn't within our expanded directory structure
@@ -28,7 +29,10 @@ export function parseOwnerAndRepo(repositoryOwnerParentDirectory: string,
     if (!baseDir.startsWith(repositoryOwnerParentDirectory)) {
         return {};
     }
-    const pathUnder = baseDir.replace(repositoryOwnerParentDirectory, "");
+    const pathUnder = baseDir
+        .replace(repositoryOwnerParentDirectory, "")
+        // Strip any trailing /
+        .replace(/\/$/, "");
     const ownerAndRepoMatch = pathUnder.match(OwnerAndRepoPattern);
     if (!!ownerAndRepoMatch && ownerAndRepoMatch.length >= 2) {
         return { owner: ownerAndRepoMatch[1], repo: ownerAndRepoMatch[2] };

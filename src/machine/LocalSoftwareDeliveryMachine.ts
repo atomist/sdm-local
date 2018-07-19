@@ -244,7 +244,6 @@ export class LocalSoftwareDeliveryMachine
                            goal: Goal,
                            goals: Goals) {
         logger.info("Executing goal %s", goal.name);
-        const sha = (await project.gitStatus()).sha;
         this.configuration.goalDisplayer.displayGoalWorking(push, goal, goals);
         const goalInvocation = await localGoalInvocation(project, context, credentials, push, goal, goals);
         const pli = await createPushImpactListenerInvocation(goalInvocation, project);
