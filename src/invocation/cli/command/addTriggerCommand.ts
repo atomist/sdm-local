@@ -49,7 +49,9 @@ async function trigger(sdm: LocalSoftwareDeliveryMachine, event: string, depth: 
             if (depth > 1) {
                 infoMessage("Sha [%s]\n", sha);
             }
-            await handleGitHookEvent(sdm, { event, baseDir: currentDir, branch, sha });
+            const invocation = { event, baseDir: currentDir, branch, sha };
+            logger.info("Trigger %j", invocation);
+            await handleGitHookEvent(sdm, invocation);
         }
     } else {
         errorMessage(

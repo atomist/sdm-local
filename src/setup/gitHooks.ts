@@ -34,14 +34,20 @@ export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
 }
 
 /**
- * Dispatch the incoming git hook event to a local SDM
+ * Dispatch the incoming git hook event to a local SDM,
+ * routing to the appropriate method
  * @param {LocalSoftwareDeliveryMachine} sdm
- * @param {string} event
  * @param payload event data
  * @return {Promise<any>}
  */
 export async function handleGitHookEvent(sdm: LocalSoftwareDeliveryMachine,
                                          payload: GitHookInvocation) {
+    if (!payload) {
+        throw new Error("Payload must be supplied");
+    }
+    if (!payload.event || !payload.branch || !payload.sha || !payload.baseDir) {
+        throw new Error("Invalid git hook invocation payload: " + JSON.stringify(payload));
+    }
     if (!HookEvents.includes(payload.event)) {
         errorMessage("Unknown git hook event '%s'", event);
         process.exit(1);
@@ -51,5 +57,5 @@ export async function handleGitHookEvent(sdm: LocalSoftwareDeliveryMachine,
         errorMessage("Internal error: no SDM handler for git hook event '%s'", event);
         process.exit(1);
     }
-    return sdm[camelize(payload.event)](payload.baseDir, payload.branch, payload.sha);
+    return sdm[camelize(payload.event)](payload);
 }

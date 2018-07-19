@@ -9,7 +9,8 @@ import * as express from "express";
 import { Express } from "express";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { ConsoleMessageClient } from "../io/ConsoleMessageClient";
-import { HookEvents } from "../../../setup/gitHooks";
+import { GitHookInvocation, handleGitHookEvent, HookEvents } from "../../../setup/gitHooks";
+import { runOnGitHook } from "../../..";
 
 export const DemonPort = 6660;
 export const MessageRoute = "/message";
@@ -67,6 +68,13 @@ function exportHandlerRoute(e: Express, hmd: CommandHandlerMetadata, sdm: LocalS
 
 function exportGitHookRoute(e: Express, event: string, sdm: LocalSoftwareDeliveryMachine) {
     e.get(`/git/${event}`, async (req, res) => {
+        const invocation: GitHookInvocation = {
+            event,
+            baseDir: null,
+            branch : null,
+            sha: null,
+        };
+        await handleGitHookEvent(sdm, invocation);
         return res.send(`Executed event '${event}'`);
     });
 }
