@@ -12,6 +12,8 @@ import { ConsoleMessageClient } from "../io/ConsoleMessageClient";
 import { GitHookInvocation, handleGitHookEvent, HookEvents } from "../../../setup/gitHooks";
 import { runOnGitHook } from "../../..";
 
+import * as bodyParser from "body-parser";
+
 export const DemonPort = 6660;
 export const MessageRoute = "/message";
 
@@ -35,7 +37,7 @@ async function summonDemon(sdm: LocalSoftwareDeliveryMachine) {
     const messageClient = new ConsoleMessageClient("general");
 
     const app = express();
-    app.use(express.json());
+    app.use(bodyParser.json());
 
     app.get("/", (req, res) => res.send("Atomist Listener Demon\n"));
 
@@ -67,14 +69,8 @@ function exportHandlerRoute(e: Express, hmd: CommandHandlerMetadata, sdm: LocalS
 }
 
 function exportGitHookRoute(e: Express, event: string, sdm: LocalSoftwareDeliveryMachine) {
-    e.get(`/git/${event}`, async (req, res) => {
-        const invocation: GitHookInvocation = {
-            event,
-            baseDir: null,
-            branch : null,
-            sha: null,
-        };
-        await handleGitHookEvent(sdm, invocation);
+    e.post(`/githook`, async (req, res) => {
+        await handleGitHookEvent(sdm, req.body);
         return res.send(`Executed event '${event}'`);
     });
 }
