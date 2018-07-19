@@ -6,8 +6,19 @@ import { LocalSoftwareDeliveryMachine } from "../machine/LocalSoftwareDeliveryMa
  * Git hooks we support
  * @type {string[]}
  */
-export const HookEvents = ["post-commit", "post-merge"];
+export const HookEvents = [
+    "post-commit",
+    "post-merge",
+    "pre-receive",
+];
 
+/**
+ * Dispatch the incoming git hook event to a local SDM
+ * @param {LocalSoftwareDeliveryMachine} sdm
+ * @param {string} event
+ * @param {{baseDir: string; branch: string; sha: string}} payload
+ * @return {Promise<any>}
+ */
 export async function handleGitHookEvent(sdm: LocalSoftwareDeliveryMachine,
                                          event: string,
                                          payload: { baseDir: string, branch: string, sha: string }) {

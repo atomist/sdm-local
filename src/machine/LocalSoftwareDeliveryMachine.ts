@@ -68,8 +68,17 @@ export class LocalSoftwareDeliveryMachine
             if (!isFileSystemRemoteRepoRef(rr)) {
                 throw new Error(`Unexpected return from repo ref resolver: ${JSON.stringify(rr)}`);
             }
-            await addGitHooks(rr, rr.fileSystemLocation, this.configuration.gitHookScript);
+            await this.installGitHooksFor(rr);
         }
+    }
+
+    /**
+     * Install git hooks in the given repo
+     * @param {FileSystemRemoteRepoRef} rr
+     * @return {Promise<void>}
+     */
+    public async installGitHooksFor(rr: FileSystemRemoteRepoRef) {
+        return addGitHooks(rr, rr.fileSystemLocation, this.configuration.gitHookScript);
     }
 
     public async removeGitHooks() {
@@ -83,6 +92,8 @@ export class LocalSoftwareDeliveryMachine
     }
 
     public postMerge = this.postCommit;
+
+    public preReceive = this.postCommit;
 
     /**
      * Invoked after commit. Pretend it's a push
