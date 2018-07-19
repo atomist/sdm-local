@@ -51,7 +51,7 @@ async function trigger(sdm: LocalSoftwareDeliveryMachine, event: string, depth: 
             }
             const invocation = { event, baseDir: currentDir, branch, sha };
             logger.info("Trigger %j", invocation);
-            await handleGitHookEvent(sdm, invocation);
+            await handleGitHookEvent(invocation, sdm);
         }
     } else {
         errorMessage(

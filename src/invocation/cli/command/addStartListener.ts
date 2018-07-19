@@ -9,8 +9,7 @@ import * as express from "express";
 import { Express } from "express";
 import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { ConsoleMessageClient } from "../io/ConsoleMessageClient";
-import { GitHookInvocation, handleGitHookEvent, HookEvents } from "../../../setup/gitHooks";
-import { runOnGitHook } from "../../..";
+import { handleGitHookEvent, HookEvents } from "../../../setup/gitHooks";
 
 import * as bodyParser from "body-parser";
 
@@ -70,7 +69,7 @@ function exportHandlerRoute(e: Express, hmd: CommandHandlerMetadata, sdm: LocalS
 
 function exportGitHookRoute(e: Express, event: string, sdm: LocalSoftwareDeliveryMachine) {
     e.post(`/githook`, async (req, res) => {
-        await handleGitHookEvent(sdm, req.body);
+        await handleGitHookEvent(req.body, sdm);
         return res.send(`Executed event '${event}'`);
     });
 }

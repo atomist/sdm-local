@@ -16,10 +16,8 @@ export function runOnGitHook(argv: string[], config: LocalMachineConfig) {
     const invocation = argsToGitHookInvocation(argv);
     logger.info("Executing git hook against project %j", invocation);
 
-    const sdm = newLocalSdm(config);
-
     return logExceptionsToConsole(() =>
-            handleGitHookEvent(sdm, invocation),
-        sdm.configuration.showErrorStacks,
+            handleGitHookEvent(invocation, config),
+        config.showErrorStacks,
     );
 }

@@ -30,3 +30,8 @@ export interface LocalMachineConfig extends Partial<LocalSoftwareDeliveryMachine
     goalDisplayer?: GoalDisplayer;
 
 }
+
+export function isLocalMachineConfig(a: object): a is LocalMachineConfig {
+    const maybe = a as LocalMachineConfig;
+    return !!maybe.gitHookScript && !!maybe.repositoryOwnerParentDirectory;
+}

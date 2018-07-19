@@ -1,6 +1,10 @@
 import { camelize } from "tslint/lib/utils";
 import { errorMessage } from "../invocation/cli/support/consoleOutput";
 import { LocalSoftwareDeliveryMachine } from "../machine/LocalSoftwareDeliveryMachine";
+import { LocalMachineConfig, newLocalSdm } from "../index";
+
+import axios from "axios";
+import { isLocalMachineConfig } from "../machine/LocalMachineConfig";
 
 export interface GitHookPayload {
     baseDir: string;
@@ -46,8 +50,9 @@ export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
  * @param payload event data
  * @return {Promise<any>}
  */
-export async function handleGitHookEvent(sdm: LocalSoftwareDeliveryMachine,
-                                         payload: GitHookInvocation) {
+export async function handleGitHookEvent(
+    payload: GitHookInvocation,
+    sdm: LocalSoftwareDeliveryMachine | LocalMachineConfig) {
     if (!payload) {
         errorMessage("Payload must be supplied");
         process.exit(1);
@@ -61,11 +66,33 @@ export async function handleGitHookEvent(sdm: LocalSoftwareDeliveryMachine,
         process.exit(1);
     }
 
+    if (!isLocalMachineConfig(sdm)) {
+        console.log("Invoking local shortcut")
+        return invokeLocal(payload, sdm);
+    }
+
+    const url = "http://127.0.0.1:6660/githook";
+    try {
+        console.log("tryirng remote")
+        await invokeRemote(payload, url);
+    } catch (err) {
+        console.log("Cannot POST to log service at [%s]: %s", url, err.message);
+        return invokeLocal(payload, newLocalSdm(sdm));
+    }
+}
+
+async function invokeLocal(invocation: GitHookInvocation, sdm: LocalSoftwareDeliveryMachine) {
     // Find the appropriate method to invoke
-    const sdmMethod = sdm[camelize(payload.event)];
+    const sdmMethod = sdm[camelize(invocation.event)];
     if (!sdmMethod) {
         errorMessage("Internal error: no SDM handler for git hook event '%s'", event);
         process.exit(1);
     }
-    return sdm[camelize(payload.event)](payload);
+    return sdm[camelize(invocation.event)](invocation);
+}
+
+async function invokeRemote(invocation: GitHookInvocation,
+                            url: string) {
+    console.log(`Write to url ${url}: ${JSON.stringify(invocation)}`);
+    return axios.post(url, invocation);
 }
