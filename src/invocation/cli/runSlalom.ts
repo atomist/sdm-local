@@ -7,8 +7,12 @@ import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 import { addShowSkills } from "./command/showSkills";
 
+/**
+ * Start up the Slalom CLI
+ * @param {LocalSoftwareDeliveryMachine} localSdmInstance
+ * @return {yargs.Arguments}
+ */
 export function runSlalom(localSdmInstance: LocalSoftwareDeliveryMachine) {
-
     yargs.usage("Usage: slalom <command> [options]");
 
     addTriggerCommand(localSdmInstance, yargs);

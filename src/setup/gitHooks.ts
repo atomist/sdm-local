@@ -22,6 +22,12 @@ export const HookEvents = [
     "pre-receive",
 ];
 
+/**
+ * Process the given args (probably from process.argv) into a
+ * GitHookInvocation
+ * @param {string[]} argv
+ * @return {GitHookInvocation}
+ */
 export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
     const args = argv.slice(2);
 
@@ -43,15 +49,19 @@ export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
 export async function handleGitHookEvent(sdm: LocalSoftwareDeliveryMachine,
                                          payload: GitHookInvocation) {
     if (!payload) {
-        throw new Error("Payload must be supplied");
+        errorMessage("Payload must be supplied");
+        process.exit(1);
     }
     if (!payload.event || !payload.branch || !payload.sha || !payload.baseDir) {
-        throw new Error("Invalid git hook invocation payload: " + JSON.stringify(payload));
+        errorMessage("Invalid git hook invocation payload: " + JSON.stringify(payload));
+        process.exit(1);
     }
     if (!HookEvents.includes(payload.event)) {
         errorMessage("Unknown git hook event '%s'", event);
         process.exit(1);
     }
+
+    // Find the appropriate method to invoke
     const sdmMethod = sdm[camelize(payload.event)];
     if (!sdmMethod) {
         errorMessage("Internal error: no SDM handler for git hook event '%s'", event);
