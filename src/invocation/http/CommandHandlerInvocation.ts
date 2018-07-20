@@ -18,7 +18,7 @@ export interface Params {
 export interface CommandHandlerInvocation {
     name: string;
     parameters: Params | Arg[];
-    mappedParameters?: Params;
+    mappedParameters?: Params | Arg[];
     secrets?: Secret[];
 }
 
@@ -30,14 +30,9 @@ export async function invokeCommandHandler(config: AutomationClientConnectionCon
     const data = {
         command: invocation.name,
         parameters: propertiesToArgs(invocation.parameters),
-        // TODO use factory
-        // mapped_parameters: propertiesToArgs(invocation.mappedParameters || {}).concat([
-        //     {name: "slackTeam", value: config.atomistTeamId},
-        //     // TODO fix this
-        //     {name: "target.webhookUrl", value: "foo"},
-        //     {name: "target.owner", value: config.githubOrg},
-        //
-        // ]),
+        mapped_parameters: propertiesToArgs(invocation.mappedParameters || {}).concat([
+            {name: "slackTeam", value: config.atomistTeamId},
+        ]),
         secrets: (invocation.secrets || []).concat([
             {uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN},
         ]),

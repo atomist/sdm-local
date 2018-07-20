@@ -4,33 +4,37 @@ import { parseOwnerAndRepo } from "../../../binding/expandedTreeUtils";
 import { MappedParameterResolver } from "../../../binding/MappedParameterResolver";
 
 import * as os from "os";
+import { GitHubDotComBase } from "@atomist/automation-client/operations/common/GitHubRepoRef";
+import { AutomationClientInfo } from "../../config";
 
 /**
  * Resolve mapped parameters based on where we are in the directory tree
  * when the command was invoked.
  */
-export class ExpandedTreeParameterResolver implements MappedParameterResolver {
+export class ExpandedTreeMappedParameterResolver implements MappedParameterResolver {
 
     public resolve(md: MappedParameterDeclaration): string | undefined {
         switch (md.uri) {
             case MappedParameters.GitHubRepository :
-                const { repo } = parseOwnerAndRepo(this.repositoryOwnerParentDirectory);
+                const { repo } = parseOwnerAndRepo(this.ai.localConfig.repositoryOwnerParentDirectory);
                 return repo;
             case MappedParameters.GitHubOwner :
-                const { owner } = parseOwnerAndRepo(this.repositoryOwnerParentDirectory);
+                const { owner } = parseOwnerAndRepo(this.ai.localConfig.repositoryOwnerParentDirectory);
                 return owner;
             case MappedParameters.SlackTeam :
-                return process.env.SLACK_TEAM || "local";
+                return this.ai.connectionConfig.atomistTeamId;
             case MappedParameters.SlackUserName :
                 return process.env.SLACK_USER_NAME || os.userInfo().username;
             case MappedParameters.GitHubWebHookUrl :
                 return "http://not.a.real.url";
+            case MappedParameters.GitHubApiUrl :
+                return GitHubDotComBase;
         }
         if (!md.required) {
             return undefined;
         }
     }
 
-    constructor(private readonly repositoryOwnerParentDirectory: string) {
+    constructor(private readonly ai: AutomationClientInfo) {
     }
 }

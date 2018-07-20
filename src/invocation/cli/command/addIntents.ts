@@ -9,6 +9,8 @@ import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import * as inquirer from "inquirer";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
 import { AutomationClientInfo } from "../../config";
+import { ExpandedTreeMappedParameterResolver } from "../support/ExpandedTreeMappedParameterResolver";
+import { MappedParameterResolver } from "../../../binding/MappedParameterResolver";
 
 /**
  *
@@ -169,11 +171,16 @@ async function runCommand(ai: AutomationClientInfo,
     await promptForMissingParameters(hm, args);
     // infoMessage(`Using arguments:\n${args.map(a => `\t${a.name}=${a.value}`).join("\n")}\n`);
     //return sdm.executeCommand({ name: hm.name, args });
+    const mpr: MappedParameterResolver = new ExpandedTreeMappedParameterResolver(ai);
     const invocation: CommandHandlerInvocation = {
         name: hm.name,
         parameters: args,
-        //mappedParameters:
+        mappedParameters: hm.mapped_parameters.map(mp => ({
+            name: mp.name,
+            value: mpr.resolve(mp),
+        })),
     };
+    process.stdout.write(JSON.stringify(invocation))
     return invokeCommandHandler(ai.connectionConfig, invocation);
 }
 

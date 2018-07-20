@@ -9,7 +9,7 @@ export interface LocalSoftwareDeliveryMachineConfiguration extends SoftwareDeliv
      */
     repositoryOwnerParentDirectory: string;
 
-    mappedParameterResolver: MappedParameterResolver;
+    //mappedParameterResolver: MappedParameterResolver;
 
     /**
      * Full path to local script to call from git hooks.
