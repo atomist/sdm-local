@@ -25,6 +25,18 @@ marked.setOptions({
 });
 
 import chalk from "chalk";
+import { invokeEventHandler } from "../../http/EventHandlerInvocation";
+import { DefaultConfig } from "../../config";
+import { SdmGoalKey, SdmGoalState } from "@atomist/sdm";
+import { OnAnyFailedSdmGoal, OnAnyRequestedSdmGoal } from "@atomist/sdm-core/typings/types";
+import SdmGoal = OnAnyFailedSdmGoal.SdmGoal;
+
+function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
+    state: SdmGoalState;
+}) {
+    const maybe = o as SdmGoalKey;
+    return !!maybe.name && !!maybe.environment;
+}
 
 /**
  * Message client logging to the console. Uses color and renders markdown
@@ -38,8 +50,30 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
 
     public async send(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
         logger.info("MessageClient.send: Raw mesg=\n%j\n", msg);
-        if (isSdmGoal(msg)) {
+        if (isSdmGoalStoreOrUpdate(msg)) {
             logger.info("Storing SDM goal or ingester payload %j", msg);
+            let handlerNames: string[] = [];
+            switch (msg.state) {
+                case SdmGoalState.requested:
+                    handlerNames = ["OnAnyRequestedSdmGoal"];
+                    break;
+                case SdmGoalState.failure:
+                    throw new Error("implement failure dispatch");
+                    break;
+                case SdmGoalState.success:
+                    handlerNames = ["OnAnyRequestedSdmGoal"];
+                    break;
+            }
+            const payload: OnAnyRequestedSdmGoal.Subscription = {
+                SdmGoal: [msg],
+            };
+            // process.stdout.write(JSON.stringify(payload));
+            // Don't wait for them
+            Promise.all(handlerNames.map(name =>
+                invokeEventHandler(DefaultConfig, {
+                    name,
+                    payload,
+                })));
             return;
         }
 
