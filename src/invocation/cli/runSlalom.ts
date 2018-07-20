@@ -6,20 +6,24 @@ import { addStartListener } from "./command/addStartListener";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 import { addShowSkills } from "./command/showSkills";
+import { getMetadata } from "../http/metadataReader";
+import { AutomationClientClientConfig, DefaultConfig } from "../config";
 
 /**
  * Start up the Slalom CLI
- * @param {LocalSoftwareDeliveryMachine} localSdmInstance
  * @return {yargs.Arguments}
  */
-export function runSlalom(localSdmInstance: LocalSoftwareDeliveryMachine) {
+export async function runSlalom(localSdmInstance: LocalSoftwareDeliveryMachine,
+                                config: AutomationClientClientConfig = DefaultConfig) {
     yargs.usage("Usage: slalom <command> [options]");
+
+    const commandsMetadata = await getMetadata(config);
 
     addTriggerCommand(localSdmInstance, yargs);
     addStartListener(localSdmInstance, yargs);
     addGitHooksCommands(localSdmInstance, yargs);
-    addCommandsByName(localSdmInstance, yargs);
-    addIntents(localSdmInstance, yargs);
+    addCommandsByName(commandsMetadata, config, yargs);
+    addIntents(commandsMetadata, config, yargs);
     addImportFromGitRemoteCommand(localSdmInstance, yargs);
     addShowSkills(localSdmInstance, yargs);
 

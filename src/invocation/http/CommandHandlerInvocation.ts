@@ -5,6 +5,7 @@ import { AutomationClientClientConfig } from "../config";
 import * as assert from "power-assert";
 import { hasOwnProperty } from "tslint/lib/utils";
 import { postToSdm } from "./httpInvoker";
+import { isArray } from "util";
 
 /**
  * Allow params to be expressed in an object for convenience
@@ -16,7 +17,7 @@ export interface Params {
 
 export interface CommandHandlerInvocation {
     name: string;
-    parameters: Params;
+    parameters: Params | Arg[];
     mappedParameters?: Params;
     secrets?: Secret[];
 }
@@ -55,6 +56,9 @@ export async function invokeCommandHandler(config: AutomationClientClientConfig,
 }
 
 function propertiesToArgs(o: any): Arg[] {
+    if (isArray(o)) {
+        return o;
+    }
     const args = [];
     for (const name in o) {
         if (hasOwnProperty(o, name)) {
