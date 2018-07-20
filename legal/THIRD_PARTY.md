@@ -12,8 +12,8 @@ This page details all runtime OSS dependencies of `@atomist/slalom`.
 |[BSD-2-Clause](#bsd-2-clause)|2|
 |[BSD-3-Clause](#bsd-3-clause)|3|
 |[BSD](#bsd)|1|
-|[ISC](#isc)|13|
-|[MIT](#mit)|120|
+|[ISC](#isc)|15|
+|[MIT](#mit)|124|
 
 #### Apache-2.0
 Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
@@ -57,6 +57,7 @@ ISC License - [https://www.isc.org/downloads/software-support-policy/isc-license
 |`glob`|`7.1.2`|Isaac Z. Schlueter|[https://github.com/isaacs/node-glob](https://github.com/isaacs/node-glob)|
 |`inflight`|`1.0.6`|Isaac Z. Schlueter|[https://github.com/npm/inflight](https://github.com/npm/inflight)|
 |`inherits`|`2.0.3`||[https://github.com/isaacs/inherits](https://github.com/isaacs/inherits)|
+|`isexe`|`2.0.0`|Isaac Z. Schlueter|[https://github.com/isaacs/isexe](https://github.com/isaacs/isexe)|
 |`minimatch`|`3.0.4`|Isaac Z. Schlueter|[https://github.com/isaacs/minimatch](https://github.com/isaacs/minimatch)|
 |`mute-stream`|`0.0.7`|Isaac Z. Schlueter|[https://github.com/isaacs/mute-stream](https://github.com/isaacs/mute-stream)|
 |`once`|`1.4.0`|Isaac Z. Schlueter|[https://github.com/isaacs/once](https://github.com/isaacs/once)|
@@ -64,6 +65,7 @@ ISC License - [https://www.isc.org/downloads/software-support-policy/isc-license
 |`setprototypeof`|`1.0.3`|Wes Todd|[https://github.com/wesleytodd/setprototypeof](https://github.com/wesleytodd/setprototypeof)|
 |`setprototypeof`|`1.1.0`|Wes Todd|[https://github.com/wesleytodd/setprototypeof](https://github.com/wesleytodd/setprototypeof)|
 |`signal-exit`|`3.0.2`|Ben Coe|[https://github.com/tapjs/signal-exit](https://github.com/tapjs/signal-exit)|
+|`which`|`1.3.1`|Isaac Z. Schlueter|[https://github.com/isaacs/node-which](https://github.com/isaacs/node-which)|
 |`wrappy`|`1.0.2`|Isaac Z. Schlueter|[https://github.com/npm/wrappy](https://github.com/npm/wrappy)|
 
 #### MIT
@@ -72,6 +74,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
 |`@types/inquirer`|`0.0.42`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
+|`@types/node-notifier`|`0.0.28`|Qubo|[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/node`|`8.10.19`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/rx-core-binding`|`4.0.4`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/rx-core`|`4.0.3`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
@@ -133,6 +136,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`finalhandler`|`1.1.1`|Douglas Christopher Wilson|[https://github.com/pillarjs/finalhandler](https://github.com/pillarjs/finalhandler)|
 |`forwarded`|`0.1.2`||[https://github.com/jshttp/forwarded](https://github.com/jshttp/forwarded)|
 |`fresh`|`0.5.2`|TJ Holowaychuk|[https://github.com/jshttp/fresh](https://github.com/jshttp/fresh)|
+|`growly`|`1.3.0`|Ibrahim Al-Rajhi|[https://github.com/theabraham/growly](https://github.com/theabraham/growly)|
 |`has-ansi`|`2.0.0`|Sindre Sorhus|[https://github.com/sindresorhus/has-ansi](https://github.com/sindresorhus/has-ansi)|
 |`has-flag`|`3.0.0`|Sindre Sorhus|[https://github.com/sindresorhus/has-flag](https://github.com/sindresorhus/has-flag)|
 |`http-errors`|`1.6.2`|Jonathan Ong|[https://github.com/jshttp/http-errors](https://github.com/jshttp/http-errors)|
@@ -159,6 +163,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`ms`|`2.0.0`||[https://github.com/zeit/ms](https://github.com/zeit/ms)|
 |`negotiator`|`0.6.1`||[https://github.com/jshttp/negotiator](https://github.com/jshttp/negotiator)|
 |`node-emoji`|`1.8.1`|Daniel Bugl|[https://github.com/omnidan/node-emoji](https://github.com/omnidan/node-emoji)|
+|`node-notifier`|`5.2.1`|Mikael Brevik|[https://github.com/mikaelbr/node-notifier](https://github.com/mikaelbr/node-notifier)|
 |`on-finished`|`2.3.0`||[https://github.com/jshttp/on-finished](https://github.com/jshttp/on-finished)|
 |`onetime`|`2.0.1`|Sindre Sorhus|[https://github.com/sindresorhus/onetime](https://github.com/sindresorhus/onetime)|
 |`os-tmpdir`|`1.0.2`|Sindre Sorhus|[https://github.com/sindresorhus/os-tmpdir](https://github.com/sindresorhus/os-tmpdir)|
@@ -177,6 +182,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`safer-buffer`|`2.1.2`|Nikita Skovoroda|[https://github.com/ChALkeR/safer-buffer](https://github.com/ChALkeR/safer-buffer)|
 |`send`|`0.16.2`|TJ Holowaychuk|[https://github.com/pillarjs/send](https://github.com/pillarjs/send)|
 |`serve-static`|`1.13.2`|Douglas Christopher Wilson|[https://github.com/expressjs/serve-static](https://github.com/expressjs/serve-static)|
+|`shellwords`|`0.1.1`|Jimmy Cuadra|[https://github.com/jimmycuadra/shellwords](https://github.com/jimmycuadra/shellwords)|
 |`statuses`|`1.4.0`||[https://github.com/jshttp/statuses](https://github.com/jshttp/statuses)|
 |`statuses`|`1.5.0`||[https://github.com/jshttp/statuses](https://github.com/jshttp/statuses)|
 |`string-width`|`2.1.1`|Sindre Sorhus|[https://github.com/sindresorhus/string-width](https://github.com/sindresorhus/string-width)|
