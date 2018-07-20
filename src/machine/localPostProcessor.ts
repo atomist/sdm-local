@@ -7,9 +7,15 @@ import * as assert from "assert";
 import * as _ from "lodash";
 import { ConsoleMessageClient } from "../invocation/cli/io/ConsoleMessageClient";
 import { LocalGraphClient } from "../binding/LocalGraphClient";
+import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
 
 // TODO could put this in by an extra argument to client loadConfiguration
 
+/**
+ * Enable local post processing
+ * @param {LocalMachineConfig} config
+ * @return {(configuration: Configuration) => Promise<Configuration>}
+ */
 export function supportLocal(config: LocalMachineConfig): (configuration: Configuration) => Promise<Configuration> {
     return async configuration => {
 
@@ -23,8 +29,10 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
         _.set(configuration, "http.auth.basic.enabled", false);
 
         // TODO resolve channel
+        // TODO allow this to be configured in config
         configuration.http.messageClientFactory =
-            () => new ConsoleMessageClient("general");
+            //() => new ConsoleMessageClient("general");
+        () => new SystemNotificationMessageClient("general");
 
         configuration.http.graphClientFactory =
             () => new LocalGraphClient();
