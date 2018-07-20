@@ -1,6 +1,6 @@
 import { HandlerResult, logger } from "@atomist/automation-client";
 import { Arg, Secret } from "@atomist/automation-client/internal/invoker/Payload";
-import { AutomationClientClientConfig } from "../config";
+import { AutomationClientConnectionConfig } from "../config";
 
 import * as assert from "power-assert";
 import { hasOwnProperty } from "tslint/lib/utils";
@@ -22,7 +22,7 @@ export interface CommandHandlerInvocation {
     secrets?: Secret[];
 }
 
-export async function invokeCommandHandler(config: AutomationClientClientConfig,
+export async function invokeCommandHandler(config: AutomationClientConnectionConfig,
                                            invocation: CommandHandlerInvocation): Promise<HandlerResult> {
     assert(!!config, "Config must be provided");
     assert(!!config.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(config));

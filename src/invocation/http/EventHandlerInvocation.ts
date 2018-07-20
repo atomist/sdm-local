@@ -1,6 +1,6 @@
 import { HandlerResult, logger } from "@atomist/automation-client";
 import { Secret } from "@atomist/automation-client/internal/invoker/Payload";
-import { AutomationClientClientConfig } from "../config";
+import { AutomationClientConnectionConfig } from "../config";
 
 import * as assert from "power-assert";
 import { postToSdm } from "./httpInvoker";
@@ -11,7 +11,7 @@ export interface EventHandlerInvocation {
     secrets?: Secret[];
 }
 
-export async function invokeEventHandler(config: AutomationClientClientConfig,
+export async function invokeEventHandler(config: AutomationClientConnectionConfig,
                                          invocation: EventHandlerInvocation): Promise<HandlerResult> {
     assert(!!config, "Config must be provided");
     assert(!!config.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(config));

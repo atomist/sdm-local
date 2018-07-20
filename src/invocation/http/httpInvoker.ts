@@ -2,16 +2,16 @@
 import { logger } from "@atomist/automation-client";
 import axios, { AxiosError, AxiosPromise, AxiosResponse } from "axios";
 import { AxiosRequestConfig } from "axios";
-import { AutomationClientClientConfig } from "../config";
+import { AutomationClientConnectionConfig } from "../config";
 
 /**
  * Make a post to the SDM
- * @param {AutomationClientClientConfig} config
+ * @param {AutomationClientConnectionConfig} config
  * @param {string} relativePath
  * @param data
  * @return {AxiosPromise}
  */
-export function postToSdm(config: AutomationClientClientConfig, relativePath: string, data: any): AxiosPromise {
+export function postToSdm(config: AutomationClientConnectionConfig, relativePath: string, data: any): AxiosPromise {
     let url = `${config.baseEndpoint}/${relativePath}`;
     if (relativePath.startsWith("/")) {
         url = `${config.baseEndpoint}${relativePath}`;
@@ -21,7 +21,7 @@ export function postToSdm(config: AutomationClientClientConfig, relativePath: st
         .then(logResponse(url), interpretSdmResponse(config, url));
 }
 
-export function sdmGet(config: AutomationClientClientConfig, relativePath: string): AxiosPromise {
+export function sdmGet(config: AutomationClientConnectionConfig, relativePath: string): AxiosPromise {
     let url = `${config.baseEndpoint}/${relativePath}`;
     if (relativePath.startsWith("/")) {
         url = `${config.baseEndpoint}${relativePath}`;
@@ -38,7 +38,7 @@ function logResponse(url: string) {
     };
 }
 
-function interpretSdmResponse(config: AutomationClientClientConfig, url: string) {
+function interpretSdmResponse(config: AutomationClientConnectionConfig, url: string) {
     return (err: AxiosError): never => {
         logger.error("Error accessing %s: %s", url, err.message);
         if (err.message.includes("ECONNREFUSED")) {
@@ -55,7 +55,7 @@ function interpretSdmResponse(config: AutomationClientClientConfig, url: string)
     };
 }
 
-function automationServerAuthHeaders(config: AutomationClientClientConfig): AxiosRequestConfig {
+function automationServerAuthHeaders(config: AutomationClientConnectionConfig): AxiosRequestConfig {
     return {
         headers: {
             "content-type": "application/json",

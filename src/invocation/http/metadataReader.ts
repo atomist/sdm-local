@@ -1,8 +1,19 @@
-import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
-import { AutomationClientClientConfig, DefaultConfig } from "../config";
-import axios, { AxiosError, AxiosPromise, AxiosResponse } from "axios";
+import { AutomationClientConnectionConfig, AutomationClientInfo, DefaultConfig } from "../config";
+import axios from "axios";
+import { LocalMachineConfig } from "../..";
 
-export async function getMetadata(config: AutomationClientClientConfig = DefaultConfig): Promise<CommandHandlerMetadata[]> {
-    const resp = await axios.get(config.baseEndpoint + "/registration");
-    return resp.data.commands;
+export async function getMetadata(connectionConfig: AutomationClientConnectionConfig = DefaultConfig): Promise<AutomationClientInfo> {
+    const resp = await axios.get(connectionConfig.baseEndpoint + "/registration");
+    const commandsMetadata = resp.data.commands;
+    let localConfig: LocalMachineConfig;
+    try {
+        localConfig = (await axios.get(connectionConfig.baseEndpoint + "/localConfiguration")).data;
+    } catch {
+        // Do nothing
+    }
+    return {
+        commandsMetadata,
+        localConfig,
+        connectionConfig,
+    };
 }

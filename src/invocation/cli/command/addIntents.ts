@@ -1,4 +1,4 @@
-import { HandleCommand, logger } from "@atomist/automation-client";
+import { logger } from "@atomist/automation-client";
 import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/metadata/automationMetadata";
 import * as _ from "lodash";
 import { Argv } from "yargs";
@@ -8,26 +8,25 @@ import { logExceptionsToConsole } from "../support/consoleOutput";
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import * as inquirer from "inquirer";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
-import { AutomationClientClientConfig } from "../../config";
+import { AutomationClientInfo } from "../../config";
 
 /**
  *
  * @param {yargs.Argv} yargs
  * @param {boolean} allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
-export function addCommandsByName(commandMetadata: CommandHandlerMetadata[],
-                                  config: AutomationClientClientConfig,
+export function addCommandsByName(ai: AutomationClientInfo,
                                   yargs: Argv,
                                   allowUserInput: boolean = true) {
     yargs.command("run", "Run a command",
         args => {
-            commandMetadata.forEach(hi => {
+            ai.commandsMetadata.forEach(hi => {
                 args.command({
                     command: hi.name,
                     handler: async argv => {
                         return logExceptionsToConsole(
                             // TODO restore sdm.configuration.showErrorStacks
-                            () => runByCommandName(commandMetadata, config, hi.name, argv), true);
+                            () => runByCommandName(ai, hi.name, argv), true);
                     },
                     builder: argv => exposeParameters(hi, argv, allowUserInput),
                 });
@@ -41,16 +40,16 @@ export function addCommandsByName(commandMetadata: CommandHandlerMetadata[],
  * @param {yargs.Argv} yargs
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
-export function addIntents(commandsMetadata: CommandHandlerMetadata[], config: AutomationClientClientConfig,
+export function addIntents(ai: AutomationClientInfo,
                            yargs: Argv, allowUserInput: boolean = true) {
-    const handlers = commandsMetadata
+    const handlers = ai.commandsMetadata
         .filter(hm => !!hm.intent && hm.intent.length > 0);
 
     // Build all words
     const sentences: string[][] =
         _.flatten(handlers.map(hm => hm.intent)).map(words => words.split(" "));
     const paths: PathElement[] = toPaths(sentences);
-    paths.forEach(pe => exposeAsCommands(commandsMetadata, config, pe, yargs, [], allowUserInput));
+    paths.forEach(pe => exposeAsCommands(ai, pe, yargs, [], allowUserInput));
 }
 
 /**
@@ -62,14 +61,13 @@ export function addIntents(commandsMetadata: CommandHandlerMetadata[], config: A
  * @param {string[]} previous
  * @param {boolean} allowUserInput
  */
-function exposeAsCommands(commandsMetadata: CommandHandlerMetadata[],
-                          config: AutomationClientClientConfig,
+function exposeAsCommands(ai: AutomationClientInfo,
                           pe: PathElement,
                           nested: Argv,
                           previous: string[],
                           allowUserInput: boolean) {
     const intent = previous.concat([pe.name]).join(" ");
-    const hi = commandsMetadata.find(hm => hm.intent.includes(intent));
+    const hi = ai.commandsMetadata.find(hm => hm.intent.includes(intent));
 
     if (pe.kids.length > 0) {
         // Expose both lower case and actual case name
@@ -79,7 +77,8 @@ function exposeAsCommands(commandsMetadata: CommandHandlerMetadata[],
                 name,
                 `${name} -> ${pe.kids.map(k => k.name).join("/")}`,
                 yargs => {
-                    pe.kids.forEach(kid => exposeAsCommands(commandsMetadata, config, kid, yargs, previous.concat(pe.name), allowUserInput));
+                    pe.kids.forEach(kid =>
+                        exposeAsCommands(ai, kid, yargs, previous.concat(pe.name), allowUserInput));
                     if (!!hi) {
                         exposeParameters(hi, yargs, allowUserInput);
                     }
@@ -89,7 +88,7 @@ function exposeAsCommands(commandsMetadata: CommandHandlerMetadata[],
                     logger.debug("Args are %j", argv);
                     return logExceptionsToConsole(
                         // TODO restore sdm.configuration.showErrorStacks
-                        () => runByIntent(commandsMetadata, config, intent, argv as any),
+                        () => runByIntent(ai, intent, argv as any),
                         true);
                 } : undefined));
     } else {
@@ -101,7 +100,7 @@ function exposeAsCommands(commandsMetadata: CommandHandlerMetadata[],
                 handler: async argv => {
                     logger.debug("Args are %j", argv);
                     // TODO restore sdm.configuration.showErrorStacks
-                    return logExceptionsToConsole(() => runByIntent(commandsMetadata, config, intent, argv), true);
+                    return logExceptionsToConsole(() => runByIntent(ai, intent, argv), true);
                 },
                 builder: yargs => exposeParameters(hi, yargs, allowUserInput),
             }));
@@ -133,34 +132,32 @@ function exposeParameters(hi: CommandHandlerMetadata, args: Argv, allowUserInput
     return args;
 }
 
-async function runByIntent(commandsMetadata: CommandHandlerMetadata[],
-                           config: AutomationClientClientConfig,
+async function runByIntent(ai: AutomationClientInfo,
                            intent: string,
                            command: any): Promise<any> {
     // writeToConsole({ message: `Recognized intent "${intent}"...`, color: "cyan" });
-    const hm = commandsMetadata.find(h => !!h.intent && h.intent.includes(intent));
+    const hm = ai.commandsMetadata.find(h => !!h.intent && h.intent.includes(intent));
     if (!hm) {
-        process.stdout.write(`No command with intent [${intent}]: Known intents are \n${commandsMetadata
+        process.stdout.write(`No command with intent [${intent}]: Known intents are \n${ai.commandsMetadata
             .map(m => "\t" + m.intent).sort().join("\n")}`);
         process.exit(1);
     }
-    return runCommand(config, hm, command);
+    return runCommand(ai, hm, command);
 }
 
-async function runByCommandName(commandsMetadata: CommandHandlerMetadata[],
-                                config: AutomationClientClientConfig,
+async function runByCommandName(ai: AutomationClientInfo,
                                 name: string,
                                 command: any): Promise<any> {
-    const hm = commandsMetadata.find(h => h.name === name);
+    const hm = ai.commandsMetadata.find(h => h.name === name);
     if (!hm) {
-        process.stdout.write(`No command with name [${name}]: Known command names are \n${commandsMetadata
+        process.stdout.write(`No command with name [${name}]: Known command names are \n${ai.commandsMetadata
             .map(m => "\t" + m.name).sort().join("\n")}`);
         process.exit(1);
     }
-    return runCommand(config, hm, command);
+    return runCommand(ai, hm, command);
 }
 
-async function runCommand(config: AutomationClientClientConfig,
+async function runCommand(ai: AutomationClientInfo,
                           hm: CommandHandlerMetadata,
                           command: { owner: string, repo: string }): Promise<any> {
     const extraArgs = Object.getOwnPropertyNames(command)
@@ -177,7 +174,7 @@ async function runCommand(config: AutomationClientClientConfig,
         parameters: args,
         //mappedParameters:
     };
-    return invokeCommandHandler(config, invocation);
+    return invokeCommandHandler(ai.connectionConfig, invocation);
 }
 
 /**

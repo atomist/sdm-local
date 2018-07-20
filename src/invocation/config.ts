@@ -1,7 +1,8 @@
 import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
+import { LocalMachineConfig } from "..";
+import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 
-// TODO smoke tests should depend on this
-export interface AutomationClientClientConfig {
+export interface AutomationClientConnectionConfig {
 
     atomistTeamId: string;
 
@@ -14,10 +15,26 @@ export interface AutomationClientClientConfig {
     password?: string;
 
     credentials?: ProjectOperationCredentials;
+
+}
+
+/**
+ * Information about an automation client that we've connected to
+ */
+export interface AutomationClientInfo {
+
+    commandsMetadata: CommandHandlerMetadata[];
+
+    connectionConfig: AutomationClientConnectionConfig;
+
+    /**
+     * If this is a local machine, include this
+     */
+    localConfig?: LocalMachineConfig;
 }
 
 // TODO get from config?
-export const DefaultConfig: AutomationClientClientConfig = {
+export const DefaultConfig: AutomationClientConnectionConfig = {
     atomistTeamId: "T123",
     atomistTeamName: "test",
     baseEndpoint: "http://127.0.0.1:2866",
