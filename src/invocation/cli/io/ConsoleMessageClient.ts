@@ -48,6 +48,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
         return this.addressChannels(msg, this.linkedChannel, options);
     }
 
+    // TODO this should be independent of where it's routed
     public async send(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
         logger.info("MessageClient.send: Raw mesg=\n%j\n", msg);
         if (isSdmGoalStoreOrUpdate(msg)) {
@@ -57,11 +58,11 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
                 case SdmGoalState.requested:
                     handlerNames = ["OnAnyRequestedSdmGoal"];
                     break;
-                case SdmGoalState.failure:
-                    throw new Error("implement failure dispatch");
+                case SdmGoalState.failure :
+                    handlerNames = ["OnAnyCompletedSdmGoal", "OnAnyFailedSdmGoal"];
                     break;
                 case SdmGoalState.success:
-                    handlerNames = ["OnAnyRequestedSdmGoal"];
+                    handlerNames = ["OnAnyCompletedSdmGoal", "OnAnySuccessfulSdmGoal"];
                     break;
             }
             const payload: OnAnyRequestedSdmGoal.Subscription = {
