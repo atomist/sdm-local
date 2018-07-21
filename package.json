@@ -9,9 +9,8 @@
     "url": "https://github.com/atomist/slalom.git"
   },
   "bin": {
-    "slalom": "./build/src/invocation/cli/dispatcher.js",
-    "@atomist": "./build/src/invocation/cli/dispatcher.js",
-    "slalom-itself": "./build/src/invocation/cli/slalom.js"
+    "slalom": "./build/src/invocation/cli/slalom.js",
+    "@atomist": "./build/src/invocation/cli/slalom.js"
   },
   "main": "build/src/index.js",
   "typings": "build/src/index.d.ts",

@@ -4,7 +4,7 @@ import { suppressConsoleLogging } from "./support/configureLogging";
 
 suppressConsoleLogging();
 
-import { localSdmInstance } from "../machineLoader";
 import { runSlalom } from "./runSlalom";
+import { DefaultConfig } from "../config";
 
-runSlalom(localSdmInstance);
+runSlalom(DefaultConfig);

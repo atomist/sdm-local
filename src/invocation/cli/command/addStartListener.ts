@@ -1,27 +1,22 @@
 import { Argv } from "yargs";
 import { infoMessage, logExceptionsToConsole } from "../support/consoleOutput";
-
-import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
-import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { Destination, MessageOptions } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as express from "express";
-import { Express } from "express";
-import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { ConsoleMessageClient } from "../io/ConsoleMessageClient";
-import { handleGitHookEvent, HookEvents } from "../../../setup/gitHooks";
 
 import * as bodyParser from "body-parser";
+import { AutomationClientInfo } from "../../config";
 
 export const DemonPort = 6660;
 export const MessageRoute = "/message";
 
-export function addStartListener(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
+export function addStartListener(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({
         command: "listen",
         describe: "Start listener daemon to display messages and expose commands",
         handler: () => {
-            return logExceptionsToConsole(() => summonDemon(sdm), sdm.configuration.showErrorStacks);
+            return logExceptionsToConsole(() => summonDemon(ai), ai.localConfig.showErrorStacks);
         },
     });
 }
@@ -32,7 +27,7 @@ export interface StreamedMessage {
     options: MessageOptions;
 }
 
-async function summonDemon(sdm: LocalSoftwareDeliveryMachine) {
+async function summonDemon(ai: AutomationClientInfo) {
     const messageClient = new ConsoleMessageClient("general");
 
     const app = express();
@@ -46,20 +41,8 @@ async function summonDemon(sdm: LocalSoftwareDeliveryMachine) {
             .catch(next);
     });
 
-    sdm.commandsMetadata.forEach(hmd => exportHandlerRoute(app, hmd, sdm));
     app.listen(DemonPort,
         () => infoMessage(`Atomist Slalom: Listening on port ${DemonPort}...\n`),
     );
 }
 
-function exportHandlerRoute(e: Express, hmd: CommandHandlerMetadata, sdm: LocalSoftwareDeliveryMachine) {
-    e.get(`/command/${hmd.name}`, async (req, res) => {
-        const ci: CommandInvocation = {
-            name: hmd.name,
-            args: Object.getOwnPropertyNames(req.query).map(prop => ({ name: prop, value: req.query[prop] })),
-        };
-        // TODO redirect output??
-        await sdm.executeCommand(ci);
-        return res.send(`Executed command '${hmd.name}'`);
-    });
-}
