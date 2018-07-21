@@ -1,11 +1,9 @@
-import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
 import { GoalDisplayer } from "../invocation/cli/support/GoalDisplayer";
-import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 
 /**
  * A file named local.ts must define a Local constant of this type
  */
-export interface LocalMachineConfig extends Partial<LocalSoftwareDeliveryMachineConfiguration> {
+export interface LocalMachineConfig {
 
     name: string;
 
@@ -23,15 +21,16 @@ export interface LocalMachineConfig extends Partial<LocalSoftwareDeliveryMachine
     preferLocalSeeds: boolean;
 
     /**
-     * Function to initialize machine
+     * Whether to merge autofixes automatically
      */
-    init: ConfigureMachine;
+    mergeAutofixes?: boolean;
+
+    /**
+     * Whether to display error stacks to console
+     */
+    showErrorStacks?: boolean;
 
     goalDisplayer?: GoalDisplayer;
 
 }
 
-export function isLocalMachineConfig(a: object): a is LocalMachineConfig {
-    const maybe = a as LocalMachineConfig;
-    return !!maybe.gitHookScript && !!maybe.repositoryOwnerParentDirectory;
-}

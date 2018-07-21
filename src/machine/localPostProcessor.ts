@@ -48,6 +48,5 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
             ...enrichedConfig.sdm,
         };
         return configuration;
-
     };
 }

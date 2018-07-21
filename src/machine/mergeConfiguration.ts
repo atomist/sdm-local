@@ -13,20 +13,19 @@ import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { LocalRepoTargets } from "../binding/LocalRepoTargets";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
 import { LocalMachineConfig } from "./LocalMachineConfig";
-import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 
 import * as fs from "fs";
 import * as path from "path";
 import { infoMessage } from "../invocation/cli/support/consoleOutput";
 import { WriteLineGoalDisplayer } from "../invocation/cli/support/WriteLineGoalDisplayer";
+import { Configuration } from "@atomist/automation-client";
 
 /**
  * Merge user-supplied configuration with defaults
  * @param {LocalMachineConfig} userConfig
- * @return {LocalSoftwareDeliveryMachineConfiguration}
  */
 export function mergeConfiguration(
-    userConfig: LocalMachineConfig): LocalSoftwareDeliveryMachineConfiguration {
+    userConfig: LocalMachineConfig): Configuration {
     const gitHookScript = userConfig.gitHookScript || path.join(__dirname, "../invocation/git/onGitHook.js");
     const repoRefResolver = new LocalRepoRefResolver(userConfig.repositoryOwnerParentDirectory);
     return {
