@@ -1,6 +1,6 @@
-import { GoalDisplayer } from "../invocation/cli/support/GoalDisplayer";
-
 /**
+ * Configuration within a automation client that this
+ * project will connect to.
  * A file named local.ts must define a Local constant of this type
  */
 export interface LocalMachineConfig {
@@ -18,7 +18,5 @@ export interface LocalMachineConfig {
      * Whether to merge autofixes automatically
      */
     mergeAutofixes?: boolean;
-
-    goalDisplayer?: GoalDisplayer;
 
 }
