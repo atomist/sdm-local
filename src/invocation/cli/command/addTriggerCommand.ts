@@ -25,7 +25,7 @@ export function addTriggerCommand(ai: AutomationClientInfo, yargs: Argv) {
             });
         },
         handler: ya => {
-            return logExceptionsToConsole(() => trigger(ai, ya.event, ya.depth), ai.localConfig.showErrorStacks);
+            return logExceptionsToConsole(() => trigger(ai, ya.event, ya.depth), ai.connectionConfig.showErrorStacks);
         },
     });
 }

@@ -17,4 +17,9 @@ export interface AutomationClientConnectionConfig {
 
     credentials?: ProjectOperationCredentials;
 
+    /**
+     * Whether to display error stacks to console
+     */
+    showErrorStacks?: boolean;
+
 }

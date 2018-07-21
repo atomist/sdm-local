@@ -18,7 +18,7 @@ export function addShowSkills(ai: AutomationClientInfo, yargs: Argv) {
                     msg += "\t" + chalk.gray(md.description);
                     process.stdout.write(msg + "\n");
                 });
-            }, ai.localConfig.showErrorStacks);
+            }, ai.connectionConfig.showErrorStacks);
         },
     });
 }

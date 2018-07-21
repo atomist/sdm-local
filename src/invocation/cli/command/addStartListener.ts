@@ -16,7 +16,7 @@ export function addStartListener(ai: AutomationClientInfo, yargs: Argv) {
         command: "listen",
         describe: "Start listener daemon to display messages and expose commands",
         handler: () => {
-            return logExceptionsToConsole(() => summonDemon(ai), ai.localConfig.showErrorStacks);
+            return logExceptionsToConsole(() => summonDemon(ai), ai.connectionConfig.showErrorStacks);
         },
     });
 }

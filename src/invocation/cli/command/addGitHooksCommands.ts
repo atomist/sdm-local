@@ -5,24 +5,24 @@ import { determineCwd, parseOwnerAndRepo } from "../../../binding/expandedTreeUt
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../../../binding/FileSystemRemoteRepoRef";
 import { addGitHooks, removeGitHooks } from "../../../setup/addGitHooks";
 import { logExceptionsToConsole } from "../support/consoleOutput";
+import { AutomationClientInfo } from "../../AutomationClientInfo";
 
 /**
  * Command to add git hooks to current directory or all projects
- * @param {LocalSoftwareDeliveryMachine} sdm
  * @param {yargs.Argv} yargs
  */
-export function addGitHooksCommands(lc: LocalMachineConfig, yargs: Argv) {
+export function addGitHooksCommands(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({
         command: "add-git-hooks",
-        describe: `Install git hooks for projects under ${lc.repositoryOwnerParentDirectory}`,
+        describe: `Install git hooks for projects under ${ai.localConfig.repositoryOwnerParentDirectory}`,
         handler: () => {
-            return logExceptionsToConsole(() => installHookOrHooks(lc), lc.showErrorStacks);
+            return logExceptionsToConsole(() => installHookOrHooks(ai.localConfig), ai.connectionConfig.showErrorStacks);
         },
     }).command({
         command: "remove-git-hooks",
-        describe: `Remove git hooks for projects under ${lc.repositoryOwnerParentDirectory}`,
+        describe: `Remove git hooks for projects under ${ai.localConfig.repositoryOwnerParentDirectory}`,
         handler: () => {
-            return logExceptionsToConsole(() => removeHookOrHooks(lc), lc.showErrorStacks);
+            return logExceptionsToConsole(() => removeHookOrHooks(ai.localConfig), ai.connectionConfig.showErrorStacks);
         },
     });
 }

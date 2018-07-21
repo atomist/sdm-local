@@ -25,12 +25,6 @@ export interface LocalMachineConfig {
      */
     mergeAutofixes?: boolean;
 
-    /**
-     * Whether to display error stacks to console
-     */
-    showErrorStacks?: boolean;
-
     goalDisplayer?: GoalDisplayer;
 
 }
-

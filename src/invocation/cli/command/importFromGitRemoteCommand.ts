@@ -15,7 +15,7 @@ export function addImportFromGitRemoteCommand(ai: AutomationClientInfo, yargs: A
             return logExceptionsToConsole(async () => {
                 const remoteBase = !!argv.base ? argv.base : "https://github.com";
                 await importFromGitRemote(ai, argv.owner, argv.repo, remoteBase);
-            }, ai.localConfig.showErrorStacks);
+            }, ai.connectionConfig.showErrorStacks);
         },
     });
 }

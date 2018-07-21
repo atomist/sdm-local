@@ -45,9 +45,8 @@ export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
 }
 
 /**
- * Dispatch the incoming git hook event to a local SDM,
- * routing to the appropriate method
- * @param {LocalSoftwareDeliveryMachine} sdm
+ * Invoking the target remote client for this push.
+ * @param ai information about automation client we're connected to
  * @param payload event data
  * @return {Promise<any>}
  */

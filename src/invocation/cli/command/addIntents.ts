@@ -27,8 +27,7 @@ export function addCommandsByName(ai: AutomationClientInfo,
                     command: hi.name,
                     handler: async argv => {
                         return logExceptionsToConsole(
-                            // TODO restore sdm.configuration.showErrorStacks
-                            () => runByCommandName(ai, hi.name, argv), true);
+                            () => runByCommandName(ai, hi.name, argv), ai.connectionConfig.showErrorStacks);
                     },
                     builder: argv => exposeParameters(hi, argv, allowUserInput),
                 });
@@ -89,9 +88,8 @@ function exposeAsCommands(ai: AutomationClientInfo,
                 !!hi ? async argv => {
                     logger.debug("Args are %j", argv);
                     return logExceptionsToConsole(
-                        // TODO restore sdm.configuration.showErrorStacks
                         () => runByIntent(ai, intent, argv as any),
-                        true);
+                        ai.connectionConfig.showErrorStacks);
                 } : undefined));
     } else {
         const names = _.uniq([pe.name, pe.name.toLowerCase()]);
@@ -101,8 +99,8 @@ function exposeAsCommands(ai: AutomationClientInfo,
                 describe: hi.description,
                 handler: async argv => {
                     logger.debug("Args are %j", argv);
-                    // TODO restore sdm.configuration.showErrorStacks
-                    return logExceptionsToConsole(() => runByIntent(ai, intent, argv), true);
+                    return logExceptionsToConsole(() => runByIntent(ai, intent, argv),
+                        ai.connectionConfig.showErrorStacks);
                 },
                 builder: yargs => exposeParameters(hi, yargs, allowUserInput),
             }));
@@ -116,14 +114,6 @@ function exposeAsCommands(ai: AutomationClientInfo,
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 function exposeParameters(hi: CommandHandlerMetadata, args: Argv, allowUserInput: boolean) {
-    // const paramsInstance = (hi as any as HandleCommand).freshParametersInstance();
-    // hi.parameters
-    //     .forEach(p => {
-    //         const nameToUse = convertToDisplayable(p.name);
-    //         args.option(nameToUse, {
-    //             required: !allowUserInput && p.required && !paramsInstance[p.name],
-    //         });
-    //     });
     hi.parameters
         .forEach(p => {
             const nameToUse = convertToDisplayable(p.name);
