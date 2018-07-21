@@ -16,10 +16,3 @@ export interface AutomationClientInfo {
      */
     localConfig?: LocalMachineConfig;
 }
-
-// TODO get from config?
-export const DefaultConfig: AutomationClientConnectionConfig = {
-    atomistTeamId: "T123",
-    atomistTeamName: "test",
-    baseEndpoint: "http://127.0.0.1:2866",
-};

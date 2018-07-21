@@ -6,6 +6,7 @@ import * as _ from "lodash";
 import { LocalGraphClient } from "../binding/LocalGraphClient";
 import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
 import { isLocal } from "./isLocal";
+import { DefaultConfig } from "../entry/resolveConnectionConfig";
 
 /**
  * Enable local post processing
@@ -38,7 +39,8 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
         // TODO allow this to be configured in config
         configuration.http.messageClientFactory =
             // () => new ConsoleMessageClient("general");
-            () => new SystemNotificationMessageClient("general");
+            // TODO think about this
+            () => new SystemNotificationMessageClient("general", DefaultConfig);
 
         configuration.http.graphClientFactory =
             () => new LocalGraphClient();

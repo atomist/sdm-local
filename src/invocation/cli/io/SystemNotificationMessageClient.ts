@@ -10,10 +10,15 @@ import { MarkedOptions } from "marked";
 import * as slack from "@atomist/slack-messages/SlackMessages";
 import * as TerminalRenderer from "marked-terminal";
 import { AbstractGoalEventForwardingMessageClient } from "./AbstractGoalEventForwardingMessageClient";
+import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 
 // import { notifier } from "node-notifier";
 
-const notifier = require("node-notifier");
+//const notifier = require("node-notifier");
+
+const open = require("open");
+
+const NotificationCenter = require("node-notifier").NotificationCenter;
 
 marked.setOptions({
     // Define custom renderer
@@ -21,7 +26,7 @@ marked.setOptions({
 });
 
 /**
- * Message client logging to the console. Uses color and renders markdown
+ * Message client logging to System notifications.
  */
 export class SystemNotificationMessageClient extends AbstractGoalEventForwardingMessageClient {
 
@@ -93,17 +98,26 @@ export class SystemNotificationMessageClient extends AbstractGoalEventForwarding
      * @param {string} markdown
      */
     private async writeToChannel(channels: string[] | string, markdown: string) {
-        return notifier.notify({
-            title: `Atomist: [${channels}]`,
+        const notifier = new NotificationCenter({
+            withFallback: false, // Use Growl Fallback if <= 10.8
+        });
+        notifier.notify({
+            title: `Atomist2: [${channels}]`,
             message: markdown,
+            wait: true,
+        });
+        notifier.on("click", (notifierObject, options) => {
+            // Triggers if `wait: true` and user clicks notification
+            open("http://127.0.0.1:2866/log/messages");
         });
     }
 
     constructor(private readonly linkedChannel: string,
+                connectionConfig: AutomationClientConnectionConfig,
                 public readonly markedOptions: MarkedOptions = {
                     breaks: false,
                 }) {
-        super();
+        super(connectionConfig);
     }
 
 }

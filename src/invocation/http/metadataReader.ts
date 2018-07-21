@@ -1,6 +1,6 @@
 import axios from "axios";
 import { LocalMachineConfig } from "../..";
-import { AutomationClientInfo, DefaultConfig } from "../AutomationClientInfo";
+import { AutomationClientInfo } from "../AutomationClientInfo";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 
 /**
@@ -8,7 +8,7 @@ import { AutomationClientConnectionConfig } from "./AutomationClientConnectionCo
  * @param {AutomationClientConnectionConfig} connectionConfig
  * @return {Promise<AutomationClientInfo>}
  */
-export async function getMetadata(connectionConfig: AutomationClientConnectionConfig = DefaultConfig): Promise<AutomationClientInfo> {
+export async function getMetadata(connectionConfig: AutomationClientConnectionConfig): Promise<AutomationClientInfo> {
     const resp = await axios.get(connectionConfig.baseEndpoint + "/registration");
     const commandsMetadata = resp.data.commands;
     let localConfig: LocalMachineConfig;

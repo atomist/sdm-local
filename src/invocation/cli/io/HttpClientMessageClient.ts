@@ -11,6 +11,7 @@ import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import { DemonPort, MessageRoute, StreamedMessage } from "../command/addStartListener";
 import { ConsoleMessageClient } from "./ConsoleMessageClient";
+import { DefaultConfig } from "../../../entry/resolveConnectionConfig";
 
 /**
  * Message client that POSTS to an Atomist server and logs to a fallback (usually console)
@@ -58,6 +59,6 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
 
     constructor(private readonly linkedChannel: string,
                 public readonly url: string = `http://localhost:${DemonPort}${MessageRoute}`,
-                private readonly delegate: MessageClient & SlackMessageClient = new ConsoleMessageClient(linkedChannel)) {
+                private readonly delegate: MessageClient & SlackMessageClient = new ConsoleMessageClient(linkedChannel, DefaultConfig)) {
     }
 }

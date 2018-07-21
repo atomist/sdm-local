@@ -3,8 +3,8 @@ import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
 import { isLocal } from "./isLocal";
 
 /**
- * Add Local IO to the given SDM
- * @type {{name: string; vendor: string; version: string; configure: (sdm: SoftwareDeliveryMachine) => void}}
+ * Add Local IO to the given SDM.
+ * Analogous to Slack lifecycle.
  */
 export const LocalIo: ExtensionPack = {
     ...metadata(),
@@ -17,6 +17,7 @@ export const LocalIo: ExtensionPack = {
 
 function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
     sdm.addPushImpactListener(async pu => {
-        return pu.addressChannels(`Push - ${pu.commit.message}`);
+        process.stdout.write(`Push to ${pu.id.owner}:${pu.id.repo} - ${pu.commit.message}\n`);
+        return pu.addressChannels(`Push to ${pu.id.owner}:${pu.id.repo} - ${pu.commit.message}`);
     });
 }

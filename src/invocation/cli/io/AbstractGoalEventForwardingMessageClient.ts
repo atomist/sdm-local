@@ -4,8 +4,8 @@ import { SlackMessage } from "@atomist/slack-messages";
 import { logger } from "@atomist/automation-client";
 import { SdmGoalKey, SdmGoalState } from "@atomist/sdm";
 import { OnAnyRequestedSdmGoal } from "@atomist/sdm";
-import { DefaultConfig } from "../../AutomationClientInfo";
 import { invokeEventHandler } from "../../http/EventHandlerInvocation";
+import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 
 function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
     state: SdmGoalState;
@@ -46,7 +46,7 @@ export abstract class AbstractGoalEventForwardingMessageClient implements Messag
             // process.stdout.write(JSON.stringify(payload));
             // Don't wait for them
             Promise.all(handlerNames.map(name =>
-                invokeEventHandler(DefaultConfig, {
+                invokeEventHandler(this.connectionConfig, {
                     name,
                     payload,
                 })));
@@ -72,5 +72,8 @@ export abstract class AbstractGoalEventForwardingMessageClient implements Messag
     //         process.stdout.write(JSON.stringify(action) + "\n");
     //     }
     // }
+
+    protected constructor(private readonly connectionConfig: AutomationClientConnectionConfig) {
+    }
 
 }

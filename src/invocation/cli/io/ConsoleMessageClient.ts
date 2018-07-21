@@ -11,6 +11,7 @@ import * as slack from "@atomist/slack-messages/SlackMessages";
 import chalk from "chalk";
 import * as TerminalRenderer from "marked-terminal";
 import { AbstractGoalEventForwardingMessageClient } from "./AbstractGoalEventForwardingMessageClient";
+import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 
 marked.setOptions({
     // Define custom renderer
@@ -94,10 +95,11 @@ export class ConsoleMessageClient extends AbstractGoalEventForwardingMessageClie
     }
 
     constructor(private readonly linkedChannel: string,
+                connectionConfig: AutomationClientConnectionConfig,
                 public readonly markedOptions: MarkedOptions = {
                     breaks: false,
                 }) {
-        super();
+        super(connectionConfig);
     }
 
 }

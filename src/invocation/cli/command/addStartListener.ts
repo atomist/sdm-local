@@ -28,7 +28,7 @@ export interface StreamedMessage {
 }
 
 async function summonDemon(ai: AutomationClientInfo) {
-    const messageClient = new ConsoleMessageClient("general");
+    const messageClient = new ConsoleMessageClient("general", ai.connectionConfig);
 
     const app = express();
     app.use(bodyParser.json());
