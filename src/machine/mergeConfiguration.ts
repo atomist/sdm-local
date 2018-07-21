@@ -15,7 +15,6 @@ import { MappedParameterResolver } from "../binding/MappedParameterResolver";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 
 import * as fs from "fs";
-import * as path from "path";
 import { infoMessage } from "../invocation/cli/support/consoleOutput";
 import { WriteLineGoalDisplayer } from "../invocation/cli/support/WriteLineGoalDisplayer";
 import { Configuration } from "@atomist/automation-client";
@@ -26,7 +25,6 @@ import { Configuration } from "@atomist/automation-client";
  */
 export function mergeConfiguration(
     userConfig: LocalMachineConfig): Configuration {
-    const gitHookScript = userConfig.gitHookScript || path.join(__dirname, "../invocation/git/onGitHook.js");
     const repoRefResolver = new LocalRepoRefResolver(userConfig.repositoryOwnerParentDirectory);
     return {
         sdm: {
@@ -39,13 +37,12 @@ export function mergeConfiguration(
             credentialsResolver: EnvironmentTokenCredentialsResolver,
             repoRefResolver,
             repoFinder: expandedDirectoryRepoFinder(userConfig.repositoryOwnerParentDirectory),
-            projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory, gitHookScript),
+            projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory),
             targets: () => new LocalRepoTargets(userConfig.repositoryOwnerParentDirectory),
         },
         // mappedParameterResolver: new ExpandedTreeMappedParameterResolver(userConfig),
         mergeAutofixes: true,
         goalDisplayer: new WriteLineGoalDisplayer(),
-        gitHookScript,
         ...userConfig,
     };
 }

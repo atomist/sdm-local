@@ -35,7 +35,7 @@ async function installHookOrHooks(lc: LocalMachineConfig) {
             repositoryOwnerParentDirectory,
             baseDir: determineCwd(),
         });
-        return addGitHooks(rrr, rrr.fileSystemLocation, lc.gitHookScript);
+        return addGitHooks(rrr, rrr.fileSystemLocation);
 
     }
     return installAllGitHooks(lc);
@@ -65,7 +65,7 @@ async function installAllGitHooks(lc: LocalMachineConfig) {
         if (!isFileSystemRemoteRepoRef(rr)) {
             throw new Error(`Unexpected return from repo ref resolver: ${JSON.stringify(rr)}`);
         }
-        await addGitHooks(rr, rr.fileSystemLocation, lc.gitHookScript);
+        await addGitHooks(rr, rr.fileSystemLocation);
     }
 }
 

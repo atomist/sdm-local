@@ -32,6 +32,5 @@ async function importFromGitRemote(ai: AutomationClientInfo,
     execSync(`git clone ${remoteBase}/${org}/${repo}`,
         { cwd: orgDir });
     return addGitHooks(new GitHubRepoRef(org, repo),
-        `${orgDir}/${repo}`,
-        ai.localConfig.gitHookScript);
+        `${orgDir}/${repo}`);
 }
