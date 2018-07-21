@@ -47,9 +47,6 @@ async function summonDemon(sdm: LocalSoftwareDeliveryMachine) {
     });
 
     sdm.commandsMetadata.forEach(hmd => exportHandlerRoute(app, hmd, sdm));
-    for (const event of HookEvents) {
-        exportGitHookRoute(app, event, sdm);
-    }
     app.listen(DemonPort,
         () => infoMessage(`Atomist Slalom: Listening on port ${DemonPort}...\n`),
     );
@@ -64,12 +61,5 @@ function exportHandlerRoute(e: Express, hmd: CommandHandlerMetadata, sdm: LocalS
         // TODO redirect output??
         await sdm.executeCommand(ci);
         return res.send(`Executed command '${hmd.name}'`);
-    });
-}
-
-function exportGitHookRoute(e: Express, event: string, sdm: LocalSoftwareDeliveryMachine) {
-    e.post(`/githook`, async (req, res) => {
-        await handleGitHookEvent(req.body, sdm);
-        return res.send(`Executed event '${event}'`);
     });
 }

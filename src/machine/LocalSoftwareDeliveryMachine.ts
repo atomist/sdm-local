@@ -103,7 +103,7 @@ export class LocalSoftwareDeliveryMachine
      */
     public async postCommit(payload: GitHookPayload) {
         const { baseDir, branch, sha } = payload;
-        return this.doWithProjectUnderExpandedDirectoryTree(baseDir, branch, sha,
+        return doWithProjectUnderExpandedDirectoryTree(baseDir, branch, sha,
             async p => {
                 const context = new LocalHandlerContext(p.id.repo, {} as EventIncoming);
                 // TODO fix this. But shouldn't be checked in in case it's real
@@ -265,25 +265,25 @@ export class LocalSoftwareDeliveryMachine
         this.configuration.goalDisplayer.displayGoalResult(push, goal, goalResult, goals);
     }
 
-    private async doWithProjectUnderExpandedDirectoryTree(baseDir: string,
-                                                          branch: string,
-                                                          sha: string,
-                                                          action: (p: GitProject) => Promise<any>) {
-        const p = GitCommandGitProject.fromBaseDir(
-            FileSystemRemoteRepoRef.fromDirectory({
-                repositoryOwnerParentDirectory: this.configuration.repositoryOwnerParentDirectory,
-                baseDir, branch, sha,
-            }),
-            baseDir,
-            {},
-            () => null);
-        return action(p);
-    }
-
     constructor(name: string,
                 configuration: LocalSoftwareDeliveryMachineConfiguration,
                 ...goalSetters: Array<GoalSetter | GoalSetter[]>) {
         super(name, configuration, goalSetters);
     }
 
+}
+
+export async function doWithProjectUnderExpandedDirectoryTree(baseDir: string,
+                                                              branch: string,
+                                                              sha: string,
+                                                              action: (p: GitProject) => Promise<any>) {
+    const p = GitCommandGitProject.fromBaseDir(
+        FileSystemRemoteRepoRef.fromDirectory({
+            repositoryOwnerParentDirectory: this.configuration.repositoryOwnerParentDirectory,
+            baseDir, branch, sha,
+        }),
+        baseDir,
+        {},
+        () => null);
+    return action(p);
 }

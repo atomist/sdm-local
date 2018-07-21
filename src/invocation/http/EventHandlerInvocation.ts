@@ -32,7 +32,7 @@ export async function invokeEventHandler(config: AutomationClientConnectionConfi
     };
     logger.info("Sending %s to event %s using %j", url, invocation.name, data);
     const resp = await postToSdm(config, url, data);
-    assert(resp.data.code === 0,
+    assert(resp.data.code !== 0,
         "Event handler did not succeed. Returned: " + JSON.stringify(resp.data, null, 2));
     return resp.data;
 }

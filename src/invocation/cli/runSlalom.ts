@@ -19,7 +19,7 @@ export async function runSlalom(localSdmInstance: LocalSoftwareDeliveryMachine,
 
     const automationClientInfo = await getMetadata(config);
 
-    addTriggerCommand(localSdmInstance, yargs);
+    addTriggerCommand(automationClientInfo, yargs);
     addStartListener(localSdmInstance, yargs);
     addGitHooksCommands(localSdmInstance, yargs);
     addCommandsByName(automationClientInfo, yargs);

@@ -1,10 +1,14 @@
-import { camelize } from "tslint/lib/utils";
 import { errorMessage } from "../invocation/cli/support/consoleOutput";
-import { LocalSoftwareDeliveryMachine } from "../machine/LocalSoftwareDeliveryMachine";
-import { LocalMachineConfig, newLocalSdm } from "../index";
-
-import axios from "axios";
-import { isLocalMachineConfig } from "../machine/LocalMachineConfig";
+import { invokeEventHandler } from "../invocation/http/EventHandlerInvocation";
+import { AutomationClientInfo } from "../invocation/config";
+import { OnPushToAnyBranch } from "@atomist/sdm-core/typings/types";
+import { EventIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
+import { pushFromLastCommit } from "../binding/localPush";
+import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
+import { LocalHandlerContext } from "../binding/LocalHandlerContext";
+import { GitProject } from "@atomist/automation-client/project/git/GitProject";
+import { FileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
+import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 
 export interface GitHookPayload {
     baseDir: string;
@@ -51,8 +55,8 @@ export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
  * @return {Promise<any>}
  */
 export async function handleGitHookEvent(
-    payload: GitHookInvocation,
-    sdm: LocalSoftwareDeliveryMachine | LocalMachineConfig) {
+    ai: AutomationClientInfo,
+    payload: GitHookInvocation) {
     if (!payload) {
         errorMessage("Payload must be supplied");
         process.exit(1);
@@ -66,33 +70,33 @@ export async function handleGitHookEvent(
         process.exit(1);
     }
 
-    if (!isLocalMachineConfig(sdm)) {
-        console.log("Invoking local shortcut")
-        return invokeLocal(payload, sdm);
-    }
-
-    const url = "http://127.0.0.1:6660/githook";
-    try {
-        console.log("tryirng remote")
-        await invokeRemote(payload, url);
-    } catch (err) {
-        console.log("Cannot POST to log service at [%s]: %s", url, err.message);
-        return invokeLocal(payload, newLocalSdm(sdm));
-    }
+    const push = await createPush(ai, payload);
+    return invokeEventHandler(ai.connectionConfig, {
+        name: "OnPushToAnyBranch",
+        payload: push,
+    });
 }
 
-async function invokeLocal(invocation: GitHookInvocation, sdm: LocalSoftwareDeliveryMachine) {
-    // Find the appropriate method to invoke
-    const sdmMethod = sdm[camelize(invocation.event)];
-    if (!sdmMethod) {
-        errorMessage("Internal error: no SDM handler for git hook event '%s'", event);
-        process.exit(1);
-    }
-    return sdm[camelize(invocation.event)](invocation);
+async function createPush(ai: AutomationClientInfo, payload: GitHookInvocation): Promise<OnPushToAnyBranch.Push> {
+    const { baseDir, branch, sha } = payload;
+    return doWithProjectUnderExpandedDirectoryTree(baseDir, branch, sha, ai,
+        async p => {
+            return pushFromLastCommit(p);
+        });
 }
 
-async function invokeRemote(invocation: GitHookInvocation,
-                            url: string) {
-    console.log(`Write to url ${url}: ${JSON.stringify(invocation)}`);
-    return axios.post(url, invocation);
+async function doWithProjectUnderExpandedDirectoryTree(baseDir: string,
+                                                       branch: string,
+                                                       sha: string,
+                                                       ai: AutomationClientInfo,
+                                                       action: (p: GitProject) => Promise<any>) {
+    const p = GitCommandGitProject.fromBaseDir(
+        FileSystemRemoteRepoRef.fromDirectory({
+            repositoryOwnerParentDirectory: ai.localConfig.repositoryOwnerParentDirectory,
+            baseDir, branch, sha,
+        }),
+        baseDir,
+        {},
+        () => null);
+    return action(p);
 }
