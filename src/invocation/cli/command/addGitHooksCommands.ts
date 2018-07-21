@@ -1,11 +1,9 @@
 import { Argv } from "yargs";
 import { determineCwd, parseOwnerAndRepo } from "../../../binding/expandedTreeUtils";
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../../../binding/FileSystemRemoteRepoRef";
-import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { addGitHooks, removeGitHooks } from "../../../setup/addGitHooks";
 import { logExceptionsToConsole } from "../support/consoleOutput";
 import { LocalMachineConfig } from "../../..";
-import { RepoFinder } from "@atomist/automation-client/operations/common/repoFinder";
 import { expandedDirectoryRepoFinder } from "../../../binding/expandedDirectoryRepoFinder";
 
 /**

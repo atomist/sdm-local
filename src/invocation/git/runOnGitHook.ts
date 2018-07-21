@@ -1,10 +1,8 @@
 import { suppressConsoleLogging } from "../cli/support/configureLogging";
-import { logExceptionsToConsole, setCommandLineLogging } from "../cli/support/consoleOutput";
+import { setCommandLineLogging } from "../cli/support/consoleOutput";
 import { logger } from "@atomist/automation-client";
-import { LocalSoftwareDeliveryMachine } from "../../machine/LocalSoftwareDeliveryMachine";
-import { argsToGitHookInvocation, handleGitHookEvent } from "../../setup/gitHooks";
-import { LocalSoftwareDeliveryMachineConfiguration } from "../../machine/LocalSoftwareDeliveryMachineConfiguration";
-import { LocalMachineConfig, newLocalSdm } from "../..";
+import { argsToGitHookInvocation } from "../../setup/gitHooks";
+import { LocalMachineConfig } from "../..";
 
 suppressConsoleLogging();
 setCommandLineLogging();
