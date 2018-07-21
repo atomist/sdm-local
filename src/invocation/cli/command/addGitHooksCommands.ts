@@ -4,8 +4,8 @@ import { expandedDirectoryRepoFinder } from "../../../binding/expandedDirectoryR
 import { determineCwd, parseOwnerAndRepo } from "../../../binding/expandedTreeUtils";
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../../../binding/FileSystemRemoteRepoRef";
 import { addGitHooks, removeGitHooks } from "../../../setup/addGitHooks";
-import { logExceptionsToConsole } from "../support/consoleOutput";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
+import { logExceptionsToConsole } from "../support/consoleOutput";
 
 /**
  * Command to add git hooks to current directory or all projects

@@ -1,6 +1,5 @@
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { ProjectLoader, ProjectLoadingParameters, WithLoadedProject } from "@atomist/sdm";
-import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
 import { execSync } from "child_process";
@@ -14,10 +13,11 @@ import { LocalRepoTargets } from "../binding/LocalRepoTargets";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 
+import { Configuration } from "@atomist/automation-client";
+import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
 import * as fs from "fs";
 import { infoMessage } from "../invocation/cli/support/consoleOutput";
 import { WriteLineGoalDisplayer } from "../invocation/cli/support/WriteLineGoalDisplayer";
-import { Configuration } from "@atomist/automation-client";
 
 /**
  * Merge user-supplied configuration with defaults
@@ -28,6 +28,7 @@ export function mergeConfiguration(
     const repoRefResolver = new LocalRepoRefResolver(userConfig.repositoryOwnerParentDirectory);
     return {
         sdm: {
+            // TODO this is the only use of sdm-core
             artifactStore: new EphemeralLocalArtifactStore(),
             projectLoader: new DecoratingProjectLoader(
                 new CachingProjectLoader(),

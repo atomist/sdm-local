@@ -1,10 +1,10 @@
-import { HandlerResult, logger, Secrets } from "@atomist/automation-client";
+import { HandlerResult, Secrets } from "@atomist/automation-client";
 import { Secret } from "@atomist/automation-client/internal/invoker/Payload";
 
 import * as assert from "power-assert";
+import { sprintf } from "sprintf-js";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
-import { sprintf } from "sprintf-js";
 
 export interface EventHandlerInvocation {
     name: string;

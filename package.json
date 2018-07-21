@@ -75,7 +75,6 @@
     "debug": "node $NODE_DEBUG_OPTION node_modules/@atomist/automation-client/start.client.js",
     "fmt": "npm-run-all fmt:ts",
     "fmt:ts": "tsfmt --replace",
-    "generate:barrels": "barrelsby --delete -d src --i 'api/.*' --i 'spi/.*' --i typings/.*",
     "git:info": "atomist git",
     "lint": "npm-run-all lint:ts",
     "lint:ts": "tslint --format verbose --project . --exclude \"{build,node_modules}/**\" \"**/*.ts\"",
@@ -84,10 +83,7 @@
     "package:copy": "copyfiles \"package.json\" build/src",
     "package:scripts": "copyfiles \"src/scripts/*\" build",
     "test": "mocha --exit --require ts-node/register --require source-map-support/register \"test/**/*.ts\"",
-    "test:one": "mocha --require espower-typescript/guess \"test/**/${TEST:-*.ts}\"",
-    "typedoc": "typedoc --mode modules --excludeExternals --out build/typedoc src",
-    "watch:compile": "tsc --project . --watch",
-    "watch": "supervisor --watch build --quiet --exec npm -- run start"
+    "typedoc": "typedoc --mode modules --excludeExternals --out build/typedoc src"
   },
   "engines": {
     "node": "8.x.x",

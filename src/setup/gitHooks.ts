@@ -1,6 +1,6 @@
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import { OnPushToAnyBranch } from "@atomist/sdm-core/typings/types";
+import { OnPushToAnyBranch } from "@atomist/sdm";
 import { FileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
 import { pushFromLastCommit } from "../binding/localPush";
 import { AutomationClientInfo } from "../invocation/AutomationClientInfo";

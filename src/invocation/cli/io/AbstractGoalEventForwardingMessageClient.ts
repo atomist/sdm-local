@@ -3,7 +3,7 @@ import { SlackMessage } from "@atomist/slack-messages";
 
 import { logger } from "@atomist/automation-client";
 import { SdmGoalKey, SdmGoalState } from "@atomist/sdm";
-import { OnAnyRequestedSdmGoal } from "@atomist/sdm-core/typings/types";
+import { OnAnyRequestedSdmGoal } from "@atomist/sdm";
 import { DefaultConfig } from "../../AutomationClientInfo";
 import { invokeEventHandler } from "../../http/EventHandlerInvocation";
 
