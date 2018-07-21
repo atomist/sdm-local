@@ -18,6 +18,10 @@ marked.setOptions({
     renderer: new TerminalRenderer(),
 });
 
+export type Sender = (msg: string) => Promise<any>;
+
+export const ProcessStdoutSender: Sender = msg => Promise.resolve(process.stdout.write(msg));
+
 /**
  * Message client logging to the console. Uses color and renders markdown
  */
@@ -68,7 +72,7 @@ export class ConsoleMessageClient extends AbstractGoalEventForwardingMessageClie
 
     public async addressUsers(msg: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
         logger.info("MessageClient.addressUsers: Raw mesg=\n%j\nUsers=%s", msg, users);
-        process.stdout.write(`#${users} ${msg}\n`);
+        return this.sender(`#${users} ${msg}\n`);
     }
 
     private renderAction(channel: string, action: slack.Action) {
@@ -81,7 +85,7 @@ export class ConsoleMessageClient extends AbstractGoalEventForwardingMessageClie
             });
             this.writeToChannel(channel, `${action.text} - ${url}`);
         } else {
-            process.stdout.write(JSON.stringify(action) + "\n");
+            return this.sender(JSON.stringify(action) + "\n");
         }
     }
 
@@ -91,11 +95,12 @@ export class ConsoleMessageClient extends AbstractGoalEventForwardingMessageClie
      * @param {string} markdown
      */
     private writeToChannel(channels: string[] | string, markdown: string) {
-        process.stdout.write(chalk.gray("#") + marked(` **${channels}** ` + markdown, this.markedOptions));
+        return this.sender(chalk.gray("#") + marked(` **${channels}** ` + markdown, this.markedOptions));
     }
 
     constructor(private readonly linkedChannel: string,
                 connectionConfig: AutomationClientConnectionConfig,
+                private readonly sender: Sender,
                 public readonly markedOptions: MarkedOptions = {
                     breaks: false,
                 }) {

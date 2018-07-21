@@ -2,7 +2,7 @@ import { Destination, MessageOptions } from "@atomist/automation-client/spi/mess
 import { SlackMessage } from "@atomist/slack-messages";
 import * as express from "express";
 import { Argv } from "yargs";
-import { ConsoleMessageClient } from "../io/ConsoleMessageClient";
+import { ConsoleMessageClient, ProcessStdoutSender } from "../io/ConsoleMessageClient";
 import { infoMessage, logExceptionsToConsole } from "../support/consoleOutput";
 
 import * as bodyParser from "body-parser";
@@ -28,7 +28,7 @@ export interface StreamedMessage {
 }
 
 async function summonDemon(ai: AutomationClientInfo) {
-    const messageClient = new ConsoleMessageClient("general", ai.connectionConfig);
+    const messageClient = new ConsoleMessageClient("general", ai.connectionConfig, ProcessStdoutSender);
 
     const app = express();
     app.use(bodyParser.json());

@@ -10,7 +10,7 @@ import { isSdmGoal } from "@atomist/sdm/api-helper/goal/sdmGoal";
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import { DemonPort, MessageRoute, StreamedMessage } from "../command/addStartListener";
-import { ConsoleMessageClient } from "./ConsoleMessageClient";
+import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
 import { DefaultConfig } from "../../../entry/resolveConnectionConfig";
 
 /**
@@ -59,6 +59,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
 
     constructor(private readonly linkedChannel: string,
                 public readonly url: string = `http://localhost:${DemonPort}${MessageRoute}`,
-                private readonly delegate: MessageClient & SlackMessageClient = new ConsoleMessageClient(linkedChannel, DefaultConfig)) {
+                private readonly delegate: MessageClient & SlackMessageClient =
+                    new ConsoleMessageClient(linkedChannel, DefaultConfig, ProcessStdoutSender)) {
     }
 }
