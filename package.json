@@ -9,9 +9,8 @@
     "url": "https://github.com/atomist/slalom.git"
   },
   "bin": {
-    "slalom": "./build/src/invocation/cli/dispatcher.js",
-    "@atomist": "./build/src/invocation/cli/dispatcher.js",
-    "slalom-itself": "./build/src/invocation/cli/slalom.js"
+    "slalom": "./build/src/entry/slalom.js",
+    "@atomist": "./build/src/entry/slalom.js"
   },
   "main": "build/src/index.js",
   "typings": "build/src/index.d.ts",
@@ -26,10 +25,12 @@
   },
   "dependencies": {
     "@types/inquirer": "0.0.42",
+    "@types/node-notifier": "0.0.28",
     "@types/yargs": "^11.0.0",
     "express": "^4.16.3",
     "inquirer": "^6.0.0",
     "marked-terminal": "^3.0.0",
+    "node-notifier": "^5.2.1",
     "tslint": "^5.10.0"
   },
   "peerDependencies": {
@@ -37,8 +38,8 @@
     "@atomist/sdm-core": "^0.3.1"
   },
   "devDependencies": {
-    "@atomist/automation-client": "https://r.atomist.com/2996578176",
-    "@atomist/sdm": "https://r.atomist.com/1304420101",
+    "@atomist/automation-client": "https://r.atomist.com/2170291022",
+    "@atomist/sdm": "https://r.atomist.com/3428531597",
     "@atomist/sdm-core": "0.3.2-20180713022755",
     "@types/lodash": "^4.14.109",
     "@types/mocha": "^2.2.48",
@@ -74,7 +75,6 @@
     "debug": "node $NODE_DEBUG_OPTION node_modules/@atomist/automation-client/start.client.js",
     "fmt": "npm-run-all fmt:ts",
     "fmt:ts": "tsfmt --replace",
-    "generate:barrels": "barrelsby --delete -d src --i 'api/.*' --i 'spi/.*' --i typings/.*",
     "git:info": "atomist git",
     "lint": "npm-run-all lint:ts",
     "lint:ts": "tslint --format verbose --project . --exclude \"{build,node_modules}/**\" \"**/*.ts\"",
@@ -83,10 +83,7 @@
     "package:copy": "copyfiles \"package.json\" build/src",
     "package:scripts": "copyfiles \"src/scripts/*\" build",
     "test": "mocha --exit --require ts-node/register --require source-map-support/register \"test/**/*.ts\"",
-    "test:one": "mocha --require espower-typescript/guess \"test/**/${TEST:-*.ts}\"",
-    "typedoc": "typedoc --mode modules --excludeExternals --out build/typedoc src",
-    "watch:compile": "tsc --project . --watch",
-    "watch": "supervisor --watch build --quiet --exec npm -- run start"
+    "typedoc": "typedoc --mode modules --excludeExternals --out build/typedoc src"
   },
   "engines": {
     "node": "8.x.x",

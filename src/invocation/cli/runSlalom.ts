@@ -1,32 +1,36 @@
 import * as yargs from "yargs";
-import { LocalSoftwareDeliveryMachine } from "../../machine/LocalSoftwareDeliveryMachine";
+import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
+import { getMetadata } from "../http/metadataReader";
 import { addGitHooksCommands } from "./command/addGitHooksCommands";
 import { addCommandsByName, addIntents } from "./command/addIntents";
 import { addStartListener } from "./command/addStartListener";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 import { addShowSkills } from "./command/showSkills";
+import { infoMessage } from "./support/consoleOutput";
 
 /**
  * Start up the Slalom CLI
- * @param {LocalSoftwareDeliveryMachine} localSdmInstance
  * @return {yargs.Arguments}
  */
-export function runSlalom(localSdmInstance: LocalSoftwareDeliveryMachine) {
+export async function runSlalom(config: AutomationClientConnectionConfig) {
     yargs.usage("Usage: slalom <command> [options]");
 
-    addTriggerCommand(localSdmInstance, yargs);
-    addStartListener(localSdmInstance, yargs);
-    addGitHooksCommands(localSdmInstance, yargs);
-    addCommandsByName(localSdmInstance, yargs);
-    addIntents(localSdmInstance, yargs);
-    addImportFromGitRemoteCommand(localSdmInstance, yargs);
-    addShowSkills(localSdmInstance, yargs);
+    infoMessage(`Connecting to Automation client at %s\n`, config.baseEndpoint);
+    const automationClientInfo = await getMetadata(config);
+
+    addTriggerCommand(automationClientInfo, yargs);
+    addStartListener(automationClientInfo, yargs);
+    addGitHooksCommands(automationClientInfo, yargs);
+    addCommandsByName(automationClientInfo, yargs);
+    addIntents(automationClientInfo, yargs);
+    addImportFromGitRemoteCommand(automationClientInfo, yargs);
+    addShowSkills(automationClientInfo, yargs);
 
     return yargs
         .epilog("Copyright Atomist 2018")
-        .demandCommand(1, `Please provide a command for local SDM ${localSdmInstance.name} handling projects under ${
-            localSdmInstance.configuration.repositoryOwnerParentDirectory}`)
+        .demandCommand(1, `Please provide a command for local SDM ${automationClientInfo.connectionConfig.atomistTeamName} handling projects under ${
+            automationClientInfo.localConfig.repositoryOwnerParentDirectory}`)
         .help()
         .wrap(100)
         .strict()

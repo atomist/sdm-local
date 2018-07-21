@@ -1,23 +1,21 @@
-import { suppressConsoleLogging } from "../cli/support/configureLogging";
-import { logExceptionsToConsole, setCommandLineLogging } from "../cli/support/consoleOutput";
 import { logger } from "@atomist/automation-client";
-import { LocalSoftwareDeliveryMachine } from "../../machine/LocalSoftwareDeliveryMachine";
 import { argsToGitHookInvocation, handleGitHookEvent } from "../../setup/gitHooks";
-import { LocalSoftwareDeliveryMachineConfiguration } from "../../machine/LocalSoftwareDeliveryMachineConfiguration";
-import { LocalMachineConfig, newLocalSdm } from "../..";
-
-suppressConsoleLogging();
-setCommandLineLogging();
+import { infoMessage, logExceptionsToConsole } from "../cli/support/consoleOutput";
+import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
+import { getMetadata } from "../http/metadataReader";
 
 /**
  * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
  */
-export function runOnGitHook(argv: string[], config: LocalMachineConfig) {
+export async function runOnGitHook(argv: string[], connectionConfig: AutomationClientConnectionConfig) {
+    infoMessage(`Connecting to Automation client at %s\n`, connectionConfig.baseEndpoint);
+    const automationClientInfo = await getMetadata(connectionConfig);
+
     const invocation = argsToGitHookInvocation(argv);
     logger.info("Executing git hook against project %j", invocation);
 
     return logExceptionsToConsole(() =>
-            handleGitHookEvent(invocation, config),
-        config.showErrorStacks,
+            handleGitHookEvent(automationClientInfo, invocation),
+        automationClientInfo.connectionConfig.showErrorStacks,
     );
 }

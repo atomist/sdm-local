@@ -8,9 +8,12 @@ import * as marked from "marked";
 import { MarkedOptions } from "marked";
 
 import * as slack from "@atomist/slack-messages/SlackMessages";
-import chalk from "chalk";
 import * as TerminalRenderer from "marked-terminal";
 import { AbstractGoalEventForwardingMessageClient } from "./AbstractGoalEventForwardingMessageClient";
+
+// import { notifier } from "node-notifier";
+
+const notifier = require("node-notifier");
 
 marked.setOptions({
     // Define custom renderer
@@ -20,7 +23,7 @@ marked.setOptions({
 /**
  * Message client logging to the console. Uses color and renders markdown
  */
-export class ConsoleMessageClient extends AbstractGoalEventForwardingMessageClient {
+export class SystemNotificationMessageClient extends AbstractGoalEventForwardingMessageClient {
 
     public async respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any> {
         logger.info("MessageClient.respond: Raw mesg=\n%j\n", msg);
@@ -89,8 +92,11 @@ export class ConsoleMessageClient extends AbstractGoalEventForwardingMessageClie
      * @param {string[] | string} channels
      * @param {string} markdown
      */
-    private writeToChannel(channels: string[] | string, markdown: string) {
-        process.stdout.write(chalk.gray("#") + marked(` **${channels}** ` + markdown, this.markedOptions));
+    private async writeToChannel(channels: string[] | string, markdown: string) {
+        return notifier.notify({
+            title: `Atomist: [${channels}]`,
+            message: markdown,
+        });
     }
 
     constructor(private readonly linkedChannel: string,

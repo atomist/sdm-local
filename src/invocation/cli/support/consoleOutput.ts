@@ -3,18 +3,14 @@ import { sprintf } from "sprintf-js";
 
 import chalk from "chalk";
 
-export function setCommandLineLogging() {
-    // Relies on being Winston logging
-    (logger as any).transports.console.silent = true;
-}
-
 /**
  * Perform the given action, logging exceptions to the console
  * @param {() => Promise<any>} what
  * @param showStack whether or not to show the stack
  * @return {Promise<void>}
  */
-export async function logExceptionsToConsole(what: () => Promise<any>, showStack: boolean) {
+export async function logExceptionsToConsole(what: () => Promise<any>,
+                                             showStack: boolean) {
     try {
         await what();
     } catch (err) {

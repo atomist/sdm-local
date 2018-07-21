@@ -29,13 +29,13 @@ export class LocalGraphClient implements GraphClient {
 
     public async query<T, Q>(optionsOrName: QueryOptions<Q> | string): Promise<T> {
         const err = new Error("Warning: GraphClient not supported locally");
-        logger.warn("Returning empty object for query: %j, %s", optionsOrName, err.stack);
+        logger.info("Returning empty object for query: %j, %s", optionsOrName, err.stack);
         return {} as T;
     }
 
     constructor() {
         const err = new Error("Warning: GraphClient not supported locally");
-        logger.warn(err.stack);
+        logger.debug(err.stack);
     }
 
 }

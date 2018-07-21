@@ -9,7 +9,7 @@ sha=$(git rev-parse --abbrev-ref HEAD)
 
 # echo "git hook fire: Invoking Atomist $event against $hookDir"
 
-# curl -d '{ "event": "$event", "baseDir":"$hookDir", "sha":"$sha", "branch":"$branch" }' -H "Content-Type: application/json" -X POST http://127.0.0.1:6660/githook
+# curl -d  -H "Content-Type: application/json" -X POST http://127.0.0.1:6660/githook
 
 node $script\
     $event \

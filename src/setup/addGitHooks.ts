@@ -9,6 +9,7 @@ import { sprintf } from "sprintf-js";
 import { HookEvents } from "./gitHooks";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";
+const AtomistJsName = "build/src/entry/onGitHook.js";
 
 /**
  * Add Git hooks to the given repo
@@ -18,11 +19,10 @@ const AtomistHookScriptName = "script/atomist-hook.sh";
  * @return {Promise<void>}
  */
 export async function addGitHooks(id: RemoteRepoRef,
-                                  projectBaseDir: string,
-                                  gitHookScript: string) {
+                                  projectBaseDir: string) {
     if (fs.existsSync(`${projectBaseDir}/.git`)) {
         const p = await NodeFsLocalProject.fromExistingDirectory(id, projectBaseDir);
-        return addGitHooksToProject(p, gitHookScript);
+        return addGitHooksToProject(p);
     } else {
         process.stdout.write(
             chalk.gray(sprintf("addGitHooks: Ignoring directory at %s as it is not a git project\n"),
@@ -30,8 +30,10 @@ export async function addGitHooks(id: RemoteRepoRef,
     }
 }
 
-export async function addGitHooksToProject(p: LocalProject, gitHookScript: string) {
+export async function addGitHooksToProject(p: LocalProject) {
     const atomistHookScriptPath = path.join(__dirname, "../../../", AtomistHookScriptName);
+    const gitHookScript = path.join(__dirname, "../../../", AtomistJsName);
+
     for (const hookFile of HookEvents) {
         await appendOrCreateFileContent(
             {

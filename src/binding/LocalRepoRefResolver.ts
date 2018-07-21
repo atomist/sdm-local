@@ -15,7 +15,9 @@ export class LocalRepoRefResolver implements RepoRefResolver {
     }
 
     public repoRefFromSdmGoal(sdmGoal: SdmGoal, provider: ScmProvider.ScmProvider): RemoteRepoRef {
-        throw new Error("not implemented");
+        const repo = sdmGoal.repo;
+        return new FileSystemRemoteRepoRef({ repositoryOwnerParentDirectory: this.repositoryOwnerParentDirectory,
+            owner: repo.owner, repo: repo.name, branch: sdmGoal.branch, sha: sdmGoal.sha});
     }
 
     public toRemoteRepoRef(repo: CoreRepoFieldsAndChannels.Fragment, opts: { sha?: string; branch?: string }): RemoteRepoRef {

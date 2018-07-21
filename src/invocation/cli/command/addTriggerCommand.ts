@@ -1,19 +1,18 @@
+import { logger } from "@atomist/automation-client";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { Argv } from "yargs";
 import { determineCwd, withinExpandedTree } from "../../../binding/expandedTreeUtils";
 import { FileSystemRemoteRepoRef } from "../../../binding/FileSystemRemoteRepoRef";
-import { LocalSoftwareDeliveryMachine } from "../../../machine/LocalSoftwareDeliveryMachine";
 import { handleGitHookEvent, HookEvents } from "../../../setup/gitHooks";
 import { shaHistory } from "../../../util/git";
+import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "../support/consoleOutput";
-import { logger } from "@atomist/automation-client";
 
 /**
  * Add a command to trigger execution following a git event
- * @param {LocalSoftwareDeliveryMachine} sdm
  * @param {yargs.Argv} yargs
  */
-export function addTriggerCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv) {
+export function addTriggerCommand(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({
         command: "trigger <event> [depth]",
         describe: "Trigger commit action on the current repository",
@@ -26,16 +25,16 @@ export function addTriggerCommand(sdm: LocalSoftwareDeliveryMachine, yargs: Argv
             });
         },
         handler: ya => {
-            return logExceptionsToConsole(() => trigger(sdm, ya.event, ya.depth), sdm.configuration.showErrorStacks);
+            return logExceptionsToConsole(() => trigger(ai, ya.event, ya.depth), ai.connectionConfig.showErrorStacks);
         },
     });
 }
 
-async function trigger(sdm: LocalSoftwareDeliveryMachine, event: string, depth: number) {
+async function trigger(ai: AutomationClientInfo, event: string, depth: number) {
     const currentDir = determineCwd();
-    if (withinExpandedTree(sdm.configuration.repositoryOwnerParentDirectory, currentDir)) {
+    if (withinExpandedTree(ai.localConfig.repositoryOwnerParentDirectory, currentDir)) {
         const p = GitCommandGitProject.fromBaseDir(FileSystemRemoteRepoRef.fromDirectory({
-                repositoryOwnerParentDirectory: sdm.configuration.repositoryOwnerParentDirectory,
+                repositoryOwnerParentDirectory: ai.localConfig.repositoryOwnerParentDirectory,
                 baseDir: currentDir,
             }),
             currentDir, null, () => null);
@@ -51,11 +50,11 @@ async function trigger(sdm: LocalSoftwareDeliveryMachine, event: string, depth: 
             }
             const invocation = { event, baseDir: currentDir, branch, sha };
             logger.info("Trigger %j", invocation);
-            await handleGitHookEvent(invocation, sdm);
+            await handleGitHookEvent(ai, invocation);
         }
     } else {
         errorMessage(
-            `Working directory ${currentDir} is not within expanded working tree under ${sdm.configuration.repositoryOwnerParentDirectory}`);
+            `Working directory ${currentDir} is not within expanded working tree under ${ai.localConfig.repositoryOwnerParentDirectory}`);
         process.exit(1);
     }
 }

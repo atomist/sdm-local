@@ -1,6 +1,5 @@
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { ProjectLoader, ProjectLoadingParameters, WithLoadedProject } from "@atomist/sdm";
-import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
 import { execSync } from "child_process";
@@ -12,26 +11,24 @@ import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/F
 import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { LocalRepoTargets } from "../binding/LocalRepoTargets";
 import { MappedParameterResolver } from "../binding/MappedParameterResolver";
-import { ExpandedTreeParameterResolver } from "../invocation/cli/support/ExpandedTreeParameterResolver";
 import { LocalMachineConfig } from "./LocalMachineConfig";
-import { LocalSoftwareDeliveryMachineConfiguration } from "./LocalSoftwareDeliveryMachineConfiguration";
 
+import { Configuration } from "@atomist/automation-client";
+import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
 import * as fs from "fs";
-import * as path from "path";
 import { infoMessage } from "../invocation/cli/support/consoleOutput";
 import { WriteLineGoalDisplayer } from "../invocation/cli/support/WriteLineGoalDisplayer";
 
 /**
  * Merge user-supplied configuration with defaults
  * @param {LocalMachineConfig} userConfig
- * @return {LocalSoftwareDeliveryMachineConfiguration}
  */
 export function mergeConfiguration(
-    userConfig: LocalMachineConfig): LocalSoftwareDeliveryMachineConfiguration {
-    const gitHookScript = userConfig.gitHookScript || path.join(__dirname, "../invocation/git/onGitHook.js");
+    userConfig: LocalMachineConfig): Configuration {
     const repoRefResolver = new LocalRepoRefResolver(userConfig.repositoryOwnerParentDirectory);
     return {
         sdm: {
+            // TODO this is the only use of sdm-core
             artifactStore: new EphemeralLocalArtifactStore(),
             projectLoader: new DecoratingProjectLoader(
                 new CachingProjectLoader(),
@@ -41,13 +38,12 @@ export function mergeConfiguration(
             credentialsResolver: EnvironmentTokenCredentialsResolver,
             repoRefResolver,
             repoFinder: expandedDirectoryRepoFinder(userConfig.repositoryOwnerParentDirectory),
-            projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory, gitHookScript),
+            projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory),
             targets: () => new LocalRepoTargets(userConfig.repositoryOwnerParentDirectory),
         },
-        mappedParameterResolver: new ExpandedTreeParameterResolver(userConfig.repositoryOwnerParentDirectory),
+        // mappedParameterResolver: new ExpandedTreeMappedParameterResolver(userConfig),
         mergeAutofixes: true,
         goalDisplayer: new WriteLineGoalDisplayer(),
-        gitHookScript,
         ...userConfig,
     };
 }
