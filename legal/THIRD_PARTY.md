@@ -13,7 +13,7 @@ This page details all runtime OSS dependencies of `@atomist/slalom`.
 |[BSD-3-Clause](#bsd-3-clause)|3|
 |[BSD](#bsd)|1|
 |[ISC](#isc)|15|
-|[MIT](#mit)|124|
+|[MIT](#mit)|125|
 
 #### Apache-2.0
 Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
@@ -166,6 +166,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`node-notifier`|`5.2.1`|Mikael Brevik|[https://github.com/mikaelbr/node-notifier](https://github.com/mikaelbr/node-notifier)|
 |`on-finished`|`2.3.0`||[https://github.com/jshttp/on-finished](https://github.com/jshttp/on-finished)|
 |`onetime`|`2.0.1`|Sindre Sorhus|[https://github.com/sindresorhus/onetime](https://github.com/sindresorhus/onetime)|
+|`open`|`0.0.5`|J Jordan|[https://github.com/pwnall/node-open](https://github.com/pwnall/node-open)|
 |`os-tmpdir`|`1.0.2`|Sindre Sorhus|[https://github.com/sindresorhus/os-tmpdir](https://github.com/sindresorhus/os-tmpdir)|
 |`parseurl`|`1.3.2`||[https://github.com/pillarjs/parseurl](https://github.com/pillarjs/parseurl)|
 |`path-is-absolute`|`1.0.1`|Sindre Sorhus|[https://github.com/sindresorhus/path-is-absolute](https://github.com/sindresorhus/path-is-absolute)|
