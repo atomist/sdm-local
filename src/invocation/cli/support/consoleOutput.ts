@@ -3,11 +3,6 @@ import { sprintf } from "sprintf-js";
 
 import chalk from "chalk";
 
-export function setCommandLineLogging() {
-    // Relies on being Winston logging
-    (logger as any).transports.console.silent = true;
-}
-
 /**
  * Perform the given action, logging exceptions to the console
  * @param {() => Promise<any>} what
