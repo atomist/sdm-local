@@ -68,8 +68,8 @@ export async function handleGitHookEvent(
 
     const push = await createPush(ai, payload);
     return invokeEventHandler(ai.connectionConfig, {
-        name: "OnPushToAnyBranch",
-        payload: push,
+        name: "SetGoalsOnPush",
+        payload: { Push: [push] },
     });
 }
 

@@ -1,9 +1,10 @@
-import { HandlerResult, logger } from "@atomist/automation-client";
+import { HandlerResult, logger, Secrets } from "@atomist/automation-client";
 import { Secret } from "@atomist/automation-client/internal/invoker/Payload";
 
 import * as assert from "power-assert";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
+import { sprintf } from "sprintf-js";
 
 export interface EventHandlerInvocation {
     name: string;
@@ -26,11 +27,15 @@ export async function invokeEventHandler(config: AutomationClientConnectionConfi
         },
         secrets: (invocation.secrets || []).concat([
             { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },
+            { uri: "github://org_token", value: process.env.GITHUB_TOKEN },
+            { uri: Secrets.OrgToken, value: process.env.GITHUB_TOKEN },
+            { uri: Secrets.UserToken, value: process.env.GITHUB_TOKEN },
         ]),
         api_version: "1",
         data: invocation.payload,
     };
-    logger.info("Sending %s to event %s using %j", url, invocation.name, data);
+
+    process.stdout.write(sprintf("Sending %s to event %s using %j", url, invocation.name, data));
     const resp = await postToSdm(config, url, data);
     assert(resp.data.code !== 0,
         "Event handler did not succeed. Returned: " + JSON.stringify(resp.data, null, 2));

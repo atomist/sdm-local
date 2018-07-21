@@ -7,6 +7,9 @@ import { GitHubDotComBase } from "@atomist/automation-client/operations/common/G
 import * as os from "os";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 
+// TODO should really have a set of enrichers,
+// returning a partial function
+
 /**
  * Resolve mapped parameters based on where we are in the directory tree
  * when the command was invoked.
