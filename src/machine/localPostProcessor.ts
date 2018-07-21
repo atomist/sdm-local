@@ -5,6 +5,7 @@ import { mergeConfiguration } from "./mergeConfiguration";
 import * as _ from "lodash";
 import { LocalGraphClient } from "../binding/LocalGraphClient";
 import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
+import { isLocal } from "./isLocal";
 
 /**
  * Enable local post processing
@@ -14,8 +15,10 @@ import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNoti
 export function supportLocal(config: LocalMachineConfig): (configuration: Configuration) => Promise<Configuration> {
     return async configuration => {
 
-        // Look at command line? Separate alias for local?
-        // if (process.env.LOCAL_ENABLED)
+        // Don't mess with a non local machine
+        if (!isLocal()) {
+            return configuration;
+        }
 
         logger.info("Disable web socket connection");
         configuration.ws.enabled = false;
