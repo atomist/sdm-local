@@ -1,8 +1,8 @@
+import { logger } from "@atomist/automation-client";
+import { LocalMachineConfig } from "../..";
+import { argsToGitHookInvocation } from "../../setup/gitHooks";
 import { suppressConsoleLogging } from "../cli/support/configureLogging";
 import { setCommandLineLogging } from "../cli/support/consoleOutput";
-import { logger } from "@atomist/automation-client";
-import { argsToGitHookInvocation } from "../../setup/gitHooks";
-import { LocalMachineConfig } from "../..";
 
 suppressConsoleLogging();
 setCommandLineLogging();

@@ -1,11 +1,11 @@
 import { HandlerResult, logger } from "@atomist/automation-client";
 import { Arg, Secret } from "@atomist/automation-client/internal/invoker/Payload";
-import { AutomationClientConnectionConfig } from "../config";
 
 import * as assert from "power-assert";
 import { hasOwnProperty } from "tslint/lib/utils";
-import { postToSdm } from "./httpInvoker";
 import { isArray } from "util";
+import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
+import { postToSdm } from "./support/httpInvoker";
 
 /**
  * Allow params to be expressed in an object for convenience

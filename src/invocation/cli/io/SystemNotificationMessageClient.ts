@@ -1,4 +1,4 @@
-import { Destination, isSlackMessage, MessageClient, MessageOptions, SlackDestination, } from "@atomist/automation-client/spi/message/MessageClient";
+import { Destination, isSlackMessage, MessageOptions, SlackDestination } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 
 import { logger } from "@atomist/automation-client";
@@ -9,13 +9,11 @@ import { MarkedOptions } from "marked";
 
 import * as slack from "@atomist/slack-messages/SlackMessages";
 import * as TerminalRenderer from "marked-terminal";
-import chalk from "chalk";
 import { AbstractGoalEventForwardingMessageClient } from "./AbstractGoalEventForwardingMessageClient";
 
-//import { notifier } from "node-notifier";
+// import { notifier } from "node-notifier";
 
-const notifier = require('node-notifier');
-
+const notifier = require("node-notifier");
 
 marked.setOptions({
     // Define custom renderer

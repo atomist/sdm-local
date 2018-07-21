@@ -1,14 +1,11 @@
+import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
+import { GitProject } from "@atomist/automation-client/project/git/GitProject";
+import { OnPushToAnyBranch } from "@atomist/sdm-core/typings/types";
+import { FileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
+import { pushFromLastCommit } from "../binding/localPush";
+import { AutomationClientInfo } from "../invocation/AutomationClientInfo";
 import { errorMessage } from "../invocation/cli/support/consoleOutput";
 import { invokeEventHandler } from "../invocation/http/EventHandlerInvocation";
-import { AutomationClientInfo } from "../invocation/config";
-import { OnPushToAnyBranch } from "@atomist/sdm-core/typings/types";
-import { EventIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
-import { pushFromLastCommit } from "../binding/localPush";
-import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
-import { LocalHandlerContext } from "../binding/LocalHandlerContext";
-import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import { FileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
-import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 
 export interface GitHookPayload {
     baseDir: string;

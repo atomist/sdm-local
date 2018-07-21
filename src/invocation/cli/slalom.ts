@@ -4,7 +4,7 @@ import { suppressConsoleLogging } from "./support/configureLogging";
 
 suppressConsoleLogging();
 
+import { DefaultConfig } from "../AutomationClientInfo";
 import { runSlalom } from "./runSlalom";
-import { DefaultConfig } from "../config";
 
 runSlalom(DefaultConfig);

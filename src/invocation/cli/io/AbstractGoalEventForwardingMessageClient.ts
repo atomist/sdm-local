@@ -1,11 +1,11 @@
-import { Destination, MessageClient, MessageOptions, SlackMessageClient, } from "@atomist/automation-client/spi/message/MessageClient";
+import { Destination, MessageClient, MessageOptions, SlackMessageClient } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 
 import { logger } from "@atomist/automation-client";
-import { invokeEventHandler } from "../../http/EventHandlerInvocation";
-import { DefaultConfig } from "../../config";
 import { SdmGoalKey, SdmGoalState } from "@atomist/sdm";
-import { OnAnyFailedSdmGoal, OnAnyRequestedSdmGoal } from "@atomist/sdm-core/typings/types";
+import { OnAnyRequestedSdmGoal } from "@atomist/sdm-core/typings/types";
+import { DefaultConfig } from "../../AutomationClientInfo";
+import { invokeEventHandler } from "../../http/EventHandlerInvocation";
 
 function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
     state: SdmGoalState;

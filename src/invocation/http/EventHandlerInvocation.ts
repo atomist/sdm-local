@@ -1,9 +1,9 @@
 import { HandlerResult, logger } from "@atomist/automation-client";
 import { Secret } from "@atomist/automation-client/internal/invoker/Payload";
-import { AutomationClientConnectionConfig } from "../config";
 
 import * as assert from "power-assert";
-import { postToSdm } from "./httpInvoker";
+import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
+import { postToSdm } from "./support/httpInvoker";
 
 export interface EventHandlerInvocation {
     name: string;

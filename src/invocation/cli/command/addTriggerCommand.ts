@@ -1,12 +1,12 @@
+import { logger } from "@atomist/automation-client";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { Argv } from "yargs";
 import { determineCwd, withinExpandedTree } from "../../../binding/expandedTreeUtils";
 import { FileSystemRemoteRepoRef } from "../../../binding/FileSystemRemoteRepoRef";
 import { handleGitHookEvent, HookEvents } from "../../../setup/gitHooks";
 import { shaHistory } from "../../../util/git";
+import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "../support/consoleOutput";
-import { logger } from "@atomist/automation-client";
-import { AutomationClientInfo } from "../../config";
 
 /**
  * Add a command to trigger execution following a git event

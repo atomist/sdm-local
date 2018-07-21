@@ -1,7 +1,13 @@
-import { AutomationClientConnectionConfig, AutomationClientInfo, DefaultConfig } from "../config";
 import axios from "axios";
 import { LocalMachineConfig } from "../..";
+import { AutomationClientInfo, DefaultConfig } from "../AutomationClientInfo";
+import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 
+/**
+ * Call into an SDM at the given location and retrieve metadata
+ * @param {AutomationClientConnectionConfig} connectionConfig
+ * @return {Promise<AutomationClientInfo>}
+ */
 export async function getMetadata(connectionConfig: AutomationClientConnectionConfig = DefaultConfig): Promise<AutomationClientInfo> {
     const resp = await axios.get(connectionConfig.baseEndpoint + "/registration");
     const commandsMetadata = resp.data.commands;

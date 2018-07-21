@@ -1,12 +1,12 @@
-import { Argv } from "yargs";
-import { infoMessage, logExceptionsToConsole } from "../support/consoleOutput";
 import { Destination, MessageOptions } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as express from "express";
+import { Argv } from "yargs";
 import { ConsoleMessageClient } from "../io/ConsoleMessageClient";
+import { infoMessage, logExceptionsToConsole } from "../support/consoleOutput";
 
 import * as bodyParser from "body-parser";
-import { AutomationClientInfo } from "../../config";
+import { AutomationClientInfo } from "../../AutomationClientInfo";
 
 export const DemonPort = 6660;
 export const MessageRoute = "/message";
@@ -45,4 +45,3 @@ async function summonDemon(ai: AutomationClientInfo) {
         () => infoMessage(`Atomist Slalom: Listening on port ${DemonPort}...\n`),
     );
 }
-

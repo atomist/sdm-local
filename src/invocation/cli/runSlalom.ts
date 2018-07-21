@@ -1,12 +1,12 @@
 import * as yargs from "yargs";
+import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
+import { getMetadata } from "../http/metadataReader";
 import { addGitHooksCommands } from "./command/addGitHooksCommands";
 import { addCommandsByName, addIntents } from "./command/addIntents";
 import { addStartListener } from "./command/addStartListener";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 import { addShowSkills } from "./command/showSkills";
-import { getMetadata } from "../http/metadataReader";
-import { AutomationClientConnectionConfig } from "../config";
 import { infoMessage } from "./support/consoleOutput";
 
 /**

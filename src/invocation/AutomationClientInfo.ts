@@ -1,22 +1,6 @@
-import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
-import { LocalMachineConfig } from "..";
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
-
-export interface AutomationClientConnectionConfig {
-
-    atomistTeamId: string;
-
-    atomistTeamName: string;
-
-    baseEndpoint: string;
-
-    user?: string;
-
-    password?: string;
-
-    credentials?: ProjectOperationCredentials;
-
-}
+import { LocalMachineConfig } from "..";
+import { AutomationClientConnectionConfig } from "./http/AutomationClientConnectionConfig";
 
 /**
  * Information about an automation client that we've connected to
@@ -38,4 +22,4 @@ export const DefaultConfig: AutomationClientConnectionConfig = {
     atomistTeamId: "T123",
     atomistTeamName: "test",
     baseEndpoint: "http://127.0.0.1:2866",
-}
+};

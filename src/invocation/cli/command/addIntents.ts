@@ -7,10 +7,10 @@ import { logExceptionsToConsole } from "../support/consoleOutput";
 
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import * as inquirer from "inquirer";
-import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
-import { AutomationClientInfo } from "../../config";
-import { ExpandedTreeMappedParameterResolver } from "../support/ExpandedTreeMappedParameterResolver";
 import { MappedParameterResolver } from "../../../binding/MappedParameterResolver";
+import { AutomationClientInfo } from "../../AutomationClientInfo";
+import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
+import { ExpandedTreeMappedParameterResolver } from "../support/ExpandedTreeMappedParameterResolver";
 
 /**
  *
@@ -170,7 +170,7 @@ async function runCommand(ai: AutomationClientInfo,
         .concat(extraArgs);
     await promptForMissingParameters(hm, args);
     // infoMessage(`Using arguments:\n${args.map(a => `\t${a.name}=${a.value}`).join("\n")}\n`);
-    //return sdm.executeCommand({ name: hm.name, args });
+    // return sdm.executeCommand({ name: hm.name, args });
     const mpr: MappedParameterResolver = new ExpandedTreeMappedParameterResolver(ai);
     const invocation: CommandHandlerInvocation = {
         name: hm.name,
@@ -180,7 +180,7 @@ async function runCommand(ai: AutomationClientInfo,
             value: mpr.resolve(mp),
         })),
     };
-    process.stdout.write(JSON.stringify(invocation))
+    process.stdout.write(JSON.stringify(invocation));
     return invokeCommandHandler(ai.connectionConfig, invocation);
 }
 

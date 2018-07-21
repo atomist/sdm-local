@@ -1,4 +1,4 @@
-import { Destination, isSlackMessage, MessageClient, MessageOptions, SlackDestination, } from "@atomist/automation-client/spi/message/MessageClient";
+import { Destination, isSlackMessage, MessageOptions, SlackDestination } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 
 import { logger } from "@atomist/automation-client";
@@ -8,8 +8,8 @@ import * as marked from "marked";
 import { MarkedOptions } from "marked";
 
 import * as slack from "@atomist/slack-messages/SlackMessages";
-import * as TerminalRenderer from "marked-terminal";
 import chalk from "chalk";
+import * as TerminalRenderer from "marked-terminal";
 import { AbstractGoalEventForwardingMessageClient } from "./AbstractGoalEventForwardingMessageClient";
 
 marked.setOptions({

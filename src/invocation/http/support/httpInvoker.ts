@@ -2,7 +2,7 @@
 import { logger } from "@atomist/automation-client";
 import axios, { AxiosError, AxiosPromise, AxiosResponse } from "axios";
 import { AxiosRequestConfig } from "axios";
-import { AutomationClientConnectionConfig } from "../config";
+import { AutomationClientConnectionConfig } from "../AutomationClientConnectionConfig";
 
 /**
  * Make a post to the SDM
@@ -18,16 +18,6 @@ export function postToSdm(config: AutomationClientConnectionConfig, relativePath
     }
     logger.debug("POST to %s with payload %j", url, data);
     return axios.post(url, data, automationServerAuthHeaders(config))
-        .then(logResponse(url), interpretSdmResponse(config, url));
-}
-
-export function sdmGet(config: AutomationClientConnectionConfig, relativePath: string): AxiosPromise {
-    let url = `${config.baseEndpoint}/${relativePath}`;
-    if (relativePath.startsWith("/")) {
-        url = `${config.baseEndpoint}${relativePath}`;
-    }
-    logger.debug("GET %s");
-    return axios.get(url, automationServerAuthHeaders(config))
         .then(logResponse(url), interpretSdmResponse(config, url));
 }
 

@@ -3,8 +3,8 @@ import { execSync } from "child_process";
 import * as fs from "fs";
 import { Argv } from "yargs";
 import { addGitHooks } from "../../../setup/addGitHooks";
+import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../support/consoleOutput";
-import { AutomationClientInfo } from "../../config";
 
 export function addImportFromGitRemoteCommand(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({

@@ -3,9 +3,9 @@ import { MappedParameterDeclaration } from "@atomist/automation-client/metadata/
 import { parseOwnerAndRepo } from "../../../binding/expandedTreeUtils";
 import { MappedParameterResolver } from "../../../binding/MappedParameterResolver";
 
-import * as os from "os";
 import { GitHubDotComBase } from "@atomist/automation-client/operations/common/GitHubRepoRef";
-import { AutomationClientInfo } from "../../config";
+import * as os from "os";
+import { AutomationClientInfo } from "../../AutomationClientInfo";
 
 /**
  * Resolve mapped parameters based on where we are in the directory tree

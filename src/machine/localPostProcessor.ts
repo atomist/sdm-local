@@ -15,7 +15,7 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
     return async configuration => {
 
         // Look at command line? Separate alias for local?
-        //if (process.env.LOCAL_ENABLED)
+        // if (process.env.LOCAL_ENABLED)
 
         logger.info("Disable web socket connection");
         configuration.ws.enabled = false;
@@ -34,7 +34,7 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
         // TODO resolve channel
         // TODO allow this to be configured in config
         configuration.http.messageClientFactory =
-            //() => new ConsoleMessageClient("general");
+            // () => new ConsoleMessageClient("general");
             () => new SystemNotificationMessageClient("general");
 
         configuration.http.graphClientFactory =
