@@ -2,7 +2,7 @@
 
 /*
     Main entry point script
- */
+*/
 
 import { runSlalom } from "../invocation/cli/runSlalom";
 import { resolveConnectionConfig } from "./resolveConnectionConfig";

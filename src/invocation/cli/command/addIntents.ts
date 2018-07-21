@@ -3,7 +3,7 @@ import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/me
 import * as _ from "lodash";
 import { Argv } from "yargs";
 import { PathElement, toPaths } from "../../../util/PathElement";
-import { logExceptionsToConsole } from "../support/consoleOutput";
+import { infoMessage, logExceptionsToConsole } from "../support/consoleOutput";
 
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import * as inquirer from "inquirer";
@@ -151,16 +151,16 @@ async function runByCommandName(ai: AutomationClientInfo,
 
 async function runCommand(ai: AutomationClientInfo,
                           hm: CommandHandlerMetadata,
-                          command: { owner: string, repo: string }): Promise<any> {
+                          command: object): Promise<any> {
     const extraArgs = Object.getOwnPropertyNames(command)
-        .map(name => ({ name: convertToUsable(name), value: command[name] }));
+        .map( name => ({ name: convertToUsable(name), value: command[name] }))
+        .filter(keep => !!keep.value);
     const args = [
         { name: "github://user_token?scopes=repo,user:email,read:user", value: null },
     ]
         .concat(extraArgs);
     await promptForMissingParameters(hm, args);
-    // infoMessage(`Using arguments:\n${args.map(a => `\t${a.name}=${a.value}`).join("\n")}\n`);
-    // return sdm.executeCommand({ name: hm.name, args });
+    infoMessage(`Using arguments:\n${args.map(a => `\t${a.name}=${a.value}`).join("\n")}\n`);
     const mpr: MappedParameterResolver = new ExpandedTreeMappedParameterResolver(ai);
     const invocation: CommandHandlerInvocation = {
         name: hm.name,
@@ -182,7 +182,7 @@ async function runCommand(ai: AutomationClientInfo,
  */
 async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[]): Promise<void> {
     function mustBeSupplied(p: Parameter) {
-        return p.required; // && (args.find(a => a.name === p.name) === undefined || args.find(a => a.name === p.name).value === undefined);
+        return p.required && (args.find(a => a.name === p.name) === undefined || args.find(a => a.name === p.name).value === undefined);
     }
 
     const questions =
