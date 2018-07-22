@@ -6,12 +6,11 @@ import {
     SlackDestination,
     SlackMessageClient,
 } from "@atomist/automation-client/spi/message/MessageClient";
-import { isSdmGoal } from "@atomist/sdm/api-helper/goal/sdmGoal";
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
+import { DefaultAutomationClientConnectionConfig } from "../../../entry/resolveConnectionConfig";
 import { DemonPort, MessageRoute, StreamedMessage } from "../command/addStartListener";
 import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
-import { DefaultAutomationClientConnectionConfig } from "../../../entry/resolveConnectionConfig";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 
 /**

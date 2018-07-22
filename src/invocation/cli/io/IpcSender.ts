@@ -1,5 +1,5 @@
-import { Sender } from "./ConsoleMessageClient";
 import { clientIdentifier } from "../../../machine/correlationId";
+import { Sender } from "./ConsoleMessageClient";
 
 const ipc = require("node-ipc");
 
@@ -20,7 +20,6 @@ ipc.config.silent = true;
 export function ipcSender(sendToName: string, correlationId: string): Sender {
     return async msg => {
         const id = clientIdentifier(correlationId);
-        process.stdout.write("SENDING IPC MESSAGE " + msg + ",id=" + id + "\n");
         ipc.connectTo(id, () => {
             ipc.of[id].on("connect", () => {
                 ipc.of[id].emit("message", msg);
@@ -28,4 +27,3 @@ export function ipcSender(sendToName: string, correlationId: string): Sender {
         });
     };
 }
-

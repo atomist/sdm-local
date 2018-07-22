@@ -4,8 +4,8 @@ import { SlackMessage } from "@atomist/slack-messages";
 import { logger } from "@atomist/automation-client";
 import { SdmGoalKey, SdmGoalState } from "@atomist/sdm";
 import { OnAnyRequestedSdmGoal } from "@atomist/sdm";
-import { invokeEventHandler } from "../../http/EventHandlerInvocation";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
+import { invokeEventHandler } from "../../http/EventHandlerInvocation";
 
 export function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
     state: SdmGoalState;

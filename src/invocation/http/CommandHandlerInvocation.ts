@@ -4,9 +4,9 @@ import { Arg, Secret } from "@atomist/automation-client/internal/invoker/Payload
 import * as assert from "power-assert";
 import { hasOwnProperty } from "tslint/lib/utils";
 import { isArray } from "util";
+import { newCorrelationId } from "../../machine/correlationId";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
-import { newCorrelationId } from "../../machine/correlationId";
 
 /**
  * Allow params to be expressed in an object for convenience

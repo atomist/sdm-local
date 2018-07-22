@@ -1,5 +1,4 @@
 import { promisify } from "util";
-import { infoMessage } from "./consoleOutput";
 
 /**
  * Runs within client, listening for messages
@@ -17,7 +16,7 @@ export class LogListeningIpcServer {
             return onMessage(message);
         }));
         this.ipc.server.start();
-        infoMessage("Listening on '%s'", id);
+        // infoMessage("Listening on '%s'", id);
     }
 
     public async stop() {

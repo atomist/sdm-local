@@ -4,13 +4,12 @@ import { mergeConfiguration } from "./mergeConfiguration";
 
 import * as _ from "lodash";
 import { LocalGraphClient } from "../binding/LocalGraphClient";
-import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
-import { isLocal } from "./isLocal";
 import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
-import { ConsoleMessageClient } from "../invocation/cli/io/ConsoleMessageClient";
-import { ipcSender } from "../invocation/cli/io/IpcSender";
 import { BroadcastingMessageClient } from "../invocation/cli/io/BroadcastingMessageClient";
+import { ConsoleMessageClient } from "../invocation/cli/io/ConsoleMessageClient";
 import { GoalEventForwardingMessageClient } from "../invocation/cli/io/GoalEventForwardingMessageClient";
+import { ipcSender } from "../invocation/cli/io/IpcSender";
+import { isLocal } from "./isLocal";
 
 /**
  * Configures server to enable operation
@@ -49,7 +48,7 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
                 new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
             );
         // TODO think about this
-        //() => new SystemNotificationMessageClient("general", DefaultAutomationClientConnectionConfig);
+        // () => new SystemNotificationMessageClient("general", DefaultAutomationClientConnectionConfig);
 
         configuration.http.graphClientFactory =
             () => new LocalGraphClient();

@@ -4,7 +4,7 @@ import {
     MessageClient,
     MessageOptions,
     SlackDestination,
-    SlackMessageClient
+    SlackMessageClient,
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 
@@ -21,7 +21,7 @@ import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 
 // import { notifier } from "node-notifier";
 
-//const notifier = require("node-notifier");
+// const notifier = require("node-notifier");
 
 const open = require("open");
 
