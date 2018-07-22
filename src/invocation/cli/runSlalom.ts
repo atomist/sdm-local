@@ -8,7 +8,6 @@ import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 import { addShowSkills } from "./command/showSkills";
 import { infoMessage } from "./support/consoleOutput";
-import { IpcServer } from "./support/IpcServer";
 
 /**
  * Start up the Slalom CLI
@@ -17,8 +16,6 @@ import { IpcServer } from "./support/IpcServer";
 export async function runSlalom(config: AutomationClientConnectionConfig) {
 
     yargs.usage("Usage: slalom <command> [options]");
-
-    const ipcServer = new IpcServer(async msg => process.stdout.write(msg));
 
     infoMessage(`Connecting to Automation client at %s\n`, config.baseEndpoint);
     const automationClientInfo = await getMetadata(config);

@@ -11,6 +11,7 @@ import { MappedParameterResolver } from "../../../binding/MappedParameterResolve
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
 import { ExpandedTreeMappedParameterResolver } from "../support/ExpandedTreeMappedParameterResolver";
+import { LogListeningIpcServer } from "../support/LogListeningIpcServer";
 
 /**
  *
@@ -149,9 +150,18 @@ async function runByCommandName(ai: AutomationClientInfo,
     return runCommand(ai, hm, command);
 }
 
+/**
+ * All invocation goes through this
+ * @param {AutomationClientInfo} ai
+ * @param {CommandHandlerMetadata} hm
+ * @param {object} command
+ * @return {Promise<any>}
+ */
 async function runCommand(ai: AutomationClientInfo,
                           hm: CommandHandlerMetadata,
                           command: object): Promise<any> {
+    // Run an IPC server to get the log back
+    const ipcServer = new LogListeningIpcServer(async msg => process.stdout.write(msg));
     const extraArgs = Object.getOwnPropertyNames(command)
         .map( name => ({ name: convertToUsable(name), value: command[name] }))
         .filter(keep => !!keep.value);
@@ -160,7 +170,7 @@ async function runCommand(ai: AutomationClientInfo,
     ]
         .concat(extraArgs);
     await promptForMissingParameters(hm, args);
-    infoMessage(`Using arguments:\n${args.map(a => `\t${a.name}=${a.value}`).join("\n")}\n`);
+    // infoMessage(`Using arguments:\n${args.map(a => `\t${a.name}=${a.value}`).join("\n")}\n`);
     const mpr: MappedParameterResolver = new ExpandedTreeMappedParameterResolver(ai);
     const invocation: CommandHandlerInvocation = {
         name: hm.name,
@@ -170,8 +180,14 @@ async function runCommand(ai: AutomationClientInfo,
             value: mpr.resolve(mp),
         })),
     };
-    process.stdout.write(JSON.stringify(invocation));
-    return invokeCommandHandler(ai.connectionConfig, invocation);
+    // process.stdout.write(JSON.stringify(invocation));
+    try {
+        return await invokeCommandHandler(ai.connectionConfig, invocation);
+    } finally {
+        await ipcServer.stop();
+        // TODO why do we need this?
+        process.exit(0);
+    }
 }
 
 /**
