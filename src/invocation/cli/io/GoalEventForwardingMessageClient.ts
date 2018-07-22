@@ -7,7 +7,7 @@ import { OnAnyRequestedSdmGoal } from "@atomist/sdm";
 import { invokeEventHandler } from "../../http/EventHandlerInvocation";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 
-function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
+export function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
     state: SdmGoalState;
 }) {
     const maybe = o as SdmGoalKey;
@@ -15,15 +15,14 @@ function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
 }
 
 /**
- * Forward goals
+ * Forward goals only
  */
-export abstract class AbstractGoalEventForwardingMessageClient implements MessageClient, SlackMessageClient {
+export class GoalEventForwardingMessageClient implements MessageClient, SlackMessageClient {
 
-    public abstract respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any>;
+    public async respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any> {
+    }
 
-    protected abstract sendInternal(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any>;
-
-        // TODO this should be independent of where it's routed
+    // TODO this should be independent of where it's routed
     public async send(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
         logger.info("MessageClient.send: Raw mesg=\n%j\n", msg);
         if (isSdmGoalStoreOrUpdate(msg)) {
@@ -52,28 +51,17 @@ export abstract class AbstractGoalEventForwardingMessageClient implements Messag
                 })));
             return;
         }
-        return this.sendInternal(msg, destinations, options);
     }
 
-    public abstract addressChannels(msg: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any>;
+    public async addressChannels(msg: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
 
-    public abstract addressUsers(msg: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any>;
+    }
 
-    // private renderAction(channel: string, action: slack.Action) {
-    //     if (action.type === "button") {
-    //         // TODO fix hardcoding (use config), and need to update to call local client
-    //         const a = action as any;
-    //         let url = `http://localhost:6660/command/${a.command.name}?`;
-    //         Object.getOwnPropertyNames(a.command.parameters).forEach(prop => {
-    //             url += `${prop}=${a.command.parameters[prop]}`;
-    //         });
-    //         this.writeToChannel(channel, `${action.text} - ${url}`);
-    //     } else {
-    //         process.stdout.write(JSON.stringify(action) + "\n");
-    //     }
-    // }
+    public async addressUsers(msg: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
 
-    protected constructor(private readonly connectionConfig: AutomationClientConnectionConfig) {
+    }
+
+    public constructor(private readonly connectionConfig: AutomationClientConnectionConfig) {
     }
 
 }

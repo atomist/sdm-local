@@ -12,6 +12,7 @@ import axios from "axios";
 import { DemonPort, MessageRoute, StreamedMessage } from "../command/addStartListener";
 import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
 import { DefaultAutomationClientConnectionConfig } from "../../../entry/resolveConnectionConfig";
+import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 
 /**
  * Message client that POSTS to an Atomist server and logs to a fallback (usually console)
@@ -24,9 +25,12 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
     }
 
     public async send(msg: string | SlackMessage, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
-        if (isSdmGoal(msg as any)) {
-            logger.info("Storing SDM goal or ingester payload %j", msg);
+        if (isSdmGoalStoreOrUpdate(msg)) {
+            return;
         }
+        // if (isSdmGoal(msg as any)) {
+        //     logger.info("Storing SDM goal or ingester payload %j", msg);
+        // }
         const dests = Array.isArray(destinations) ? destinations : [destinations];
         return this.stream({ message: msg, options, destinations: dests },
             () => this.delegate.send(msg, destinations, options));

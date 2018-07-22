@@ -9,6 +9,8 @@ import { isLocal } from "./isLocal";
 import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
 import { ConsoleMessageClient } from "../invocation/cli/io/ConsoleMessageClient";
 import { ipcSender } from "../invocation/cli/io/IpcSender";
+import { BroadcastingMessageClient } from "../invocation/cli/io/BroadcastingMessageClient";
+import { GoalEventForwardingMessageClient } from "../invocation/cli/io/GoalEventForwardingMessageClient";
 
 /**
  * Configures server to enable operation
@@ -28,7 +30,7 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
         // Serve up local configuration
         configuration.http.customizers = [
             exp => {
-            // TODO could use this to set local mode for a server - e.g. the name to send to
+                // TODO could use this to set local mode for a server - e.g. the name to send to
                 exp.get("/localConfiguration", async (req, res) => {
                     res.json(config);
                 });
@@ -39,12 +41,15 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
         _.set(configuration, "http.auth.basic.enabled", false);
 
         // TODO resolve channel
-        // TODO allow this to be configured in config
+        // TODO allow what's sent to be configured in config?
         configuration.http.messageClientFactory =
-            () => new ConsoleMessageClient("general", DefaultAutomationClientConnectionConfig,
-                ipcSender("slalom"));
-            // TODO think about this
-            //() => new SystemNotificationMessageClient("general", DefaultAutomationClientConnectionConfig);
+            () => new BroadcastingMessageClient(
+                new ConsoleMessageClient("general", DefaultAutomationClientConnectionConfig,
+                    ipcSender("slalom")),
+                new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
+            );
+        // TODO think about this
+        //() => new SystemNotificationMessageClient("general", DefaultAutomationClientConnectionConfig);
 
         configuration.http.graphClientFactory =
             () => new LocalGraphClient();

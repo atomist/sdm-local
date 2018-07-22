@@ -1,4 +1,11 @@
-import { Destination, isSlackMessage, MessageOptions, SlackDestination } from "@atomist/automation-client/spi/message/MessageClient";
+import {
+    Destination,
+    isSlackMessage,
+    MessageClient,
+    MessageOptions,
+    SlackDestination,
+    SlackMessageClient
+} from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 
 import { logger } from "@atomist/automation-client";
@@ -9,8 +16,8 @@ import { MarkedOptions } from "marked";
 
 import * as slack from "@atomist/slack-messages/SlackMessages";
 import * as TerminalRenderer from "marked-terminal";
-import { AbstractGoalEventForwardingMessageClient } from "./AbstractGoalEventForwardingMessageClient";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
+import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 
 // import { notifier } from "node-notifier";
 
@@ -28,14 +35,17 @@ marked.setOptions({
 /**
  * Message client logging to System notifications.
  */
-export class SystemNotificationMessageClient extends AbstractGoalEventForwardingMessageClient {
+export class SystemNotificationMessageClient implements MessageClient, SlackMessageClient {
 
     public async respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any> {
         logger.info("MessageClient.respond: Raw mesg=\n%j\n", msg);
         return this.addressChannels(msg, this.linkedChannel, options);
     }
 
-    public async sendInternal(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
+    public async send(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
+        if (isSdmGoalStoreOrUpdate(msg)) {
+            return;
+        }
         const dests: SlackDestination[] =
             (Array.isArray(destinations) ? destinations : [destinations] as any)
                 .filter(a => a.userAgent !== "ingester");
@@ -113,11 +123,10 @@ export class SystemNotificationMessageClient extends AbstractGoalEventForwarding
     }
 
     constructor(private readonly linkedChannel: string,
-                connectionConfig: AutomationClientConnectionConfig,
+                private readonly connectionConfig: AutomationClientConnectionConfig,
                 public readonly markedOptions: MarkedOptions = {
                     breaks: false,
                 }) {
-        super(connectionConfig);
     }
 
 }
