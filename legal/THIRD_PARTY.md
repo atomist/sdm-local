@@ -12,8 +12,11 @@ This page details all runtime OSS dependencies of `@atomist/slalom`.
 |[BSD-2-Clause](#bsd-2-clause)|2|
 |[BSD-3-Clause](#bsd-3-clause)|3|
 |[BSD](#bsd)|1|
+|[Custom: http://npm-stat.com/charts.html](#custom-httpnpm-statcomchartshtml)|3|
+|[Custom: https://github.com/RIAEvangelist/easy-stack](#custom-httpsgithubcomriaevangelisteasy-stack)|1|
 |[ISC](#isc)|15|
-|[MIT](#mit)|125|
+|[MIT](#mit)|126|
+|[Unlicense](#unlicense)|1|
 
 #### Apache-2.0
 Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
@@ -47,6 +50,20 @@ BSD 3-Clause "New" or "Revised" License - [http://www.opensource.org/licenses/BS
 |`qs`|`6.5.1`||[https://github.com/ljharb/qs](https://github.com/ljharb/qs)|
 |`sprintf-js`|`1.0.3`|Alexandru Marasteanu|[https://github.com/alexei/sprintf.js](https://github.com/alexei/sprintf.js)|
 
+#### Custom: http://npm-stat.com/charts.html
+
+| Name | Version | Publisher | Repository |
+|------|---------|-----------|------------|
+|`easy-stack`|`1.0.0`|Brandon Nozaki Miller|[https://github.com/RIAEvangelist/easy-stack](https://github.com/RIAEvangelist/easy-stack)|
+|`js-message`|`1.0.5`|Brandon Nozaki Miller|[https://github.com/RIAEvangelist/js-message](https://github.com/RIAEvangelist/js-message)|
+|`node-ipc`|`9.1.1`|Brandon Nozaki Miller|[https://github.com/RIAEvangelist/node-ipc](https://github.com/RIAEvangelist/node-ipc)|
+
+#### Custom: https://github.com/RIAEvangelist/easy-stack
+
+| Name | Version | Publisher | Repository |
+|------|---------|-----------|------------|
+|`js-queue`|`2.0.0`|Brandon Nozaki Miller|[https://github.com/RIAEvangelist/js-queue](https://github.com/RIAEvangelist/js-queue)|
+
 #### ISC
 ISC License - [https://www.isc.org/downloads/software-support-policy/isc-license/](https://www.isc.org/downloads/software-support-policy/isc-license/)
 
@@ -74,6 +91,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
 |`@types/inquirer`|`0.0.42`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
+|`@types/node-ipc`|`9.1.1`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/node-notifier`|`0.0.28`|Qubo|[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/node`|`8.10.19`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/rx-core-binding`|`4.0.4`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
@@ -198,6 +216,13 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`unpipe`|`1.0.0`|Douglas Christopher Wilson|[https://github.com/stream-utils/unpipe](https://github.com/stream-utils/unpipe)|
 |`utils-merge`|`1.0.1`|Jared Hanson|[https://github.com/jaredhanson/utils-merge](https://github.com/jaredhanson/utils-merge)|
 |`vary`|`1.1.2`|Douglas Christopher Wilson|[https://github.com/jshttp/vary](https://github.com/jshttp/vary)|
+
+#### Unlicense
+The Unlicense - [http://unlicense.org/](http://unlicense.org/)
+
+| Name | Version | Publisher | Repository |
+|------|---------|-----------|------------|
+|`event-pubsub`|`4.3.0`|Brandon Nozaki Miller|[https://github.com/RIAEvangelist/event-pubsub](https://github.com/RIAEvangelist/event-pubsub)|
 
 ## Contact
 
