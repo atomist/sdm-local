@@ -1,7 +1,6 @@
 /**
  * Runs within client, listening for messages
  */
-import { Server } from "node-ipc";
 import { promisify } from "util";
 
 export class LogListeningIpcServer {
