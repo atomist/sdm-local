@@ -7,6 +7,8 @@ import { LocalGraphClient } from "../binding/LocalGraphClient";
 import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
 import { isLocal } from "./isLocal";
 import { DefaultConfig } from "../entry/resolveConnectionConfig";
+import { ConsoleMessageClient } from "../invocation/cli/io/ConsoleMessageClient";
+import { IpcSender } from "../invocation/cli/io/IpcSender";
 
 /**
  * Enable local post processing
@@ -38,9 +40,9 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
         // TODO resolve channel
         // TODO allow this to be configured in config
         configuration.http.messageClientFactory =
-            // () => new ConsoleMessageClient("general");
+            () => new ConsoleMessageClient("general", DefaultConfig, IpcSender);
             // TODO think about this
-            () => new SystemNotificationMessageClient("general", DefaultConfig);
+            //() => new SystemNotificationMessageClient("general", DefaultConfig);
 
         configuration.http.graphClientFactory =
             () => new LocalGraphClient();

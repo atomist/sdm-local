@@ -25,11 +25,13 @@
   },
   "dependencies": {
     "@types/inquirer": "0.0.42",
+    "@types/node-ipc": "^9.1.1",
     "@types/node-notifier": "0.0.28",
     "@types/yargs": "^11.0.0",
     "express": "^4.16.3",
     "inquirer": "^6.0.0",
     "marked-terminal": "^3.0.0",
+    "node-ipc": "^9.1.1",
     "node-notifier": "^5.2.1",
     "open": "0.0.5",
     "tslint": "^5.10.0"
