@@ -10,6 +10,7 @@ import { ConsoleMessageClient } from "../invocation/cli/io/ConsoleMessageClient"
 import { GoalEventForwardingMessageClient } from "../invocation/cli/io/GoalEventForwardingMessageClient";
 import { ipcSender } from "../invocation/cli/io/IpcSender";
 import { isLocal } from "./isLocal";
+import { HttpClientMessageClient } from "../invocation/cli/io/HttpClientMessageClient";
 
 /**
  * Configures server to enable operation
@@ -46,6 +47,7 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
                 new ConsoleMessageClient("general", DefaultAutomationClientConnectionConfig,
                     ipcSender("slalom", aca.context.correlationId)),
                 new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
+                new HttpClientMessageClient("general"),
             );
         // TODO think about this
         // () => new SystemNotificationMessageClient("general", DefaultAutomationClientConnectionConfig);

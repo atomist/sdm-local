@@ -8,10 +8,10 @@ import {
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
-import { DefaultAutomationClientConnectionConfig } from "../../../entry/resolveConnectionConfig";
 import { DemonPort, MessageRoute, StreamedMessage } from "../command/addStartListener";
 import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
+import { DevNullMessageClient } from "./devNullMessageClient";
 
 /**
  * Message client that POSTS to an Atomist server and logs to a fallback (usually console)
@@ -27,9 +27,6 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
         if (isSdmGoalStoreOrUpdate(msg)) {
             return;
         }
-        // if (isSdmGoal(msg as any)) {
-        //     logger.info("Storing SDM goal or ingester payload %j", msg);
-        // }
         const dests = Array.isArray(destinations) ? destinations : [destinations];
         return this.stream({ message: msg, options, destinations: dests },
             () => this.delegate.send(msg, destinations, options));
@@ -63,6 +60,6 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
     constructor(private readonly linkedChannel: string,
                 public readonly url: string = `http://localhost:${DemonPort}${MessageRoute}`,
                 private readonly delegate: MessageClient & SlackMessageClient =
-                    new ConsoleMessageClient(linkedChannel, DefaultAutomationClientConnectionConfig, ProcessStdoutSender)) {
+                    DevNullMessageClient) {
     }
 }
