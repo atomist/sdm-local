@@ -1,4 +1,5 @@
 import { Sender } from "./ConsoleMessageClient";
+import { clientIdentifier } from "../../../machine/correlationId";
 
 const ipc = require("node-ipc");
 
@@ -10,12 +11,19 @@ ipc.config.retry = 0;
 ipc.config.maxRetries = 0;
 ipc.config.silent = true;
 
-export function ipcSender(sendToName: string): Sender {
+/**
+ * Runs within server sending message to client
+ * @param {string} sendToName
+ * @param {string} correlationId
+ * @return {Sender}
+ */
+export function ipcSender(sendToName: string, correlationId: string): Sender {
     return async msg => {
-        process.stdout.write("SENDING IPC MESSAGE " + msg);
-        ipc.connectTo(sendToName, () => {
-            ipc.of.slalom.on("connect", () => {
-                ipc.of.slalom.emit("message", msg);
+        const id = clientIdentifier(correlationId);
+        process.stdout.write("SENDING IPC MESSAGE " + msg + ",id=" + id + "\n");
+        ipc.connectTo(id, () => {
+            ipc.of[id].on("connect", () => {
+                ipc.of[id].emit("message", msg);
             });
         });
     };

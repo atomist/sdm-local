@@ -5,6 +5,7 @@ import * as assert from "power-assert";
 import { sprintf } from "sprintf-js";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
+import { newCorrelationId } from "../../machine/correlationId";
 
 export interface EventHandlerInvocation {
     name: string;
@@ -23,7 +24,7 @@ export async function invokeEventHandler(config: AutomationClientConnectionConfi
             query_id: "q-" + new Date().getTime(),
             team_id: config.atomistTeamId,
             team_name: config.atomistTeamName,
-            correlation_id: "test-" + new Date().getTime(),
+            correlation_id: newCorrelationId(),
         },
         secrets: (invocation.secrets || []).concat([
             { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },

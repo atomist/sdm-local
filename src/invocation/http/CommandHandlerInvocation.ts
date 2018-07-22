@@ -6,6 +6,7 @@ import { hasOwnProperty } from "tslint/lib/utils";
 import { isArray } from "util";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
+import { newCorrelationId } from "../../machine/correlationId";
 
 /**
  * Allow params to be expressed in an object for convenience
@@ -36,7 +37,7 @@ export async function invokeCommandHandler(config: AutomationClientConnectionCon
         secrets: (invocation.secrets || []).concat([
             {uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN},
         ]),
-        correlation_id: "test-" + new Date().getTime(),
+        correlation_id: newCorrelationId(),
         api_version: "1",
         team: {
             id: config.atomistTeamId,

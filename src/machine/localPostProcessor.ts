@@ -43,9 +43,9 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
         // TODO resolve channel
         // TODO allow what's sent to be configured in config?
         configuration.http.messageClientFactory =
-            () => new BroadcastingMessageClient(
+            aca => new BroadcastingMessageClient(
                 new ConsoleMessageClient("general", DefaultAutomationClientConnectionConfig,
-                    ipcSender("slalom")),
+                    ipcSender("slalom", aca.context.correlationId)),
                 new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
             );
         // TODO think about this
