@@ -161,7 +161,9 @@ async function runCommand(ai: AutomationClientInfo,
                           hm: CommandHandlerMetadata,
                           command: object): Promise<any> {
     // Run an IPC server to get the log back
-    const ipcServer = new LogListeningIpcServer(async msg => process.stdout.write(msg));
+    const ipcServer = new LogListeningIpcServer(
+        "slalom",
+        async msg => process.stdout.write(msg));
     const extraArgs = Object.getOwnPropertyNames(command)
         .map( name => ({ name: convertToUsable(name), value: command[name] }))
         .filter(keep => !!keep.value);

@@ -3,7 +3,7 @@ import { LocalMachineConfig } from "..";
 import { AutomationClientConnectionConfig } from "./http/AutomationClientConnectionConfig";
 
 /**
- * Information about an automation client that we've connected to
+ * Information held in client about an automation client that we've connected to
  */
 export interface AutomationClientInfo {
 

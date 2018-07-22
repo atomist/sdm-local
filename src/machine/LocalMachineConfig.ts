@@ -1,5 +1,5 @@
 /**
- * Configuration within a automation client that this
+ * Configuration within a automation client in local mode that this
  * project will connect to.
  * A file named local.ts must define a Local constant of this type
  */

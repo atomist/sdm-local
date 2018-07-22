@@ -8,10 +8,10 @@ import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNoti
 import { isLocal } from "./isLocal";
 import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
 import { ConsoleMessageClient } from "../invocation/cli/io/ConsoleMessageClient";
-import { IpcSender } from "../invocation/cli/io/IpcSender";
+import { ipcSender } from "../invocation/cli/io/IpcSender";
 
 /**
- * Enable local post processing
+ * Configures server to enable operation
  * @param {LocalMachineConfig} config
  * @return {(configuration: Configuration) => Promise<Configuration>}
  */
@@ -28,6 +28,7 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
         // Serve up local configuration
         configuration.http.customizers = [
             exp => {
+            // TODO could use this to set local mode for a server - e.g. the name to send to
                 exp.get("/localConfiguration", async (req, res) => {
                     res.json(config);
                 });
@@ -40,7 +41,8 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
         // TODO resolve channel
         // TODO allow this to be configured in config
         configuration.http.messageClientFactory =
-            () => new ConsoleMessageClient("general", DefaultAutomationClientConnectionConfig, IpcSender);
+            () => new ConsoleMessageClient("general", DefaultAutomationClientConnectionConfig,
+                ipcSender("slalom"));
             // TODO think about this
             //() => new SystemNotificationMessageClient("general", DefaultAutomationClientConnectionConfig);
 
