@@ -15,7 +15,8 @@ export function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
 }
 
 /**
- * Forward goals only
+ * Forward goals only. Will dispatch goal events to the appropriate event handler
+ * within the SDM at the known address
  */
 export class GoalEventForwardingMessageClient implements MessageClient, SlackMessageClient {
 

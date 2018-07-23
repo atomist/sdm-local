@@ -27,6 +27,7 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
 
         logger.info("Disable web socket connection");
         configuration.ws.enabled = false;
+
         // Serve up local configuration
         configuration.http.customizers = [
             exp => {
@@ -37,6 +38,7 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
             },
         ];
 
+        // Disable auth as we're only expecting local clients
         // TODO what if not basic
         _.set(configuration, "http.auth.basic.enabled", false);
 
@@ -55,12 +57,12 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
         configuration.http.graphClientFactory =
             () => new LocalGraphClient();
 
-        const enrichedConfig = mergeConfiguration(config);
+        const localModeSdmConfigurationElements = mergeConfiguration(config);
 
         // Need extra config to know how to set things in the SDM
         configuration.sdm = {
             ...configuration.sdm,
-            ...enrichedConfig.sdm,
+            ...localModeSdmConfigurationElements.sdm,
         };
         return configuration;
     };

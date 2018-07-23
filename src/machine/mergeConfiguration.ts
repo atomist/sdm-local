@@ -21,6 +21,7 @@ import { WriteLineGoalDisplayer } from "../invocation/cli/support/WriteLineGoalD
 
 /**
  * Merge user-supplied configuration with defaults
+ * to provide configuration for a local-mode SDM
  * @param {LocalMachineConfig} userConfig
  */
 export function mergeConfiguration(

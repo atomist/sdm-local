@@ -5,8 +5,11 @@
  */
 export interface LocalMachineConfig {
 
-    name: string;
-
+    /**
+     * Base of expanded directory tree the local client will work with:
+     * The projects the SDM can operate on.
+     * Under this we find /<org>/<repo>
+     */
     repositoryOwnerParentDirectory: string;
 
     /**

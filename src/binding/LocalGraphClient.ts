@@ -2,6 +2,10 @@ import { logger } from "@atomist/automation-client";
 import { GraphClient, MutationOptions, QueryOptions } from "@atomist/automation-client/spi/graph/GraphClient";
 import chalk from "chalk";
 
+/**
+ * Local graph client. Returns empty result set or throws an
+ * exception on all calls. GraphQL is not presently supported in Slalom.
+ */
 export class LocalGraphClient implements GraphClient {
 
     public endpoint: string;

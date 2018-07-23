@@ -13,6 +13,12 @@ export interface EventHandlerInvocation {
     secrets?: Secret[];
 }
 
+/**
+ * Invoke an event handler on the automation client at the given location
+ * @param {AutomationClientConnectionConfig} config
+ * @param {EventHandlerInvocation} invocation
+ * @return {Promise<HandlerResult>}
+ */
 export async function invokeEventHandler(config: AutomationClientConnectionConfig,
                                          invocation: EventHandlerInvocation): Promise<HandlerResult> {
     assert(!!config, "Config must be provided");
@@ -36,7 +42,7 @@ export async function invokeEventHandler(config: AutomationClientConnectionConfi
         data: invocation.payload,
     };
 
-    process.stdout.write(sprintf("Sending %s to event %s using %j", url, invocation.name, data));
+    // process.stdout.write(sprintf("Sending %s to event %s using %j", url, invocation.name, data));
     const resp = await postToSdm(config, url, data);
     assert(resp.data.code !== 0,
         "Event handler did not succeed. Returned: " + JSON.stringify(resp.data, null, 2));
