@@ -35,7 +35,7 @@ export const ProcessStdoutSender: Sender = msg => Promise.resolve(process.stdout
 export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
 
     public async respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any> {
-        logger.info("MessageClient.respond: Raw mesg=\n%j\n", msg);
+        logger.debug("MessageClient.respond: Raw mesg=\n%j\n", msg);
         return this.addressChannels(msg, this.linkedChannel, options);
     }
 
@@ -53,7 +53,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
     }
 
     public async addressChannels(msg: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
-        logger.info("MessageClient.addressChannels: Raw mesg=\n%j\nChannels=%s\n", msg, channels);
+        logger.debug("MessageClient.addressChannels: Raw mesg=\n%j\nChannels=%s\n", msg, channels);
         const chans = toStringArray(channels);
         chans.forEach(channel => {
             // TODO isSlackMessage doesn't return right
@@ -81,7 +81,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
     }
 
     public async addressUsers(msg: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
-        logger.info("MessageClient.addressUsers: Raw mesg=\n%j\nUsers=%s", msg, users);
+        logger.debug("MessageClient.addressUsers: Raw mesg=\n%j\nUsers=%s", msg, users);
         return this.sender(`#${users} ${msg}\n`);
     }
 
