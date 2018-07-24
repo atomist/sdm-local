@@ -1,4 +1,4 @@
-import { Configuration, logger } from "@atomist/automation-client";
+import { Configuration, HandlerContext, HandlerResult, logger } from "@atomist/automation-client";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { mergeConfiguration } from "./mergeConfiguration";
 
@@ -11,6 +11,10 @@ import { GoalEventForwardingMessageClient } from "../invocation/cli/io/GoalEvent
 import { ipcSender } from "../invocation/cli/io/IpcSender";
 import { isLocal } from "./isLocal";
 import { HttpClientMessageClient } from "../invocation/cli/io/HttpClientMessageClient";
+import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
+import { AutomationEventListenerSupport } from "@atomist/automation-client/server/AutomationEventListener";
+import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
+import { CustomEventDestination } from "@atomist/automation-client/spi/message/MessageClient";
 
 /**
  * Configures server to enable operation
@@ -50,12 +54,18 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
                     ipcSender("slalom", aca.context.correlationId)),
                 new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
                 new HttpClientMessageClient("general"),
+                new SystemNotificationMessageClient("general", DefaultAutomationClientConnectionConfig),
             );
         // TODO think about this
         // () => new SystemNotificationMessageClient("general", DefaultAutomationClientConnectionConfig);
 
         configuration.http.graphClientFactory =
             () => new LocalGraphClient();
+
+        if (!configuration.listeners) {
+            configuration.listeners = [];
+        }
+        configuration.listeners.push(new NotifyOnCompletionAutomationEventListener());
 
         const localModeSdmConfigurationElements = mergeConfiguration(config);
 
@@ -66,4 +76,17 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
         };
         return configuration;
     };
+}
+
+export const CommandCompletionDestination = new CustomEventDestination("completion");
+
+class NotifyOnCompletionAutomationEventListener extends AutomationEventListenerSupport {
+
+    public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<void> {
+        return ctx.messageClient.send("Success", CommandCompletionDestination);
+    }
+
+    public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<void> {
+        return ctx.messageClient.send("Failure", CommandCompletionDestination);
+    }
 }

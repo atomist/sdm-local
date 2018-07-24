@@ -55,26 +55,26 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
     public async addressChannels(msg: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
         logger.debug("MessageClient.addressChannels: Raw mesg=\n%j\nChannels=%s\n", msg, channels);
         const chans = toStringArray(channels);
-        chans.forEach(channel => {
+        chans.forEach(async channel => {
             // TODO isSlackMessage doesn't return right
             if (isSlackMessage(msg)) {
                 if (!!msg.text) {
-                    this.writeToChannel(channel, msg.text);
+                    return this.writeToChannel(channel, msg.text);
                 }
-                msg.attachments.forEach(att => {
-                    this.writeToChannel(channel, att.text);
-                    att.actions.forEach(action => {
-                        this.renderAction(channel, action);
+                msg.attachments.forEach(async att => {
+                    await this.writeToChannel(channel, att.text);
+                    att.actions.forEach(async action => {
+                        await this.renderAction(channel, action);
                     });
                 });
             } else if (typeof msg === "string") {
-                this.writeToChannel(channel, msg);
+                await this.writeToChannel(channel, msg);
             } else {
                 const m = msg as any;
                 if (!!m.content) {
-                    this.writeToChannel(channel, m.content);
+                    await this.writeToChannel(channel, m.content);
                 } else {
-                    this.writeToChannel(channel, "???? What is " + JSON.stringify(msg));
+                    await this.writeToChannel(channel, "???? What is " + JSON.stringify(msg));
                 }
             }
         });
@@ -85,7 +85,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
         return this.sender(`#${users} ${msg}\n`);
     }
 
-    private renderAction(channel: string, action: slack.Action) {
+    private async renderAction(channel: string, action: slack.Action) {
         if (action.type === "button") {
             // TODO fix hardcoding (use config), and need to update to call local client
             const a = action as any;
@@ -93,7 +93,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
             Object.getOwnPropertyNames(a.command.parameters).forEach(prop => {
                 url += `${prop}=${a.command.parameters[prop]}`;
             });
-            this.writeToChannel(channel, `${action.text} - ${url}`);
+            await this.writeToChannel(channel, `${action.text} - ${url}`);
         } else {
             return this.sender(JSON.stringify(action) + "\n");
         }

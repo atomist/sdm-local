@@ -12,6 +12,7 @@ import { DemonPort, MessageRoute, StreamedMessage } from "../command/addStartLis
 import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 import { DevNullMessageClient } from "./devNullMessageClient";
+import { CommandCompletionDestination } from "../../../machine/localPostProcessor";
 
 /**
  * Message client that POSTS to an Atomist server and logs to a fallback (usually console)
@@ -25,6 +26,11 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
 
     public async send(msg: string | SlackMessage, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
         if (isSdmGoalStoreOrUpdate(msg)) {
+            // We don't need to do anything about this
+            return;
+        }
+        if (destinations === CommandCompletionDestination) {
+            process.stdout.write("WILL tell listener to commit suicide...");
             return;
         }
         const dests = Array.isArray(destinations) ? destinations : [destinations];
