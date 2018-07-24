@@ -84,6 +84,19 @@ sdm.addExtensionPacks(LocalLifecycle);
 
 Start your automation client normally, with the `atomist` command
 
+### Listening to messages
+
+Messages will come to the command line in a local invocation.
+
+In the case of events, you can set up a listener as follows:
+
+```
+slalom listen
+
+```
+
+Such a listener will display messages from all local SDM activity.
+
 ### Download and install
 
 Clone this project.
