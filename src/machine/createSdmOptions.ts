@@ -1,5 +1,5 @@
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import { ProjectLoader, ProjectLoadingParameters, WithLoadedProject } from "@atomist/sdm";
+import { ProjectLoader, ProjectLoadingParameters, SoftwareDeliveryMachineOptions, WithLoadedProject } from "@atomist/sdm";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
 import { execSync } from "child_process";
@@ -10,48 +10,33 @@ import { fileSystemProjectPersister } from "../binding/fileSystemProjectPersiste
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
 import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { LocalRepoTargets } from "../binding/LocalRepoTargets";
-import { MappedParameterResolver } from "../binding/MappedParameterResolver";
 import { LocalMachineConfig } from "./LocalMachineConfig";
-
-import { Configuration } from "@atomist/automation-client";
 import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
 import * as fs from "fs";
 import { infoMessage } from "../invocation/cli/support/consoleOutput";
-import { WriteLineGoalDisplayer } from "../invocation/cli/support/WriteLineGoalDisplayer";
 
 /**
  * Merge user-supplied configuration with defaults
  * to provide configuration for a local-mode SDM
  * @param {LocalMachineConfig} userConfig
  */
-export function mergeConfiguration(
-    userConfig: LocalMachineConfig): Configuration {
+export function createSdmOptions(userConfig: LocalMachineConfig): SoftwareDeliveryMachineOptions {
     const repoRefResolver = new LocalRepoRefResolver(userConfig.repositoryOwnerParentDirectory);
     return {
-        sdm: {
-            // TODO this is the only use of sdm-core
-            artifactStore: new EphemeralLocalArtifactStore(),
-            projectLoader: new DecoratingProjectLoader(
-                new CachingProjectLoader(),
-                userConfig,
-                changeToPushToAtomistBranch(userConfig.repositoryOwnerParentDirectory, userConfig.mergeAutofixes)),
-            logFactory: async (context, goal) => new LoggingProgressLog(goal.name),
-            credentialsResolver: EnvironmentTokenCredentialsResolver,
-            repoRefResolver,
-            repoFinder: expandedDirectoryRepoFinder(userConfig.repositoryOwnerParentDirectory),
-            projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory),
-            targets: () => new LocalRepoTargets(userConfig.repositoryOwnerParentDirectory),
-        },
-        // mappedParameterResolver: new ExpandedTreeMappedParameterResolver(userConfig),
-        mergeAutofixes: true,
-        goalDisplayer: new WriteLineGoalDisplayer(),
-        ...userConfig,
+        // TODO this is the only use of sdm-core
+        artifactStore: new EphemeralLocalArtifactStore(),
+        projectLoader: new DecoratingProjectLoader(
+            new CachingProjectLoader(),
+            userConfig,
+            changeToPushToAtomistBranch(userConfig.repositoryOwnerParentDirectory, userConfig.mergeAutofixes)),
+        logFactory: async (context, goal) => new LoggingProgressLog(goal.name),
+        credentialsResolver: EnvironmentTokenCredentialsResolver,
+        repoRefResolver,
+        repoFinder: expandedDirectoryRepoFinder(userConfig.repositoryOwnerParentDirectory),
+        projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory),
+        targets: () => new LocalRepoTargets(userConfig.repositoryOwnerParentDirectory),
     };
 }
-
-export const ResolveNothingMappedParameterResolver: MappedParameterResolver = {
-    resolve: () => undefined,
-};
 
 /**
  * Project loader that performs additional steps before acting on the project

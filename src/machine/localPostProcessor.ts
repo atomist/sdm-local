@@ -1,6 +1,6 @@
 import { Configuration, HandlerContext, HandlerResult, logger } from "@atomist/automation-client";
 import { LocalMachineConfig } from "./LocalMachineConfig";
-import { mergeConfiguration } from "./mergeConfiguration";
+import { createSdmOptions } from "./createSdmOptions";
 
 import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
 import { AutomationEventListenerSupport } from "@atomist/automation-client/server/AutomationEventListener";
@@ -18,10 +18,10 @@ import { clientIdentifier } from "./correlationId";
 
 /**
  * Configures server to enable operation
- * @param {LocalMachineConfig} config
+ * @param {LocalMachineConfig} localMachineConfig
  * @return {(configuration: Configuration) => Promise<Configuration>}
  */
-export function configureLocal(config: LocalMachineConfig): (configuration: Configuration) => Promise<Configuration> {
+export function configureLocal(localMachineConfig: LocalMachineConfig): (configuration: Configuration) => Promise<Configuration> {
     return async configuration => {
 
         // Don't mess with a non local machine
@@ -32,44 +32,22 @@ export function configureLocal(config: LocalMachineConfig): (configuration: Conf
         logger.info("Disable web socket connection");
         configuration.ws.enabled = false;
 
-        // Serve up local configuration
-        configuration.http.customizers = [
-            exp => {
-                // TODO could use this to set local mode for a server - e.g. the name to send to
-                exp.get("/localConfiguration", async (req, res) => {
-                    res.json(config);
-                });
-            },
-        ];
+        configureWebEndpoints(configuration, localMachineConfig);
 
-        // Disable auth as we're only expecting local clients
-        // TODO what if not basic
-        _.set(configuration, "http.auth.basic.enabled", false);
-
-        // TODO resolve channel
-        // TODO allow what's sent to be configured in config?
-        configuration.http.messageClientFactory =
-            aca => new BroadcastingMessageClient(
-                new HttpClientMessageClient("general", AllMessagesPort),
-                new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
-                new HttpClientMessageClient("general", clientIdentifier(aca.context.correlationId)),
-                new SystemNotificationMessageClient("general", DefaultAutomationClientConnectionConfig),
-            );
-
-        configuration.http.graphClientFactory =
-            () => new LocalGraphClient(false);
+        setMessageClient(configuration);
+        setGraphClient(configuration);
 
         if (!configuration.listeners) {
             configuration.listeners = [];
         }
         configuration.listeners.push(new NotifyOnCompletionAutomationEventListener());
 
-        const localModeSdmConfigurationElements = mergeConfiguration(config);
+        const localModeSdmConfigurationElements = createSdmOptions(localMachineConfig);
 
         // Need extra config to know how to set things in the SDM
         configuration.sdm = {
             ...configuration.sdm,
-            ...localModeSdmConfigurationElements.sdm,
+            ...localModeSdmConfigurationElements,
         };
         return configuration;
     };
@@ -86,4 +64,36 @@ class NotifyOnCompletionAutomationEventListener extends AutomationEventListenerS
     public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<void> {
         return ctx.messageClient.send("Failure", CommandCompletionDestination);
     }
+}
+
+function configureWebEndpoints(configuration: Configuration, localMachineConfig: LocalMachineConfig) {
+    // Disable auth as we're only expecting local clients
+    // TODO what if not basic
+    _.set(configuration, "http.auth.basic.enabled", false);
+
+    configuration.http.customizers = [
+        exp => {
+            // TODO could use this to set local mode for a server - e.g. the name to send to
+            exp.get("/localConfiguration", async (req, res) => {
+                res.json(localMachineConfig);
+            });
+        },
+    ];
+}
+
+function setMessageClient(configuration: Configuration) {
+    // TODO resolve channel
+    // TODO allow what's sent to be configured in config?
+    configuration.http.messageClientFactory =
+        aca => new BroadcastingMessageClient(
+            new HttpClientMessageClient("general", AllMessagesPort),
+            new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
+            new HttpClientMessageClient("general", clientIdentifier(aca.context.correlationId)),
+            new SystemNotificationMessageClient("general", DefaultAutomationClientConnectionConfig),
+        );
+}
+
+function setGraphClient(configuration: Configuration) {
+    configuration.http.graphClientFactory =
+        () => new LocalGraphClient(false);
 }
