@@ -17,7 +17,6 @@ import { MarkedOptions } from "marked";
 import * as slack from "@atomist/slack-messages/SlackMessages";
 import chalk from "chalk";
 import * as TerminalRenderer from "marked-terminal";
-import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 
 marked.setOptions({
@@ -109,7 +108,6 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
     }
 
     constructor(private readonly linkedChannel: string,
-                private readonly connectionConfig: AutomationClientConnectionConfig,
                 private readonly sender: Sender,
                 public readonly markedOptions: MarkedOptions = {
                     breaks: false,

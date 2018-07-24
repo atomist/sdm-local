@@ -1,8 +1,8 @@
 import axios from "axios";
 import { LocalMachineConfig } from "../..";
 import { AutomationClientInfo } from "../AutomationClientInfo";
-import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 import { errorMessage } from "../cli/support/consoleOutput";
+import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 
 /**
  * Call into an SDM at the given location and retrieve metadata

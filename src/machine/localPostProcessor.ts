@@ -2,19 +2,18 @@ import { Configuration, HandlerContext, HandlerResult, logger } from "@atomist/a
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { mergeConfiguration } from "./mergeConfiguration";
 
+import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
+import { AutomationEventListenerSupport } from "@atomist/automation-client/server/AutomationEventListener";
+import { CustomEventDestination } from "@atomist/automation-client/spi/message/MessageClient";
 import * as _ from "lodash";
 import { LocalGraphClient } from "../binding/LocalGraphClient";
 import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
+import { AllMessagesPort } from "../invocation/cli/command/addStartListener";
 import { BroadcastingMessageClient } from "../invocation/cli/io/BroadcastingMessageClient";
-import { ConsoleMessageClient } from "../invocation/cli/io/ConsoleMessageClient";
 import { GoalEventForwardingMessageClient } from "../invocation/cli/io/GoalEventForwardingMessageClient";
-import { ipcSender } from "../invocation/cli/io/IpcSender";
-import { isLocal } from "./isLocal";
 import { HttpClientMessageClient } from "../invocation/cli/io/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
-import { AutomationEventListenerSupport } from "@atomist/automation-client/server/AutomationEventListener";
-import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
-import { CustomEventDestination } from "@atomist/automation-client/spi/message/MessageClient";
+import { isLocal } from "./isLocal";
 
 /**
  * Configures server to enable operation
@@ -50,10 +49,9 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
         // TODO allow what's sent to be configured in config?
         configuration.http.messageClientFactory =
             aca => new BroadcastingMessageClient(
-                new ConsoleMessageClient("general", DefaultAutomationClientConnectionConfig,
-                    ipcSender("slalom", aca.context.correlationId)),
+                new HttpClientMessageClient("general", AllMessagesPort),
                 new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
-                new HttpClientMessageClient("general"),
+                new HttpClientMessageClient("general", 1234),
                 new SystemNotificationMessageClient("general", DefaultAutomationClientConnectionConfig),
             );
         // TODO think about this

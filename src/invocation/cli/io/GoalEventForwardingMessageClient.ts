@@ -45,12 +45,11 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
             };
             // process.stdout.write(JSON.stringify(payload));
             // Don't wait for them
-            Promise.all(handlerNames.map(name =>
+            return Promise.all(handlerNames.map(name =>
                 invokeEventHandler(this.connectionConfig, {
                     name,
                     payload,
                 })));
-            return;
         }
     }
 

@@ -2,7 +2,6 @@ import { HandlerResult, Secrets } from "@atomist/automation-client";
 import { Secret } from "@atomist/automation-client/internal/invoker/Payload";
 
 import * as assert from "power-assert";
-import { sprintf } from "sprintf-js";
 import { newCorrelationId } from "../../machine/correlationId";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";

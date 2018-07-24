@@ -10,8 +10,8 @@ import * as inquirer from "inquirer";
 import { MappedParameterResolver } from "../../../binding/MappedParameterResolver";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
+import { startHttpMessageListener } from "../io/httpMessageListener";
 import { ExpandedTreeMappedParameterResolver } from "../support/ExpandedTreeMappedParameterResolver";
-import { LogListeningIpcServer } from "../support/LogListeningIpcServer";
 
 /**
  *
@@ -161,11 +161,12 @@ async function runCommand(ai: AutomationClientInfo,
                           hm: CommandHandlerMetadata,
                           command: object): Promise<any> {
     // Run an IPC server to get the log back
-    const ipcServer = new LogListeningIpcServer(
-        process.pid + "",
-        async msg => process.stdout.write(msg));
+    // const ipcServer = new LogListeningIpcServer(
+    //     process.pid + "",
+    //     async msg => process.stdout.write(msg));
+    startHttpMessageListener(1234, true);
     const extraArgs = Object.getOwnPropertyNames(command)
-        .map( name => ({ name: convertToUsable(name), value: command[name] }))
+        .map(name => ({ name: convertToUsable(name), value: command[name] }))
         .filter(keep => !!keep.value);
     const args = [
         { name: "github://user_token?scopes=repo,user:email,read:user", value: null },
@@ -182,14 +183,7 @@ async function runCommand(ai: AutomationClientInfo,
             value: mpr.resolve(mp),
         })),
     };
-    // process.stdout.write(JSON.stringify(invocation));
-    try {
-        return await invokeCommandHandler(ai.connectionConfig, invocation);
-    } finally {
-        await ipcServer.stop();
-        // TODO why do we need this?
-        process.exit(0);
-    }
+    return invokeCommandHandler(ai.connectionConfig, invocation);
 }
 
 /**

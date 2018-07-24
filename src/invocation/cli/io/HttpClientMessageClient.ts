@@ -8,11 +8,9 @@ import {
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
-import { DemonPort, MessageRoute, StreamedMessage } from "../command/addStartListener";
-import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
-import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 import { DevNullMessageClient } from "./devNullMessageClient";
-import { CommandCompletionDestination } from "../../../machine/localPostProcessor";
+import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
+import { listenerUrl, StreamedMessage } from "./httpMessageListener";
 
 /**
  * Message client that POSTS to an Atomist server and logs to a fallback (usually console)
@@ -27,10 +25,6 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
     public async send(msg: string | SlackMessage, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
         if (isSdmGoalStoreOrUpdate(msg)) {
             // We don't need to do anything about this
-            return;
-        }
-        if (destinations === CommandCompletionDestination) {
-            process.stdout.write("WILL tell listener to commit suicide...");
             return;
         }
         const dests = Array.isArray(destinations) ? destinations : [destinations];
@@ -58,14 +52,17 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
             logger.debug(`Write to url ${this.url}: ${JSON.stringify(sm)}`);
             await axios.post(this.url, sm);
         } catch (err) {
-            logger.debug("Cannot POST to log service at [%s]: %s", this.url, err.message);
+            logger.warn("Cannot POST to log service at [%s]: %s", this.url, err.message);
             return fallback();
         }
     }
 
+    private readonly url: string;
+
     constructor(private readonly linkedChannel: string,
-                public readonly url: string = `http://localhost:${DemonPort}${MessageRoute}`,
+                port: number,
                 private readonly delegate: MessageClient & SlackMessageClient =
                     DevNullMessageClient) {
+        this.url = listenerUrl(port);
     }
 }
