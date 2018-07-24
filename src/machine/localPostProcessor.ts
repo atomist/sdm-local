@@ -21,7 +21,7 @@ import { clientIdentifier } from "./correlationId";
  * @param {LocalMachineConfig} config
  * @return {(configuration: Configuration) => Promise<Configuration>}
  */
-export function supportLocal(config: LocalMachineConfig): (configuration: Configuration) => Promise<Configuration> {
+export function configureLocal(config: LocalMachineConfig): (configuration: Configuration) => Promise<Configuration> {
     return async configuration => {
 
         // Don't mess with a non local machine
