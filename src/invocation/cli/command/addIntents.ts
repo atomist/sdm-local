@@ -164,7 +164,7 @@ async function runCommand(ai: AutomationClientInfo,
     // const ipcServer = new LogListeningIpcServer(
     //     process.pid + "",
     //     async msg => process.stdout.write(msg));
-    startHttpMessageListener(1234, true);
+    startHttpMessageListener(process.pid, true);
     const extraArgs = Object.getOwnPropertyNames(command)
         .map(name => ({ name: convertToUsable(name), value: command[name] }))
         .filter(keep => !!keep.value);

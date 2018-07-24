@@ -3,8 +3,6 @@ import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { startHttpMessageListener } from "../io/httpMessageListener";
 import { logExceptionsToConsole } from "../support/consoleOutput";
 
-export const MessageRoute = "/message";
-
 export const AllMessagesPort = 6660;
 
 export function addStartListener(ai: AutomationClientInfo, yargs: Argv) {

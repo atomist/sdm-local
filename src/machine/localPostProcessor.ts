@@ -14,6 +14,7 @@ import { GoalEventForwardingMessageClient } from "../invocation/cli/io/GoalEvent
 import { HttpClientMessageClient } from "../invocation/cli/io/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
 import { isLocal } from "./isLocal";
+import { clientIdentifier } from "./correlationId";
 
 /**
  * Configures server to enable operation
@@ -51,7 +52,7 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
             aca => new BroadcastingMessageClient(
                 new HttpClientMessageClient("general", AllMessagesPort),
                 new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
-                new HttpClientMessageClient("general", 1234),
+                new HttpClientMessageClient("general", clientIdentifier(aca.context.correlationId)),
                 new SystemNotificationMessageClient("general", DefaultAutomationClientConnectionConfig),
             );
         // TODO think about this

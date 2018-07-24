@@ -9,6 +9,7 @@ import { logExceptionsToConsole } from "../support/consoleOutput";
 
 /**
  * Command to add git hooks to current directory or all projects
+ * @param ai config
  * @param {yargs.Argv} yargs
  */
 export function addGitHooksCommands(ai: AutomationClientInfo, yargs: Argv) {
