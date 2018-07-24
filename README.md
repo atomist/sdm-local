@@ -56,8 +56,15 @@ $SDM_PROJECTS_ROOT
 ``` 
 
 ### Environment
-Set the `SDM_PROJECTS_ROOT` environment variable. This is the directory which is the base for your expanded directory 
-tree. This can be an empty directory, or a directory with some repositories in it, grouped by owner as described above.
+Set the following environment variable:
+
+```
+ATOMIST_MODE=local
+```
+
+TODO put in the post processor
+
+Start your automation client normally, with the `atomist` command.
 
 ### Download and install
 

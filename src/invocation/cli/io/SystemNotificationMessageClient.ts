@@ -38,7 +38,7 @@ marked.setOptions({
 export class SystemNotificationMessageClient implements MessageClient, SlackMessageClient {
 
     public async respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any> {
-        logger.info("MessageClient.respond: Raw mesg=\n%j\n", msg);
+        logger.debug("MessageClient.respond: Raw mesg=\n%j\n", msg);
         return this.addressChannels(msg, this.linkedChannel, options);
     }
 
@@ -56,7 +56,7 @@ export class SystemNotificationMessageClient implements MessageClient, SlackMess
     }
 
     public async addressChannels(msg: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
-        logger.info("MessageClient.addressChannels: Raw mesg=\n%j\nChannels=%s\n", msg, channels);
+        logger.debug("MessageClient.addressChannels: Raw mesg=\n%j\nChannels=%s\n", msg, channels);
         const chans = toStringArray(channels);
         chans.forEach(channel => {
             // TODO isSlackMessage doesn't return right
@@ -71,20 +71,20 @@ export class SystemNotificationMessageClient implements MessageClient, SlackMess
                     });
                 });
             } else if (typeof msg === "string") {
-                this.writeToChannel(channel, msg);
+                return this.writeToChannel(channel, msg);
             } else {
                 const m = msg as any;
                 if (!!m.content) {
-                    this.writeToChannel(channel, m.content);
+                    return this.writeToChannel(channel, m.content);
                 } else {
-                    this.writeToChannel(channel, "???? What is " + JSON.stringify(msg));
+                    return this.writeToChannel(channel, "???? What is " + JSON.stringify(msg));
                 }
             }
         });
     }
 
     public async addressUsers(msg: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
-        logger.info("MessageClient.addressUsers: Raw mesg=\n%j\nUsers=%s", msg, users);
+        logger.debug("MessageClient.addressUsers: Raw mesg=\n%j\nUsers=%s", msg, users);
         process.stdout.write(`#${users} ${msg}\n`);
     }
 
@@ -96,7 +96,7 @@ export class SystemNotificationMessageClient implements MessageClient, SlackMess
             Object.getOwnPropertyNames(a.command.parameters).forEach(prop => {
                 url += `${prop}=${a.command.parameters[prop]}`;
             });
-            this.writeToChannel(channel, `${action.text} - ${url}`);
+            return this.writeToChannel(channel, `${action.text} - ${url}`);
         } else {
             process.stdout.write(JSON.stringify(action) + "\n");
         }

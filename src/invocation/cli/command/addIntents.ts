@@ -160,10 +160,6 @@ async function runByCommandName(ai: AutomationClientInfo,
 async function runCommand(ai: AutomationClientInfo,
                           hm: CommandHandlerMetadata,
                           command: object): Promise<any> {
-    // Run an IPC server to get the log back
-    // const ipcServer = new LogListeningIpcServer(
-    //     process.pid + "",
-    //     async msg => process.stdout.write(msg));
     startHttpMessageListener(process.pid, true);
     const extraArgs = Object.getOwnPropertyNames(command)
         .map(name => ({ name: convertToUsable(name), value: command[name] }))

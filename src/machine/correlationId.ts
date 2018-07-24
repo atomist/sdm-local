@@ -12,6 +12,5 @@ export function newCorrelationId(): string {
 export function clientIdentifier(correlationId: string): number {
     const pattern = new RegExp(`^${ClientType}\-([^\-]+)\-`);
     const id = correlationId.match(pattern)[1];
-    process.stdout.write(`Pclient ideentifier from '${correlationId}' is '${id}'`);
     return parseInt(id, 10);
 }

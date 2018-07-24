@@ -23,9 +23,8 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
     public async respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any> {
     }
 
-    // TODO this should be independent of where it's routed
     public async send(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
-        logger.info("MessageClient.send: Raw mesg=\n%j\n", msg);
+        logger.debug("MessageClient.send: Raw mesg=\n%j\n", msg);
         if (isSdmGoalStoreOrUpdate(msg)) {
             logger.info("Storing SDM goal or ingester payload %j", msg);
             let handlerNames: string[] = [];
@@ -43,8 +42,6 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
             const payload: OnAnyRequestedSdmGoal.Subscription = {
                 SdmGoal: [msg],
             };
-            // process.stdout.write(JSON.stringify(payload));
-            // Don't wait for them
             return Promise.all(handlerNames.map(name =>
                 invokeEventHandler(this.connectionConfig, {
                     name,
