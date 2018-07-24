@@ -42,7 +42,7 @@
   "devDependencies": {
     "@atomist/automation-client": "https://r.atomist.com/1601372402",
     "@atomist/sdm": "https://r.atomist.com/2091308992",
-    "@atomist/sdm-core": "https://r.atomist.com/2286024262",
+    "@atomist/sdm-core": "https://r.atomist.com/414657972",
     "@types/lodash": "^4.14.109",
     "@types/mocha": "^2.2.48",
     "@types/node": "^8.10.17",
