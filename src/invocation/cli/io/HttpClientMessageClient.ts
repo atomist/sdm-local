@@ -51,6 +51,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
         try {
             logger.debug(`Write to url ${this.url}: ${JSON.stringify(sm)}`);
             await axios.post(this.url, sm);
+            logger.info(`Wrote to url ${this.url}: ${JSON.stringify(sm)}`);
         } catch (err) {
             logger.warn("Cannot POST to log service at [%s]: %s", this.url, err.message);
             return fallback();

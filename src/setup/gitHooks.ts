@@ -77,7 +77,7 @@ async function createPush(ai: AutomationClientInfo, payload: GitHookInvocation):
     const { baseDir, branch, sha } = payload;
     return doWithProjectUnderExpandedDirectoryTree(baseDir, branch, sha, ai,
         async p => {
-            return pushFromLastCommit(p);
+            return pushFromLastCommit(ai.connectionConfig.atomistTeamId, p);
         });
 }
 

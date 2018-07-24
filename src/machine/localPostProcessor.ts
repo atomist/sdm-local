@@ -55,11 +55,9 @@ export function supportLocal(config: LocalMachineConfig): (configuration: Config
                 new HttpClientMessageClient("general", clientIdentifier(aca.context.correlationId)),
                 new SystemNotificationMessageClient("general", DefaultAutomationClientConnectionConfig),
             );
-        // TODO think about this
-        // () => new SystemNotificationMessageClient("general", DefaultAutomationClientConnectionConfig);
 
         configuration.http.graphClientFactory =
-            () => new LocalGraphClient();
+            () => new LocalGraphClient(false);
 
         if (!configuration.listeners) {
             configuration.listeners = [];

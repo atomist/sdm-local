@@ -38,7 +38,11 @@ export function startHttpMessageListener(demonPort: number, killOnCommandComplet
     });
 
     app.listen(demonPort,
-        () => infoMessage(`Atomist Slalom: Listening on port ${demonPort}...\n`),
+        () => {
+            if (!killOnCommandCompletion) {
+                infoMessage(`Atomist Slalom: Listening on port ${demonPort}...\n`);
+            }
+        },
     );
 }
 
