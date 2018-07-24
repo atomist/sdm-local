@@ -21,6 +21,7 @@ export function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
 export class GoalEventForwardingMessageClient implements MessageClient, SlackMessageClient {
 
     public async respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any> {
+        // Ignore
     }
 
     public async send(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
@@ -51,11 +52,11 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
     }
 
     public async addressChannels(msg: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
-
+        // Ignore
     }
 
     public async addressUsers(msg: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
-
+        // Ignore
     }
 
     public constructor(private readonly connectionConfig: AutomationClientConnectionConfig) {

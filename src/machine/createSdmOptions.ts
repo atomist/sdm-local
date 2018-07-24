@@ -1,8 +1,10 @@
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { ProjectLoader, ProjectLoadingParameters, SoftwareDeliveryMachineOptions, WithLoadedProject } from "@atomist/sdm";
+import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
 import { execSync } from "child_process";
+import * as fs from "fs";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
 import { expandedDirectoryRepoFinder } from "../binding/expandedDirectoryRepoFinder";
 import { dirFor } from "../binding/expandedTreeUtils";
@@ -10,10 +12,8 @@ import { fileSystemProjectPersister } from "../binding/fileSystemProjectPersiste
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
 import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { LocalRepoTargets } from "../binding/LocalRepoTargets";
-import { LocalMachineConfig } from "./LocalMachineConfig";
-import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
-import * as fs from "fs";
 import { infoMessage } from "../invocation/cli/support/consoleOutput";
+import { LocalMachineConfig } from "./LocalMachineConfig";
 
 /**
  * Merge user-supplied configuration with defaults

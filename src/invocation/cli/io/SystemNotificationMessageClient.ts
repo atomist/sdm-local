@@ -16,15 +16,12 @@ import { MarkedOptions } from "marked";
 
 import * as slack from "@atomist/slack-messages/SlackMessages";
 import * as TerminalRenderer from "marked-terminal";
-import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 
-// import { notifier } from "node-notifier";
-
-// const notifier = require("node-notifier");
-
+// tslint:disable-next-line:no-var-requires
 const open = require("open");
 
+// tslint:disable-next-line:no-var-requires
 const NotificationCenter = require("node-notifier").NotificationCenter;
 
 marked.setOptions({
@@ -62,12 +59,12 @@ export class SystemNotificationMessageClient implements MessageClient, SlackMess
             // TODO isSlackMessage doesn't return right
             if (isSlackMessage(msg)) {
                 if (!!msg.text) {
-                    this.writeToChannel(channel, msg.text);
+                    return this.writeToChannel(channel, msg.text);
                 }
-                msg.attachments.forEach(att => {
-                    this.writeToChannel(channel, att.text);
-                    att.actions.forEach(action => {
-                        this.renderAction(channel, action);
+                msg.attachments.forEach(async att => {
+                    await this.writeToChannel(channel, att.text);
+                    att.actions.forEach(async action => {
+                        await this.renderAction(channel, action);
                     });
                 });
             } else if (typeof msg === "string") {
@@ -123,7 +120,6 @@ export class SystemNotificationMessageClient implements MessageClient, SlackMess
     }
 
     constructor(private readonly linkedChannel: string,
-                private readonly connectionConfig: AutomationClientConnectionConfig,
                 public readonly markedOptions: MarkedOptions = {
                     breaks: false,
                 }) {

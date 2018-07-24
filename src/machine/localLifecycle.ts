@@ -1,9 +1,9 @@
-import { BuildStatus, ExtensionPack, SoftwareDeliveryMachine, } from "@atomist/sdm";
+import { BuildStatus, ExtensionPack, SoftwareDeliveryMachine } from "@atomist/sdm";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
 import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
+import { HttpBuildStatusUpdater } from "../binding/HttpBuildStatusUpdater";
 import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
 import { isLocal } from "./isLocal";
-import { HttpBuildStatusUpdater } from "../binding/HttpBuildStatusUpdater";
 
 /**
  * Add Local IO to the given SDM.

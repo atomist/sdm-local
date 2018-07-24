@@ -1,7 +1,7 @@
 import { BuildStatus, OnBuildComplete, SdmGoalEvent } from "@atomist/sdm";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
-import { invokeEventHandler } from "../invocation/http/EventHandlerInvocation";
 import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
+import { invokeEventHandler } from "../invocation/http/EventHandlerInvocation";
 
 /**
  * Update build status by posting to an automation client
@@ -9,7 +9,7 @@ import { AutomationClientConnectionConfig } from "../invocation/http/AutomationC
 export class HttpBuildStatusUpdater implements BuildStatusUpdater {
 
     public async updateBuildStatus(rb, status, branch, buildNo, ctx) {
-        const goal: SdmGoalEvent = (ctx as any).trigger.data.SdmGoal[0];
+        const goal: SdmGoalEvent = (ctx).trigger.data.SdmGoal[0];
         const payload: OnBuildComplete.Subscription = {
             Build: [{
                 buildId: buildNo,

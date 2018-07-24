@@ -1,6 +1,6 @@
 import { Configuration, HandlerContext, HandlerResult, logger } from "@atomist/automation-client";
-import { LocalMachineConfig } from "./LocalMachineConfig";
 import { createSdmOptions } from "./createSdmOptions";
+import { LocalMachineConfig } from "./LocalMachineConfig";
 
 import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
 import { AutomationEventListenerSupport } from "@atomist/automation-client/server/AutomationEventListener";
@@ -13,8 +13,8 @@ import { BroadcastingMessageClient } from "../invocation/cli/io/BroadcastingMess
 import { GoalEventForwardingMessageClient } from "../invocation/cli/io/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../invocation/cli/io/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
-import { isLocal } from "./isLocal";
 import { clientIdentifier } from "./correlationId";
+import { isLocal } from "./isLocal";
 
 /**
  * Configures server to enable operation
@@ -89,7 +89,7 @@ function setMessageClient(configuration: Configuration) {
             new HttpClientMessageClient("general", AllMessagesPort),
             new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
             new HttpClientMessageClient("general", clientIdentifier(aca.context.correlationId)),
-            new SystemNotificationMessageClient("general", DefaultAutomationClientConnectionConfig),
+            new SystemNotificationMessageClient("general"),
         );
 }
 
