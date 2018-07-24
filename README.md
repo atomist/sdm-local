@@ -54,6 +54,9 @@ To create your local SDM, you need to:
 2) enable local mode. This is safe to commit (TEMPORARY: or will be when slalom is published), because it will not change the functionality in your SDM unless your environment sets LOCAL_MODE to true. (TODO: make an editor in this repo to do this)
 -   add an extension pack to a createMachine function. [example](https://github.com/atomist/sample-sdm/blob/a00aaf3d4b3f8412d131194214da4dc7a5802738/src/atomist.config.ts#L65)
 ```typescript
+
+import { LocalLifecycle, supportLocal } from "@atomist/slalom";
+
 sdm.addExtensionPacks(LocalLifecycle);
 ```
 -   Add a postProcessor to your configuration in `atomist.config.ts`. [example](https://github.com/atomist/sample-sdm/blob/a00aaf3d4b3f8412d131194214da4dc7a5802738/src/atomist.config.ts#L104)
