@@ -1,8 +1,5 @@
 import { logger } from "@atomist/automation-client";
 import { GraphClient, MutationOptions, QueryOptions } from "@atomist/automation-client/spi/graph/GraphClient";
-import chalk from "chalk";
-import { Automation } from "@atomist/automation-client/internal/transport/OnLog";
-import { AutomationClientInfo } from "../invocation/AutomationClientInfo";
 
 /**
  * Local graph client. Returns empty result set or throws an

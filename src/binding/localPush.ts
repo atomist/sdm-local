@@ -1,5 +1,5 @@
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, PushFields, } from "@atomist/sdm";
+import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, PushFields } from "@atomist/sdm";
 import { lastCommitMessage } from "../util/git";
 
 function repoFields(teamId: string, project: GitProject): CoreRepoFieldsAndChannels.Fragment {

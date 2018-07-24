@@ -1,11 +1,15 @@
-import { BuildStatus, ExtensionPack, OnBuildComplete, SoftwareDeliveryMachine } from "@atomist/sdm";
-import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
-import { isLocal } from "./isLocal";
-import { addressSlackChannels } from "@atomist/automation-client/spi/message/MessageClient";
+import {
+    BuildStatus,
+    ExtensionPack,
+    OnBuildComplete,
+    SdmGoalEvent,
+    SoftwareDeliveryMachine,
+} from "@atomist/sdm";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
-import { EventHandlerInvocation, invokeEventHandler } from "../invocation/http/EventHandlerInvocation";
+import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
 import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
-import Build = OnBuildComplete.Build;
+import { invokeEventHandler } from "../invocation/http/EventHandlerInvocation";
+import { isLocal } from "./isLocal";
 
 /**
  * Add Local IO to the given SDM.
@@ -17,21 +21,38 @@ export const LocalLifecycle: ExtensionPack = {
         if (isLocal()) {
             addLocalLifecycle(sdm);
             const bu = sdm as any as BuildStatusUpdater;
-            bu.updateBuildStatus = async (rb, status) => {
-                process.stdout.write("***BUILD STATUS " + status);
-                // TODO parameterize  - plus very fragile
-                // const payload: Build = {
-                //     buildId: rb.url,
-                //     status: status as BuildStatus,
-                //     // TODO need more stuff on this
-                // };
-                // const handlerNames = ["InvokeListenersOnBuildComplete", "SetStatusOnBuildComplete"];
-                //
-                // return Promise.all(handlerNames.map(name =>
-                //     invokeEventHandler(DefaultAutomationClientConnectionConfig, {
-                //         name,
-                //         payload,
-                //     })));
+            bu.updateBuildStatus = async (rb, status, branch, buildNo, ctx) => {
+                const goal: SdmGoalEvent = (ctx as any).trigger.data.SdmGoal[0];
+                const payload: OnBuildComplete.Subscription = {
+                    Build: [{
+                        buildId: buildNo,
+                        status: status as BuildStatus,
+                        commit: {
+                            sha: goal.push.after.sha,
+                            message: goal.push.after.message,
+                            repo: {
+                                name: goal.repo.name,
+                                owner: goal.repo.owner,
+                                channels: [{
+                                    name: goal.repo.name,
+                                    id: goal.repo.name,
+                                    team: {
+                                        id: ctx.teamId,
+                                    },
+                                }],
+                            },
+                            statuses: [],
+                        },
+                        push: goal.push,
+                    }],
+                };
+
+                const handlerNames = ["InvokeListenersOnBuildComplete"];
+                return Promise.all(handlerNames.map(name =>
+                     invokeEventHandler(DefaultAutomationClientConnectionConfig, {
+                         name,
+                         payload,
+                     })));
             };
         }
     },
@@ -43,6 +64,6 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
     });
     sdm.addBuildListener(async bu => {
         process.stdout.write(`Build status is ${bu.build.status}`);
-        return bu.addressChannels(`Build status is ${bu.build.status}`);
+        return bu.addressChannels(`Build status is ${bu.build.status} ${bu.build.status === BuildStatus.passed ? ":tada:" : ""}`);
     });
 }
