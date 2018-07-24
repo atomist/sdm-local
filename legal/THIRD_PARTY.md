@@ -15,7 +15,7 @@ This page details all runtime OSS dependencies of `@atomist/slalom`.
 |[Custom: http://npm-stat.com/charts.html](#custom-httpnpm-statcomchartshtml)|3|
 |[Custom: https://github.com/RIAEvangelist/easy-stack](#custom-httpsgithubcomriaevangelisteasy-stack)|1|
 |[ISC](#isc)|15|
-|[MIT](#mit)|126|
+|[MIT](#mit)|125|
 |[Unlicense](#unlicense)|1|
 
 #### Apache-2.0
@@ -91,7 +91,6 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
 |`@types/inquirer`|`0.0.42`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
-|`@types/node-ipc`|`9.1.1`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/node-notifier`|`0.0.28`|Qubo|[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/node`|`8.10.19`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/rx-core-binding`|`4.0.4`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
