@@ -42,7 +42,7 @@
   "devDependencies": {
     "@atomist/automation-client": "^0.18.0-nortissej.no-private-class-fields.20180724185125",
     "@atomist/sdm": "0.3.2-20180724061156",
-    "@atomist/sdm-core": "0.3.2-20180724132724",
+    "@atomist/sdm-core": "https://r.atomist.com/4279100246",
     "@types/lodash": "^4.14.109",
     "@types/mocha": "^2.2.48",
     "@types/node": "^8.10.17",

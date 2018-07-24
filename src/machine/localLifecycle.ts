@@ -49,10 +49,10 @@ export const LocalLifecycle: ExtensionPack = {
 
                 const handlerNames = ["InvokeListenersOnBuildComplete"];
                 return Promise.all(handlerNames.map(name =>
-                     invokeEventHandler(DefaultAutomationClientConnectionConfig, {
-                         name,
-                         payload,
-                     })));
+                    invokeEventHandler(DefaultAutomationClientConnectionConfig, {
+                        name,
+                        payload,
+                    })));
             };
         }
     },
@@ -60,10 +60,20 @@ export const LocalLifecycle: ExtensionPack = {
 
 function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
     sdm.addPushImpactListener(async pu => {
-        return pu.addressChannels(`Push to ${pu.id.owner}:${pu.id.repo} - ${pu.commit.message}`);
+        return pu.addressChannels(`Push to \`${pu.id.owner}:${pu.id.repo}\` - _${pu.commit.message}_`);
     });
     sdm.addBuildListener(async bu => {
-        process.stdout.write(`Build status is ${bu.build.status}`);
-        return bu.addressChannels(`Build status is ${bu.build.status} ${bu.build.status === BuildStatus.passed ? ":tada:" : ""}`);
+        return bu.addressChannels(`Build status is \`${bu.build.status}\` ${buildStatusEmoji(bu.build.status)}`);
     });
+}
+
+function buildStatusEmoji(status: BuildStatus): string {
+    switch (status) {
+        case BuildStatus.passed :
+            return ":tada:";
+        case BuildStatus.started:
+            return "";
+        default:
+            return "";
+    }
 }
