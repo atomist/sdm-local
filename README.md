@@ -62,9 +62,27 @@ Set the following environment variable:
 ATOMIST_MODE=local
 ```
 
-TODO put in the post processor
+Put in the local post processor in `atomist.config.ts`
 
-Start your automation client normally, with the `atomist` command.
+There are two things to do:
+
+```typescript
+postProcessors: [
+    supportLocal(Config),//  <---- add this
+    ...
+],
+
+```
+
+Add the following extension pack to your SDM
+
+```typescript
+sdm.addExtensionPacks(LocalLifecycle);
+```
+
+
+
+Start your automation client normally, with the `atomist` command
 
 ### Download and install
 
@@ -81,6 +99,7 @@ npm link
 First, `npm install` brings down this project's dependencies.
 Then, `npm run build` compiles the TypeScript into JavaScript.
 Finally, `npm link` makes this project's cli tool, `slalom`, available globally.
+It is also available under the `@atomist` alias.
 
 ### Configure Existing Projects
 
@@ -124,14 +143,10 @@ Commits to managed repos generate Atomist *push* events.
 
 # Adding to your SDM
 
-The `configure` function in `src/configure.ts` sets up your SDM. Add listeners, 
-editors, generators and other commands here. The present implementation shows some 
-basic functionality.
-
 > The API is identical to the API of a cloud-connected Atomist SDM.
 
 ## Adding projects
-Further projects can be added in three ways:
+Further projects can be added under the expanded directory tree in three ways:
 
 ### Normal git Clone
 
@@ -168,53 +183,17 @@ warning: redirecting to https://github.com/johnsonr/initializr/
 
 Only public repos are supported.
 
-## Running Generators
-
-New projects can be generated as follows:
-
-```
-slalom generate generatorName --owner=spring-team --repo=andromeda --grommit=x
-
-```
-The first positional parameter after `generate` should be the value of the generator command. 
-The `owner` and `repo` parameters are always required. 
-Individual generators may require additional parameters such as `grommit` in this example, 
-and these may be added using normal CLI option syntax.
-
-## Running Editors
-
-Editors can be run across projects as follows:
-
-```
-slalom edit addThing --owner=spring-team --repos=.*
-```
-
-The first positional parameter after `edit` should be the name of the editor command.
-
-If you're in a repository directory under $SDM_PROJECTS_ROOT, the editor will run on that repository.
-Or, you can supply an owner and a repository -- or better, a regular expression! Then the editor will run on
-all $SDM_PROJECTS_ROOT/owner/repository directories that match the expression.
- 
-You can always supply these parameters:
-- `owner`: Organization to which the repos to be edited belong
-- `repos`: Regular expression matching the repos to be edited within that organization.
-
-As with editors, there may be additional, editor-specific parameters.
-
-Edits will be presented as branches within the edited repo. The editor output will list the branches as follows:
-
-```
-018-06-06T11:32:34.216Z [m:85438] [info ] Pull request [addThing] on spring-team:fiddlesticks
-To file:///Users/rodjohnson/temp/local-sdm/spring-team/spring-rest-seed
- * [new branch]      atomist/edit-addThing-1528284753309 -> atomist/edit-addThing-1528284753309
-2018-06-06T11:32:34.274Z [m:85438] [info ] Pull request [addThing] on spring-team:spring-rest-seed
-```
-
 ## Running Commands
+```
+slalom show skills
+```
+
+Type in intents as follows:
 
 ```
-slalom run hello
+slalom create spring
 ```
+
 No parameters beyond the command name are required. However, command-specific parameters may be provided in options syntax.
 
 ## Advanced Setup
