@@ -1,10 +1,19 @@
 # Slalom: Local Software Delivery Machine
 
-A software delivery machine is a program that understands code and delivery flows. Further description is in the Atomist sdm project and in Rod Johnson's blog [Why you need a Software Delivery Machine](https://the-composition.com/why-you-need-a-software-delivery-machine-85e8399cdfc0). This [video](https://vimeo.com/260496136) shows an SDM in action.
+A software delivery machine helps you write and deliver code that is up to your own standards, at scale.
+This project runs a software delivery machine locally on your machine, responding to your commands and your commits.
 
+For instance, it can
+- every time you make a commit, perform a build in the background, and tell you if it fails.
+- every time you make a commit, fix trivial linting errors.
+- at your command, perform common code changes that you program (such as upgrade a library). It can do this across all the repositories you have checked out, and tell you if this causes any build failures.
+- at your command, create a new project by copying and modifying a working project you already have.
 
+For more information on software delivery machines (SDM), see Rod Johnson's blog [Why you need a Software Delivery Machine](https://the-composition.com/why-you-need-a-software-delivery-machine-85e8399cdfc0). This [video](https://vimeo.com/260496136) shows an SDM in action. 
 The blogs and videos show an SDM that connects to Atomist's cloud service. This repository contains a *local* software delivery machine that works on your development machine and responds to your commits, performing whatever actions you decide
 should happen in response to new code. 
+ 
+The SDM framework understands code and delivery flows. Further description is in the Atomist [sdm library project](https://github.com/atomist/sdm).
 
 > This project is purely
 open source and can be used without the
@@ -12,9 +21,12 @@ Atomist service. However, the code you write it can
 run unchanged to benefit your entire team if you do
 connect to the Atomist service, as the `SoftwareDeliveryMachine` API is identical between local and cloud SDMs.
 
+## Usage
+
+### Overview
+
 You customize an SDM to work with the code 
 you care about: fix formatting errors (with commits), perform code reviews, run tests, publish artifacts, etc.
-
 
 It also responds to your commands: to create new projects, edit code in existing projects, or other actions
 you program into it.
@@ -34,7 +46,27 @@ The instructions here will take you through
 Later, when they've proven useful, you can elevate your push reactions, generators, editors, 
 and commands into the cloud for your whole team to use with [Atomist](www.atomist.com).
 
-## Setup
+### Setup
+
+To create your local SDM, you need to:
+1) have an SDM. Start by cloning the [seed-sdm](https://github.com/atomist/seed-sdm). (TODO: create a command in this repo to do this)
+
+2) enable local mode. This is safe to commit (TEMPORARY: or will be when slalom is published), because it will not change the functionality in your SDM unless your environment sets LOCAL_MODE to true. (TODO: make an editor in this repo to do this)
+-   add an extension pack to a createMachine function. [example](https://github.com/atomist/sample-sdm/blob/a00aaf3d4b3f8412d131194214da4dc7a5802738/src/atomist.config.ts#L65)
+```typescript
+sdm.addExtensionPacks(LocalLifecycle);
+```
+-   Add a postProcessor to your configuration in `atomist.config.ts`. [example](https://github.com/atomist/sample-sdm/blob/a00aaf3d4b3f8412d131194214da4dc7a5802738/src/atomist.config.ts#L104)
+
+```typescript
+postProcessors: [
+    supportLocal(Config),//  <---- add this
+    ...
+],
+```
+-   define `MyLocalConfig` as a LocalRepositoryConfig. You can use this [example](https://github.com/atomist/sample-sdm/blob/d1f51563683e961b3548aed77c5501221cc968c8/src/local.ts) as-is.
+-   set the `repositoryOwnerParentDirectory` (in code or in the SDM_PROJECTS_ROOT environment variable, if you use the example) to a directory on your computer where you check out projects, as described below.
+
 
 The SDM works on projects that are `git` repositories.
 
@@ -53,68 +85,36 @@ $SDM_PROJECTS_ROOT
     ├── repo3
     └── repo4
 
-``` 
-
-### Environment
-Set the following environment variable:
-
 ```
-ATOMIST_MODE=local
-```
+3) Send commit events from your repositories to your SDM. See "Configure existing projects" below. TODO: test this. how does it know
+ 
+4) *TEMPORARY for Atomists*: currently slalom isn't published on npm, so you have to:
+-   clone this repository. In its directory:
+-   `npm install`
+-   `npm run build`
+-   `npm link`
+-   Then over in your SDM repo, run `npm link @atomist/slalom`. Any time you `npm install` again, you'll have to re-link Slalom. Also, IntelliJ won't like you because it isn't in the package.json, so it won't recognize references to it. This won't be an issue once this project is public.
 
-Put in the local post processor in `atomist.config.ts`
+### Startup
 
-There are two things to do:
+TODO: we need to install the atomist CLI.
 
-```typescript
-postProcessors: [
-    supportLocal(Config),//  <---- add this
-    ...
-],
+Start your SDM in local mode by setting an environment variable and then invoking the atomist CLI. `ATOMIST_MODE=local atomist start`. The SDM will run in the background, listening for commands and events. This terminal will display logs.
 
-```
+Trigger commands with `@atomist <command>` in another terminal. Try `@atomist say hello`! Your SDM will send messages right back to where you ran the command.
 
-Add the following extension pack to your SDM
+Events are triggered by git postCommit hooks. Messages from events don't come back to wherever you made the commit. Instead: 
 
-```typescript
-sdm.addExtensionPacks(LocalLifecycle);
-```
+#### See messages from events 
 
-
-
-Start your automation client normally, with the `atomist` command
-
-### Listening to messages
-
-Messages will come to the command line in a local invocation.
-
-In the case of events, you can set up a listener as follows:
+In order to see messages from events (not interspersed with logs), activate a message listener in another terminal:
 
 ```
 slalom listen
 
 ```
 
-Such a listener will display messages from all local SDM activity.
-
-### Download and install
-
-Clone this project.
-
-From the SDM base directory (where you have cloned the project), run the following commands:
-
-```
-npm install
-npm run build
-npm link
-```
-
-First, `npm install` brings down this project's dependencies.
-Then, `npm run build` compiles the TypeScript into JavaScript.
-Finally, `npm link` makes this project's cli tool, `slalom`, available globally.
-It is also available under the `@atomist` alias.
-
-### Configure Existing Projects
+#### Configure Existing Projects
 
 If you already have repositories cloned under your $SDM_PROJECTS_ROOT, configure them to activate the local SDM
 on commit.
