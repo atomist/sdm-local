@@ -71,7 +71,7 @@ function exposeAsCommands(ai: AutomationClientInfo,
                           previous: string[],
                           allowUserInput: boolean) {
     const intent = previous.concat([pe.name]).join(" ");
-    const hi = ai.commandsMetadata.find(hm => hm.intent.includes(intent));
+    const commandForCompletedIntent = ai.commandsMetadata.find(hm => hm.intent.includes(intent));
 
     if (pe.kids.length > 0) {
         // Expose both lower case and actual case name
@@ -83,12 +83,12 @@ function exposeAsCommands(ai: AutomationClientInfo,
                 yargs => {
                     pe.kids.forEach(kid =>
                         exposeAsCommands(ai, kid, yargs, previous.concat(pe.name), allowUserInput));
-                    if (!!hi) {
-                        exposeParameters(hi, yargs, allowUserInput);
+                    if (!!commandForCompletedIntent) {
+                        exposeParameters(commandForCompletedIntent, yargs, allowUserInput);
                     }
                     return yargs;
                 },
-                !!hi ? async argv => {
+                !!commandForCompletedIntent ? async argv => {
                     logger.debug("Args are %j", argv);
                     return logExceptionsToConsole(
                         () => runByIntent(ai, intent, argv as any),
@@ -99,13 +99,13 @@ function exposeAsCommands(ai: AutomationClientInfo,
         names.forEach(name =>
             nested.command({
                 command: name,
-                describe: hi.description,
+                describe: commandForCompletedIntent.description,
                 handler: async argv => {
                     logger.debug("Args are %j", argv);
                     return logExceptionsToConsole(() => runByIntent(ai, intent, argv),
                         ai.connectionConfig.showErrorStacks);
                 },
-                builder: yargs => exposeParameters(hi, yargs, allowUserInput),
+                builder: yargs => exposeParameters(commandForCompletedIntent, yargs, allowUserInput),
             }));
     }
 }
