@@ -7,6 +7,7 @@ import { addStartListenerCommand } from "./command/addStartListenerCommand";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 import { addShowSkillsCommand } from "./command/showSkillsCommand";
+import { AutomationClientInfo } from "../AutomationClientInfo";
 
 /**
  * Start up the Slalom CLI
@@ -16,6 +17,7 @@ export async function runSlalom(config: AutomationClientConnectionConfig) {
     yargs.usage("Usage: slalom <command> [options]");
 
     const automationClientInfo = await getMetadata(config);
+    verifyLocalSdm(automationClientInfo);
 
     addTriggerCommand(automationClientInfo, yargs);
     addStartListenerCommand(automationClientInfo, yargs);
@@ -35,4 +37,11 @@ export async function runSlalom(config: AutomationClientConnectionConfig) {
         .completion()
         .version()
         .argv;
+}
+
+function verifyLocalSdm(automationClientInfo: AutomationClientInfo) {
+    if (!automationClientInfo.localConfig) {
+        process.stderr.write("ERROR: SDM detected, but it is not running in local mode.\nPlease set ATOMIST_MODE=local when starting your SDM.\n");
+        process.exit(1);
+    }
 }
