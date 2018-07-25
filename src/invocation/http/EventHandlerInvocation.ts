@@ -19,7 +19,8 @@ export interface EventHandlerInvocation {
  * @return {Promise<HandlerResult>}
  */
 export async function invokeEventHandler(config: AutomationClientConnectionConfig,
-                                         invocation: EventHandlerInvocation): Promise<HandlerResult> {
+                                         invocation: EventHandlerInvocation,
+                                         correlationId?: string): Promise<HandlerResult> {
     assert(!!config, "Config must be provided");
     assert(!!config.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(config));
     const url = `/event`;
@@ -29,7 +30,7 @@ export async function invokeEventHandler(config: AutomationClientConnectionConfi
             query_id: "q-" + new Date().getTime(),
             team_id: config.atomistTeamId,
             team_name: config.atomistTeamName,
-            correlation_id: newCorrelationId(),
+            correlation_id: correlationId || newCorrelationId(),
         },
         secrets: (invocation.secrets || []).concat([
             { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },

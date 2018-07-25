@@ -38,7 +38,7 @@ export class HttpBuildStatusUpdater implements BuildStatusUpdater {
             invokeEventHandler(this.acc, {
                 name,
                 payload,
-            })));
+            }, ctx.correlation_id)));
     }
 
     constructor(private readonly acc: AutomationClientConnectionConfig) {

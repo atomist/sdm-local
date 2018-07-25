@@ -24,7 +24,8 @@ export interface CommandHandlerInvocation {
 }
 
 export async function invokeCommandHandler(config: AutomationClientConnectionConfig,
-                                           invocation: CommandHandlerInvocation): Promise<HandlerResult> {
+                                           invocation: CommandHandlerInvocation,
+                                           correlationId?: string): Promise<HandlerResult> {
     assert(!!config, "Config must be provided");
     assert(!!config.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(config));
     const url = `/command`;
@@ -37,7 +38,7 @@ export async function invokeCommandHandler(config: AutomationClientConnectionCon
         secrets: (invocation.secrets || []).concat([
             {uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN},
         ]),
-        correlation_id: newCorrelationId(),
+        correlation_id: correlationId || newCorrelationId(),
         api_version: "1",
         team: {
             id: config.atomistTeamId,
