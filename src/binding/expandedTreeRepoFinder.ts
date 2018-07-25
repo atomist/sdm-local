@@ -14,7 +14,6 @@ import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 export function expandedTreeRepoFinder(repositoryOwnerParentDirectory: string): RepoFinder {
     return async () => {
         const owners = await allDirectoriesUnder(repositoryOwnerParentDirectory);
-        logger.info("JESS FOUND OWNERS: " + owners);
         const projects = await flatmapAsync(owners, allDirectoriesUnder);
         const gitProjects = await filterAsync(projects, containsDirectory(".git"));
         const eligibleDirectories = gitProjects;
