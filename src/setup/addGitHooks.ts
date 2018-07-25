@@ -6,7 +6,7 @@ import chalk from "chalk";
 import * as fs from "fs";
 import * as path from "path";
 import { sprintf } from "sprintf-js";
-import { HookEvents } from "./gitHooks";
+import { HookEvents } from "../invocation/git/gitHooks";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";
 const AtomistJsName = "build/src/entry/onGitHook.js";
