@@ -44,7 +44,7 @@ export async function invokeCommandHandler(config: AutomationClientConnectionCon
             name: config.atomistTeamName,
         },
     };
-    logger.info("Hitting %s to test command %s using %j", url, invocation.name, data);
+    logger.debug("Hitting %s to invoke command %s using %j", url, invocation.name, data);
     const resp = await postToSdm(config, url, data);
     assert(resp.data.code === 0,
         "Command handler did not succeed. Returned: " + JSON.stringify(resp.data, null, 2));

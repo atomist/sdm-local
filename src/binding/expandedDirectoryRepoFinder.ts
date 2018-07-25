@@ -3,6 +3,7 @@ import { RepoFinder } from "@atomist/automation-client/operations/common/repoFin
 import * as fs from "fs";
 import * as _ from "lodash";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
+import { promisify } from "util";
 
 /**
  * Find all repos under the given expanded directory structure
@@ -12,20 +13,21 @@ import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 export function expandedDirectoryRepoFinder(repositoryOwnerParentDirectory: string): RepoFinder {
     return async () => {
         const eligibleDirectories: string[] =
-            _.flatten(fs.readdirSync(repositoryOwnerParentDirectory)
+            _.flatten(await Promise.all((await promisify(fs.readdir)(repositoryOwnerParentDirectory))
                 .filter(item => fs.statSync(`${repositoryOwnerParentDirectory}/${item}`).isDirectory())
-                .map(org => {
+                .map(async org => {
                     logger.info("Searching under child directory [%s] of %s", org, repositoryOwnerParentDirectory);
-                    return fs.readdirSync(`${repositoryOwnerParentDirectory}/${org}`)
+                    return (await promisify(fs.readdir)(`${repositoryOwnerParentDirectory}/${org}`))
                         .map(repo => `${repositoryOwnerParentDirectory}/${org}/${repo}`)
                         .filter(repo => fs.existsSync(`${repo}/.git`));
-                }),
+                })),
             );
         return eligibleDirectories.map(dir =>
-            FileSystemRemoteRepoRef.fromDirectory({repositoryOwnerParentDirectory,
+            FileSystemRemoteRepoRef.fromDirectory({
+                repositoryOwnerParentDirectory,
                 baseDir: dir,
                 // TODO interesting question: Should this be checked out directory, or master
                 // branch: "master"
-                }));
+            }));
     };
 }

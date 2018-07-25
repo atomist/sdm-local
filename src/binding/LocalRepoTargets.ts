@@ -1,9 +1,10 @@
-import { MappedParameter, MappedParameters, Parameter, Parameters } from "@atomist/automation-client";
+import { logger, MappedParameter, MappedParameters, Parameter, Parameters } from "@atomist/automation-client";
 import { GitBranchRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
 import { TargetsParams } from "@atomist/automation-client/operations/common/params/TargetsParams";
 import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
 import { RepoTargets } from "@atomist/sdm";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
+import { andFilter, RepoFilter } from "@atomist/automation-client/operations/common/repoFilter";
 
 @Parameters()
 export class LocalRepoTargets extends TargetsParams implements RepoTargets {
@@ -27,16 +28,15 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
         return { token: "this.is.not.your.token.and.does.not.matter" };
     }
 
-    constructor(private readonly repositoryOwnerParentDirectory: string) {
-        super();
-    }
-
     /**
      * Return a single RepoRef or undefined if we're not identifying a single repo
      * @return {RepoRef}
      */
     get repoRef(): FileSystemRemoteRepoRef {
-        return (!!this.owner && !!this.repo && !this.usesRegex) ?
+        if (this.repo === "undefined") {
+            throw new Error("Something evil happened")
+        }
+        const rr = (!!this.owner && !!this.repo && !this.usesRegex) ?
             new FileSystemRemoteRepoRef({
                 repositoryOwnerParentDirectory: this.repositoryOwnerParentDirectory,
                 owner: this.owner,
@@ -45,10 +45,19 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
                 sha: undefined,
             }) :
             undefined;
+        logger.info("LocalRepoTargets returning %j: state=%j", rr, this);
+        return rr;
     }
 
     public bindAndValidate() {
         // nothing to do
     }
+
+    constructor(private readonly repositoryOwnerParentDirectory: string) {
+        super();
+        const orgFilter: RepoFilter = rr => !!this.owner ? rr.owner === this.owner : true;
+        this.test = andFilter(orgFilter, super.test);
+    }
+
 
 }

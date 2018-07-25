@@ -3,7 +3,7 @@ import { ProjectLoader, ProjectLoadingParameters, SoftwareDeliveryMachineOptions
 import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
-import { execSync } from "child_process";
+import { exec, execSync } from "child_process";
 import * as fs from "fs";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
 import { expandedDirectoryRepoFinder } from "../binding/expandedDirectoryRepoFinder";
@@ -14,6 +14,7 @@ import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { LocalRepoTargets } from "../binding/LocalRepoTargets";
 import { infoMessage } from "../invocation/cli/support/consoleOutput";
 import { LocalMachineConfig } from "./LocalMachineConfig";
+import { promisify } from "util";
 
 /**
  * Merge user-supplied configuration with defaults
@@ -78,9 +79,9 @@ function changeToPushToAtomistBranch(repositoryOwnerParentDirectory: string, aut
                 // First try to push this branch. If it's the checked out branch
                 // We'll get an error
                 infoMessage(`Pushing to branch ${p.branch} on ${p.id.owner}:${p.id.repo}\n`);
-                execSync(`git push --force --set-upstream origin ${p.branch}`, {
+                await promisify(exec)(`git push --force --set-upstream origin ${p.branch}`, {
                     cwd: p.baseDir,
-                    stdio: "ignore",
+                    // stdio: "ignore",
                 });
             } catch (err) {
                 // If this throws an exception it's because we can't push to the checked out branch.
@@ -95,7 +96,7 @@ function changeToPushToAtomistBranch(repositoryOwnerParentDirectory: string, aut
                     const originalRepoDir = dirFor(repositoryOwnerParentDirectory, p.id.owner, p.id.repo);
                     // infoMessage(`Trying merge in ${originalRepoDir}\n`);
                     // Automerge it
-                    execSync(`git merge ${newBranch}`, { cwd: originalRepoDir });
+                    await promisify(exec)(`git merge ${newBranch}`, { cwd: originalRepoDir });
                 }
             }
             return { target: p, success: true };

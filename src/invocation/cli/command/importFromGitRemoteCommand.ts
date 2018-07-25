@@ -1,10 +1,11 @@
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
-import { execSync } from "child_process";
+import { exec, execSync } from "child_process";
 import * as fs from "fs";
 import { Argv } from "yargs";
 import { addGitHooks } from "../../../setup/addGitHooks";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../support/consoleOutput";
+import { promisify } from "util";
 
 export function addImportFromGitRemoteCommand(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({
@@ -29,7 +30,7 @@ async function importFromGitRemote(ai: AutomationClientInfo,
     if (!fs.existsSync(orgDir)) {
         fs.mkdirSync(orgDir);
     }
-    execSync(`git clone ${remoteBase}/${org}/${repo}`,
+    await promisify(exec)(`git clone ${remoteBase}/${org}/${repo}`,
         { cwd: orgDir });
     return addGitHooks(new GitHubRepoRef(org, repo),
         `${orgDir}/${repo}`);

@@ -3,7 +3,7 @@ import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/me
 import * as _ from "lodash";
 import { Argv } from "yargs";
 import { PathElement, toPaths } from "../../../util/PathElement";
-import { logExceptionsToConsole } from "../support/consoleOutput";
+import { infoMessage, logExceptionsToConsole } from "../support/consoleOutput";
 
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import * as inquirer from "inquirer";
@@ -169,7 +169,6 @@ async function runCommand(ai: AutomationClientInfo,
     ]
         .concat(extraArgs);
     await promptForMissingParameters(hm, args);
-    // infoMessage(`Using arguments:\n${args.map(a => `\t${a.name}=${a.value}`).join("\n")}\n`);
     const mpr: MappedParameterResolver = new ExpandedTreeMappedParameterResolver(ai);
     const invocation: CommandHandlerInvocation = {
         name: hm.name,
@@ -177,8 +176,9 @@ async function runCommand(ai: AutomationClientInfo,
         mappedParameters: hm.mapped_parameters.map(mp => ({
             name: mp.name,
             value: mpr.resolve(mp),
-        })),
+        })).filter(mp => !!mp.value),
     };
+    infoMessage("Sending invocation %j\n", invocation);
     return invokeCommandHandler(ai.connectionConfig, invocation);
 }
 
