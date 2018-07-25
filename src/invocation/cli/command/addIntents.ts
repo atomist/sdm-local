@@ -8,11 +8,12 @@ import { logExceptionsToConsole } from "../support/consoleOutput";
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import * as inquirer from "inquirer";
 import { MappedParameterResolver } from "../../../binding/MappedParameterResolver";
-import { pidToPort } from "../../../machine/correlationId";
+import { newCorrelationId, pidToPort } from "../../../machine/correlationId";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
 import { startHttpMessageListener } from "../io/httpMessageListener";
 import { ExpandedTreeMappedParameterResolver } from "../support/ExpandedTreeMappedParameterResolver";
+import { parseOwnerAndRepo } from "../../../binding/expandedTreeUtils";
 
 /**
  *
@@ -180,7 +181,9 @@ async function runCommand(ai: AutomationClientInfo,
         })).filter(mp => !!mp.value),
     };
     logger.debug("Sending invocation %j\n", invocation);
-    return invokeCommandHandler(ai.connectionConfig, invocation);
+    // Use repo channel if we're in a mapped repo channel
+    const correlationId = newCorrelationId(parseOwnerAndRepo(ai.localConfig.repositoryOwnerParentDirectory).repo);
+    return invokeCommandHandler(ai.connectionConfig, invocation, correlationId);
 }
 
 /**

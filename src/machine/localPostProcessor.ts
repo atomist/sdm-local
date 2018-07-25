@@ -13,7 +13,7 @@ import { BroadcastingMessageClient } from "../invocation/cli/io/BroadcastingMess
 import { GoalEventForwardingMessageClient } from "../invocation/cli/io/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../invocation/cli/io/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
-import { clientIdentifier } from "./correlationId";
+import { channelFor, clientIdentifier } from "./correlationId";
 import { isLocal } from "./isLocal";
 
 /**
@@ -82,15 +82,16 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
 }
 
 function setMessageClient(configuration: Configuration) {
-    // TODO resolve channel
-    // TODO allow what's sent to be configured in config?
     configuration.http.messageClientFactory =
-        aca => new BroadcastingMessageClient(
-            new HttpClientMessageClient("general", AllMessagesPort),
-            new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
-            new HttpClientMessageClient("general", clientIdentifier(aca.context.correlationId)),
-            new SystemNotificationMessageClient("general"),
-        );
+        aca => {
+            const channel = channelFor(aca.context.correlationId);
+            return new BroadcastingMessageClient(
+                new HttpClientMessageClient(channel, AllMessagesPort),
+                new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
+                new HttpClientMessageClient(channel, clientIdentifier(aca.context.correlationId)),
+                new SystemNotificationMessageClient(channel),
+            );
+        };
 }
 
 function setGraphClient(configuration: Configuration) {
