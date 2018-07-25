@@ -3,16 +3,16 @@ import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/me
 import * as _ from "lodash";
 import { Argv } from "yargs";
 import { PathElement, toPaths } from "../../../util/PathElement";
-import { infoMessage, logExceptionsToConsole } from "../support/consoleOutput";
+import { logExceptionsToConsole } from "../support/consoleOutput";
 
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import * as inquirer from "inquirer";
 import { MappedParameterResolver } from "../../../binding/MappedParameterResolver";
+import { pidToPort } from "../../../machine/correlationId";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
 import { startHttpMessageListener } from "../io/httpMessageListener";
 import { ExpandedTreeMappedParameterResolver } from "../support/ExpandedTreeMappedParameterResolver";
-import { pidToPort } from "../../../machine/correlationId";
 
 /**
  *

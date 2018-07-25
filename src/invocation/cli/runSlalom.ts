@@ -7,7 +7,6 @@ import { addStartListener } from "./command/addStartListener";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 import { addShowSkills } from "./command/showSkills";
-import { infoMessage } from "./support/consoleOutput";
 
 /**
  * Start up the Slalom CLI
