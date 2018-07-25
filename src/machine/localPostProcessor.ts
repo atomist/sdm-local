@@ -17,7 +17,7 @@ import { channelFor, clientIdentifier } from "./correlationId";
 import { isLocal } from "./isLocal";
 
 /**
- * Configures an automation client in local modee
+ * Configures an automation client in local mode
  * @param {LocalMachineConfig} localMachineConfig
  * @return {(configuration: Configuration) => Promise<Configuration>}
  */
