@@ -1,11 +1,11 @@
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
-import { exec, execSync } from "child_process";
+import { exec } from "child_process";
 import * as fs from "fs";
+import { promisify } from "util";
 import { Argv } from "yargs";
 import { addGitHooks } from "../../../setup/addGitHooks";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../support/consoleOutput";
-import { promisify } from "util";
 
 export function addImportFromGitRemoteCommand(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({

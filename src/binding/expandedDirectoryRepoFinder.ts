@@ -2,8 +2,8 @@ import { logger } from "@atomist/automation-client";
 import { RepoFinder } from "@atomist/automation-client/operations/common/repoFinder";
 import * as fs from "fs";
 import * as _ from "lodash";
-import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 import { promisify } from "util";
+import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
 /**
  * Find all repos under the given expanded directory structure

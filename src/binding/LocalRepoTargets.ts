@@ -2,9 +2,9 @@ import { logger, MappedParameter, MappedParameters, Parameter, Parameters } from
 import { GitBranchRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
 import { TargetsParams } from "@atomist/automation-client/operations/common/params/TargetsParams";
 import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
+import { andFilter, RepoFilter } from "@atomist/automation-client/operations/common/repoFilter";
 import { RepoTargets } from "@atomist/sdm";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
-import { andFilter, RepoFilter } from "@atomist/automation-client/operations/common/repoFilter";
 
 @Parameters()
 export class LocalRepoTargets extends TargetsParams implements RepoTargets {
@@ -34,7 +34,7 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
      */
     get repoRef(): FileSystemRemoteRepoRef {
         if (this.repo === "undefined") {
-            throw new Error("Something evil happened")
+            throw new Error("Something evil happened");
         }
         const rr = (!!this.owner && !!this.repo && !this.usesRegex) ?
             new FileSystemRemoteRepoRef({
@@ -58,6 +58,5 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
         const orgFilter: RepoFilter = rr => !!this.owner ? rr.owner === this.owner : true;
         this.test = andFilter(orgFilter, super.test);
     }
-
 
 }

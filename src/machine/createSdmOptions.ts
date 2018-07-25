@@ -5,6 +5,7 @@ import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressL
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
 import { exec, execSync } from "child_process";
 import * as fs from "fs";
+import { promisify } from "util";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
 import { expandedDirectoryRepoFinder } from "../binding/expandedDirectoryRepoFinder";
 import { dirFor } from "../binding/expandedTreeUtils";
@@ -14,7 +15,6 @@ import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { LocalRepoTargets } from "../binding/LocalRepoTargets";
 import { infoMessage } from "../invocation/cli/support/consoleOutput";
 import { LocalMachineConfig } from "./LocalMachineConfig";
-import { promisify } from "util";
 
 /**
  * Merge user-supplied configuration with defaults
