@@ -1,4 +1,3 @@
-import { logger } from "@atomist/automation-client";
 import { RepoFinder } from "@atomist/automation-client/operations/common/repoFinder";
 import * as fs from "fs";
 import * as _ from "lodash";
