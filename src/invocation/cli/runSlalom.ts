@@ -1,4 +1,5 @@
 import * as yargs from "yargs";
+import { AutomationClientInfo } from "../AutomationClientInfo";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { getMetadata } from "../http/metadataReader";
 import { addGitHooksCommands } from "./command/addGitHooksCommands";
@@ -7,7 +8,6 @@ import { addStartListenerCommand } from "./command/addStartListenerCommand";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 import { addShowSkillsCommand } from "./command/showSkillsCommand";
-import { AutomationClientInfo } from "../AutomationClientInfo";
 
 /**
  * Start up the Slalom CLI
