@@ -7,13 +7,13 @@ import { logExceptionsToConsole } from "../support/consoleOutput";
 
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import * as inquirer from "inquirer";
+import { parseOwnerAndRepo } from "../../../binding/expandedTreeUtils";
 import { MappedParameterResolver } from "../../../binding/MappedParameterResolver";
 import { newCorrelationId, pidToPort } from "../../../machine/correlationId";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
 import { startHttpMessageListener } from "../io/httpMessageListener";
 import { ExpandedTreeMappedParameterResolver } from "../support/ExpandedTreeMappedParameterResolver";
-import { parseOwnerAndRepo } from "../../../binding/expandedTreeUtils";
 
 /**
  *
