@@ -17,7 +17,6 @@ export async function runSlalom(config: AutomationClientConnectionConfig) {
 
     yargs.usage("Usage: slalom <command> [options]");
 
-    infoMessage(`Connecting to Automation client at %s\n`, config.baseEndpoint);
     const automationClientInfo = await getMetadata(config);
 
     addTriggerCommand(automationClientInfo, yargs);

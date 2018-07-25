@@ -12,6 +12,7 @@ import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
 import { startHttpMessageListener } from "../io/httpMessageListener";
 import { ExpandedTreeMappedParameterResolver } from "../support/ExpandedTreeMappedParameterResolver";
+import { pidToPort } from "../../../machine/correlationId";
 
 /**
  *
@@ -160,7 +161,7 @@ async function runByCommandName(ai: AutomationClientInfo,
 async function runCommand(ai: AutomationClientInfo,
                           hm: CommandHandlerMetadata,
                           command: object): Promise<any> {
-    startHttpMessageListener(process.pid, true);
+    startHttpMessageListener(pidToPort(process.pid), true);
     const extraArgs = Object.getOwnPropertyNames(command)
         .map(name => ({ name: convertToUsable(name), value: command[name] }))
         .filter(keep => !!keep.value);
@@ -178,7 +179,7 @@ async function runCommand(ai: AutomationClientInfo,
             value: mpr.resolve(mp),
         })).filter(mp => !!mp.value),
     };
-    infoMessage("Sending invocation %j\n", invocation);
+    logger.debug("Sending invocation %j\n", invocation);
     return invokeCommandHandler(ai.connectionConfig, invocation);
 }
 

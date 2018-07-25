@@ -1,7 +1,7 @@
 import axios from "axios";
 import { LocalMachineConfig } from "../..";
 import { AutomationClientInfo } from "../AutomationClientInfo";
-import { errorMessage } from "../cli/support/consoleOutput";
+import { errorMessage, infoMessage } from "../cli/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 
 /**
@@ -10,6 +10,8 @@ import { AutomationClientConnectionConfig } from "./AutomationClientConnectionCo
  * @return {Promise<AutomationClientInfo>}
  */
 export async function getMetadata(connectionConfig: AutomationClientConnectionConfig): Promise<AutomationClientInfo> {
+    infoMessage("Connecting to Automation client at %s (%d)\n", connectionConfig.baseEndpoint,  process.pid);
+
     try {
         const resp = await axios.get(connectionConfig.baseEndpoint + "/registration");
         const commandsMetadata = resp.data.commands;
