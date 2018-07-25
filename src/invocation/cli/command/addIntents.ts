@@ -85,6 +85,8 @@ function exposeAsCommands(ai: AutomationClientInfo,
                         exposeAsCommands(ai, kid, yargs, previous.concat(pe.name), allowUserInput));
                     if (!!commandForCompletedIntent) {
                         exposeParameters(commandForCompletedIntent, yargs, allowUserInput);
+                    } else {
+                        yargs.demandCommand();
                     }
                     return yargs;
                 },
