@@ -8,7 +8,7 @@ import { CustomEventDestination } from "@atomist/automation-client/spi/message/M
 import * as _ from "lodash";
 import { LocalGraphClient } from "../binding/LocalGraphClient";
 import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
-import { AllMessagesPort } from "../invocation/cli/command/addStartListener";
+import { AllMessagesPort } from "../invocation/cli/command/addStartListenerCommand";
 import { BroadcastingMessageClient } from "../invocation/cli/io/BroadcastingMessageClient";
 import { GoalEventForwardingMessageClient } from "../invocation/cli/io/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../invocation/cli/io/HttpClientMessageClient";
@@ -17,7 +17,7 @@ import { channelFor, clientIdentifier } from "./correlationId";
 import { isLocal } from "./isLocal";
 
 /**
- * Configures server to enable operation
+ * Configures an automation client in local modee
  * @param {LocalMachineConfig} localMachineConfig
  * @return {(configuration: Configuration) => Promise<Configuration>}
  */

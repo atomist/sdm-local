@@ -1,6 +1,6 @@
 import { Argv } from "yargs";
 import { LocalMachineConfig } from "../../..";
-import { expandedDirectoryRepoFinder } from "../../../binding/expandedDirectoryRepoFinder";
+import { expandedTreeRepoFinder } from "../../../binding/expandedTreeRepoFinder";
 import { determineCwd, parseOwnerAndRepo } from "../../../binding/expandedTreeUtils";
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../../../binding/FileSystemRemoteRepoRef";
 import { addGitHooks, removeGitHooks } from "../../../setup/addGitHooks";
@@ -60,7 +60,7 @@ async function removeHookOrHooks(lc: LocalMachineConfig) {
  * @return {Promise<void>}
  */
 async function installAllGitHooks(lc: LocalMachineConfig) {
-    const repoFinder = expandedDirectoryRepoFinder(lc.repositoryOwnerParentDirectory);
+    const repoFinder = expandedTreeRepoFinder(lc.repositoryOwnerParentDirectory);
     const allRepos = await repoFinder(undefined);
     for (const rr of allRepos) {
         if (!isFileSystemRemoteRepoRef(rr)) {
@@ -71,7 +71,7 @@ async function installAllGitHooks(lc: LocalMachineConfig) {
 }
 
 async function removeAllGitHooks(lc: LocalMachineConfig) {
-    const repoFinder = expandedDirectoryRepoFinder(lc.repositoryOwnerParentDirectory);
+    const repoFinder = expandedTreeRepoFinder(lc.repositoryOwnerParentDirectory);
     const allRepos = await repoFinder(undefined);
     for (const rr of allRepos) {
         if (!isFileSystemRemoteRepoRef(rr)) {

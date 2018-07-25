@@ -9,6 +9,9 @@ import { CommandCompletionDestination } from "../../../machine/localPostProcesso
 
 export const MessageRoute = "/message";
 
+/**
+ * Payload data structure used by HTTP message communication
+ */
 export interface StreamedMessage {
     message: string | SlackMessage;
     destinations: Destination[];
@@ -16,7 +19,7 @@ export interface StreamedMessage {
 }
 
 /**
- * Listen to HTTP messages
+ * Listen to HTTP messages from HttpClientMessageClient
  * @param {number} demonPort
  * @param killOnCommandCompletion should this be shut down on command completion
  */

@@ -30,7 +30,7 @@ marked.setOptions({
 });
 
 /**
- * Message client logging to System notifications.
+ * Message client using System notifications.
  */
 export class SystemNotificationMessageClient implements MessageClient, SlackMessageClient {
 

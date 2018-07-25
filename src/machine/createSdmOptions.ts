@@ -7,7 +7,7 @@ import { exec, execSync } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
-import { expandedDirectoryRepoFinder } from "../binding/expandedDirectoryRepoFinder";
+import { expandedTreeRepoFinder } from "../binding/expandedTreeRepoFinder";
 import { dirFor } from "../binding/expandedTreeUtils";
 import { fileSystemProjectPersister } from "../binding/fileSystemProjectPersister";
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
@@ -33,7 +33,7 @@ export function createSdmOptions(userConfig: LocalMachineConfig): SoftwareDelive
         logFactory: async (context, goal) => new LoggingProgressLog(goal.name),
         credentialsResolver: EnvironmentTokenCredentialsResolver,
         repoRefResolver,
-        repoFinder: expandedDirectoryRepoFinder(userConfig.repositoryOwnerParentDirectory),
+        repoFinder: expandedTreeRepoFinder(userConfig.repositoryOwnerParentDirectory),
         projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory),
         targets: () => new LocalRepoTargets(userConfig.repositoryOwnerParentDirectory),
     };

@@ -2,7 +2,7 @@ import { GitCommandGitProject } from "@atomist/automation-client/project/git/Git
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { OnPushToAnyBranch } from "@atomist/sdm";
 import { FileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
-import { pushFromLastCommit } from "../binding/localPush";
+import { pushFromLastCommit } from "../binding/pushFromLastCommit";
 import { AutomationClientInfo } from "../invocation/AutomationClientInfo";
 import { errorMessage } from "../invocation/cli/support/consoleOutput";
 import { invokeEventHandler } from "../invocation/http/EventHandlerInvocation";

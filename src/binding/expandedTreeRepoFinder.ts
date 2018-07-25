@@ -10,7 +10,7 @@ import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
  * @param {string} repositoryOwnerParentDirectory
  * @return {RepoFinder}
  */
-export function expandedDirectoryRepoFinder(repositoryOwnerParentDirectory: string): RepoFinder {
+export function expandedTreeRepoFinder(repositoryOwnerParentDirectory: string): RepoFinder {
     return async () => {
         const eligibleDirectories: string[] =
             _.flatten(await Promise.all((await promisify(fs.readdir)(repositoryOwnerParentDirectory))

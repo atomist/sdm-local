@@ -13,8 +13,7 @@ import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 import { listenerUrl, StreamedMessage } from "./httpMessageListener";
 
 /**
- * Message client that POSTS to an Atomist server and logs to a fallback (usually console)
- * otherwise.
+ * Message client that POSTS to an Atomist server and logs to a fallback otherwise
  */
 export class HttpClientMessageClient implements MessageClient, SlackMessageClient {
 

@@ -2,7 +2,8 @@
 import { logger } from "@atomist/automation-client";
 
 /**
- * Should this client be running in local mode?
+ * Should this automation client be running in local mode?
+ * Invoked on client startup.
  */
 export function isLocal(): boolean {
     const local = process.env.ATOMIST_MODE === "local";

@@ -5,13 +5,12 @@ import { errorMessage, infoMessage } from "../cli/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 
 /**
- * Call into an SDM at the given location and retrieve metadata
+ * Call into an automation client at the given location and retrieve metadata
  * @param {AutomationClientConnectionConfig} connectionConfig
  * @return {Promise<AutomationClientInfo>}
  */
 export async function getMetadata(connectionConfig: AutomationClientConnectionConfig): Promise<AutomationClientInfo> {
     infoMessage("Connecting to Automation client at %s (%d)\n", connectionConfig.baseEndpoint,  process.pid);
-
     try {
         const resp = await axios.get(connectionConfig.baseEndpoint + "/registration");
         const commandsMetadata = resp.data.commands;
@@ -19,7 +18,7 @@ export async function getMetadata(connectionConfig: AutomationClientConnectionCo
         try {
             localConfig = (await axios.get(connectionConfig.baseEndpoint + "/localConfiguration")).data;
         } catch {
-            // Do nothing
+            // Do nothing. The automation client we're talking to is not in local mode
         }
         return {
             commandsMetadata,

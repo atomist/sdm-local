@@ -33,9 +33,6 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
      * @return {RepoRef}
      */
     get repoRef(): FileSystemRemoteRepoRef {
-        if (this.repo === "undefined") {
-            throw new Error("Something evil happened");
-        }
         const rr = (!!this.owner && !!this.repo && !this.usesRegex) ?
             new FileSystemRemoteRepoRef({
                 repositoryOwnerParentDirectory: this.repositoryOwnerParentDirectory,

@@ -7,16 +7,16 @@ import { logExceptionsToConsole } from "../support/consoleOutput";
 
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import * as inquirer from "inquirer";
+import { ExpandedTreeMappedParameterResolver } from "../../../binding/ExpandedTreeMappedParameterResolver";
 import { parseOwnerAndRepo } from "../../../binding/expandedTreeUtils";
 import { MappedParameterResolver } from "../../../binding/MappedParameterResolver";
 import { newCorrelationId, pidToPort } from "../../../machine/correlationId";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
 import { startHttpMessageListener } from "../io/httpMessageListener";
-import { ExpandedTreeMappedParameterResolver } from "../support/ExpandedTreeMappedParameterResolver";
 
 /**
- *
+ * Add commands by name
  * @param {yargs.Argv} yargs
  * @param {boolean} allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
@@ -40,7 +40,7 @@ export function addCommandsByName(ai: AutomationClientInfo,
 }
 
 /**
- *
+ * Add commands for all intents
  * @param {yargs.Argv} yargs
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */

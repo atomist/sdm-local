@@ -12,6 +12,11 @@ export async function lastCommitMessage(p: GitProject): Promise<string> {
     return r.stdout.trim();
 }
 
+/**
+ * Get the last shas for this project
+ * @param {GitProject} p
+ * @return {Promise<string[]>}
+ */
 export async function shaHistory(p: GitProject): Promise<string[]> {
     const r = await promisify(exec)("git log --format=format:%H", { cwd: p.baseDir});
     return r.stdout.trim().split("\n");

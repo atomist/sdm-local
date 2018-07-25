@@ -26,6 +26,7 @@ function repoFields(teamId: string, project: GitProject): CoreRepoFieldsAndChann
 
 /**
  * Make a push from the last commit to this local git project
+ * @param teamId id of current team
  * @param {GitProject} project
  * @return {OnPushToAnyBranch.Push}
  */

@@ -1,11 +1,11 @@
 import { MappedParameters } from "@atomist/automation-client";
 import { MappedParameterDeclaration } from "@atomist/automation-client/metadata/automationMetadata";
-import { parseOwnerAndRepo } from "../../../binding/expandedTreeUtils";
-import { MappedParameterResolver } from "../../../binding/MappedParameterResolver";
+import { parseOwnerAndRepo } from "./expandedTreeUtils";
+import { MappedParameterResolver } from "./MappedParameterResolver";
 
 import { GitHubDotComBase } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import * as os from "os";
-import { AutomationClientInfo } from "../../AutomationClientInfo";
+import { AutomationClientInfo } from "../invocation/AutomationClientInfo";
 
 // TODO should really have a set of enrichers,
 // returning a partial function

@@ -4,7 +4,7 @@ import { logExceptionsToConsole } from "../support/consoleOutput";
 import chalk from "chalk";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 
-export function addShowSkills(ai: AutomationClientInfo, yargs: Argv) {
+export function addShowSkillsCommand(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({
         command: "show skills",
         aliases: "s",
