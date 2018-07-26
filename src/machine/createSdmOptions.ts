@@ -4,11 +4,11 @@ import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressL
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
 import { expandedTreeRepoFinder } from "../binding/expandedTreeRepoFinder";
+import { FileSystemProjectLoader } from "../binding/FileSystemProjectLoader";
 import { fileSystemProjectPersister } from "../binding/fileSystemProjectPersister";
 import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { LocalRepoTargets } from "../binding/LocalRepoTargets";
 import { LocalMachineConfig } from "./LocalMachineConfig";
-import { FileSystemProjectLoader } from "../binding/FileSystemProjectLoader";
 
 /**
  * Merge user-supplied configuration with defaults

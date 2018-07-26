@@ -3,10 +3,10 @@ import { ProjectLoader, ProjectLoadingParameters, WithLoadedProject } from "@ato
 import { exec } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";
+import { LocalMachineConfig } from "..";
 import { dirFor } from "../binding/expandedTreeUtils";
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
 import { infoMessage } from "../invocation/cli/support/consoleOutput";
-import { LocalMachineConfig } from "..";
 
 /**
  * Project loader that modifies push behavior before acting on project,
@@ -60,7 +60,7 @@ function changeToPushToAtomistBranch(localConfig: LocalMachineConfig): (p: GitPr
                 await p.createBranch(newBranch);
                 await promisify(exec)(`git push --force --set-upstream origin ${p.branch}`, { cwd: p.baseDir });
 
-                if (localConfig.mergeAutofixes === true) {
+                if (localConfig.mergeAutofixes) {
                     const originalRepoDir = dirFor(localConfig.repositoryOwnerParentDirectory, p.id.owner, p.id.repo);
                     // infoMessage(`Trying merge in ${originalRepoDir}\n`);
                     // Automerge it
