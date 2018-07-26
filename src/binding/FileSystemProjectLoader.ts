@@ -1,12 +1,12 @@
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { ProjectLoader, ProjectLoadingParameters, WithLoadedProject } from "@atomist/sdm";
-import { exec } from "child_process";
+import { ChildProcess, exec, ExecOptions } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";
 import { LocalMachineConfig } from "..";
 import { dirFor } from "../binding/expandedTreeUtils";
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
-import { infoMessage } from "../invocation/cli/support/consoleOutput";
+import { logger } from "@atomist/automation-client";
 
 /**
  * Project loader that modifies push behavior before acting on project,
@@ -46,29 +46,43 @@ function changeToPushToAtomistBranch(localConfig: LocalMachineConfig): (p: GitPr
             try {
                 // First try to push this branch. If it's the checked out branch
                 // we'll get an error
-                infoMessage(`Pushing to branch ${p.branch} on ${p.id.owner}:${p.id.repo}\n`);
-                await promisify(exec)(`git push --force --set-upstream origin ${p.branch}`, {
+                logger.info(`Pushing to branch ${p.branch} on ${p.id.owner}:${p.id.repo}`);
+                await runAndLog(`git push --force --set-upstream origin ${p.branch}`, {
                     cwd: p.baseDir,
-                    // stdio: "ignore",
                 });
             } catch (err) {
                 // If this throws an exception it's because we can't push to the checked out branch.
                 // Autofix will attempt to do this.
                 // So we create a new branch, push that, and then go to the original directory and merge it.
                 const newBranch = `atomist/${p.branch}`;
-                infoMessage(`Pushing to new local branch ${newBranch}\n`);
+                logger.info(`Pushing to new local branch ${newBranch}`);
                 await p.createBranch(newBranch);
-                await promisify(exec)(`git push --force --set-upstream origin ${p.branch}`, { cwd: p.baseDir });
+                await runAndLog(`git push --force --set-upstream origin ${p.branch}`, { cwd: p.baseDir });
 
                 if (localConfig.mergeAutofixes) {
                     const originalRepoDir = dirFor(localConfig.repositoryOwnerParentDirectory, p.id.owner, p.id.repo);
                     // infoMessage(`Trying merge in ${originalRepoDir}\n`);
                     // Automerge it
-                    await promisify(exec)(`git merge ${newBranch}`, { cwd: originalRepoDir });
+                    await runAndLog(`git merge ${newBranch}`, { cwd: originalRepoDir });
                 }
             }
             return { target: p, success: true };
         };
         return p;
     };
+}
+
+/**
+ * Shell out to the given command showing stdout and stderr
+ * @param {string} cmd
+ * @param {module:child_process.ExecOptions} opts
+ * @return {Promise<{stdout: string; stderr: string}>}
+ */
+async function runAndLog(cmd: string, opts: ExecOptions): Promise<{stdout: string, stderr: string}> {
+    const result = await promisify(exec)(cmd, opts);
+    logger.info("[%s] %s stdout was \n%s", cmd, opts.cwd, result.stdout);
+    if (!!result.stderr) {
+        logger.warn("[%s] %s stderr was \n%s", cmd, opts.cwd, result.stderr);
+    }
+    return result;
 }

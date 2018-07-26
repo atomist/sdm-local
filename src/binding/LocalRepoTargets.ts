@@ -6,6 +6,9 @@ import { andFilter, RepoFilter } from "@atomist/automation-client/operations/com
 import { RepoTargets } from "@atomist/sdm";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
+/**
+ * Repo targeting for local use.
+ */
 @Parameters()
 export class LocalRepoTargets extends TargetsParams implements RepoTargets {
 
@@ -42,7 +45,7 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
                 sha: undefined,
             }) :
             undefined;
-        logger.info("LocalRepoTargets returning %j: state=%j", rr, this);
+        logger.debug("LocalRepoTargets returning %j: state=%j", rr, this);
         return rr;
     }
 

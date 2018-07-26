@@ -6,6 +6,7 @@ import { pushFromLastCommit } from "../../binding/pushFromLastCommit";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { errorMessage } from "../cli/support/consoleOutput";
 import { invokeEventHandler } from "../http/EventHandlerInvocation";
+import { logger } from "@atomist/automation-client";
 
 export interface GitHookPayload {
     baseDir: string;
@@ -86,6 +87,7 @@ async function doWithProjectUnderExpandedDirectoryTree(baseDir: string,
                                                        sha: string,
                                                        ai: AutomationClientInfo,
                                                        action: (p: GitProject) => Promise<any>) {
+    logger.info("Creating GitCommandGitProject under %s", baseDir);
     const p = GitCommandGitProject.fromBaseDir(
         FileSystemRemoteRepoRef.fromDirectory({
             repositoryOwnerParentDirectory: ai.localConfig.repositoryOwnerParentDirectory,
