@@ -1,7 +1,7 @@
 import * as yargs from "yargs";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
-import { getMetadata } from "../http/metadataReader";
+import { fetchMetadataFromAutomationClient } from "../http/metadataReader";
 import { addGitHooksCommands } from "./command/addGitHooksCommands";
 import { addCommandsByName, addIntents } from "./command/addIntents";
 import { addStartListenerCommand } from "./command/addStartListenerCommand";
@@ -16,7 +16,7 @@ import { addShowSkillsCommand } from "./command/showSkillsCommand";
 export async function runSlalom(config: AutomationClientConnectionConfig) {
     yargs.usage("Usage: slalom <command> [options]");
 
-    const automationClientInfo = await getMetadata(config);
+    const automationClientInfo = await fetchMetadataFromAutomationClient(config);
     verifyLocalSdm(automationClientInfo);
 
     addTriggerCommand(automationClientInfo, yargs);

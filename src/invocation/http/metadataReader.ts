@@ -9,10 +9,12 @@ import { AutomationClientConnectionConfig } from "./AutomationClientConnectionCo
  * @param {AutomationClientConnectionConfig} connectionConfig
  * @return {Promise<AutomationClientInfo>}
  */
-export async function getMetadata(connectionConfig: AutomationClientConnectionConfig): Promise<AutomationClientInfo> {
-    infoMessage("Connecting to Automation client at %s (%d)\n", connectionConfig.baseEndpoint,  process.pid);
+export async function fetchMetadataFromAutomationClient(connectionConfig: AutomationClientConnectionConfig): Promise<AutomationClientInfo> {
+    infoMessage("Connecting to Automation client at %s (%d)\n", connectionConfig.baseEndpoint, process.pid);
     try {
-        const resp = await axios.get(connectionConfig.baseEndpoint + "/registration");
+        const resp = await axios.get(connectionConfig.baseEndpoint + "/registration", {
+            timeout: 5 * 1000,
+        });
         const commandsMetadata = resp.data.commands;
         let localConfig: LocalMachineConfig;
         try {
@@ -26,7 +28,8 @@ export async function getMetadata(connectionConfig: AutomationClientConnectionCo
             connectionConfig,
         };
     } catch (e) {
-        errorMessage("Unable to connect to '%s': Is the automation client running?", connectionConfig.baseEndpoint);
+        errorMessage("Unable to connect to '%s': Is the automation client running?\n\t(%s)",
+            connectionConfig.baseEndpoint, e);
         process.exit(1);
     }
 }
