@@ -39,7 +39,8 @@ export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
 
     const event: string = args[0];
     // We can be invoked in the .git/hooks directory or from the git binary itself
-    const baseDir = args[1].replace(/.git[\/hooks]?$/, "");
+    const baseDir = args[1].replace(/.git[\/hooks]?$/, "")
+        .replace(/\/$/, "");
     const branch = args[2];
     const sha = args[3];
     return { event, baseDir, branch, sha };
@@ -51,9 +52,15 @@ export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
  * @param payload event data
  * @return {Promise<any>}
  */
-export async function handleGitHookEvent(
-    ai: AutomationClientInfo,
-    payload: GitHookInvocation) {
+export async function handleGitHookEvent(ai: AutomationClientInfo,
+                                         payload: GitHookInvocation) {
+
+    // This git hook may be invoked from another git hook. This will cause these values to
+    // be incorrect, so we need to delete them to have git work them out again from the directory we're passing via cwd
+    // https://stackoverflow.com/questions/3542854/calling-git-pull-from-a-git-post-update-hook
+    delete process.env.GIT_DIR;
+    delete process.env.GIT_WORK_TREE;
+
     if (!payload) {
         errorMessage("Payload must be supplied");
         process.exit(1);

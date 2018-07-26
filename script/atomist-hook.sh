@@ -1,11 +1,13 @@
 #!/bin/sh
 
 script=$1
-hookDir=$3
 event=$2
+hookDir=$3
+branch=$4
+sha=$5
 
-branch=$(cd $hookDir && git rev-parse HEAD)
-sha=$(cd $hookDir && git rev-parse --abbrev-ref HEAD)
+# branch=$(cd $hookDir && git rev-parse HEAD)
+# sha=$(cd $hookDir && git rev-parse --abbrev-ref HEAD)
 
  echo "git hook fire: Invoking Atomist $event against $hookDir"
 
@@ -14,6 +16,6 @@ sha=$(cd $hookDir && git rev-parse --abbrev-ref HEAD)
 node $script\
     $event \
     $hookDir \
-    $sha\
     $branch\
+    $sha\
     &
