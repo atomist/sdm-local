@@ -94,7 +94,6 @@ async function doWithProjectUnderExpandedDirectoryTree(baseDir: string,
                                                        sha: string,
                                                        ai: AutomationClientInfo,
                                                        action: (p: GitProject) => Promise<any>) {
-    logger.info("Creating GitCommandGitProject under %s", baseDir);
     const p = GitCommandGitProject.fromBaseDir(
         FileSystemRemoteRepoRef.fromDirectory({
             repositoryOwnerParentDirectory: ai.localConfig.repositoryOwnerParentDirectory,

@@ -7,6 +7,8 @@ import * as fs from "fs";
 import * as path from "path";
 import { sprintf } from "sprintf-js";
 import { HookEvents } from "../invocation/git/gitHooks";
+import { infoMessage } from "..";
+import { errorMessage } from "../invocation/cli/support/consoleOutput";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";
 const AtomistJsName = "build/src/entry/onGitHook.js";
@@ -34,16 +36,21 @@ export async function addGitHooksToProject(p: LocalProject) {
     const atomistHookScriptPath = path.join(__dirname, "../../../", AtomistHookScriptName);
     const gitHookScript = path.join(__dirname, "../../../", AtomistJsName);
 
-    for (const hookFile of HookEvents) {
+    for (const event of HookEvents) {
+        const toAppend = scriptFragments(atomistHookScriptPath, gitHookScript)[event];
+        if (!toAppend) {
+            errorMessage("Unable to create git script for event '%s'", event);
+            process.exit(1);
+        }
         await appendOrCreateFileContent(
             {
-                path: `/.git/hooks/${hookFile}`,
-                toAppend: `\n${atomistHookScriptPath} ${gitHookScript} ${hookFile} \${PWD}`,
+                path: `/.git/hooks/${event}`,
+                toAppend,
                 leaveAlone: oldContent => oldContent.includes(atomistHookScriptPath),
             })(p);
-        await p.makeExecutable(`.git/hooks/${hookFile}`);
-        process.stdout.write(chalk.gray(sprintf(
-            `addGitHooks: Adding git ${hookFile} script to project at %s\n`,
+        await p.makeExecutable(`.git/hooks/${event}`);
+        infoMessage(chalk.gray(sprintf(
+            `addGitHooks: Adding git ${event} script to project at %s\n`,
             p.baseDir)));
     }
 }
@@ -97,3 +104,43 @@ async function deatomizeScript(p: LocalProject, scriptPath: string) {
         }
     }
 }
+
+/* tslint:disable */
+
+/**
+ * Indexed fragments
+ * @param {string} atomistHookScriptPath
+ * @param {string} gitHookScript
+ * @param {string} event
+ * @return {{"pre-receive": string}}
+ */
+function scriptFragments(atomistHookScriptPath: string, gitHookScript: string) {
+
+    return {
+        "pre-receive": `while read oldrev newrev refname
+	do
+		echo "oldrev= $oldrev" # 0 if a new branch
+        echo "newrev=$newrev" # sha
+        echo "refname=$refname" # refs/heads/<new branch>
+        ${atomistHookScriptPath} ${gitHookScript} pre-receive \${PWD} $refname $newrev
+	done`,
+
+        "post-commit": `while read oldrev newrev refname
+	do
+		echo "oldrev= $oldrev" # 0 if a new branch
+        echo "newrev=$newrev" # sha
+        echo "refname=$refname" # refs/heads/<new branch>
+        ${atomistHookScriptPath} ${gitHookScript} post-commit \${PWD} $refname $newrev
+	done`,
+
+        "post-merge": `while read oldrev newrev refname
+	do
+		echo "oldrev= $oldrev" # 0 if a new branch
+        echo "newrev=$newrev" # sha
+        echo "refname=$refname" # refs/heads/<new branch>
+        ${atomistHookScriptPath} ${gitHookScript} post-merge \${PWD} $refname $newrev
+	done`,
+    };
+}
+
+
