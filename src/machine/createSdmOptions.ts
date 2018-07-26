@@ -77,7 +77,7 @@ function changeToPushToAtomistBranch(repositoryOwnerParentDirectory: string, aut
         p.push = async opts => {
             try {
                 // First try to push this branch. If it's the checked out branch
-                // We'll get an error
+                // we'll get an error
                 infoMessage(`Pushing to branch ${p.branch} on ${p.id.owner}:${p.id.repo}\n`);
                 await promisify(exec)(`git push --force --set-upstream origin ${p.branch}`, {
                     cwd: p.baseDir,
@@ -90,7 +90,7 @@ function changeToPushToAtomistBranch(repositoryOwnerParentDirectory: string, aut
                 const newBranch = `atomist/${p.branch}`;
                 infoMessage(`Pushing to new local branch ${newBranch}\n`);
                 await p.createBranch(newBranch);
-                execSync(`git push --force --set-upstream origin ${p.branch}`, { cwd: p.baseDir });
+                await promisify(exec)(`git push --force --set-upstream origin ${p.branch}`, { cwd: p.baseDir });
 
                 if (automerge) {
                     const originalRepoDir = dirFor(repositoryOwnerParentDirectory, p.id.owner, p.id.repo);

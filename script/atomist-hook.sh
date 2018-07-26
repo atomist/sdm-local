@@ -16,3 +16,4 @@ node $script\
     $hookDir \
     $sha\
     $branch\
+    &
