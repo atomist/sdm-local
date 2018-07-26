@@ -3,7 +3,7 @@ import { ProjectLoader, ProjectLoadingParameters, SoftwareDeliveryMachineOptions
 import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
-import { exec, execSync } from "child_process";
+import { exec } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
