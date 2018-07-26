@@ -60,4 +60,3 @@ export function determineCwd(): string {
     // Be sure to respect symlinks
     return process.env.PWD;
 }
-

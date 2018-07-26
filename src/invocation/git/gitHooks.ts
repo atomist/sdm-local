@@ -1,3 +1,4 @@
+import { logger } from "@atomist/automation-client";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { OnPushToAnyBranch } from "@atomist/sdm";
@@ -6,7 +7,6 @@ import { pushFromLastCommit } from "../../binding/pushFromLastCommit";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { errorMessage } from "../cli/support/consoleOutput";
 import { invokeEventHandler } from "../http/EventHandlerInvocation";
-import { logger } from "@atomist/automation-client";
 
 export interface GitHookPayload {
     baseDir: string;

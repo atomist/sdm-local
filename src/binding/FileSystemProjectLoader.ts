@@ -1,12 +1,12 @@
+import { logger } from "@atomist/automation-client";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { ProjectLoader, ProjectLoadingParameters, WithLoadedProject } from "@atomist/sdm";
-import { ChildProcess, exec, ExecOptions } from "child_process";
+import { exec, ExecOptions } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";
 import { LocalMachineConfig } from "..";
 import { dirFor } from "../binding/expandedTreeUtils";
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
-import { logger } from "@atomist/automation-client";
 
 /**
  * Project loader that modifies push behavior before acting on project,
