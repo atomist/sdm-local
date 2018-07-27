@@ -10,5 +10,4 @@ node $script\
     $event \
     $hookDir \
     $branch\
-    $sha\
-    &
+    $sha

@@ -10,7 +10,7 @@ import { argsToGitHookInvocation, handleGitHookEvent } from "./gitHooks";
 export async function runOnGitHook(argv: string[], connectionConfig: AutomationClientConnectionConfig) {
     const automationClientInfo = await fetchMetadataFromAutomationClient(connectionConfig);
     const invocation = argsToGitHookInvocation(argv);
-    logger.info("Executing git hook against project %j", invocation);
+    logger.debug("Executing git hook against project %j", invocation);
     return logExceptionsToConsole(() =>
             handleGitHookEvent(automationClientInfo, invocation),
         automationClientInfo.connectionConfig.showErrorStacks,
