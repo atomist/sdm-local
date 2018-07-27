@@ -153,7 +153,7 @@ const AtomistEndComment = "######## Atomist end #########";
  * @return {string}
  */
 function markAsAtomistContent(toAppend: string) {
-    return `${AtomistStartComment}\n${toAppend}\n${AtomistEndComment}\n`;
+    return `\n${AtomistStartComment}\n${toAppend}\n${AtomistEndComment}\n`;
 }
 
 

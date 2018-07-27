@@ -22,4 +22,6 @@ export interface LocalMachineConfig {
      */
     mergeAutofixes?: boolean;
 
+    useSystemNotifications?: boolean;
+
 }

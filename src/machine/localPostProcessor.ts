@@ -34,7 +34,7 @@ export function configureLocal(localMachineConfig: LocalMachineConfig): (configu
 
         configureWebEndpoints(configuration, localMachineConfig);
 
-        setMessageClient(configuration);
+        setMessageClient(configuration, localMachineConfig);
         setGraphClient(configuration);
 
         if (!configuration.listeners) {
@@ -81,7 +81,7 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
     ];
 }
 
-function setMessageClient(configuration: Configuration) {
+function setMessageClient(configuration: Configuration, localMachineConfig: LocalMachineConfig) {
     configuration.http.messageClientFactory =
         aca => {
             const channel = channelFor(aca.context.correlationId);
@@ -89,7 +89,7 @@ function setMessageClient(configuration: Configuration) {
                 new HttpClientMessageClient(channel, AllMessagesPort),
                 new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
                 new HttpClientMessageClient(channel, clientIdentifier(aca.context.correlationId)),
-                new SystemNotificationMessageClient(channel),
+                localMachineConfig.useSystemNotifications ? new SystemNotificationMessageClient(channel) : undefined,
             );
         };
 }

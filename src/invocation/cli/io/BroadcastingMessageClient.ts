@@ -58,7 +58,7 @@ export class BroadcastingMessageClient implements MessageClient, SlackMessageCli
     }
 
     constructor(...delegates: Array<MessageClient & SlackMessageClient>) {
-        this.delegates = delegates;
+        this.delegates = delegates.filter(d => !!d);
     }
 
 }
