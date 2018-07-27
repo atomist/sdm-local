@@ -1,4 +1,3 @@
-import { logger } from "@atomist/automation-client";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, PushFields } from "@atomist/sdm";
 import { lastCommitMessage } from "../util/git";

@@ -42,12 +42,12 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
                 return gci.addressChannels(chalk.green(`✔ ${gci.completedGoal.description}\n`));
             case SdmGoalState.requested:
                 return gci.addressChannels(chalk.red(`✖︎︎ ${gci.completedGoal.description}\n`));
-            //waiting_for_approval = "waiting_for_approval",
-            //failure = "failure",
+            // waiting_for_approval = "waiting_for_approval",
+            // failure = "failure",
             // planned = "planned",
             case SdmGoalState.in_process:
                 return gci.addressChannels(chalk.yellow(`⚙︎ ${gci.completedGoal.description}\n`));
-            //skipped = "skipped"
+            // skipped = "skipped"
             default:
                 break;
         }
