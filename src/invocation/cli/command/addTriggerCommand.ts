@@ -1,6 +1,6 @@
 import { Argv } from "yargs";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { HookEvents } from "../../git/gitHooks";
+import { HookEvents } from "../../git/handleEventOnRepo";
 import { triggerGitEvents } from "../../git/triggerGitEvents";
 import { logExceptionsToConsole } from "../support/consoleOutput";
 

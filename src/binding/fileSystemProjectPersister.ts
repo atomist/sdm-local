@@ -2,34 +2,52 @@ import { logger } from "@atomist/automation-client";
 import { successOn } from "@atomist/automation-client/action/ActionResult";
 import { ProjectPersister } from "@atomist/automation-client/operations/generate/generatorUtils";
 import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
-import { execSync } from "child_process";
 import * as fs from "fs";
+import { promisify } from "util";
+import { errorMessage } from "../invocation/cli/support/consoleOutput";
 import { addGitHooksToProject } from "../setup/addGitHooks";
+import { runAndLog } from "../util/runAndLog";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
 /**
  * Persist the project to the given local directory given expanded directory
  * conventions. Perform a git init
- * @param {string} repositoryOwnerParentDirectory
  * @return {ProjectPersister}
  */
 export function fileSystemProjectPersister(repositoryOwnerParentDirectory: string): ProjectPersister {
     return async (p, _, id, params) => {
         const baseDir = `${repositoryOwnerParentDirectory}/${id.owner}/${id.repo}`;
         const frr = FileSystemRemoteRepoRef.fromDirectory({
-            repositoryOwnerParentDirectory, baseDir});
+            repositoryOwnerParentDirectory,
+            baseDir,
+        });
         // Override target repo to get file url
         // TODO this is a bit nasty
-        Object.defineProperty((params as any).target, "repoRef", {get() { return frr; }});
+        Object.defineProperty((params as any).target, "repoRef", {
+            get() {
+                return frr;
+            },
+        });
         logger.info("Persisting to [%s]", baseDir);
-        if (fs.existsSync(baseDir)) {
+        if (await promisify(fs.exists)(baseDir)) {
             throw new Error(`Cannot write new project to [${baseDir}] as this directory already exists`);
         }
         const createdProject = await NodeFsLocalProject.copy(p, baseDir);
-        execSync("git init", { cwd: baseDir });
-        execSync("git add .", { cwd: baseDir });
-        execSync(`git commit -a -m "Initial commit from Atomist"`, { cwd: baseDir });
+        await runAndLog("git init", { cwd: baseDir });
+        await runAndLog("git add .", { cwd: baseDir });
+        await runAndLog(`git commit -a -m "Initial commit from Atomist"`, { cwd: baseDir });
         await addGitHooksToProject(createdProject);
+
+        // TODO Now we need to trigger a new repo event
+
+        errorMessage("Need to trigger new repo event");
+
+        // await handleEventOnRepo(ai, {
+        //     baseDir,
+        //     sha: shaHistory(createdProject as GitProject)[0],
+        //     branch: "master",
+        // }, "OnFirstPushToRepo");
+
         return successOn(createdProject);
     };
 }

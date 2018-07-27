@@ -6,14 +6,19 @@ import { pushFromLastCommit } from "../../binding/pushFromLastCommit";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { errorMessage } from "../cli/support/consoleOutput";
 import { invokeEventHandler } from "../http/EventHandlerInvocation";
+import Push = OnPushToAnyBranch.Push;
 
-export interface GitHookPayload {
+/**
+ * Any event on a local repo
+ */
+export interface EventOnRepo {
+
     baseDir: string;
     branch: string;
     sha: string;
 }
 
-export interface GitHookInvocation extends GitHookPayload {
+export interface GitHookInvocation extends EventOnRepo {
     event: string;
 }
 
@@ -53,6 +58,29 @@ export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
  */
 export async function handleGitHookEvent(ai: AutomationClientInfo,
                                          payload: GitHookInvocation) {
+    if (!payload) {
+        errorMessage("Payload must be supplied");
+        process.exit(1);
+    }
+    if (!payload.event) {
+        errorMessage("Invalid git hook invocation payload. Event is required: %j", payload);
+        process.exit(1);
+    }
+    if (!HookEvents.includes(payload.event)) {
+        errorMessage("Unknown git hook event '%s'", event);
+        process.exit(1);
+    }
+
+    return handleEventOnRepo(ai, payload, "SetGoalsOnPush",
+        push => ({
+            Push: [push],
+        }));
+}
+
+export async function handleEventOnRepo(ai: AutomationClientInfo,
+                                        payload: EventOnRepo,
+                                        eventHandlerName: string,
+                                        pushToPayload: (p: Push) => object) {
 
     // This git hook may be invoked from another git hook. This will cause these values to
     // be incorrect, so we need to delete them to have git work them out again from the directory we're passing via cwd
@@ -64,23 +92,19 @@ export async function handleGitHookEvent(ai: AutomationClientInfo,
         errorMessage("Payload must be supplied");
         process.exit(1);
     }
-    if (!payload.event || !payload.branch || !payload.sha || !payload.baseDir) {
-        errorMessage("Invalid git hook invocation payload: " + JSON.stringify(payload));
-        process.exit(1);
-    }
-    if (!HookEvents.includes(payload.event)) {
-        errorMessage("Unknown git hook event '%s'", event);
+    if (!payload.branch || !payload.sha || !payload.baseDir) {
+        errorMessage("Invalid git hook invocation payload: %j", payload);
         process.exit(1);
     }
 
     const push = await createPush(ai, payload);
     return invokeEventHandler(ai.connectionConfig, {
-        name: "SetGoalsOnPush",
-        payload: { Push: [push] },
+        name: eventHandlerName,
+        payload: pushToPayload(push),
     });
 }
 
-async function createPush(ai: AutomationClientInfo, payload: GitHookInvocation): Promise<OnPushToAnyBranch.Push> {
+async function createPush(ai: AutomationClientInfo, payload: EventOnRepo): Promise<OnPushToAnyBranch.Push> {
     const { baseDir, branch, sha } = payload;
     return doWithProjectUnderExpandedDirectoryTree(baseDir, branch, sha, ai,
         async p => {
