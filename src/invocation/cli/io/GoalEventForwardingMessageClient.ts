@@ -43,7 +43,10 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
             const payload: OnAnyRequestedSdmGoal.Subscription = {
                 SdmGoal: [msg],
             };
-            return Promise.all(handlerNames.map(name =>
+
+            // We want to return to let this work in the background
+            // tslint:disable-next-line:no-floating-promises
+            Promise.all(handlerNames.map(name =>
                 invokeEventHandler(this.connectionConfig, {
                     name,
                     payload,
