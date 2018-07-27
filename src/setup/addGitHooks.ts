@@ -134,13 +134,11 @@ sha=$(git rev-parse --abbrev-ref HEAD)
 ${atomistHookScriptPath} ${gitHookScript} post-commit \${PWD} $branch $sha
 `,
 
-        "post-merge": `while read oldrev newrev refname
-	do
-		echo "oldrev= $oldrev" # 0 if a new branch
-        echo "newrev=$newrev" # sha
-        echo "refname=$refname" # refs/heads/<new branch>
-        ${atomistHookScriptPath} ${gitHookScript} post-merge \${PWD} $refname $newrev
-	done`,
+        "post-merge": `
+branch=$(git rev-parse HEAD)
+sha=$(git rev-parse --abbrev-ref HEAD)
+${atomistHookScriptPath} ${gitHookScript} post-merge \${PWD} $branch $sha
+`,
     };
 }
 

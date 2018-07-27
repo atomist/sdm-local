@@ -80,6 +80,7 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
             });
             // Add a GET route for convenient links to command handler invocation, as a normal automation client doesn't expose one
             exp.get("/command-get/:name", async (req, res) => {
+                // TODO this should really forward to a page exposing the parameters, which populates from the query
                 const payload = req.query;
                 const invocation: CommandHandlerInvocation = {
                     name: req.params.name,
