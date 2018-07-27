@@ -13,9 +13,9 @@ import { BroadcastingMessageClient } from "../invocation/cli/io/BroadcastingMess
 import { GoalEventForwardingMessageClient } from "../invocation/cli/io/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../invocation/cli/io/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
+import { CommandHandlerInvocation, invokeCommandHandler } from "../invocation/http/CommandHandlerInvocation";
 import { channelFor, clientIdentifier } from "./correlationId";
 import { isLocal } from "./isLocal";
-import { CommandHandlerInvocation, invokeCommandHandler } from "../invocation/http/CommandHandlerInvocation";
 
 /**
  * Configures an automation client in local mode

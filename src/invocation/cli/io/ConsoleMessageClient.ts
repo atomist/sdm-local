@@ -17,8 +17,8 @@ import { MarkedOptions } from "marked";
 import * as slack from "@atomist/slack-messages/SlackMessages";
 import chalk from "chalk";
 import * as TerminalRenderer from "marked-terminal";
-import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
+import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 
 marked.setOptions({
     // Define custom renderer
