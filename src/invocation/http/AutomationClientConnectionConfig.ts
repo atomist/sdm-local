@@ -9,6 +9,9 @@ export interface AutomationClientConnectionConfig {
 
     atomistTeamName: string;
 
+    /**
+     * Base endpoint, including port
+     */
     baseEndpoint: string;
 
     user?: string;

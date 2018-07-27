@@ -6,6 +6,7 @@ import { infoMessage } from "../support/consoleOutput";
 
 import * as bodyParser from "body-parser";
 import { CommandCompletionDestination } from "../../../machine/localPostProcessor";
+import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 
 export const MessageRoute = "/message";
 
@@ -23,8 +24,10 @@ export interface StreamedMessage {
  * @param {number} demonPort
  * @param killOnCommandCompletion should this be shut down on command completion
  */
-export function startHttpMessageListener(demonPort: number, killOnCommandCompletion: boolean = false) {
-    const messageClient = new ConsoleMessageClient("general", ProcessStdoutSender);
+export function startHttpMessageListener(cc: AutomationClientConnectionConfig,
+                                         demonPort: number,
+                                         killOnCommandCompletion: boolean = false) {
+    const messageClient = new ConsoleMessageClient("general", ProcessStdoutSender, cc);
     const app = express();
     app.use(bodyParser.json());
 

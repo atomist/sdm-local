@@ -10,7 +10,8 @@ export function addStartListenerCommand(ai: AutomationClientInfo, yargs: Argv) {
         command: "listen",
         describe: "Start listener daemon to display messages",
         handler: () => {
-            return logExceptionsToConsole(async () => startHttpMessageListener(AllMessagesPort),
+            return logExceptionsToConsole(async () =>
+                    startHttpMessageListener(ai.connectionConfig, AllMessagesPort),
                 ai.connectionConfig.showErrorStacks);
         },
     });

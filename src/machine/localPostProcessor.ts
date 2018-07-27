@@ -15,6 +15,7 @@ import { HttpClientMessageClient } from "../invocation/cli/io/HttpClientMessageC
 import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
 import { channelFor, clientIdentifier } from "./correlationId";
 import { isLocal } from "./isLocal";
+import { CommandHandlerInvocation, invokeCommandHandler } from "../invocation/http/CommandHandlerInvocation";
 
 /**
  * Configures an automation client in local mode
@@ -76,6 +77,18 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
             // TODO could use this to set local mode for a server - e.g. the name to send to
             exp.get("/localConfiguration", async (req, res) => {
                 res.json(localMachineConfig);
+            });
+            // Add a GET route for convenient links to command handler invocation, as a normal automation client doesn't expose one
+            exp.get("/command-get/:name", async (req, res) => {
+                const payload = req.query;
+                const invocation: CommandHandlerInvocation = {
+                    name: req.params.name,
+                    parameters: payload,
+                    mappedParameters: [],
+                };
+                // TODO parameterize this path
+                const r = await invokeCommandHandler(DefaultAutomationClientConnectionConfig, invocation);
+                return res.json(r);
             });
         },
     ];

@@ -164,7 +164,7 @@ async function runByCommandName(ai: AutomationClientInfo,
 async function runCommand(ai: AutomationClientInfo,
                           hm: CommandHandlerMetadata,
                           command: object): Promise<any> {
-    startHttpMessageListener(pidToPort(process.pid), true);
+    startHttpMessageListener(ai.connectionConfig, pidToPort(process.pid), true);
     const extraArgs = Object.getOwnPropertyNames(command)
         .map(name => ({ name: convertToUsable(name), value: command[name] }))
         .filter(keep => !!keep.value);

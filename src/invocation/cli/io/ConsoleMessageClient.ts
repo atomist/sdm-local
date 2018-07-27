@@ -18,6 +18,7 @@ import * as slack from "@atomist/slack-messages/SlackMessages";
 import chalk from "chalk";
 import * as TerminalRenderer from "marked-terminal";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
+import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 
 marked.setOptions({
     // Define custom renderer
@@ -86,9 +87,8 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
 
     private async renderAction(channel: string, action: slack.Action) {
         if (action.type === "button") {
-            // TODO fix hardcoding (use config), and need to update to call local client
             const a = action as any;
-            let url = `http://localhost:6660/command/${a.command.name}?`;
+            let url = `${this.connectionConfig.baseEndpoint}/command-get/${a.command.name}?`;
             Object.getOwnPropertyNames(a.command.parameters).forEach(prop => {
                 url += `${prop}=${a.command.parameters[prop]}`;
             });
@@ -109,6 +109,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
 
     constructor(private readonly linkedChannel: string,
                 private readonly sender: Sender,
+                private readonly connectionConfig: AutomationClientConnectionConfig,
                 public readonly markedOptions: MarkedOptions = {
                     breaks: false,
                 }) {
