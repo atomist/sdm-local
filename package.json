@@ -41,8 +41,8 @@
   },
   "devDependencies": {
     "@atomist/automation-client": "0.18.0-20180725183614",
-    "@atomist/sdm": "https://r.atomist.com/1769963991",
-    "@atomist/sdm-core": "0.3.2-20180725161559",
+    "@atomist/sdm": "https://r.atomist.com/1256816861",
+    "@atomist/sdm-core": "https://r.atomist.com/42723201",
     "@types/lodash": "^4.14.109",
     "@types/mocha": "^2.2.48",
     "@types/node": "^8.10.17",

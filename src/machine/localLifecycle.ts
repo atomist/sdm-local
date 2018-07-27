@@ -36,17 +36,17 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
             chalk.yellow(`▶ Goals for ${gsi.push.commits[0].sha}: ${gsi.goalSet.goals.map(g => chalk.italic(g.name)).join(" ⏦ ")}\n`) +
             `\t${chalk.italic(gsi.push.commits[0].message)}\n`);
     });
-    sdm.addGoalCompletionListener(async gci => {
-        switch (gci.completedGoal.state) {
+    sdm.addGoalExecutionListener(async gci => {
+        switch (gci.goalEvent.state) {
             case SdmGoalState.success:
-                return gci.addressChannels(chalk.green(`✔ ${gci.completedGoal.description}\n`));
+                return gci.addressChannels(chalk.green(`✔ ${gci.goalEvent.description}\n`));
             case SdmGoalState.requested:
-                return gci.addressChannels(chalk.red(`✖︎︎ ${gci.completedGoal.description}\n`));
+                return gci.addressChannels(chalk.red(`✖︎︎ ${gci.goalEvent.description}\n`));
             // waiting_for_approval = "waiting_for_approval",
             // failure = "failure",
             // planned = "planned",
             case SdmGoalState.in_process:
-                return gci.addressChannels(chalk.yellow(`⚙︎ ${gci.completedGoal.description}\n`));
+                return gci.addressChannels(chalk.yellow(`⚙︎ ${gci.goalEvent.description}\n`));
             // skipped = "skipped"
             default:
                 break;
