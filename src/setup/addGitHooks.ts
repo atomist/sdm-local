@@ -7,7 +7,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { sprintf } from "sprintf-js";
 import { infoMessage } from "..";
-import { errorMessage } from "../invocation/cli/support/consoleOutput";
+import { errorMessage, warningMessage } from "../invocation/cli/support/consoleOutput";
 import { HookEvents } from "../invocation/git/gitHooks";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";
@@ -26,7 +26,7 @@ export async function addGitHooks(id: RemoteRepoRef,
         const p = await NodeFsLocalProject.fromExistingDirectory(id, projectBaseDir);
         return addGitHooksToProject(p);
     } else {
-        process.stdout.write(
+        infoMessage(
             chalk.gray(sprintf("addGitHooks: Ignoring directory at %s as it is not a git project\n"),
                 projectBaseDir));
     }
@@ -45,7 +45,7 @@ export async function addGitHooksToProject(p: LocalProject) {
         await appendOrCreateFileContent(
             {
                 path: `/.git/hooks/${event}`,
-                toAppend,
+                toAppend: markAsAtomistContent(toAppend),
                 leaveAlone: oldContent => oldContent.includes(atomistHookScriptPath),
             })(p);
         await p.makeExecutable(`.git/hooks/${event}`);
@@ -62,7 +62,7 @@ export async function removeGitHooks(id: RemoteRepoRef, baseDir: string) {
             await deatomizeScript(p, `/.git/hooks/${hookFile}`);
         }
     } else {
-        process.stdout.write(chalk.gray(sprintf(
+        infoMessage(chalk.gray(sprintf(
             "removeGitHooks: Ignoring directory at %s as it is not a git project",
             baseDir)));
     }
@@ -83,22 +83,26 @@ async function deatomizeScript(p: LocalProject, scriptPath: string) {
             p.baseDir)));
     } else {
         const content = await script.getContent();
-        const lines = content.split("\n");
-        const nonAtomist = lines
-            .filter(line => !line.includes("atomist"))
-            .filter(line => line.trim() !== "")
-            .join("\n");
-        if (nonAtomist.length > 0) {
+        const start = content.indexOf(AtomistStartComment);
+        const end = content.indexOf(AtomistEndComment);
+        if (start < 0 || end < 0) {
+            warningMessage("removeGitHooks: No Atomist content found in git hook %s in project at %s: Saw\n%s\n",
+                scriptPath,
+                p.baseDir,
+                chalk.gray(content));
+        }
+        const nonAtomist = content.slice(0, start) + content.substr(end + AtomistEndComment.length);
+        if (nonAtomist.trim().length > 0) {
             await script.setContent(nonAtomist);
-            process.stdout.write(chalk.gray(sprintf(
+            infoMessage(chalk.gray(sprintf(
                 "removeGitHooks: Removing Atomist content from git hook %s in project at %s: Leaving \n%s",
                 scriptPath,
                 p.baseDir,
                 nonAtomist)));
         } else {
             await p.deleteFile(scriptPath);
-            process.stdout.write(chalk.gray(sprintf(
-                "removeGitHooks: Removing git hook %s in project at %s\n",
+            infoMessage(chalk.gray(sprintf(
+                "removeGitHooks: Removing pure Atomist git hook %s in project at %s\n",
                 scriptPath,
                 p.baseDir)));
         }
@@ -138,6 +142,18 @@ ${atomistHookScriptPath} ${gitHookScript} post-commit \${PWD} $branch $sha
         ${atomistHookScriptPath} ${gitHookScript} post-merge \${PWD} $refname $newrev
 	done`,
     };
+}
+
+const AtomistStartComment = "######## Atomist start #######";
+const AtomistEndComment = "######## Atomist end #########";
+
+/**
+ * Make it clear this is Atomist content. Makes it easy to remove later.
+ * @param {string} toAppend
+ * @return {string}
+ */
+function markAsAtomistContent(toAppend: string) {
+    return `${AtomistStartComment}\n${toAppend}\n${AtomistEndComment}\n`;
 }
 
 

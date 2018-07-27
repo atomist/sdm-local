@@ -25,7 +25,7 @@ export function errorMessage(msg: string, ...args: any[]) {
     process.stdout.write(chalk.red(sprintf("✘ " + msg, ...args)));
 }
 
-export function warning(msg: string, ...args: any[]) {
+export function warningMessage(msg: string, ...args: any[]) {
     process.stdout.write(chalk.yellowBright(sprintf("⚠︎ " + msg, ...args)));
 }
 
