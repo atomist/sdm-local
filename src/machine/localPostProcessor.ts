@@ -81,6 +81,11 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
     ];
 }
 
+/**
+ * Use custom message client to update HTTP listeners and forward goal events back to the SDM via HTTP
+ * @param {Configuration} configuration
+ * @param {LocalMachineConfig} localMachineConfig
+ */
 function setMessageClient(configuration: Configuration, localMachineConfig: LocalMachineConfig) {
     configuration.http.messageClientFactory =
         aca => {
