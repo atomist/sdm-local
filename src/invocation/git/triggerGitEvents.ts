@@ -5,7 +5,7 @@ import { FileSystemRemoteRepoRef } from "../../binding/FileSystemRemoteRepoRef";
 import { shaHistory } from "../../util/git";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { errorMessage, infoMessage } from "../cli/support/consoleOutput";
-import { handleGitHookEvent } from "./handleEventOnRepo";
+import { handleGitHookEvent } from "./handlePushBasedEventOnRepo";
 
 /**
  * Trigger git events to the given depth in the current project repo

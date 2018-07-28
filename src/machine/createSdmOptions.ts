@@ -8,8 +8,8 @@ import { FileSystemProjectLoader } from "../binding/FileSystemProjectLoader";
 import { fileSystemProjectPersister } from "../binding/fileSystemProjectPersister";
 import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { LocalRepoTargets } from "../binding/LocalRepoTargets";
-import { LocalMachineConfig } from "./LocalMachineConfig";
 import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
+import { LocalMachineConfig } from "./LocalMachineConfig";
 
 /**
  * Merge user-supplied configuration with defaults
@@ -17,7 +17,9 @@ import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnect
  * @param {LocalMachineConfig} localMachineConfig
  */
 export function createSdmOptions(localMachineConfig: LocalMachineConfig): SoftwareDeliveryMachineOptions {
+    // TODO how do we find this?
     const cc = DefaultAutomationClientConnectionConfig;
+
     const repoRefResolver = new LocalRepoRefResolver(localMachineConfig.repositoryOwnerParentDirectory);
     return {
         // TODO this is the only use of sdm-core

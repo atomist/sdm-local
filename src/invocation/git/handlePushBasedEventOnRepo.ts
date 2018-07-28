@@ -1,12 +1,12 @@
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { OnPushToAnyBranch } from "@atomist/sdm";
+import { LocalMachineConfig } from "../..";
 import { FileSystemRemoteRepoRef } from "../../binding/FileSystemRemoteRepoRef";
 import { pushFromLastCommit } from "../../binding/pushFromLastCommit";
 import { errorMessage } from "../cli/support/consoleOutput";
-import { invokeEventHandler } from "../http/EventHandlerInvocation";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
-import { LocalMachineConfig } from "../..";
+import { invokeEventHandler } from "../http/EventHandlerInvocation";
 import Push = OnPushToAnyBranch.Push;
 
 /**
@@ -60,19 +60,16 @@ export async function handleGitHookEvent(cc: AutomationClientConnectionConfig,
                                          lc: LocalMachineConfig,
                                          payload: GitHookInvocation) {
     if (!payload) {
-        errorMessage("Payload must be supplied");
-        process.exit(1);
+        return errorMessage("Payload must be supplied");
     }
     if (!payload.event) {
-        errorMessage("Invalid git hook invocation payload. Event is required: %j", payload);
-        process.exit(1);
+        return errorMessage("Invalid git hook invocation payload. Event is required: %j", payload);
     }
     if (!HookEvents.includes(payload.event)) {
-        errorMessage("Unknown git hook event '%s'", event);
-        process.exit(1);
+        return errorMessage("Unknown git hook event '%s'", event);
     }
 
-    return handleEventOnRepo(cc, lc, payload, "SetGoalsOnPush");
+    return handlePushBasedEventOnRepo(cc, lc, payload, "SetGoalsOnPush");
 }
 
 /**
@@ -81,11 +78,11 @@ export async function handleGitHookEvent(cc: AutomationClientConnectionConfig,
  * @param {string} eventHandlerName
  * @return {Promise<HandlerResult>}
  */
-export async function handleEventOnRepo(cc: AutomationClientConnectionConfig,
-                                        lc: LocalMachineConfig,
-                                        payload: EventOnRepo,
-                                        eventHandlerName: string,
-                                        pushToPayload: (p: Push) => object = p => ({
+export async function handlePushBasedEventOnRepo(cc: AutomationClientConnectionConfig,
+                                                 lc: LocalMachineConfig,
+                                                 payload: EventOnRepo,
+                                                 eventHandlerName: string,
+                                                 pushToPayload: (p: Push) => object = p => ({
                                             Push: [p],
                                         })) {
 
@@ -96,12 +93,10 @@ export async function handleEventOnRepo(cc: AutomationClientConnectionConfig,
     delete process.env.GIT_WORK_TREE;
 
     if (!payload) {
-        errorMessage("Payload must be supplied");
-        process.exit(1);
+        return errorMessage("Payload must be supplied");
     }
     if (!payload.branch || !payload.sha || !payload.baseDir) {
-        errorMessage("Invalid git hook invocation payload: %j", payload);
-        process.exit(1);
+        return errorMessage("Invalid git hook invocation payload - branch and sha and baseDir are required: %j", payload);
     }
 
     const push = await createPush(cc.atomistTeamId, lc.repositoryOwnerParentDirectory, payload);

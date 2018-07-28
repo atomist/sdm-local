@@ -1,18 +1,20 @@
 import { logger } from "@atomist/automation-client";
 import { successOn } from "@atomist/automation-client/action/ActionResult";
+import { RepoId } from "@atomist/automation-client/operations/common/RepoId";
 import { ProjectPersister } from "@atomist/automation-client/operations/generate/generatorUtils";
+import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
+import { OnRepoCreation } from "@atomist/sdm";
 import * as fs from "fs";
 import { promisify } from "util";
-import { errorMessage } from "../invocation/cli/support/consoleOutput";
+import { LocalMachineConfig } from "..";
+import { handlePushBasedEventOnRepo } from "../invocation/git/handlePushBasedEventOnRepo";
+import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
+import { invokeEventHandler } from "../invocation/http/EventHandlerInvocation";
 import { addGitHooksToProject } from "../setup/addGitHooks";
+import { lastSha } from "../util/git";
 import { runAndLog } from "../util/runAndLog";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
-import { handleEventOnRepo } from "../invocation/git/handleEventOnRepo";
-import { shaHistory } from "../util/git";
-import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import { LocalMachineConfig } from "..";
-import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
 
 /**
  * Persist the project to the given local directory given expanded directory
@@ -44,12 +46,37 @@ export function fileSystemProjectPersister(cc: AutomationClientConnectionConfig,
         await runAndLog(`git commit -a -m "Initial commit from Atomist"`, { cwd: baseDir });
         await addGitHooksToProject(createdProject);
 
-        await handleEventOnRepo(cc, lc, {
+        await sendRepoCreationEvent(cc, id);
+        const sha = await lastSha(createdProject as GitProject);
+        const branch = "master";
+
+        await handlePushBasedEventOnRepo(cc, lc, {
             baseDir,
-            sha: shaHistory(createdProject as GitProject)[0],
-            branch: "master",
+            sha,
+            branch,
         }, "OnFirstPushToRepo");
+
+        // This is the first push
+        await handlePushBasedEventOnRepo(cc, lc, {
+            baseDir,
+            sha,
+            branch,
+        }, "SetGoalsOnPush");
 
         return successOn(createdProject);
     };
+}
+
+async function sendRepoCreationEvent(cc: AutomationClientConnectionConfig, id: RepoId) {
+    const payload: OnRepoCreation.Subscription = {
+        Repo: [{
+            owner: id.owner,
+            name: id.repo,
+            id: `${id.owner}/${id.repo}`,
+        }],
+    };
+    return invokeEventHandler(cc, {
+        name: "OnRepoCreation",
+        payload,
+    });
 }
