@@ -2,6 +2,7 @@ import { HandlerResult, logger } from "@atomist/automation-client";
 import axios, { AxiosError, AxiosPromise, AxiosResponse } from "axios";
 import { AxiosRequestConfig } from "axios";
 import { AutomationClientConnectionConfig } from "../AutomationClientConnectionConfig";
+import * as _ from "lodash";
 
 /**
  * Make a post to the SDM
@@ -30,7 +31,7 @@ function logResponse(url: string) {
 function interpretSdmResponse(config: AutomationClientConnectionConfig, url: string) {
     return (err: AxiosError): HandlerResult => {
         logger.error("Error accessing %s: %s", url, err.message);
-        if (err.message.includes("ECONNREFUSED")) {
+        if (_.get(err, "message", "").includes("ECONNREFUSED")) {
             const linkThatDemonstratesWhyTheSdmMightNotBeListening =
                 "https://github.com/atomist/github-sdm/blob/acd5f89cb2c3e96fa47ef85b32b2028ea2e045fb/src/atomist.config.ts#L62";
             logger.error("The SDM is not running or is not accepting connections.\n" +
@@ -40,7 +41,7 @@ function interpretSdmResponse(config: AutomationClientConnectionConfig, url: str
                 message: "Unable to connect to the SDM at " + config.baseEndpoint,
             };
         }
-        if (err.response.status === 401) {
+        if (_.get(err, "response.status") === 401) {
             return {
                 code: 1,
                 message: `Status 401 trying to contact the SDM. You are connecting as: [ ${config.user}:${config.password} ]`,
