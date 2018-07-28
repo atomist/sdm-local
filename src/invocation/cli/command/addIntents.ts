@@ -1,5 +1,5 @@
 import { logger } from "@atomist/automation-client";
-import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/metadata/automationMetadata";
+import { CommandHandlerMetadata, MappedParameterDeclaration, Parameter } from "@atomist/automation-client/metadata/automationMetadata";
 import * as _ from "lodash";
 import { Argv } from "yargs";
 import { PathElement, toPaths } from "../../../util/PathElement";
@@ -15,6 +15,7 @@ import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
 import { startHttpMessageListener } from "../io/httpMessageListener";
 import { suggestStartingAllMessagesListener } from "../support/suggestStartingAllMessagesListener";
+import { MappedParameter } from "@atomist/automation-client/decorators";
 
 /**
  * Add commands by name
@@ -176,13 +177,15 @@ async function runCommand(ai: AutomationClientInfo,
         .concat(extraArgs);
     await promptForMissingParameters(hm, args);
     const mpr: MappedParameterResolver = new ExpandedTreeMappedParameterResolver(ai);
+    const mappedParameters: { name: any; value: string | undefined }[] = hm.mapped_parameters.map(mp => ({
+        name: mp.name,
+        value: mpr.resolve(mp),
+    }));
+    await promptForMissingMappedParameters(hm, mappedParameters);
     const invocation: CommandHandlerInvocation = {
         name: hm.name,
         parameters: args,
-        mappedParameters: hm.mapped_parameters.map(mp => ({
-            name: mp.name,
-            value: mpr.resolve(mp),
-        })).filter(mp => !!mp.value),
+        mappedParameters: mappedParameters.filter(mp => !!mp.value),
     };
     logger.debug("Sending invocation %j\n", invocation);
     // Use repo channel if we're in a mapped repo channel
@@ -225,6 +228,26 @@ async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[
             // Replace any existing argument with this name that yargs has
             _.remove(args, arg => arg.name === enteredName);
             args.push({ name: convertToUsable(enteredName), value: fromPrompt[enteredName] });
+        });
+}
+
+async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mappedParameters: Array<{ name: string; value: string }>): Promise<void> {
+    const questions =
+        mappedParameters
+            .filter(mp => !mp.value)
+            .map(p => {
+                const nameToUse = convertToDisplayable(p.name);
+                return {
+                    name: nameToUse,
+                    message: `(mapped parameter) ${nameToUse}`,
+                };
+            });
+    const fromPrompt = await inquirer.prompt(questions);
+    Object.getOwnPropertyNames(fromPrompt)
+        .forEach(enteredName => {
+            // Replace any existing argument with this name that yargs has
+            _.remove(mappedParameters, arg => arg.name === enteredName);
+            mappedParameters.push({ name: convertToUsable(enteredName), value: fromPrompt[enteredName] });
         });
 }
 
