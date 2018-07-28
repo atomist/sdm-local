@@ -8,17 +8,23 @@ import { errorMessage } from "../invocation/cli/support/consoleOutput";
 import { addGitHooksToProject } from "../setup/addGitHooks";
 import { runAndLog } from "../util/runAndLog";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
+import { handleEventOnRepo } from "../invocation/git/handleEventOnRepo";
+import { shaHistory } from "../util/git";
+import { GitProject } from "@atomist/automation-client/project/git/GitProject";
+import { LocalMachineConfig } from "..";
+import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
 
 /**
  * Persist the project to the given local directory given expanded directory
- * conventions. Perform a git init
+ * conventions. Perform a git init and other after actions, such as installing
+ * our git hooks.
  * @return {ProjectPersister}
  */
-export function fileSystemProjectPersister(repositoryOwnerParentDirectory: string): ProjectPersister {
+export function fileSystemProjectPersister(cc: AutomationClientConnectionConfig, lc: LocalMachineConfig): ProjectPersister {
     return async (p, _, id, params) => {
-        const baseDir = `${repositoryOwnerParentDirectory}/${id.owner}/${id.repo}`;
+        const baseDir = `${lc.repositoryOwnerParentDirectory}/${id.owner}/${id.repo}`;
         const frr = FileSystemRemoteRepoRef.fromDirectory({
-            repositoryOwnerParentDirectory,
+            repositoryOwnerParentDirectory: lc.repositoryOwnerParentDirectory,
             baseDir,
         });
         // Override target repo to get file url
@@ -38,15 +44,11 @@ export function fileSystemProjectPersister(repositoryOwnerParentDirectory: strin
         await runAndLog(`git commit -a -m "Initial commit from Atomist"`, { cwd: baseDir });
         await addGitHooksToProject(createdProject);
 
-        // TODO Now we need to trigger a new repo event
-
-        errorMessage("Need to trigger new repo event");
-
-        // await handleEventOnRepo(ai, {
-        //     baseDir,
-        //     sha: shaHistory(createdProject as GitProject)[0],
-        //     branch: "master",
-        // }, "OnFirstPushToRepo");
+        await handleEventOnRepo(cc, lc, {
+            baseDir,
+            sha: shaHistory(createdProject as GitProject)[0],
+            branch: "master",
+        }, "OnFirstPushToRepo");
 
         return successOn(createdProject);
     };

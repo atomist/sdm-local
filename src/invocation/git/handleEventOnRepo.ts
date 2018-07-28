@@ -3,9 +3,10 @@ import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { OnPushToAnyBranch } from "@atomist/sdm";
 import { FileSystemRemoteRepoRef } from "../../binding/FileSystemRemoteRepoRef";
 import { pushFromLastCommit } from "../../binding/pushFromLastCommit";
-import { AutomationClientInfo } from "../AutomationClientInfo";
 import { errorMessage } from "../cli/support/consoleOutput";
 import { invokeEventHandler } from "../http/EventHandlerInvocation";
+import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
+import { LocalMachineConfig } from "../..";
 import Push = OnPushToAnyBranch.Push;
 
 /**
@@ -52,11 +53,11 @@ export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
 
 /**
  * Invoking the target remote client for this push.
- * @param ai information about automation client we're connected to
  * @param payload event data
  * @return {Promise<any>}
  */
-export async function handleGitHookEvent(ai: AutomationClientInfo,
+export async function handleGitHookEvent(cc: AutomationClientConnectionConfig,
+                                         lc: LocalMachineConfig,
                                          payload: GitHookInvocation) {
     if (!payload) {
         errorMessage("Payload must be supplied");
@@ -71,16 +72,22 @@ export async function handleGitHookEvent(ai: AutomationClientInfo,
         process.exit(1);
     }
 
-    return handleEventOnRepo(ai, payload, "SetGoalsOnPush",
-        push => ({
-            Push: [push],
-        }));
+    return handleEventOnRepo(cc, lc, payload, "SetGoalsOnPush");
 }
 
-export async function handleEventOnRepo(ai: AutomationClientInfo,
+/**
+ * Perform push-based event handling on this repo
+ * @param {EventOnRepo} payload
+ * @param {string} eventHandlerName
+ * @return {Promise<HandlerResult>}
+ */
+export async function handleEventOnRepo(cc: AutomationClientConnectionConfig,
+                                        lc: LocalMachineConfig,
                                         payload: EventOnRepo,
                                         eventHandlerName: string,
-                                        pushToPayload: (p: Push) => object) {
+                                        pushToPayload: (p: Push) => object = p => ({
+                                            Push: [p],
+                                        })) {
 
     // This git hook may be invoked from another git hook. This will cause these values to
     // be incorrect, so we need to delete them to have git work them out again from the directory we're passing via cwd
@@ -97,29 +104,29 @@ export async function handleEventOnRepo(ai: AutomationClientInfo,
         process.exit(1);
     }
 
-    const push = await createPush(ai, payload);
-    return invokeEventHandler(ai.connectionConfig, {
+    const push = await createPush(cc.atomistTeamId, lc.repositoryOwnerParentDirectory, payload);
+    return invokeEventHandler(cc, {
         name: eventHandlerName,
         payload: pushToPayload(push),
     });
 }
 
-async function createPush(ai: AutomationClientInfo, payload: EventOnRepo): Promise<OnPushToAnyBranch.Push> {
+async function createPush(teamId: string, repositoryOwnerParentDirectory: string, payload: EventOnRepo): Promise<OnPushToAnyBranch.Push> {
     const { baseDir, branch, sha } = payload;
-    return doWithProjectUnderExpandedDirectoryTree(baseDir, branch, sha, ai,
+    return doWithProjectUnderExpandedDirectoryTree(baseDir, branch, sha, repositoryOwnerParentDirectory,
         async p => {
-            return pushFromLastCommit(ai.connectionConfig.atomistTeamId, p);
+            return pushFromLastCommit(teamId, p);
         });
 }
 
 async function doWithProjectUnderExpandedDirectoryTree(baseDir: string,
                                                        branch: string,
                                                        sha: string,
-                                                       ai: AutomationClientInfo,
+                                                       repositoryOwnerParentDirectory: string,
                                                        action: (p: GitProject) => Promise<any>) {
     const p = GitCommandGitProject.fromBaseDir(
         FileSystemRemoteRepoRef.fromDirectory({
-            repositoryOwnerParentDirectory: ai.localConfig.repositoryOwnerParentDirectory,
+            repositoryOwnerParentDirectory,
             baseDir, branch, sha,
         }),
         baseDir,

@@ -12,7 +12,7 @@ export async function runOnGitHook(argv: string[], connectionConfig: AutomationC
     const invocation = argsToGitHookInvocation(argv);
     logger.debug("Executing git hook against project %j", invocation);
     return logExceptionsToConsole(() =>
-            handleGitHookEvent(automationClientInfo, invocation),
+            handleGitHookEvent(connectionConfig, automationClientInfo.localConfig, invocation),
         automationClientInfo.connectionConfig.showErrorStacks,
     );
 }

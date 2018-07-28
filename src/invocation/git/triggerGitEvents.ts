@@ -34,7 +34,7 @@ export async function triggerGitEvents(ai: AutomationClientInfo, event: string, 
             }
             const invocation = { event, baseDir: currentDir, branch, sha };
             logger.debug("Trigger %j", invocation);
-            await handleGitHookEvent(ai, invocation);
+            await handleGitHookEvent(ai.connectionConfig, ai.localConfig, invocation);
         }
     } else {
         errorMessage(

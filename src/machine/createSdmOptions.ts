@@ -9,25 +9,27 @@ import { fileSystemProjectPersister } from "../binding/fileSystemProjectPersiste
 import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
 import { LocalRepoTargets } from "../binding/LocalRepoTargets";
 import { LocalMachineConfig } from "./LocalMachineConfig";
+import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
 
 /**
  * Merge user-supplied configuration with defaults
  * to provide configuration for a local-mode SDM
- * @param {LocalMachineConfig} userConfig
+ * @param {LocalMachineConfig} localMachineConfig
  */
-export function createSdmOptions(userConfig: LocalMachineConfig): SoftwareDeliveryMachineOptions {
-    const repoRefResolver = new LocalRepoRefResolver(userConfig.repositoryOwnerParentDirectory);
+export function createSdmOptions(localMachineConfig: LocalMachineConfig): SoftwareDeliveryMachineOptions {
+    const cc = DefaultAutomationClientConnectionConfig;
+    const repoRefResolver = new LocalRepoRefResolver(localMachineConfig.repositoryOwnerParentDirectory);
     return {
         // TODO this is the only use of sdm-core
         artifactStore: new EphemeralLocalArtifactStore(),
         projectLoader: new FileSystemProjectLoader(
             new CachingProjectLoader(),
-            userConfig),
+            localMachineConfig),
         logFactory: async (context, goal) => new LoggingProgressLog(goal.name),
         credentialsResolver: EnvironmentTokenCredentialsResolver,
         repoRefResolver,
-        repoFinder: expandedTreeRepoFinder(userConfig.repositoryOwnerParentDirectory),
-        projectPersister: fileSystemProjectPersister(userConfig.repositoryOwnerParentDirectory),
-        targets: () => new LocalRepoTargets(userConfig.repositoryOwnerParentDirectory),
+        repoFinder: expandedTreeRepoFinder(localMachineConfig.repositoryOwnerParentDirectory),
+        projectPersister: fileSystemProjectPersister(cc, localMachineConfig),
+        targets: () => new LocalRepoTargets(localMachineConfig.repositoryOwnerParentDirectory),
     };
 }
