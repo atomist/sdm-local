@@ -20,7 +20,7 @@ export async function runSlalom(config: AutomationClientConnectionConfig) {
     verifyLocalSdm(automationClientInfo);
 
     addTriggerCommand(automationClientInfo, yargs);
-    addStartListenerCommand(automationClientInfo, yargs);
+    addStartListenerCommand(config, yargs);
     addGitHooksCommands(automationClientInfo, yargs);
     addCommandsByName(automationClientInfo, yargs);
     addIntents(automationClientInfo, yargs);

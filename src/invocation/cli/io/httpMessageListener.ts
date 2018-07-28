@@ -7,6 +7,9 @@ import { infoMessage } from "../support/consoleOutput";
 import * as bodyParser from "body-parser";
 import { CommandCompletionDestination } from "../../../machine/localPostProcessor";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
+import { AllMessagesPort } from "../command/addStartListenerCommand";
+
+import axios from "axios";
 
 export const MessageRoute = "/message";
 
@@ -25,7 +28,7 @@ export interface StreamedMessage {
  * @param killOnCommandCompletion should this be shut down on command completion
  */
 export function startHttpMessageListener(cc: AutomationClientConnectionConfig,
-                                         demonPort: number,
+                                         demonPort: number = AllMessagesPort,
                                          killOnCommandCompletion: boolean = false) {
     const messageClient = new ConsoleMessageClient("general", ProcessStdoutSender, cc);
     const app = express();
@@ -57,6 +60,19 @@ export function startHttpMessageListener(cc: AutomationClientConnectionConfig,
  * @param {number} demonPort
  * @return {string}
  */
-export function listenerUrl(demonPort: number): string {
+export function messageListenerEndpoint(demonPort: number): string {
     return `http://localhost:${demonPort}${MessageRoute}`;
+}
+
+export function messageListenerRoot(demonPort: number): string {
+    return `http://localhost:${demonPort}/`;
+}
+
+export async function isListenerRunning(demonPort: number = AllMessagesPort): Promise<boolean> {
+    try {
+        await axios.get(messageListenerRoot(demonPort));
+        return true;
+    } catch (err) {
+        return false;
+    }
 }

@@ -14,6 +14,7 @@ import { newCorrelationId, pidToPort } from "../../../machine/correlationId";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
 import { startHttpMessageListener } from "../io/httpMessageListener";
+import { suggestStartingAllMessagesListener } from "../support/suggestStartingAllMessagesListener";
 
 /**
  * Add commands by name
@@ -164,6 +165,7 @@ async function runByCommandName(ai: AutomationClientInfo,
 async function runCommand(ai: AutomationClientInfo,
                           hm: CommandHandlerMetadata,
                           command: object): Promise<any> {
+    await suggestStartingAllMessagesListener();
     startHttpMessageListener(ai.connectionConfig, pidToPort(process.pid), true);
     const extraArgs = Object.getOwnPropertyNames(command)
         .map(name => ({ name: convertToUsable(name), value: command[name] }))
