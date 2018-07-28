@@ -47,9 +47,9 @@ export async function invokeCommandHandler(config: AutomationClientConnectionCon
     };
     logger.debug("Hitting %s to invoke command %s using %j", url, invocation.name, data);
     const resp = await postToSdm(config, url, data);
-    assert(resp.data.code === 0,
-        "Command handler did not succeed. Returned: " + JSON.stringify(resp.data, null, 2));
-    return resp.data;
+    assert(resp.code === 0,
+        "Command handler did not succeed. Returned: " + JSON.stringify(resp, null, 2));
+    return resp;
 }
 
 function propertiesToArgs(o: any): Arg[] {

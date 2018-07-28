@@ -5,6 +5,8 @@ import * as assert from "power-assert";
 import { newCorrelationId } from "../../machine/correlationId";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
+import * as stringify from "json-stringify-safe";
+import { replacer } from "@atomist/automation-client/internal/transport/AbstractRequestProcessor";
 
 export interface EventHandlerInvocation {
     name: string;
@@ -42,9 +44,9 @@ export async function invokeEventHandler(config: AutomationClientConnectionConfi
         data: invocation.payload,
     };
 
-    logger.info("Sending %s to event %s using %j", url, invocation.name, data);
+    logger.info("Sending %s to event %s using %s", url, invocation.name, stringify(data, replacer));
     const resp = await postToSdm(config, url, data);
-    assert(resp.data.code !== 0,
-        "Event handler did not succeed. Returned: " + JSON.stringify(resp.data, null, 2));
-    return resp.data;
+    assert(resp.code !== 0,
+        "Event handler did not succeed. Returned: " + JSON.stringify(resp, null, 2));
+    return resp;
 }
