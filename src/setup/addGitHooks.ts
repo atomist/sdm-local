@@ -129,14 +129,14 @@ function scriptFragments(atomistHookScriptPath: string, gitHookScript: string) {
         ${atomistHookScriptPath} ${gitHookScript} pre-receive \${PWD} $refname $newrev
 	done`,
         "post-commit": `
-branch=$(git rev-parse HEAD)
-sha=$(git rev-parse --abbrev-ref HEAD)
+sha=$(git rev-parse HEAD)
+branch=$(git rev-parse --abbrev-ref HEAD)
 ${atomistHookScriptPath} ${gitHookScript} post-commit \${PWD} $branch $sha
 `,
 
         "post-merge": `
-branch=$(git rev-parse HEAD)
-sha=$(git rev-parse --abbrev-ref HEAD)
+sha=$(git rev-parse HEAD)
+branch=$(git rev-parse --abbrev-ref HEAD)
 ${atomistHookScriptPath} ${gitHookScript} post-merge \${PWD} $branch $sha
 `,
     };

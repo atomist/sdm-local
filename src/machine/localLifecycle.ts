@@ -35,7 +35,8 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
     });
     sdm.addGoalsSetListener(async gsi => {
         return gsi.addressChannels(
-            chalk.yellow(`▶ Goals for ${gsi.push.commits[0].sha}: ${gsi.goalSet.goals.map(g => chalk.italic(g.name)).join(" ⏦ ")}\n`) +
+            chalk.yellow(`▶ Goals for ${gsi.push.commits[0].sha} on branch ${gsi.push.branch}: ${
+                gsi.goalSet.goals.map(g => chalk.italic(g.name)).join(" ⏦ ")}\n`) +
             `\t${chalk.italic(gsi.push.commits[0].message)}\n`);
     });
     sdm.addGoalExecutionListener(async gci => {
@@ -58,6 +59,9 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
     });
     sdm.addBuildListener(async bu => {
         return bu.addressChannels(`${buildStatusEmoji(bu.build.status)} Build status is \`${bu.build.status}\` ${onWhat(bu.build.push)}`);
+    });
+    sdm.addDeploymentListener(async li => {
+        return li.addressChannels(`Successful deployment of ${li.id.url} at ${li.status.targetUrl}`);
     });
 }
 
