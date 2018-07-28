@@ -1,9 +1,7 @@
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import { CommitForSdmGoal, CoreRepoFieldsAndChannels, OnPushToAnyBranch, PushFields, PushForSdmGoal } from "@atomist/sdm";
-import { commitMessageForSha, lastCommitMessage, retrieveLogDataForSha, shaHistory, timestampFromCommit } from "../util/git";
+import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, PushFields, PushForSdmGoal } from "@atomist/sdm";
+import { commitMessageForSha, retrieveLogDataForSha, shaHistory, timestampFromCommit } from "../util/git";
 import Author = PushForSdmGoal.Author;
-import Commit = CommitForSdmGoal.Commit;
-import Commits = PushForSdmGoal.Commits;
 import Before = PushForSdmGoal.Before;
 import After = PushFields.After;
 import Committer = PushForSdmGoal.Committer;
@@ -39,7 +37,7 @@ async function authorFromCommit(sha: string, project: GitProject): Promise<Autho
 }
 
 async function committerFromCommit(sha: string, project: GitProject): Promise<Committer> {
-    const result = await retrieveLogDataForSha(sha , project.baseDir, "cn", "cN", "ce")
+    const result = await retrieveLogDataForSha(sha , project.baseDir, "cn", "cN", "ce");
     return {
         login: result.cn,
         person: {
@@ -76,7 +74,7 @@ async function buildCommitFromSha(sha: string, project: GitProject): Promise<Pus
 }
 
 /**
- * Make a push from the last commit to this local git project
+ * Make a push to send to the Atomist event endpoint from the last commit to this local git project.
  * @param teamId id of current team
  * @param {GitProject} project
  * @return {OnPushToAnyBranch.Push}
@@ -86,7 +84,7 @@ export async function pushFromLastCommit(teamId: string, project: GitProject): P
     const repo = repoFields(teamId, project);
     const lastCommit = await buildCommitFromSha(status.sha, project);
     const lastShas = await shaHistory(project);
-    const penultimateCommit = !!lastShas && lastShas.length >= 2 ?
+    const penultimateCommit = (!!lastShas && lastShas.length >= 2) ?
         await buildCommitFromSha(lastShas[1], project) :
         undefined;
     return {

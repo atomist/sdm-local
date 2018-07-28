@@ -1,6 +1,6 @@
+import { logger } from "@atomist/automation-client";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { runAndLog } from "./runAndLog";
-import { logger } from "@atomist/automation-client";
 
 /**
  * Get the last git commit message
