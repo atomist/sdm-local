@@ -36,12 +36,12 @@
     "tslint": "^5.10.0"
   },
   "peerDependencies": {
-    "@atomist/sdm": "^0.3.0",
+    "@atomist/sdm": "0.3.2-20180728015553",
     "@atomist/sdm-core": "^0.3.1"
   },
   "devDependencies": {
-    "@atomist/automation-client": "0.18.0-20180725183614",
-    "@atomist/sdm": "https://r.atomist.com/1256816861",
+    "@atomist/automation-client": "0.18.1-20180726234320",
+    "@atomist/sdm": "0.3.2-20180728015553",
     "@atomist/sdm-core": "https://r.atomist.com/42723201",
     "@types/lodash": "^4.14.109",
     "@types/mocha": "^2.2.48",
@@ -88,7 +88,7 @@
     "typedoc": "typedoc --mode modules --excludeExternals --out build/typedoc src"
   },
   "engines": {
-    "node": "8.x.x",
+    "node": ">=9.2",
     "npm": "5.x.x"
   }
 }
