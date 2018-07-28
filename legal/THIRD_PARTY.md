@@ -14,7 +14,7 @@ This page details all runtime OSS dependencies of `@atomist/slalom`.
 |[BSD](#bsd)|1|
 |[Custom: http://npm-stat.com/charts.html](#custom-httpnpm-statcomchartshtml)|3|
 |[Custom: https://github.com/RIAEvangelist/easy-stack](#custom-httpsgithubcomriaevangelisteasy-stack)|1|
-|[ISC](#isc)|15|
+|[ISC](#isc)|16|
 |[MIT](#mit)|125|
 |[Unlicense](#unlicense)|1|
 
@@ -75,6 +75,7 @@ ISC License - [https://www.isc.org/downloads/software-support-policy/isc-license
 |`inflight`|`1.0.6`|Isaac Z. Schlueter|[https://github.com/npm/inflight](https://github.com/npm/inflight)|
 |`inherits`|`2.0.3`||[https://github.com/isaacs/inherits](https://github.com/isaacs/inherits)|
 |`isexe`|`2.0.0`|Isaac Z. Schlueter|[https://github.com/isaacs/isexe](https://github.com/isaacs/isexe)|
+|`json-stringify-safe`|`5.0.1`|Isaac Z. Schlueter|[https://github.com/isaacs/json-stringify-safe](https://github.com/isaacs/json-stringify-safe)|
 |`minimatch`|`3.0.4`|Isaac Z. Schlueter|[https://github.com/isaacs/minimatch](https://github.com/isaacs/minimatch)|
 |`mute-stream`|`0.0.7`|Isaac Z. Schlueter|[https://github.com/isaacs/mute-stream](https://github.com/isaacs/mute-stream)|
 |`once`|`1.4.0`|Isaac Z. Schlueter|[https://github.com/isaacs/once](https://github.com/isaacs/once)|
