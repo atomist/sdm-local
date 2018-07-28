@@ -1,12 +1,12 @@
 import { HandlerResult, logger, Secrets } from "@atomist/automation-client";
 import { Secret } from "@atomist/automation-client/internal/invoker/Payload";
 
+import { replacer } from "@atomist/automation-client/internal/transport/AbstractRequestProcessor";
+import * as stringify from "json-stringify-safe";
 import * as assert from "power-assert";
 import { newCorrelationId } from "../../machine/correlationId";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
-import * as stringify from "json-stringify-safe";
-import { replacer } from "@atomist/automation-client/internal/transport/AbstractRequestProcessor";
 
 export interface EventHandlerInvocation {
     name: string;
