@@ -1,16 +1,20 @@
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, PushFields, PushForSdmGoal } from "@atomist/sdm";
+import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, OwnerType, PushFields, PushForSdmGoal } from "@atomist/sdm";
 import { commitMessageForSha, retrieveLogDataForSha, shaHistory, timestampFromCommit } from "../util/git";
+import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
+import { RepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import Author = PushForSdmGoal.Author;
 import Before = PushForSdmGoal.Before;
 import After = PushFields.After;
 import Committer = PushForSdmGoal.Committer;
 
-function repoFields(teamId: string, project: GitProject): CoreRepoFieldsAndChannels.Fragment {
+export function repoFieldsFromProject(teamId: string, id: RepoRef): CoreRepoFieldsAndChannels.Fragment {
     return {
-        owner: project.id.owner,
-        name: project.id.repo,
+        owner: id.owner,
+        name: id.repo,
         org: {
+            owner: id.owner,
+            ownerType: "organization" as OwnerType,
             provider: {
                 providerType: "github_com" as any,
                 apiUrl: "just.not.there",
@@ -20,15 +24,17 @@ function repoFields(teamId: string, project: GitProject): CoreRepoFieldsAndChann
         },
         channels: [
             {
-                name: project.id.repo,
-                id: project.id.repo,
+                name: id.repo,
+                id: id.repo,
                 team: { id: teamId },
             },
         ],
+        // TODO hardcoded
+        defaultBranch: "master",
     };
 }
 
-async function authorFromCommit(sha: string, project: GitProject): Promise<Author> {
+async function authorFromCommit(sha: string, project: LocalProject): Promise<Author> {
     const result = await retrieveLogDataForSha(sha , project.baseDir, "an");
     return {
         name: result.an,
@@ -81,7 +87,7 @@ async function buildCommitFromSha(sha: string, project: GitProject): Promise<Pus
  */
 export async function pushFromLastCommit(teamId: string, project: GitProject): Promise<OnPushToAnyBranch.Push> {
     const status = await project.gitStatus();
-    const repo = repoFields(teamId, project);
+    const repo = repoFieldsFromProject(teamId, project.id);
     const lastCommit = await buildCommitFromSha(status.sha, project);
     const lastShas = await shaHistory(project);
     const penultimateCommit = (!!lastShas && lastShas.length >= 2) ?

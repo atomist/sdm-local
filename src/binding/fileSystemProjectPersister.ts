@@ -1,20 +1,20 @@
 import { logger } from "@atomist/automation-client";
 import { successOn } from "@atomist/automation-client/action/ActionResult";
-import { RepoId } from "@atomist/automation-client/operations/common/RepoId";
+import { RepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { ProjectPersister } from "@atomist/automation-client/operations/generate/generatorUtils";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
-import { OnRepoCreation } from "@atomist/sdm";
 import * as fs from "fs";
 import { promisify } from "util";
 import { LocalMachineConfig } from "..";
 import { handlePushBasedEventOnRepo } from "../invocation/git/handlePushBasedEventOnRepo";
 import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
-import { invokeEventHandler } from "../invocation/http/EventHandlerInvocation";
 import { addGitHooksToProject } from "../setup/addGitHooks";
 import { lastSha } from "../util/git";
 import { runAndLog } from "../util/runAndLog";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
+import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
+import { sendChannelLinkEvent, sendRepoCreationEvent, sendRepoOnboardingEvent } from "./repoOnboardingEvents";
 
 /**
  * Persist the project to the given local directory given expanded directory
@@ -46,37 +46,41 @@ export function fileSystemProjectPersister(cc: AutomationClientConnectionConfig,
         await runAndLog(`git commit -a -m "Initial commit from Atomist"`, { cwd: baseDir });
         await addGitHooksToProject(createdProject);
 
-        await sendRepoCreationEvent(cc, id);
-        const sha = await lastSha(createdProject as GitProject);
-        const branch = "master";
-
-        await handlePushBasedEventOnRepo(cc, lc, {
-            baseDir,
-            sha,
-            branch,
-        }, "OnFirstPushToRepo");
-
-        // This is the first push
-        await handlePushBasedEventOnRepo(cc, lc, {
-            baseDir,
-            sha,
-            branch,
-        }, "SetGoalsOnPush");
-
+        await emitEventsForNewProject(cc, lc, createdProject, id);
         return successOn(createdProject);
     };
 }
 
-async function sendRepoCreationEvent(cc: AutomationClientConnectionConfig, id: RepoId) {
-    const payload: OnRepoCreation.Subscription = {
-        Repo: [{
-            owner: id.owner,
-            name: id.repo,
-            id: `${id.owner}/${id.repo}`,
-        }],
-    };
-    return invokeEventHandler(cc, {
-        name: "OnRepoCreation",
-        payload,
-    });
+/**
+ * Send events that should apply to a new project
+ * @param {AutomationClientConnectionConfig} cc
+ * @param {} lc
+ * @param {LocalProject} createdProject
+ * @param {RepoRef} id
+ * @return {Promise<void>}
+ */
+async function emitEventsForNewProject(cc: AutomationClientConnectionConfig,
+                                       lc: LocalMachineConfig,
+                                       createdProject: LocalProject,
+                                       id: RepoRef) {
+    await sendRepoCreationEvent(cc, id);
+
+    const sha = await lastSha(createdProject as GitProject);
+    const branch = "master";
+
+    await handlePushBasedEventOnRepo(cc, lc, {
+        baseDir: createdProject.baseDir,
+        sha,
+        branch,
+    }, "OnFirstPushToRepo");
+
+    // This is the first push
+    await handlePushBasedEventOnRepo(cc, lc, {
+        baseDir: createdProject.baseDir,
+        sha,
+        branch,
+    }, "SetGoalsOnPush");
+
+    await sendRepoOnboardingEvent(cc, id);
+    await sendChannelLinkEvent(cc, id);
 }

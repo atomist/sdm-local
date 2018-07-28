@@ -6,6 +6,8 @@ import { Argv } from "yargs";
 import { addGitHooks } from "../../../setup/addGitHooks";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../support/consoleOutput";
+import { sendChannelLinkEvent, sendRepoOnboardingEvent } from "../../../binding/repoOnboardingEvents";
+import { infoMessage } from "../../..";
 
 export function addImportFromGitRemoteCommand(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({
@@ -22,16 +24,18 @@ export function addImportFromGitRemoteCommand(ai: AutomationClientInfo, yargs: A
 }
 
 async function importFromGitRemote(ai: AutomationClientInfo,
-                                   org: string,
+                                   owner: string,
                                    repo: string,
                                    remoteBase: string): Promise<any> {
-    process.stdout.write(`Importing Git remote project ${remoteBase}/${org}/${repo}`);
-    const orgDir = `${ai.localConfig.repositoryOwnerParentDirectory}/${org}`;
+    infoMessage(`Importing Git remote project ${remoteBase}/${owner}/${repo}`);
+    const orgDir = `${ai.localConfig.repositoryOwnerParentDirectory}/${owner}`;
     if (!fs.existsSync(orgDir)) {
         fs.mkdirSync(orgDir);
     }
-    await promisify(exec)(`git clone ${remoteBase}/${org}/${repo}`,
+    await promisify(exec)(`git clone ${remoteBase}/${owner}/${repo}`,
         { cwd: orgDir });
-    return addGitHooks(new GitHubRepoRef(org, repo),
+    await addGitHooks(new GitHubRepoRef(owner, repo),
         `${orgDir}/${repo}`);
+    await sendRepoOnboardingEvent(ai.connectionConfig, { owner, repo});
+    await sendChannelLinkEvent(ai.connectionConfig, { owner, repo});
 }
