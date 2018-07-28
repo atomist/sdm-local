@@ -27,7 +27,7 @@ export function createSdmOptions(localMachineConfig: LocalMachineConfig): Softwa
         projectLoader: new FileSystemProjectLoader(
             new CachingProjectLoader(),
             localMachineConfig),
-        logFactory: async (context, goal) => new LoggingProgressLog(goal.name),
+        logFactory: async (context, goal) => new LoggingProgressLog(goal.name, "info"),
         credentialsResolver: EnvironmentTokenCredentialsResolver,
         repoRefResolver,
         repoFinder: expandedTreeRepoFinder(localMachineConfig.repositoryOwnerParentDirectory),
