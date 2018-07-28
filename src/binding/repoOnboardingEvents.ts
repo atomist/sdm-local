@@ -1,9 +1,8 @@
 import { RepoId } from "@atomist/automation-client/operations/common/RepoId";
 import { OnRepoCreation } from "@atomist/sdm";
-import { LocalMachineConfig } from "..";
+import { CoreRepoFieldsAndChannels, OnChannelLink, OnRepoOnboarded } from "@atomist/sdm-core/typings/types";
 import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
 import { invokeEventHandler } from "../invocation/http/EventHandlerInvocation";
-import { CoreRepoFieldsAndChannels, OnChannelLink, OnRepoOnboarded } from "@atomist/sdm-core/typings/types";
 import { repoFieldsFromProject } from "./pushFromLastCommit";
 
 export async function sendRepoCreationEvent(cc: AutomationClientConnectionConfig, id: RepoId) {

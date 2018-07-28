@@ -3,6 +3,7 @@ import { successOn } from "@atomist/automation-client/action/ActionResult";
 import { RepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { ProjectPersister } from "@atomist/automation-client/operations/generate/generatorUtils";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
+import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
 import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
 import * as fs from "fs";
 import { promisify } from "util";
@@ -13,7 +14,6 @@ import { addGitHooksToProject } from "../setup/addGitHooks";
 import { lastSha } from "../util/git";
 import { runAndLog } from "../util/runAndLog";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
-import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
 import { sendChannelLinkEvent, sendRepoCreationEvent, sendRepoOnboardingEvent } from "./repoOnboardingEvents";
 
 /**

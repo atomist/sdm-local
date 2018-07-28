@@ -3,11 +3,11 @@ import { exec } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";
 import { Argv } from "yargs";
+import { infoMessage } from "../../..";
+import { sendChannelLinkEvent, sendRepoOnboardingEvent } from "../../../binding/repoOnboardingEvents";
 import { addGitHooks } from "../../../setup/addGitHooks";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../support/consoleOutput";
-import { sendChannelLinkEvent, sendRepoOnboardingEvent } from "../../../binding/repoOnboardingEvents";
-import { infoMessage } from "../../..";
 
 export function addImportFromGitRemoteCommand(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({

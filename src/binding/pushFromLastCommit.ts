@@ -1,8 +1,8 @@
+import { RepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
+import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
 import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, OwnerType, PushFields, PushForSdmGoal } from "@atomist/sdm";
 import { commitMessageForSha, retrieveLogDataForSha, shaHistory, timestampFromCommit } from "../util/git";
-import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
-import { RepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import Author = PushForSdmGoal.Author;
 import Before = PushForSdmGoal.Before;
 import After = PushFields.After;
