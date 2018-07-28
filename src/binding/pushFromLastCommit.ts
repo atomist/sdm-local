@@ -1,6 +1,12 @@
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, PushFields } from "@atomist/sdm";
-import { lastCommitMessage } from "../util/git";
+import { CommitForSdmGoal, CoreRepoFieldsAndChannels, OnPushToAnyBranch, PushFields, PushForSdmGoal } from "@atomist/sdm";
+import { commitMessageForSha, lastCommitMessage, retrieveLogDataForSha, shaHistory, timestampFromCommit } from "../util/git";
+import Author = PushForSdmGoal.Author;
+import Commit = CommitForSdmGoal.Commit;
+import Commits = PushForSdmGoal.Commits;
+import Before = PushForSdmGoal.Before;
+import After = PushFields.After;
+import Committer = PushForSdmGoal.Committer;
 
 function repoFields(teamId: string, project: GitProject): CoreRepoFieldsAndChannels.Fragment {
     return {
@@ -24,6 +30,51 @@ function repoFields(teamId: string, project: GitProject): CoreRepoFieldsAndChann
     };
 }
 
+async function authorFromCommit(sha: string, project: GitProject): Promise<Author> {
+    const result = await retrieveLogDataForSha(sha , project.baseDir, "an");
+    return {
+        name: result.an,
+        login: result.an,
+    };
+}
+
+async function committerFromCommit(sha: string, project: GitProject): Promise<Committer> {
+    const result = await retrieveLogDataForSha(sha , project.baseDir, "cn", "cN", "ce")
+    return {
+        login: result.cn,
+        person: {
+            chatId: {
+                screenName: result.cN,
+            },
+            gitHubId: {
+                login: result.cn,
+            },
+            forename: "",
+            surname: result.cn,
+            name: result.cn,
+            emails: [{
+                address: result.ce,
+            }],
+        },
+    };
+}
+
+/**
+ * Build an Atomist commit structure from the given sha
+ * @param {string} sha
+ * @param {GitProject} project
+ * @return {Promise<PushFields.Commits & PushForSdmGoal.Before & PushFields.After>}
+ */
+async function buildCommitFromSha(sha: string, project: GitProject): Promise<PushFields.Commits & Before & After> {
+    return {
+        message: await commitMessageForSha(sha, project),
+        sha,
+        committer: await committerFromCommit(sha, project),
+        author: await authorFromCommit(sha, project),
+        timestamp: await timestampFromCommit(sha, project),
+    };
+}
+
 /**
  * Make a push from the last commit to this local git project
  * @param teamId id of current team
@@ -33,10 +84,11 @@ function repoFields(teamId: string, project: GitProject): CoreRepoFieldsAndChann
 export async function pushFromLastCommit(teamId: string, project: GitProject): Promise<OnPushToAnyBranch.Push> {
     const status = await project.gitStatus();
     const repo = repoFields(teamId, project);
-    const lastCommit: PushFields.Commits = {
-        message: await lastCommitMessage(project),
-        sha: status.sha,
-    };
+    const lastCommit = await buildCommitFromSha(status.sha, project);
+    const lastShas = await shaHistory(project);
+    const penultimateCommit = !!lastShas && lastShas.length >= 2 ?
+        await buildCommitFromSha(lastShas[1], project) :
+        undefined;
     return {
         id: new Date().getTime() + "_",
         branch: project.id.branch,
@@ -45,5 +97,7 @@ export async function pushFromLastCommit(teamId: string, project: GitProject): P
             lastCommit,
         ],
         after: lastCommit,
+        before: penultimateCommit,
+        timestamp: lastCommit.timestamp,
     };
 }
