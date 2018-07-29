@@ -3,8 +3,9 @@
 A software delivery machine helps you write and deliver code that is up to your own standards, at scale.
 This project runs a software delivery machine locally on your machine, responding to your commands and your commits.
 
-For instance, it can
-- every time you make a commit, perform a build in the background, and tell you if it fails.
+For instance:
+
+- Every time you make a commit, perform a build in the background, and tell you if it fails.
 - every time you make a commit, fix trivial linting errors.
 - at your command, perform common code changes that you program (such as upgrade a library). It can do this across all the repositories you have checked out, and tell you if this causes any build failures.
 - at your command, create a new project by copying and modifying a working project you already have.
@@ -51,17 +52,17 @@ Here is an [architecture diagram](https://github.com/atomisthq/slalom/blob/maste
 ### Setup
 
 To create your local SDM, you need to:
-1) have an SDM. Start by cloning the [seed-sdm](https://github.com/atomist/seed-sdm). (TODO: create a command in this repo to do this)
 
-2) enable local mode. This is safe to commit (TEMPORARY: or will be when slalom is published), because it will not change the functionality in your SDM unless your environment sets LOCAL_MODE to true. (TODO: make an editor in this repo to do this)
--   add an extension pack to a createMachine function. [example](https://github.com/atomist/sample-sdm/blob/a00aaf3d4b3f8412d131194214da4dc7a5802738/src/atomist.config.ts#L65)
+- have an SDM. Start by cloning the [seed-sdm](https://github.com/atomist/seed-sdm). (TODO: create a command in this repo to do this)
+- enable local mode. This is safe to commit (TEMPORARY: or will be when slalom is published), because it will not change the functionality in your SDM unless your environment sets LOCAL_MODE to true. (TODO: make an editor in this repo to do this)
+- add an extension pack to a createMachine function, like [this](https://github.com/atomist/sample-sdm/blob/a00aaf3d4b3f8412d131194214da4dc7a5802738/src/atomist.config.ts#L65).
+
 ```typescript
-
 import { LocalLifecycle, supportLocal } from "@atomist/slalom";
 
 sdm.addExtensionPacks(LocalLifecycle);
 ```
--   Add a postProcessor to your configuration in `atomist.config.ts`. [example](https://github.com/atomist/sample-sdm/blob/a00aaf3d4b3f8412d131194214da4dc7a5802738/src/atomist.config.ts#L104)
+- add a postProcessor to your configuration in `atomist.config.ts`. [example](https://github.com/atomist/sample-sdm/blob/a00aaf3d4b3f8412d131194214da4dc7a5802738/src/atomist.config.ts#L104)
 
 ```typescript
 postProcessors: [
@@ -69,11 +70,9 @@ postProcessors: [
     ...
 ],
 ```
--   define `MyLocalConfig` as a LocalRepositoryConfig. You can use this [example](https://github.com/atomist/sample-sdm/blob/d1f51563683e961b3548aed77c5501221cc968c8/src/local.ts) as-is.
--   set the `repositoryOwnerParentDirectory` (in code or in the SDM_PROJECTS_ROOT environment variable, if you use the example) to a directory on your computer where you check out projects, as described below.
+- define `MyLocalConfig` as a LocalRepositoryConfig. You can use this [example](https://github.com/atomist/sample-sdm/blob/d1f51563683e961b3548aed77c5501221cc968c8/src/local.ts) as-is.
 
-
-The SDM works on projects that are `git` repositories.
+The SDM works on projects that must be `git` repositories.
 
 To find projects on your filesystem, the SDM looks in directories group by owner (on GitHub, the owner is an organization
 or user; on BitBucket, the owner is a user or a BitBucket Project), and it looks for each owner directory
@@ -93,7 +92,7 @@ $SDM_PROJECTS_ROOT
 ```
 3) Send commit events from your repositories to your SDM. See "Configure existing projects" below. TODO: test this. how does it know
  
-4) *TEMPORARY for Atomists*: currently slalom isn't published on npm, so you have to:
+4) *TEMPORARY for Atomists*: currently Slalom isn't published on npm, so you have to:
 -   clone this repository. In its directory:
 -   `npm install`
 -   `npm run build`
@@ -176,7 +175,7 @@ Go to the correct organization directory, creating it if necessary. Then create 
 ```
 ln -s /Users/rodjohnson/sforzando-dev/idea-projects/flight1
 ```
-Then run `slalom add-git-hooks` and the linked project will be treatd as a normal project.
+Then run `slalom add-git-hooks` and the linked project will be treated as a normal project.
 
 ### Import Command
 
@@ -188,6 +187,7 @@ GitHub.com repository in the right place in the expanded tree and automatically
 slalom import --owner=johnsonr --repo=initializr
 
 ```
+This is the recommended way, as it will run Atomist onboarding events for a new repo.
 
 Output will look as follows:
 
@@ -214,6 +214,14 @@ slalom create spring
 
 No parameters beyond the command name are required. However, command-specific parameters may be provided in options syntax.
 
+## Architecture
+
+This project consists of three parts:
+
+- An Atomist **automation client** running in its own process, in a special local mode
+- A command line.
+- `git` hooks inserted in those projects you wish to use the local SDM with.
+
 ## Advanced Setup
 
 ### Mapped Parameters and Secrets
@@ -222,9 +230,16 @@ Environment variables
 - `SLACK_TEAM`
 - `SLACK_USER_NAME`
 
+### Required Ports
+
+The following ports are required:
+
+- `2866`: The default port for your Automation client
+- `6660`: The default port for listening to all Atomist messages
+- [Port range above `10000`]: Used for routing messages back to command line.
+
 
 ## Roadmap
 
-- Depend only on `sdm-api` project. This will require it to be split out and `automation-client` to be split to pull out the Project API, which is part of the SDM API.
 - Decide how to get build results from external tools in (if we wish to)
 
