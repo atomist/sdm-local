@@ -35,6 +35,21 @@ export class FileSystemProjectLoader implements ProjectLoader {
 
 }
 
+const AtomistTemporaryBranch = "atomist-internal";
+
+/**
+ * Create a branch that will be used internally only
+ * @param {string} branch
+ * @return {string}
+ */
+function atomistTemporaryBranchFor(branch: string) {
+    return `${AtomistTemporaryBranch}/${branch}`;
+}
+
+export function isAtomistTemporaryBranch(branch: string) {
+    return branch.startsWith(AtomistTemporaryBranch);
+}
+
 /**
  * Change the behavior of our project to push to an Atomist branch and merge if it cannot
  * push to the checked out branch.
@@ -53,10 +68,11 @@ function changeToPushToAtomistBranch(localConfig: LocalMachineConfig): (p: GitPr
                 // If this throws an exception it's because we can't push to the checked out branch.
                 // Autofix will attempt to do this.
                 // So we create a new branch, push that, and then go to the original directory and merge it.
-                const newBranch = `atomist/${p.branch}`;
+                const newBranch = atomistTemporaryBranchFor(p.branch);
                 logger.info(`Pushing to new local branch ${newBranch}`);
                 await p.createBranch(newBranch);
-                await runAndLog(`git push --force --set-upstream origin ${p.branch}`, { cwd: p.baseDir });
+                // We disable verify to stop our git hooks running on this
+                await runAndLog(`git push --force --no-verify --set-upstream origin ${p.branch}`, { cwd: p.baseDir });
 
                 if (localConfig.mergeAutofixes) {
                     const originalRepoDir = dirFor(localConfig.repositoryOwnerParentDirectory, p.id.owner, p.id.repo);
