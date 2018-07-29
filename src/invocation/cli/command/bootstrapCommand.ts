@@ -1,10 +1,10 @@
 import { Argv } from "yargs";
+import { infoMessage } from "../../..";
 import { createBootstrapMachine } from "../../../embedded/bootstrap";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
+import { fetchMetadataFromAutomationClient } from "../../http/metadataReader";
 import { errorMessage, logExceptionsToConsole } from "../support/consoleOutput";
 import { runCommand } from "./support/runCommand";
-import { fetchMetadataFromAutomationClient } from "../../http/metadataReader";
-import { infoMessage } from "../../..";
 
 export function addBootstrapCommand(connectionConfig: AutomationClientConnectionConfig, yargs: Argv) {
     yargs.command({

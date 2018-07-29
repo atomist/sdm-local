@@ -1,16 +1,16 @@
-import { ExpandedTreeMappedParameterResolver } from "../../../../binding/ExpandedTreeMappedParameterResolver";
-import { AutomationClientConnectionConfig } from "../../../http/AutomationClientConnectionConfig";
-import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/metadata/automationMetadata";
-import { suggestStartingAllMessagesListener } from "../../support/suggestStartingAllMessagesListener";
-import { parseOwnerAndRepo } from "../../../../binding/expandedTreeUtils";
-import { newCorrelationId, pidToPort } from "../../../../machine/correlationId";
-import { MappedParameterResolver } from "../../../../binding/MappedParameterResolver";
-import { CommandHandlerInvocation, invokeCommandHandler } from "../../../http/CommandHandlerInvocation";
 import { logger } from "@atomist/automation-client";
-import { startHttpMessageListener } from "../../io/httpMessageListener";
-import * as _ from "lodash";
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
+import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/metadata/automationMetadata";
 import * as inquirer from "inquirer";
+import * as _ from "lodash";
+import { ExpandedTreeMappedParameterResolver } from "../../../../binding/ExpandedTreeMappedParameterResolver";
+import { parseOwnerAndRepo } from "../../../../binding/expandedTreeUtils";
+import { MappedParameterResolver } from "../../../../binding/MappedParameterResolver";
+import { newCorrelationId, pidToPort } from "../../../../machine/correlationId";
+import { AutomationClientConnectionConfig } from "../../../http/AutomationClientConnectionConfig";
+import { CommandHandlerInvocation, invokeCommandHandler } from "../../../http/CommandHandlerInvocation";
+import { startHttpMessageListener } from "../../io/httpMessageListener";
+import { suggestStartingAllMessagesListener } from "../../support/suggestStartingAllMessagesListener";
 
 /**
  * All invocation goes through this

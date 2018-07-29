@@ -8,7 +8,7 @@ import axios from "axios";
 
 import * as bodyParser from "body-parser";
 import * as express from "express";
-import { CommandCompletionDestination } from "../../../machine/localPostProcessor";
+import { CommandCompletionDestination } from "../../../machine/support/NotifyOnCompletionAutomationEventListener";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 import { AllMessagesPort } from "../command/addStartListenerCommand";
 import {

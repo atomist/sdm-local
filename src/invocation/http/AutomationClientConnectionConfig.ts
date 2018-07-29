@@ -1,4 +1,3 @@
-import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
 
 /**
  * How to connect to an automation client

@@ -1,8 +1,8 @@
 import { logger } from "@atomist/automation-client";
-import { CommandHandlerMetadata, } from "@atomist/automation-client/metadata/automationMetadata";
+import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import * as _ from "lodash";
 import { Argv } from "yargs";
-import { PathElement, toPaths, } from "../../../util/PathElement";
+import { PathElement, toPaths } from "../../../util/PathElement";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../support/consoleOutput";
 import { convertToDisplayable, runCommand } from "./support/runCommand";

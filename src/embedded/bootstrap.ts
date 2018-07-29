@@ -2,13 +2,13 @@ import { Configuration } from "@atomist/automation-client";
 import { automationClient } from "@atomist/automation-client/automationClient";
 import { defaultConfiguration } from "@atomist/automation-client/configuration";
 import { SoftwareDeliveryMachine } from "@atomist/sdm";
-import { configureSdm, createSoftwareDeliveryMachine, } from "@atomist/sdm-core";
+import { configureSdm, createSoftwareDeliveryMachine } from "@atomist/sdm-core";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
+import { promisify } from "util";
+import { infoMessage } from "..";
+import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
 import { LocalLifecycle } from "../machine/localLifecycle";
 import { configureLocal } from "../machine/localPostProcessor";
-import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
-import { infoMessage } from "..";
-import { promisify } from "util";
 
 const BootstrapPort = 2867;
 

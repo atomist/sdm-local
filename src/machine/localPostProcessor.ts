@@ -1,13 +1,4 @@
-import {
-    Configuration,
-    HandlerContext,
-    HandlerResult,
-    logger,
-} from "@atomist/automation-client";
-
-import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
-import { AutomationEventListenerSupport } from "@atomist/automation-client/server/AutomationEventListener";
-import { CustomEventDestination } from "@atomist/automation-client/spi/message/MessageClient";
+import { Configuration, logger, } from "@atomist/automation-client";
 import * as _ from "lodash";
 import { LocalGraphClient } from "../binding/LocalGraphClient";
 import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
@@ -16,17 +7,12 @@ import { BroadcastingMessageClient } from "../invocation/cli/io/BroadcastingMess
 import { GoalEventForwardingMessageClient } from "../invocation/cli/io/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../invocation/cli/io/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
-import {
-    CommandHandlerInvocation,
-    invokeCommandHandler,
-} from "../invocation/http/CommandHandlerInvocation";
-import {
-    channelFor,
-    clientIdentifier,
-} from "./correlationId";
+import { CommandHandlerInvocation, invokeCommandHandler, } from "../invocation/http/CommandHandlerInvocation";
+import { channelFor, clientIdentifier, } from "./correlationId";
 import { createSdmOptions } from "./createSdmOptions";
 import { isLocal } from "./isLocal";
 import { LocalMachineConfig } from "./LocalMachineConfig";
+import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 
 /**
  * Configures an automation client in local mode
@@ -63,19 +49,6 @@ export function configureLocal(localMachineConfig: LocalMachineConfig): (configu
         };
         return configuration;
     };
-}
-
-export const CommandCompletionDestination = new CustomEventDestination("completion");
-
-class NotifyOnCompletionAutomationEventListener extends AutomationEventListenerSupport {
-
-    public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<void> {
-        return ctx.messageClient.send("Success", CommandCompletionDestination);
-    }
-
-    public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<void> {
-        return ctx.messageClient.send("Failure", CommandCompletionDestination);
-    }
 }
 
 function configureWebEndpoints(configuration: Configuration, localMachineConfig: LocalMachineConfig) {
