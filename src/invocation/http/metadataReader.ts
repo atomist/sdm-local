@@ -29,8 +29,13 @@ export async function fetchMetadataFromAutomationClient(connectionConfig: Automa
             connectionConfig,
         };
     } catch (e) {
-        errorMessage("Unable to connect to '%s': Is the automation client running?\n\t(%s)",
+        errorMessage("Unable to connect to '%s': Is the automation client running?\n\t(%s)\n",
             connectionConfig.baseEndpoint, e);
-        process.exit(1);
+        infoMessage("Fewer commands will be available\n");
+        return {
+            commandsMetadata: undefined,
+            localConfig: undefined,
+            connectionConfig,
+        };
     }
 }

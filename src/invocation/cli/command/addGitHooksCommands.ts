@@ -12,14 +12,18 @@ import { logExceptionsToConsole } from "../support/consoleOutput";
  * @param ai config
  * @param {yargs.Argv} yargs
  */
-export function addGitHooksCommands(ai: AutomationClientInfo, yargs: Argv) {
+export function addGitHooksCommand(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({
         command: "add-git-hooks",
         describe: `Install git hooks for projects under ${ai.localConfig.repositoryOwnerParentDirectory}`,
         handler: () => {
             return logExceptionsToConsole(() => installHookOrHooks(ai.localConfig), ai.connectionConfig.showErrorStacks);
         },
-    }).command({
+    });
+}
+
+export function removeGitHooksCommand(ai: AutomationClientInfo, yargs: Argv) {
+    yargs.command({
         command: "remove-git-hooks",
         describe: `Remove git hooks for projects under ${ai.localConfig.repositoryOwnerParentDirectory}`,
         handler: () => {

@@ -2,35 +2,45 @@ import * as yargs from "yargs";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { fetchMetadataFromAutomationClient } from "../http/metadataReader";
-import { addGitHooksCommands } from "./command/addGitHooksCommands";
 import { addCommandsByName, addIntents } from "./command/addIntents";
 import { addStartListenerCommand } from "./command/addStartListenerCommand";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 import { addShowSkillsCommand } from "./command/showSkillsCommand";
+import { addBootstrapCommand } from "./command/bootstrapCommand";
+import { addGitHooksCommand, removeGitHooksCommand } from "./command/addGitHooksCommands";
 
 /**
  * Start up the Slalom CLI
  * @return {yargs.Arguments}
  */
-export async function runSlalom(config: AutomationClientConnectionConfig) {
+export async function runSlalom(connectionConfig: AutomationClientConnectionConfig) {
     yargs.usage("Usage: slalom <command> [options]");
 
-    const automationClientInfo = await fetchMetadataFromAutomationClient(config);
+    const automationClientInfo = await fetchMetadataFromAutomationClient(connectionConfig);
     verifyLocalSdm(automationClientInfo);
 
-    addTriggerCommand(automationClientInfo, yargs);
-    addStartListenerCommand(config, yargs);
-    addGitHooksCommands(automationClientInfo, yargs);
-    addCommandsByName(automationClientInfo, yargs);
-    addIntents(automationClientInfo, yargs);
-    addImportFromGitRemoteCommand(automationClientInfo, yargs);
-    addShowSkillsCommand(automationClientInfo, yargs);
+    // TODO should not need to connect
+
+    addBootstrapCommand(connectionConfig, yargs);
+
+    if (!!automationClientInfo.localConfig) {
+        addGitHooksCommand(automationClientInfo, yargs);
+        removeGitHooksCommand(automationClientInfo, yargs);
+        addImportFromGitRemoteCommand(automationClientInfo, yargs);
+    }
+    if (!!automationClientInfo.commandsMetadata) {
+        addTriggerCommand(automationClientInfo, yargs);
+        addStartListenerCommand(connectionConfig, yargs);
+        addCommandsByName(automationClientInfo, yargs);
+        addIntents(automationClientInfo, yargs);
+        addShowSkillsCommand(automationClientInfo, yargs);
+    }
 
     return yargs
         .epilog("Copyright Atomist 2018")
         .demandCommand(1, `Please provide a command for local SDM ${automationClientInfo.connectionConfig.atomistTeamName} handling projects under ${
-            automationClientInfo.localConfig.repositoryOwnerParentDirectory}`)
+            automationClientInfo.localConfig ? automationClientInfo.localConfig.repositoryOwnerParentDirectory : "unknown"}`)
         .help()
         .wrap(100)
         .strict()
@@ -40,7 +50,7 @@ export async function runSlalom(config: AutomationClientConnectionConfig) {
 }
 
 function verifyLocalSdm(automationClientInfo: AutomationClientInfo) {
-    if (!automationClientInfo.localConfig) {
+    if (!!automationClientInfo.commandsMetadata && !automationClientInfo.localConfig) {
         process.stderr.write("ERROR: SDM detected, but it is not running in local mode.\nPlease set ATOMIST_MODE=local when starting your SDM.\n");
         process.exit(1);
     }
