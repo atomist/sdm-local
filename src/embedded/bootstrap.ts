@@ -5,9 +5,11 @@ import {
     invokePostProcessors,
 } from "@atomist/automation-client/configuration";
 import { SoftwareDeliveryMachine } from "@atomist/sdm";
-import { configureSdm, createSoftwareDeliveryMachine } from "@atomist/sdm-core";
+import {
+    configureSdm,
+    createSoftwareDeliveryMachine,
+} from "@atomist/sdm-core";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
-import { promisify } from "util";
 import { infoMessage } from "..";
 import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
 import { LocalLifecycle } from "../machine/localLifecycle";
@@ -71,6 +73,3 @@ export async function createBootstrapMachine(repositoryOwnerParentDirectory: str
             baseEndpoint: `http://localhost:${BootstrapPort}`,
         }));
 }
-
-const sleepPlease: (timeout: number) => Promise<void> =
-    promisify((a, b) => setTimeout(b, a));

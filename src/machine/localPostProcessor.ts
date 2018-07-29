@@ -1,4 +1,7 @@
-import { Configuration, logger, } from "@atomist/automation-client";
+import {
+    Configuration,
+    logger,
+} from "@atomist/automation-client";
 import * as _ from "lodash";
 import { LocalGraphClient } from "../binding/LocalGraphClient";
 import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
@@ -7,8 +10,14 @@ import { BroadcastingMessageClient } from "../invocation/cli/io/BroadcastingMess
 import { GoalEventForwardingMessageClient } from "../invocation/cli/io/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../invocation/cli/io/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
-import { CommandHandlerInvocation, invokeCommandHandler, } from "../invocation/http/CommandHandlerInvocation";
-import { channelFor, clientIdentifier, } from "./correlationId";
+import {
+    CommandHandlerInvocation,
+    invokeCommandHandler,
+} from "../invocation/http/CommandHandlerInvocation";
+import {
+    channelFor,
+    clientIdentifier,
+} from "./correlationId";
 import { createSdmOptions } from "./createSdmOptions";
 import { isLocal } from "./isLocal";
 import { LocalMachineConfig } from "./LocalMachineConfig";

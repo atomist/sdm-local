@@ -3,7 +3,10 @@ import { infoMessage } from "../../..";
 import { createBootstrapMachine } from "../../../embedded/bootstrap";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 import { fetchMetadataFromAutomationClient } from "../../http/metadataReader";
-import { errorMessage, logExceptionsToConsole } from "../support/consoleOutput";
+import {
+    errorMessage,
+    logExceptionsToConsole,
+} from "../support/consoleOutput";
 import { runCommand } from "./support/runCommand";
 
 export function addBootstrapCommand(connectionConfig: AutomationClientConnectionConfig, yargs: Argv) {

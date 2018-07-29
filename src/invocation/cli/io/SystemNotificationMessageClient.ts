@@ -9,7 +9,6 @@ import {
     SlackMessageClient,
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
-
 import * as slack from "@atomist/slack-messages/SlackMessages";
 import * as _ from "lodash";
 import * as marked from "marked";

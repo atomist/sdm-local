@@ -1,6 +1,9 @@
-import { HandlerContext, HandlerResult } from "@atomist/automation-client";
-import { AutomationEventListenerSupport } from "@atomist/automation-client/server/AutomationEventListener";
+import {
+    HandlerContext,
+    HandlerResult,
+} from "@atomist/automation-client";
 import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
+import { AutomationEventListenerSupport } from "@atomist/automation-client/server/AutomationEventListener";
 import { CustomEventDestination } from "@atomist/automation-client/spi/message/MessageClient";
 
 export const CommandCompletionDestination = new CustomEventDestination("completion");

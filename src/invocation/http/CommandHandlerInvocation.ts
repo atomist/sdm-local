@@ -6,7 +6,6 @@ import {
     Arg,
     Secret,
 } from "@atomist/automation-client/internal/invoker/Payload";
-
 import * as assert from "power-assert";
 import { hasOwnProperty } from "tslint/lib/utils";
 import { isArray } from "util";

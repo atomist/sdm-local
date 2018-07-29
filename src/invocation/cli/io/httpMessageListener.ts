@@ -3,9 +3,7 @@ import {
     MessageOptions,
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
-
 import axios from "axios";
-
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import { CommandCompletionDestination } from "../../../machine/support/NotifyOnCompletionAutomationEventListener";

@@ -4,8 +4,8 @@ import {
     OnPushToAnyBranch,
     RepoRefResolver,
     ScmProvider,
+    SdmGoalEvent,
 } from "@atomist/sdm";
-import { SdmGoal } from "@atomist/sdm/api/goal/SdmGoal";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
 export class LocalRepoRefResolver implements RepoRefResolver {
@@ -19,7 +19,7 @@ export class LocalRepoRefResolver implements RepoRefResolver {
             owner: push.repo.owner, repo: push.repo.name, branch: push.branch, sha: push.commits[0].sha});
     }
 
-    public repoRefFromSdmGoal(sdmGoal: SdmGoal, provider: ScmProvider.ScmProvider): RemoteRepoRef {
+    public repoRefFromSdmGoal(sdmGoal: SdmGoalEvent, provider: ScmProvider.ScmProvider): RemoteRepoRef {
         const repo = sdmGoal.repo;
         return new FileSystemRemoteRepoRef({ repositoryOwnerParentDirectory: this.repositoryOwnerParentDirectory,
             owner: repo.owner, repo: repo.name, branch: sdmGoal.branch, sha: sdmGoal.sha});
