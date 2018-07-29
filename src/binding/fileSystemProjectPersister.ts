@@ -14,7 +14,11 @@ import { addGitHooksToProject } from "../setup/addGitHooks";
 import { lastSha } from "../util/git";
 import { runAndLog } from "../util/runAndLog";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
-import { sendChannelLinkEvent, sendRepoCreationEvent, sendRepoOnboardingEvent } from "./repoOnboardingEvents";
+import {
+    sendChannelLinkEvent,
+    sendRepoCreationEvent,
+    sendRepoOnboardingEvent,
+} from "./repoOnboardingEvents";
 
 /**
  * Persist the project to the given local directory given expanded directory

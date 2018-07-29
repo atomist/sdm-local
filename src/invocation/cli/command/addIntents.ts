@@ -1,19 +1,31 @@
 import { logger } from "@atomist/automation-client";
-import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/metadata/automationMetadata";
-import * as _ from "lodash";
-import { Argv } from "yargs";
-import { PathElement, toPaths } from "../../../util/PathElement";
-import { logExceptionsToConsole } from "../support/consoleOutput";
 
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
+import {
+    CommandHandlerMetadata,
+    Parameter,
+} from "@atomist/automation-client/metadata/automationMetadata";
 import * as inquirer from "inquirer";
+import * as _ from "lodash";
+import { Argv } from "yargs";
 import { ExpandedTreeMappedParameterResolver } from "../../../binding/ExpandedTreeMappedParameterResolver";
 import { parseOwnerAndRepo } from "../../../binding/expandedTreeUtils";
 import { MappedParameterResolver } from "../../../binding/MappedParameterResolver";
-import { newCorrelationId, pidToPort } from "../../../machine/correlationId";
+import {
+    newCorrelationId,
+    pidToPort,
+} from "../../../machine/correlationId";
+import {
+    PathElement,
+    toPaths,
+} from "../../../util/PathElement";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
+import {
+    CommandHandlerInvocation,
+    invokeCommandHandler,
+} from "../../http/CommandHandlerInvocation";
 import { startHttpMessageListener } from "../io/httpMessageListener";
+import { logExceptionsToConsole } from "../support/consoleOutput";
 import { suggestStartingAllMessagesListener } from "../support/suggestStartingAllMessagesListener";
 
 /**

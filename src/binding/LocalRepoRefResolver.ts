@@ -1,5 +1,10 @@
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
-import { CoreRepoFieldsAndChannels, OnPushToAnyBranch, RepoRefResolver, ScmProvider } from "@atomist/sdm";
+import {
+    CoreRepoFieldsAndChannels,
+    OnPushToAnyBranch,
+    RepoRefResolver,
+    ScmProvider,
+} from "@atomist/sdm";
 import { SdmGoal } from "@atomist/sdm/api/goal/SdmGoal";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 

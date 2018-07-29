@@ -1,9 +1,16 @@
-import { Destination, MessageClient, MessageOptions, SlackMessageClient } from "@atomist/automation-client/spi/message/MessageClient";
-import { SlackMessage } from "@atomist/slack-messages";
-
 import { logger } from "@atomist/automation-client";
-import { SdmGoalKey, SdmGoalState } from "@atomist/sdm";
-import { OnAnyRequestedSdmGoal } from "@atomist/sdm";
+import {
+    Destination,
+    MessageClient,
+    MessageOptions,
+    SlackMessageClient,
+} from "@atomist/automation-client/spi/message/MessageClient";
+import {
+    OnAnyRequestedSdmGoal,
+    SdmGoalKey,
+    SdmGoalState,
+} from "@atomist/sdm";
+import { SlackMessage } from "@atomist/slack-messages";
 import { isValidSHA1 } from "../../git/handlePushBasedEventOnRepo";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 import { invokeEventHandler } from "../../http/EventHandlerInvocation";

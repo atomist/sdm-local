@@ -2,13 +2,19 @@ import * as yargs from "yargs";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { fetchMetadataFromAutomationClient } from "../http/metadataReader";
-import { addCommandsByName, addIntents } from "./command/addIntents";
+import {
+    addGitHooksCommand,
+    removeGitHooksCommand,
+} from "./command/addGitHooksCommands";
+import {
+    addCommandsByName,
+    addIntents,
+} from "./command/addIntents";
 import { addStartListenerCommand } from "./command/addStartListenerCommand";
 import { addTriggerCommand } from "./command/addTriggerCommand";
+import { addBootstrapCommand } from "./command/bootstrapCommand";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 import { addShowSkillsCommand } from "./command/showSkillsCommand";
-import { addBootstrapCommand } from "./command/bootstrapCommand";
-import { addGitHooksCommand, removeGitHooksCommand } from "./command/addGitHooksCommands";
 
 /**
  * Start up the Slalom CLI

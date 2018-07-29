@@ -10,7 +10,10 @@ import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import { DevNullMessageClient } from "./devNullMessageClient";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
-import { messageListenerEndpoint, StreamedMessage } from "./httpMessageListener";
+import {
+    messageListenerEndpoint,
+    StreamedMessage,
+} from "./httpMessageListener";
 
 /**
  * Message client that POSTS to an Atomist server and logs to a fallback otherwise

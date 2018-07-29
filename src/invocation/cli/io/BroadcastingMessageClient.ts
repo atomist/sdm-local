@@ -1,5 +1,10 @@
 import { logger } from "@atomist/automation-client";
-import { Destination, MessageClient, MessageOptions, SlackMessageClient } from "@atomist/automation-client/spi/message/MessageClient";
+import {
+    Destination,
+    MessageClient,
+    MessageOptions,
+    SlackMessageClient,
+} from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 
 /**

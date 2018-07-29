@@ -1,8 +1,7 @@
-import { Argv } from "yargs";
-import { logExceptionsToConsole } from "../support/consoleOutput";
-
 import chalk from "chalk";
+import { Argv } from "yargs";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
+import { logExceptionsToConsole } from "../support/consoleOutput";
 
 export function addShowSkillsCommand(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({

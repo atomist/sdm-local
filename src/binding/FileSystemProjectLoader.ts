@@ -1,10 +1,17 @@
 import { logger } from "@atomist/automation-client";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import { ProjectLoader, ProjectLoadingParameters, WithLoadedProject } from "@atomist/sdm";
+import {
+    ProjectLoader,
+    ProjectLoadingParameters,
+    WithLoadedProject,
+} from "@atomist/sdm";
 import * as fs from "fs";
 import { LocalMachineConfig } from "..";
 import { dirFor } from "../binding/expandedTreeUtils";
-import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../binding/FileSystemRemoteRepoRef";
+import {
+    FileSystemRemoteRepoRef,
+    isFileSystemRemoteRepoRef,
+} from "../binding/FileSystemRemoteRepoRef";
 import { runAndLog } from "../util/runAndLog";
 
 /**

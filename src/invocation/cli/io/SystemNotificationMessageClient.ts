@@ -1,3 +1,5 @@
+import { logger } from "@atomist/automation-client";
+import { toStringArray } from "@atomist/automation-client/internal/util/string";
 import {
     Destination,
     isSlackMessage,
@@ -8,13 +10,10 @@ import {
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 
-import { logger } from "@atomist/automation-client";
-import { toStringArray } from "@atomist/automation-client/internal/util/string";
+import * as slack from "@atomist/slack-messages/SlackMessages";
 import * as _ from "lodash";
 import * as marked from "marked";
 import { MarkedOptions } from "marked";
-
-import * as slack from "@atomist/slack-messages/SlackMessages";
 import * as TerminalRenderer from "marked-terminal";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 

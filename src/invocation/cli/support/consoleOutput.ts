@@ -1,7 +1,7 @@
 import { logger } from "@atomist/automation-client";
-import { sprintf } from "sprintf-js";
 
 import chalk from "chalk";
+import { sprintf } from "sprintf-js";
 
 /**
  * Perform the given action, logging exceptions to the console

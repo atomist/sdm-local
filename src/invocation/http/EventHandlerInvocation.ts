@@ -1,4 +1,8 @@
-import { HandlerResult, logger, Secrets } from "@atomist/automation-client";
+import {
+    HandlerResult,
+    logger,
+    Secrets,
+} from "@atomist/automation-client";
 import { Secret } from "@atomist/automation-client/internal/invoker/Payload";
 
 import { replacer } from "@atomist/automation-client/internal/transport/AbstractRequestProcessor";

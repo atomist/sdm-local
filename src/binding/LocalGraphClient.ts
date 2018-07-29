@@ -1,5 +1,9 @@
 import { logger } from "@atomist/automation-client";
-import { GraphClient, MutationOptions, QueryOptions } from "@atomist/automation-client/spi/graph/GraphClient";
+import {
+    GraphClient,
+    MutationOptions,
+    QueryOptions,
+} from "@atomist/automation-client/spi/graph/GraphClient";
 import { errorMessage } from "../invocation/cli/support/consoleOutput";
 
 /**

@@ -1,6 +1,12 @@
-import { HandlerResult, logger } from "@atomist/automation-client";
-import axios, { AxiosError, AxiosResponse } from "axios";
-import { AxiosRequestConfig } from "axios";
+import {
+    HandlerResult,
+    logger,
+} from "@atomist/automation-client";
+import axios, {
+    AxiosError,
+    AxiosRequestConfig,
+    AxiosResponse,
+} from "axios";
 import * as _ from "lodash";
 import { AutomationClientConnectionConfig } from "../AutomationClientConnectionConfig";
 

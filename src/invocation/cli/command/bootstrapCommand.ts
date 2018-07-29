@@ -1,8 +1,8 @@
 import { Argv } from "yargs";
-import { logExceptionsToConsole } from "../support/consoleOutput";
-import { createBootstrapMachine } from "../../../embedded/bootstrap";
 import { infoMessage } from "../../..";
+import { createBootstrapMachine } from "../../../embedded/bootstrap";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
+import { logExceptionsToConsole } from "../support/consoleOutput";
 
 export function addBootstrapCommand(connectionConfig: AutomationClientConnectionConfig, yargs: Argv) {
     yargs.command({

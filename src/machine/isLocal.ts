@@ -1,4 +1,3 @@
-
 import { logger } from "@atomist/automation-client";
 
 /**

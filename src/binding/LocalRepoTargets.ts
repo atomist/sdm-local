@@ -1,8 +1,17 @@
-import { logger, MappedParameter, MappedParameters, Parameter, Parameters } from "@atomist/automation-client";
+import {
+    logger,
+    MappedParameter,
+    MappedParameters,
+    Parameter,
+    Parameters,
+} from "@atomist/automation-client";
 import { GitBranchRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
 import { TargetsParams } from "@atomist/automation-client/operations/common/params/TargetsParams";
 import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
-import { andFilter, RepoFilter } from "@atomist/automation-client/operations/common/repoFilter";
+import {
+    andFilter,
+    RepoFilter,
+} from "@atomist/automation-client/operations/common/repoFilter";
 import { RepoTargets } from "@atomist/sdm";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 

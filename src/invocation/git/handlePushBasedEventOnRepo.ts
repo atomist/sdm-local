@@ -3,13 +3,13 @@ import { GitCommandGitProject } from "@atomist/automation-client/project/git/Git
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { OnPushToAnyBranch } from "@atomist/sdm";
 import { LocalMachineConfig } from "../..";
-import Push = OnPushToAnyBranch.Push;
 import { isAtomistTemporaryBranch } from "../../binding/FileSystemProjectLoader";
 import { FileSystemRemoteRepoRef } from "../../binding/FileSystemRemoteRepoRef";
 import { pushFromLastCommit } from "../../binding/pushFromLastCommit";
 import { errorMessage } from "../cli/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { invokeEventHandler } from "../http/EventHandlerInvocation";
+import Push = OnPushToAnyBranch.Push;
 
 /**
  * Any event on a local repo

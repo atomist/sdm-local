@@ -7,7 +7,10 @@ import * as fs from "fs";
 import * as path from "path";
 import { sprintf } from "sprintf-js";
 import { infoMessage } from "..";
-import { errorMessage, warningMessage } from "../invocation/cli/support/consoleOutput";
+import {
+    errorMessage,
+    warningMessage,
+} from "../invocation/cli/support/consoleOutput";
 import { HookEvents } from "../invocation/git/handlePushBasedEventOnRepo";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";

@@ -1,9 +1,18 @@
 import { Argv } from "yargs";
 import { LocalMachineConfig } from "../../..";
 import { expandedTreeRepoFinder } from "../../../binding/expandedTreeRepoFinder";
-import { determineCwd, parseOwnerAndRepo } from "../../../binding/expandedTreeUtils";
-import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../../../binding/FileSystemRemoteRepoRef";
-import { addGitHooks, removeGitHooks } from "../../../setup/addGitHooks";
+import {
+    determineCwd,
+    parseOwnerAndRepo,
+} from "../../../binding/expandedTreeUtils";
+import {
+    FileSystemRemoteRepoRef,
+    isFileSystemRemoteRepoRef,
+} from "../../../binding/FileSystemRemoteRepoRef";
+import {
+    addGitHooks,
+    removeGitHooks,
+} from "../../../setup/addGitHooks";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../support/consoleOutput";
 

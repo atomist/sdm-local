@@ -1,7 +1,10 @@
 import axios from "axios";
 import { LocalMachineConfig } from "../..";
 import { AutomationClientInfo } from "../AutomationClientInfo";
-import { errorMessage, infoMessage } from "../cli/support/consoleOutput";
+import {
+    errorMessage,
+    infoMessage,
+} from "../cli/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 
 /**

@@ -1,5 +1,11 @@
-import { HandlerResult, logger } from "@atomist/automation-client";
-import { Arg, Secret } from "@atomist/automation-client/internal/invoker/Payload";
+import {
+    HandlerResult,
+    logger,
+} from "@atomist/automation-client";
+import {
+    Arg,
+    Secret,
+} from "@atomist/automation-client/internal/invoker/Payload";
 
 import * as assert from "power-assert";
 import { hasOwnProperty } from "tslint/lib/utils";

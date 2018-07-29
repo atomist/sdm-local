@@ -1,6 +1,9 @@
-import { Configuration, HandlerContext, HandlerResult, logger } from "@atomist/automation-client";
-import { createSdmOptions } from "./createSdmOptions";
-import { LocalMachineConfig } from "./LocalMachineConfig";
+import {
+    Configuration,
+    HandlerContext,
+    HandlerResult,
+    logger,
+} from "@atomist/automation-client";
 
 import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
 import { AutomationEventListenerSupport } from "@atomist/automation-client/server/AutomationEventListener";
@@ -13,9 +16,17 @@ import { BroadcastingMessageClient } from "../invocation/cli/io/BroadcastingMess
 import { GoalEventForwardingMessageClient } from "../invocation/cli/io/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../invocation/cli/io/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
-import { CommandHandlerInvocation, invokeCommandHandler } from "../invocation/http/CommandHandlerInvocation";
-import { channelFor, clientIdentifier } from "./correlationId";
+import {
+    CommandHandlerInvocation,
+    invokeCommandHandler,
+} from "../invocation/http/CommandHandlerInvocation";
+import {
+    channelFor,
+    clientIdentifier,
+} from "./correlationId";
+import { createSdmOptions } from "./createSdmOptions";
 import { isLocal } from "./isLocal";
+import { LocalMachineConfig } from "./LocalMachineConfig";
 
 /**
  * Configures an automation client in local mode

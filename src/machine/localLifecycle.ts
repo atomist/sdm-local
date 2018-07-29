@@ -1,11 +1,17 @@
-import { BuildStatus, ExtensionPack, OnPushToAnyBranch, SdmGoalState, SoftwareDeliveryMachine } from "@atomist/sdm";
+import {
+    BuildStatus,
+    ExtensionPack,
+    OnPushToAnyBranch,
+    SdmGoalState,
+    SoftwareDeliveryMachine,
+} from "@atomist/sdm";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
 import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
+
+import chalk from "chalk";
 import { HttpBuildStatusUpdater } from "../binding/HttpBuildStatusUpdater";
 import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
 import { isLocal } from "./isLocal";
-
-import chalk from "chalk";
 import Push = OnPushToAnyBranch.Push;
 
 /**
@@ -26,7 +32,7 @@ export const LocalLifecycle: ExtensionPack = {
 };
 
 function pushIdentification(pu: Push) {
-    return `\`${pu.repo.owner}:${pu.repo.name}:${pu.branch}\` - _${pu.commits[0].message}_ \`[${pu.commits[0].sha}]\``);
+    return `\`${pu.repo.owner}:${pu.repo.name}:${pu.branch}\` - _${pu.commits[0].message}_ \`[${pu.commits[0].sha}]\``;
 }
 
 /**

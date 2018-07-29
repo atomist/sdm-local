@@ -1,15 +1,21 @@
-import { Destination, MessageOptions } from "@atomist/automation-client/spi/message/MessageClient";
+import {
+    Destination,
+    MessageOptions,
+} from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
-import * as express from "express";
-import { ConsoleMessageClient, ProcessStdoutSender } from "../io/ConsoleMessageClient";
-import { infoMessage } from "../support/consoleOutput";
+
+import axios from "axios";
 
 import * as bodyParser from "body-parser";
+import * as express from "express";
 import { CommandCompletionDestination } from "../../../machine/localPostProcessor";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 import { AllMessagesPort } from "../command/addStartListenerCommand";
-
-import axios from "axios";
+import {
+    ConsoleMessageClient,
+    ProcessStdoutSender,
+} from "../io/ConsoleMessageClient";
+import { infoMessage } from "../support/consoleOutput";
 
 export const MessageRoute = "/message";
 

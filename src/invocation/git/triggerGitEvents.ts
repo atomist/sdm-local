@@ -1,10 +1,16 @@
 import { logger } from "@atomist/automation-client";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
-import { determineCwd, withinExpandedTree } from "../../binding/expandedTreeUtils";
+import {
+    determineCwd,
+    withinExpandedTree,
+} from "../../binding/expandedTreeUtils";
 import { FileSystemRemoteRepoRef } from "../../binding/FileSystemRemoteRepoRef";
 import { shaHistory } from "../../util/git";
 import { AutomationClientInfo } from "../AutomationClientInfo";
-import { errorMessage, infoMessage } from "../cli/support/consoleOutput";
+import {
+    errorMessage,
+    infoMessage,
+} from "../cli/support/consoleOutput";
 import { handleGitHookEvent } from "./handlePushBasedEventOnRepo";
 
 /**

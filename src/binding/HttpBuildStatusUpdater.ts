@@ -1,4 +1,8 @@
-import { BuildStatus, OnBuildComplete, SdmGoalEvent } from "@atomist/sdm";
+import {
+    BuildStatus,
+    OnBuildComplete,
+    SdmGoalEvent,
+} from "@atomist/sdm";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
 import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
 import { invokeEventHandler } from "../invocation/http/EventHandlerInvocation";
