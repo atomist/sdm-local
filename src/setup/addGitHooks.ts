@@ -121,13 +121,12 @@ async function deatomizeScript(p: LocalProject, scriptPath: string) {
 function scriptFragments(atomistHookScriptPath: string, gitHookScript: string) {
 
     return {
-        "pre-receive": `while read oldrev newrev refname
-	do
-		echo "oldrev= $oldrev" # 0 if a new branch
-        echo "newrev=$newrev" # sha
-        echo "refname=$refname" # refs/heads/<new branch>
-        ${atomistHookScriptPath} ${gitHookScript} pre-receive \${PWD} $refname $newrev
-	done`,
+        "pre-receive": `
+oldrev=$(git rev-parse $1)
+newrev=$(git rev-parse $2)
+refname="$3"
+${atomistHookScriptPath} ${gitHookScript} pre-receive \${PWD} $refname $newrev
+`,
         "post-commit": `
 sha=$(git rev-parse HEAD)
 branch=$(git rev-parse --abbrev-ref HEAD)

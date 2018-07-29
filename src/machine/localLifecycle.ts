@@ -31,7 +31,7 @@ export const LocalLifecycle: ExtensionPack = {
  */
 function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
     sdm.addPushImpactListener(async pu => {
-        return pu.addressChannels(`Push to \`${pu.id.owner}:${pu.id.repo}\` - _${pu.commit.message}_`);
+        return pu.addressChannels(`Push to \`${pu.id.owner}:${pu.id.repo}:${pu.push.branch}\` - _${pu.commit.message}_`);
     });
     sdm.addGoalsSetListener(async gsi => {
         return gsi.addressChannels(

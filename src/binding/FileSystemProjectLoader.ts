@@ -47,7 +47,7 @@ function atomistTemporaryBranchFor(branch: string) {
 }
 
 export function isAtomistTemporaryBranch(branch: string) {
-    return branch.startsWith(AtomistTemporaryBranch);
+    return branch.includes(AtomistTemporaryBranch);
 }
 
 /**

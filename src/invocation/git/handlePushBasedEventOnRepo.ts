@@ -1,13 +1,15 @@
+import { logger } from "@atomist/automation-client";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { OnPushToAnyBranch } from "@atomist/sdm";
 import { LocalMachineConfig } from "../..";
+import Push = OnPushToAnyBranch.Push;
+import { isAtomistTemporaryBranch } from "../../binding/FileSystemProjectLoader";
 import { FileSystemRemoteRepoRef } from "../../binding/FileSystemRemoteRepoRef";
 import { pushFromLastCommit } from "../../binding/pushFromLastCommit";
 import { errorMessage } from "../cli/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { invokeEventHandler } from "../http/EventHandlerInvocation";
-import Push = OnPushToAnyBranch.Push;
 
 /**
  * Any event on a local repo
@@ -33,6 +35,34 @@ export const HookEvents = [
     "pre-receive",
 ];
 
+function validateEventOnRepo(payload: EventOnRepo): boolean {
+    if (!payload) {
+        errorMessage("Payload must be supplied");
+        return false;
+    }
+    if (!payload.branch || !payload.sha || !payload.baseDir) {
+        errorMessage("Invalid git hook invocation payload - branch and sha and baseDir are required: %j", payload);
+        return false;
+    }
+    if (isAtomistTemporaryBranch(payload.branch)) {
+        errorMessage("Atomist internal branch should not have triggered: %j", payload);
+        return false;
+    }
+    if (isValidSHA1(payload.branch)) {
+        errorMessage("Looks like branch has been confused with sha: %j", payload);
+        return false;
+    }
+    if (!isValidSHA1(payload.sha)) {
+        errorMessage("Invalid sha: %j", payload);
+        return false;
+    }
+    return true;
+}
+
+export function isValidSHA1(s: string): boolean {
+    return s.match(/[a-fA-F0-9]{40}/) != null;
+}
+
 /**
  * Process the given args (probably from process.argv) into a
  * GitHookInvocation
@@ -40,8 +70,12 @@ export const HookEvents = [
  * @return {GitHookInvocation}
  */
 export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
-    const args = argv.slice(2);
+    if (argv.length < 6) {
+        logger.info("Not enough args to run Git hook: All args to git hook invocation are %j", argv);
+        process.exit(0);
+    }
 
+    const args = argv.slice(2);
     const event: string = args[0];
     // We can be invoked in the .git/hooks directory or from the git binary itself
     const baseDir = args[1].replace(/.git[\/hooks]?$/, "")
@@ -84,8 +118,8 @@ export async function handlePushBasedEventOnRepo(cc: AutomationClientConnectionC
                                                  payload: EventOnRepo,
                                                  eventHandlerName: string,
                                                  pushToPayload: (p: Push) => object = p => ({
-                                            Push: [p],
-                                        })) {
+                                                     Push: [p],
+                                                 })) {
 
     // This git hook may be invoked from another git hook. This will cause these values to
     // be incorrect, so we need to delete them to have git work them out again from the directory we're passing via cwd
@@ -93,11 +127,8 @@ export async function handlePushBasedEventOnRepo(cc: AutomationClientConnectionC
     delete process.env.GIT_DIR;
     delete process.env.GIT_WORK_TREE;
 
-    if (!payload) {
-        return errorMessage("Payload must be supplied");
-    }
-    if (!payload.branch || !payload.sha || !payload.baseDir) {
-        return errorMessage("Invalid git hook invocation payload - branch and sha and baseDir are required: %j", payload);
+    if (!validateEventOnRepo(payload)) {
+        return;
     }
 
     const push = await createPush(cc.atomistTeamId, lc.repositoryOwnerParentDirectory, payload);

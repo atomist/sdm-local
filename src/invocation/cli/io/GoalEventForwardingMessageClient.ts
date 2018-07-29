@@ -4,11 +4,14 @@ import { SlackMessage } from "@atomist/slack-messages";
 import { logger } from "@atomist/automation-client";
 import { SdmGoalKey, SdmGoalState } from "@atomist/sdm";
 import { OnAnyRequestedSdmGoal } from "@atomist/sdm";
+import { isValidSHA1 } from "../../git/handlePushBasedEventOnRepo";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 import { invokeEventHandler } from "../../http/EventHandlerInvocation";
 
 export function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
     state: SdmGoalState;
+    sha: string;
+    branch: string;
 }) {
     const maybe = o as SdmGoalKey;
     return !!maybe.name && !!maybe.environment;
@@ -28,6 +31,12 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
         logger.debug("MessageClient.send: Raw mesg=\n%j\n", msg);
         if (isSdmGoalStoreOrUpdate(msg)) {
             logger.info("Storing SDM goal or ingester payload %j", msg);
+            if (isValidSHA1((msg.branch))) {
+                throw new Error("Branch/sha confusion in " + JSON.stringify(msg));
+            }
+            if (!isValidSHA1((msg.sha))) {
+                throw new Error("Invalid sha in " + JSON.stringify(msg));
+            }
             let handlerNames: string[] = [];
             switch (msg.state) {
                 case SdmGoalState.requested:
