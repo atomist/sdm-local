@@ -25,49 +25,48 @@ export const LocalLifecycle: ExtensionPack = {
     },
 };
 
+function pushIdentification(pu: Push) {
+    return `\`${pu.repo.owner}:${pu.repo.name}:${pu.branch}\` - _${pu.commits[0].message}_ \`[${pu.commits[0].sha}]\``);
+}
+
 /**
  * Formatted for the console
  * @param {SoftwareDeliveryMachine} sdm
  */
 function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
     sdm.addPushImpactListener(async pu => {
-        return pu.addressChannels(`Push to \`${pu.id.owner}:${pu.id.repo}:${pu.push.branch}\` - _${pu.commit.message}_`);
+        return pu.addressChannels(`Push to ${pushIdentification(pu.push)}`);
     });
     sdm.addGoalsSetListener(async gsi => {
         return gsi.addressChannels(
-            chalk.yellow(`▶ Goals for ${gsi.push.commits[0].sha} on branch ${gsi.push.branch}: ${
+            chalk.yellow(`▶ Goals for ${pushIdentification(gsi.push)} ${
                 gsi.goalSet.goals.map(g => chalk.italic(g.name)).join(" ⏦ ")}\n`) +
             `\t${chalk.italic(gsi.push.commits[0].message)}\n`);
     });
     sdm.addGoalExecutionListener(async gci => {
         switch (gci.goalEvent.state) {
             case SdmGoalState.success:
-                return gci.addressChannels(chalk.green(`✔ ${gci.goalEvent.description} ${onWhat(gci.goalEvent.push)}\n`));
+                return gci.addressChannels(chalk.green(`✔ ${gci.goalEvent.description} ${pushIdentification(gci.goalEvent.push)}\n`));
             case SdmGoalState.failure:
-                return gci.addressChannels(chalk.red(`✖︎︎ ${gci.goalEvent.description} ${onWhat(gci.goalEvent.push)}\n`));
+                return gci.addressChannels(chalk.red(`✖︎︎ ${gci.goalEvent.description} ${pushIdentification(gci.goalEvent.push)}\n`));
             // case SdmGoalState.requested:
             //     return gci.addressChannels(chalk.red(`✖︎︎ ${gci.goalEvent.description}\n`));
             // waiting_for_approval = "waiting_for_approval",
             // planned = "planned",
             case SdmGoalState.in_process:
-                return gci.addressChannels(chalk.yellow(`⚙︎ ${gci.goalEvent.description} ${onWhat(gci.goalEvent.push)}\n`));
+                return gci.addressChannels(chalk.yellow(`⚙︎ ${gci.goalEvent.description} ${pushIdentification(gci.goalEvent.push)}\n`));
             case SdmGoalState.skipped:
-                return gci.addressChannels(chalk.yellow(`?︎ ${gci.goalEvent.description} ${onWhat(gci.goalEvent.push)}\n`));
+                return gci.addressChannels(chalk.yellow(`?︎ ${gci.goalEvent.description} ${pushIdentification(gci.goalEvent.push)}\n`));
             default:
                 break;
         }
     });
-    sdm.addBuildListener(async bu => {
-        return bu.addressChannels(`${buildStatusEmoji(bu.build.status)} Build status is \`${bu.build.status}\` ${onWhat(bu.build.push)}`);
-    });
-    sdm.addDeploymentListener(async li => {
-        return li.addressChannels(`Successful deployment of ${li.id.url} at ${li.status.targetUrl}`);
-    });
-}
-
-function onWhat(push: Push): string {
-    const commit = push.commits[0];
-    return `on _${commit.sha}_`;
+    // sdm.addBuildListener(async bu => {
+    //     return bu.addressChannels(`${buildStatusEmoji(bu.build.status)} Build status is \`${bu.build.status}\` ${onWhat(bu.build.push)}`);
+    // });
+    // sdm.addDeploymentListener(async li => {
+    //     return li.addressChannels(`Successful deployment at ${li.status.targetUrl} of ${}`);
+    // });
 }
 
 function buildStatusEmoji(status: BuildStatus): string {
