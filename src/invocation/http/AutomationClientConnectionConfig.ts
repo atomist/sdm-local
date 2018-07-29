@@ -18,8 +18,6 @@ export interface AutomationClientConnectionConfig {
 
     password?: string;
 
-    credentials?: ProjectOperationCredentials;
-
     /**
      * Whether to display error stacks to console
      */

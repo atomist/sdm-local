@@ -2,13 +2,15 @@ import { Configuration } from "@atomist/automation-client";
 import { automationClient } from "@atomist/automation-client/automationClient";
 import { defaultConfiguration } from "@atomist/automation-client/configuration";
 import { SoftwareDeliveryMachine } from "@atomist/sdm";
-import {
-    configureSdm,
-    createSoftwareDeliveryMachine,
-} from "@atomist/sdm-core";
+import { configureSdm, createSoftwareDeliveryMachine, } from "@atomist/sdm-core";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
 import { LocalLifecycle } from "../machine/localLifecycle";
 import { configureLocal } from "../machine/localPostProcessor";
+import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
+import { infoMessage } from "..";
+import { promisify } from "util";
+
+const BootstrapPort = 2867;
 
 function createMachine(config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine {
     const sdm: SoftwareDeliveryMachine = createSoftwareDeliveryMachine(
@@ -17,13 +19,21 @@ function createMachine(config: SoftwareDeliveryMachineConfiguration): SoftwareDe
             configuration: config,
         });
     sdm.addExtensionPacks(LocalLifecycle);
+
+    infoMessage("Adding hello command");
+    sdm.addCommand<{name: string}>({
+        name: "hello",
+        listener: async ci => {
+            return ci.addressChannels(`Hello ${ci.parameters.name}`);
+        },
+    });
     return sdm;
 }
 
 function configurationFor(repositoryOwnerParentDirectory: string): Configuration {
     const cfg = defaultConfiguration();
     cfg.name = "@atomist/slalom-bootstrap";
-    cfg.http.port = 2867;
+    cfg.http.port = BootstrapPort;
 
     cfg.logging.level = "info";
     cfg.logging.file.enabled = false;
@@ -48,7 +58,17 @@ function configurationFor(repositoryOwnerParentDirectory: string): Configuration
     return cfg;
 }
 
-export async function createBootstrapMachine(repositoryOwnerParentDirectory: string): Promise<any> {
+export async function createBootstrapMachine(repositoryOwnerParentDirectory: string): Promise<AutomationClientConnectionConfig> {
     const client = automationClient(configurationFor(repositoryOwnerParentDirectory));
-    return client.run();
+    client.run();
+    // TODO this is horrible
+    await sleepPlease(5000);
+    return {
+        atomistTeamId: "T123",
+        atomistTeamName: "slalom",
+        baseEndpoint: `http://localhost:${BootstrapPort}`,
+    };
 }
+
+const sleepPlease: (timeout: number) => Promise<void> =
+    promisify((a, b) => setTimeout(b, a));

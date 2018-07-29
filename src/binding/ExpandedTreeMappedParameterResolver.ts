@@ -3,7 +3,6 @@ import { MappedParameterDeclaration } from "@atomist/automation-client/metadata/
 
 import { GitHubDotComBase } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import * as os from "os";
-import { AutomationClientInfo } from "../invocation/AutomationClientInfo";
 import { parseOwnerAndRepo } from "./expandedTreeUtils";
 import { MappedParameterResolver } from "./MappedParameterResolver";
 
@@ -19,13 +18,13 @@ export class ExpandedTreeMappedParameterResolver implements MappedParameterResol
     public resolve(md: MappedParameterDeclaration): string | undefined {
         switch (md.uri) {
             case MappedParameters.GitHubRepository :
-                const { repo } = parseOwnerAndRepo(this.ai.localConfig.repositoryOwnerParentDirectory);
+                const { repo } = parseOwnerAndRepo(this.repositoryOwnerParentDirectory);
                 return repo;
             case MappedParameters.GitHubOwner :
-                const { owner } = parseOwnerAndRepo(this.ai.localConfig.repositoryOwnerParentDirectory);
+                const { owner } = parseOwnerAndRepo(this.repositoryOwnerParentDirectory);
                 return owner;
             case MappedParameters.SlackTeam :
-                return this.ai.connectionConfig.atomistTeamId;
+                return this.atomistTeamId;
             case MappedParameters.SlackUserName :
                 return process.env.SLACK_USER_NAME || os.userInfo().username;
             case MappedParameters.GitHubWebHookUrl :
@@ -38,6 +37,7 @@ export class ExpandedTreeMappedParameterResolver implements MappedParameterResol
         }
     }
 
-    constructor(private readonly ai: AutomationClientInfo) {
+    constructor(private readonly repositoryOwnerParentDirectory: string,
+                private readonly atomistTeamId: string = "T123") {
     }
 }
