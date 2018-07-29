@@ -7,7 +7,6 @@ import {
 } from "@atomist/sdm";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
 import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
-
 import chalk from "chalk";
 import { HttpBuildStatusUpdater } from "../binding/HttpBuildStatusUpdater";
 import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";

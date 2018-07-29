@@ -1,6 +1,9 @@
 import { Configuration } from "@atomist/automation-client";
 import { automationClient } from "@atomist/automation-client/automationClient";
-import { defaultConfiguration } from "@atomist/automation-client/configuration";
+import {
+    defaultConfiguration,
+    invokePostProcessors,
+} from "@atomist/automation-client/configuration";
 import { SoftwareDeliveryMachine } from "@atomist/sdm";
 import { configureSdm, createSoftwareDeliveryMachine } from "@atomist/sdm-core";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
@@ -59,15 +62,14 @@ function configurationFor(repositoryOwnerParentDirectory: string): Configuration
 }
 
 export async function createBootstrapMachine(repositoryOwnerParentDirectory: string): Promise<AutomationClientConnectionConfig> {
-    const client = automationClient(configurationFor(repositoryOwnerParentDirectory));
-    client.run();
-    // TODO this is horrible
-    await sleepPlease(5000);
-    return {
-        atomistTeamId: "T123",
-        atomistTeamName: "slalom",
-        baseEndpoint: `http://localhost:${BootstrapPort}`,
-    };
+    const config = await invokePostProcessors(configurationFor(repositoryOwnerParentDirectory));
+    const client = automationClient(config);
+    return client.run()
+        .then(() => ({
+            atomistTeamId: "T123",
+            atomistTeamName: "slalom",
+            baseEndpoint: `http://localhost:${BootstrapPort}`,
+        }));
 }
 
 const sleepPlease: (timeout: number) => Promise<void> =
