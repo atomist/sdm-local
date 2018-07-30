@@ -3,17 +3,16 @@ import { Argv } from "yargs";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
-//import { UpdatePackageJsonIdentification } from "@atomist/sdm-pack-node";
+import { UpdatePackageJsonIdentification } from "@atomist/sdm-pack-node";
+import { NodeProjectCreationParametersDefinition } from "@atomist/sdm-pack-node";
+import { NodeProjectCreationParameters } from "@atomist/sdm-pack-node/dist/support/generator/NodeProjectCreationParameters";
 
-const sdmGenerator: GeneratorRegistration<{ name: string }> = {
+const sdmGenerator: GeneratorRegistration<NodeProjectCreationParameters> = {
     name: "createSdm",
     startingPoint: new GitHubRepoRef("atomist", "sample-sdm"),
-    parameters: {
-        //name: {},
-    },
+    parameters: NodeProjectCreationParametersDefinition,
     transform: [
-        //UpdatePackageJsonIdentification,
-        async p => p,
+        UpdatePackageJsonIdentification,
     ],
 };
 
