@@ -20,37 +20,39 @@ import { readVersion } from "./command/support/commands";
 
 /**
  * Start up the Slalom CLI
+ * @param connectionConfig if this is supplied, try to connect to a remote SDM
  * @return {yargs.Arguments}
  */
-export async function runSlalom(connectionConfig: AutomationClientConnectionConfig, loadMetadata: boolean = true) {
+export async function runSlalom(connectionConfig?: AutomationClientConnectionConfig) {
     yargs.usage("Usage: slalom <command> [options]");
 
     addClientCommands(yargs);
 
-    const automationClientInfo = await fetchMetadataFromAutomationClient(connectionConfig);
-    verifyLocalSdm(automationClientInfo);
+    if (!!connectionConfig) {
+        const automationClientInfo = await fetchMetadataFromAutomationClient(connectionConfig);
+        verifyLocalSdm(automationClientInfo);
 
-    addBootstrapCommands(connectionConfig, yargs);
+        addBootstrapCommands(connectionConfig, yargs);
 
-    if (!!automationClientInfo.localConfig) {
-        addGitHooksCommand(automationClientInfo, yargs);
-        removeGitHooksCommand(automationClientInfo, yargs);
-        addImportFromGitRemoteCommand(automationClientInfo, yargs);
-    }
+        if (!!automationClientInfo.localConfig) {
+            addGitHooksCommand(automationClientInfo, yargs);
+            removeGitHooksCommand(automationClientInfo, yargs);
+            addImportFromGitRemoteCommand(automationClientInfo, yargs);
+        }
 
-    // If we were able to connect to an SDM...
-    if (!!automationClientInfo.commandsMetadata) {
-        addTriggerCommand(automationClientInfo, yargs);
-        addStartListenerCommand(connectionConfig, yargs);
-        addCommandsByName(automationClientInfo, yargs);
-        addIntents(automationClientInfo, yargs);
-        addShowSkillsCommand(automationClientInfo, yargs);
+        // If we were able to connect to an SDM...
+        if (!!automationClientInfo.commandsMetadata) {
+            addTriggerCommand(automationClientInfo, yargs);
+            addStartListenerCommand(connectionConfig, yargs);
+            addCommandsByName(automationClientInfo, yargs);
+            addIntents(automationClientInfo, yargs);
+            addShowSkillsCommand(automationClientInfo, yargs);
+        }
     }
 
     return yargs
         .epilog("Copyright Atomist 2018")
-        .demandCommand(1, `Please provide a command for local SDM ${automationClientInfo.connectionConfig.atomistTeamName} handling projects under ${
-            automationClientInfo.localConfig ? automationClientInfo.localConfig.repositoryOwnerParentDirectory : "unknown"}`)
+        .demandCommand(1, "Please provide a command")
         .help()
         .wrap(100)
         .strict()
