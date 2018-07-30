@@ -1,15 +1,17 @@
-import { CommandHandlerRegistration, SoftwareDeliveryMachine } from "@atomist/sdm";
+import { GeneratorRegistration, SoftwareDeliveryMachine } from "@atomist/sdm";
 import { Argv } from "yargs";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 import { addBootstrapCommand } from "./support/embeddedCommandExecution";
+import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 
-const sdmGenerator: CommandHandlerRegistration<{ name: string }> = {
-    name: "hello",
+const sdmGenerator: GeneratorRegistration<{ name: string }> = {
+    name: "createSdm",
+    startingPoint: new GitHubRepoRef("atomist", "sample-sdm"),
     parameters: {
-        name: {},
+        //name: {},
     },
-    listener: async ci => {
-        return ci.addressChannels(`Hello ${ci.parameters.name}`);
+    transform: async p => {
+        return p;
     },
 };
 
@@ -19,7 +21,7 @@ export function addBootstrapCommands(connectionConfig: AutomationClientConnectio
 
 function addSdmGenerator(connectionConfig: AutomationClientConnectionConfig, yargs: Argv) {
     addBootstrapCommand(connectionConfig, yargs, {
-        cliCommand: "xcreate SDM",
+        cliCommand: "new sdm",
         cliDescription: "Create an SDM",
         registration: sdmGenerator,
         configure: configureBootstrapMachine,
@@ -31,5 +33,5 @@ function addSdmGenerator(connectionConfig: AutomationClientConnectionConfig, yar
  * @param {SoftwareDeliveryMachine} sdm
  */
 function configureBootstrapMachine(sdm: SoftwareDeliveryMachine) {
-    sdm.addCommand(sdmGenerator);
+    sdm.addGeneratorCommand(sdmGenerator);
 }
