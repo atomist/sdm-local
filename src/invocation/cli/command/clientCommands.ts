@@ -46,7 +46,7 @@ export function addClientCommands(yargs: any) {
             })
             .option("local", {
                 default: false,
-                describe: "Start in local mode?",
+                describe: "Start in local mode",
                 type: "boolean",
             })
             .option("install", {

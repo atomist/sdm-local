@@ -103,7 +103,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
     private async renderAction(channel: string, action: slack.Action) {
         if (action.type === "button") {
             const a = action as any;
-            let url = `${this.connectionConfig.baseEndpoint}/command-get/${a.command.name}?`;
+            let url = `${this.connectionConfig.baseEndpoint}/command/${a.command.name}?`;
             Object.getOwnPropertyNames(a.command.parameters).forEach(prop => {
                 url += `${prop}=${a.command.parameters[prop]}`;
             });

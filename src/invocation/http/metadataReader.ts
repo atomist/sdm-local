@@ -38,7 +38,7 @@ export async function fetchMetadataFromAutomationClient(connectionConfig: Automa
         const commandsMetadata = resp.data.commands;
         let localConfig: LocalMachineConfig;
         try {
-            localConfig = (await axios.get(connectionConfig.baseEndpoint + "/localConfiguration")).data;
+            localConfig = (await axios.get(connectionConfig.baseEndpoint + "/local/configuration")).data;
         } catch {
             // Do nothing. The automation client we're talking to is not in local mode
         }
