@@ -23,14 +23,14 @@ import {
     start,
 } from "./support/commands";
 import { errorMessage } from "./support/consoleOutput";
+import * as yargs from "yargs";
 
 const Package = "atomist";
 
 const compileDescribe = "Run 'npm run compile' before running";
 const installDescribe = "Run 'npm install' before running/compiling, default is to install if no " +
     "'node_modules' directory exists";
-
-export function addClientCommands(yargs: any) {
+function addStartCommand(yargs: yargs.Argv) {
     yargs.command(["start", "st", "run"], "Start an SDM or automation client", ya => {
         return ya
             .option("change-dir", {
@@ -61,7 +61,12 @@ export function addClientCommands(yargs: any) {
             errorMessage(`${Package}: Unhandled Error: ${e.message}`);
             process.exit(101);
         }
-    })
+    });
+    return yargs;
+}
+
+export function addClientCommands(yargs: yargs.Argv) {
+   addStartCommand(yargs)
         .command(["gql-fetch <workspace-id>"], "Introspect GraphQL schema", ya => {
             return (ya)
                 .positional("workspace-id", {
