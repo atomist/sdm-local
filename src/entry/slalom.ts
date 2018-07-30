@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
  * Copyright © 2018 Atomist, Inc.
  *
@@ -13,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-#!/usr/bin/env node
 
 /*
     Main entry point script
