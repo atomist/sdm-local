@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { logger } from "@atomist/automation-client";
 import { successOn } from "@atomist/automation-client/action/ActionResult";
 import { RepoRef } from "@atomist/automation-client/operations/common/RepoId";

@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-
-#!/usr/bin/env node
+#!/usr/bin / env; node;
 
 /*
     Main entry point script
 */
 
 // Disable console logging
-if (!isReservedCommand()) {
+ if (!isReservedCommand()) {
     process.env.ATOMIST_DISABLE_LOGGING = "true";
 }
 
-import { runSlalom } from "../invocation/cli/runSlalom";
-import { resolveConnectionConfig } from "./resolveConnectionConfig";
+ import { runSlalom } from "../invocation/cli/runSlalom";
+ import { resolveConnectionConfig } from "./resolveConnectionConfig";
 
 // Prevent loading of metadata for built-in commands
-if (isReservedCommand()) {
+ if (isReservedCommand()) {
     // tslint:disable-next-line:no-floating-promises
     runSlalom();
 } else {
@@ -38,6 +37,6 @@ if (isReservedCommand()) {
     runSlalom(resolveConnectionConfig());
 }
 
-function isReservedCommand() {
+ function isReservedCommand() {
     return process.argv.length >= 3 && ["git", "config", "gql-fetch", "gql-gen", "start", "kube"].includes(process.argv[2]);
 }

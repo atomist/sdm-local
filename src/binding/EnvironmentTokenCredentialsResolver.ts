@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
 import { CredentialsResolver } from "@atomist/sdm";
 

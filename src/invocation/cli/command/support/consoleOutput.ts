@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { logger } from "@atomist/automation-client";
 import chalk from "chalk";
 import { sprintf } from "sprintf-js";

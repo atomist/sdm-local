@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { LocalMachineConfig } from "..";
 import { AutomationClientConnectionConfig } from "./http/AutomationClientConnectionConfig";

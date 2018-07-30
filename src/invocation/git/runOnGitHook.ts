@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { logger } from "@atomist/automation-client";
 import { isAtomistTemporaryBranch } from "../../binding/project/FileSystemProjectLoader";
 import { logExceptionsToConsole } from "../cli/command/support/consoleOutput";

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import * as _ from "lodash";
 
 export interface PathElement {

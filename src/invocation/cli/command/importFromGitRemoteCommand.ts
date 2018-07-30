@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import { exec } from "child_process";
 import * as fs from "fs";

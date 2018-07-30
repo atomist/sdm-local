@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import chalk from "chalk";
 import { isListenerRunning } from "../../../../binding/message/httpMessageListener";
 import { infoMessage } from "./consoleOutput";

@@ -224,7 +224,7 @@ function execCmd(opts: ExecOptions): number {
     // if --install or --no-install is provided, do that
     // otherwise run install only if the node_modules directory does not exist
     if (opts.runInstall ||
-        (opts.runInstall !== false && !fs.existsSync(path.join(opts.cwd, "node_modules")))) {
+        (opts.runInstall && !fs.existsSync(path.join(opts.cwd, "node_modules")))) {
         const installStatus = install(opts.cwd);
         if (installStatus !== 0) {
             return installStatus;

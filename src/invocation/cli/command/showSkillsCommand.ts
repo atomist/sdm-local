@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import chalk from "chalk";
 import { Argv } from "yargs";
 import { AutomationClientInfo } from "../../AutomationClientInfo";

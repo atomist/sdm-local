@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { logger } from "@atomist/automation-client";
 import { toStringArray } from "@atomist/automation-client/internal/util/string";
 import {

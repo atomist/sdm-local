@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { MappedParameters } from "@atomist/automation-client";
 import { MappedParameterDeclaration } from "@atomist/automation-client/metadata/automationMetadata";
 import { GitHubDotComBase } from "@atomist/automation-client/operations/common/GitHubRepoRef";

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { Configuration } from "@atomist/automation-client";
 import { automationClient } from "@atomist/automation-client/automationClient";
 import { defaultConfiguration, invokePostProcessors } from "@atomist/automation-client/configuration";

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import * as assert from "power-assert";
 import { parseOwnerAndRepo, withinExpandedTree } from "../../src/binding/project/expandedTreeUtils";
 

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { ConfigureMachine } from "@atomist/sdm";
 import { toParametersListing } from "@atomist/sdm/api-helper/machine/handlerRegistrations";
 import { CommandRegistration } from "@atomist/sdm/api/registration/CommandRegistration";

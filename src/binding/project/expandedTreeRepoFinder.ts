@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { RepoFinder } from "@atomist/automation-client/operations/common/repoFinder";
 import * as fs from "fs";
 import * as _ from "lodash";

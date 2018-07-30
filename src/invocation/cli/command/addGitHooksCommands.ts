@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { Argv } from "yargs";
 import { LocalMachineConfig } from "../../..";
 import { expandedTreeRepoFinder } from "../../../binding/project/expandedTreeRepoFinder";
@@ -31,7 +30,7 @@ import {
     removeGitHooks,
 } from "../../../setup/addGitHooks";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
+import { logExceptionsToConsole } from "./support/consoleOutput";
 
 /**
  * Command to add git hooks to current directory or all projects

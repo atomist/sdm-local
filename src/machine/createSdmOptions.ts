@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { SoftwareDeliveryMachineOptions } from "@atomist/sdm";
 import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";

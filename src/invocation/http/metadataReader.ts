@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import axios from "axios";
 import { LocalMachineConfig } from "../..";
 import { AutomationClientInfo } from "../AutomationClientInfo";

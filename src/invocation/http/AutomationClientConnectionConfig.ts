@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 /**
  * How to connect to an automation client
  */

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import * as yargs from "yargs";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";

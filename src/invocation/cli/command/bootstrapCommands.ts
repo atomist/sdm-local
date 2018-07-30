@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import { GeneratorRegistration, SoftwareDeliveryMachine } from "@atomist/sdm";
 import { Argv } from "yargs";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
-import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
 import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
+import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 
 /**
  * Generator that can create a new SDM

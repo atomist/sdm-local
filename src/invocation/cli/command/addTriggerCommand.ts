@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { Argv } from "yargs";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { HookEvents } from "../../git/handlePushBasedEventOnRepo";

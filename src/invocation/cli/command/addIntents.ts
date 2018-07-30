@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { logger } from "@atomist/automation-client";
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import * as _ from "lodash";

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { Argv } from "yargs";
 import { startHttpMessageListener } from "../../../binding/message/httpMessageListener";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
