@@ -119,6 +119,9 @@ export async function handleGitHookEvent(cc: AutomationClientConnectionConfig,
     if (!HookEvents.includes(payload.event)) {
         return errorMessage("Unknown git hook event '%s'", event);
     }
+    if (!lc) {
+        return errorMessage("LocalMachineConfig must be supplied");
+    }
 
     return handlePushBasedEventOnRepo(cc, lc, payload, "SetGoalsOnPush");
 }
