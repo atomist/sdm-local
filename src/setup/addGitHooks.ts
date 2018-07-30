@@ -20,7 +20,6 @@ const AtomistJsName = "build/src/entry/onGitHook.js";
  * Add Git hooks to the given repo
  * @param {RemoteRepoRef} id
  * @param {string} projectBaseDir
- * @param gitHookScript absolute path to the script to run when a hook fires
  * @return {Promise<void>}
  */
 export async function addGitHooks(id: RemoteRepoRef,
@@ -58,9 +57,9 @@ export async function addGitHooksToProject(p: LocalProject) {
     }
 }
 
-export async function removeGitHooks(id: RemoteRepoRef, baseDir: string) {
+export async function removeGitHooks(baseDir: string) {
     if (fs.existsSync(`${baseDir}/.git`)) {
-        const p = await NodeFsLocalProject.fromExistingDirectory(id, baseDir);
+        const p = await NodeFsLocalProject.fromExistingDirectory({ owner: "doesn't", repo: "matter"}, baseDir);
         for (const hookFile of HookEvents) {
             await deatomizeScript(p, `/.git/hooks/${hookFile}`);
         }

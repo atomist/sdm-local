@@ -3,8 +3,8 @@ import { AutomationClientInfo } from "../AutomationClientInfo";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { fetchMetadataFromAutomationClient } from "../http/metadataReader";
 import {
-    addGitHooksCommand,
-    removeGitHooksCommand,
+    addAddGitHooksCommand,
+    addRemoveGitHooksCommand,
 } from "./command/addGitHooksCommands";
 import {
     addCommandsByName,
@@ -34,9 +34,10 @@ export async function runSlalom(connectionConfig?: AutomationClientConnectionCon
 
         addBootstrapCommands(connectionConfig, yargs);
 
+        addRemoveGitHooksCommand(automationClientInfo, yargs);
+
         if (!!automationClientInfo.localConfig) {
-            addGitHooksCommand(automationClientInfo, yargs);
-            removeGitHooksCommand(automationClientInfo, yargs);
+            addAddGitHooksCommand(automationClientInfo, yargs);
             addImportFromGitRemoteCommand(automationClientInfo, yargs);
         }
 

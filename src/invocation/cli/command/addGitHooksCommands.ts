@@ -14,14 +14,14 @@ import {
     removeGitHooks,
 } from "../../../setup/addGitHooks";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { logExceptionsToConsole } from "./support/consoleOutput";
+import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
 
 /**
  * Command to add git hooks to current directory or all projects
  * @param ai config
  * @param {yargs.Argv} yargs
  */
-export function addGitHooksCommand(ai: AutomationClientInfo, yargs: Argv) {
+export function addAddGitHooksCommand(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({
         command: "add-git-hooks",
         describe: `Install git hooks for projects under ${ai.localConfig.repositoryOwnerParentDirectory}`,
@@ -31,12 +31,14 @@ export function addGitHooksCommand(ai: AutomationClientInfo, yargs: Argv) {
     });
 }
 
-export function removeGitHooksCommand(ai: AutomationClientInfo, yargs: Argv) {
+export function addRemoveGitHooksCommand(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({
         command: "remove-git-hooks",
-        describe: `Remove git hooks for projects under ${ai.localConfig.repositoryOwnerParentDirectory}`,
+        describe: `Remove git hooks for projects managed by this SDM, or in current directory if not connected to an SDM`,
         handler: () => {
-            return logExceptionsToConsole(() => removeHookOrHooks(ai.localConfig), ai.connectionConfig.showErrorStacks);
+            return logExceptionsToConsole(() => {
+                return removeHookOrHooks(!!ai ? ai.localConfig : undefined);
+            }, ai.connectionConfig.showErrorStacks);
         },
     });
 }
@@ -55,7 +57,11 @@ async function installHookOrHooks(lc: LocalMachineConfig) {
     return installAllGitHooks(lc);
 }
 
-async function removeHookOrHooks(lc: LocalMachineConfig) {
+async function removeHookOrHooks(lc?: LocalMachineConfig) {
+    if (!lc) {
+        const cwd = determineCwd();
+        return removeGitHooks(cwd);
+    }
     const repositoryOwnerParentDirectory = lc.repositoryOwnerParentDirectory;
     const { owner, repo } = parseOwnerAndRepo(repositoryOwnerParentDirectory);
     if (!!owner && !!repo) {
@@ -63,7 +69,7 @@ async function removeHookOrHooks(lc: LocalMachineConfig) {
             repositoryOwnerParentDirectory,
             baseDir: determineCwd(),
         });
-        return removeGitHooks(id, id.fileSystemLocation);
+        return removeGitHooks(id.fileSystemLocation);
     }
     return removeAllGitHooks(lc);
 }
@@ -90,6 +96,6 @@ async function removeAllGitHooks(lc: LocalMachineConfig) {
         if (!isFileSystemRemoteRepoRef(rr)) {
             throw new Error(`Unexpected return from repo ref resolver: ${JSON.stringify(rr)}`);
         }
-        await removeGitHooks(rr, rr.fileSystemLocation);
+        await removeGitHooks(rr.fileSystemLocation);
     }
 }
