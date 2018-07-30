@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { isListenerRunning } from "../io/httpMessageListener";
+import { isListenerRunning } from "../../../../binding/message/httpMessageListener";
 import { infoMessage } from "./consoleOutput";
 
 /**

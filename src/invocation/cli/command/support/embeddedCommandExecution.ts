@@ -1,13 +1,13 @@
 import { ConfigureMachine } from "@atomist/sdm";
+import { toParametersListing } from "@atomist/sdm/api-helper/machine/handlerRegistrations";
 import { CommandRegistration } from "@atomist/sdm/api/registration/CommandRegistration";
 import { Argv } from "yargs";
+import { infoMessage } from "../../../..";
 import { createBootstrapMachine } from "../../../../embedded/bootstrap";
 import { AutomationClientConnectionConfig } from "../../../http/AutomationClientConnectionConfig";
 import { fetchMetadataFromAutomationClient } from "../../../http/metadataReader";
-import { errorMessage, logExceptionsToConsole } from "../../support/consoleOutput";
+import { errorMessage, logExceptionsToConsole } from "./consoleOutput";
 import { runCommandOnRemoteAutomationClient } from "./runCommandOnRemoteAutomationClient";
-import { toParametersListing } from "@atomist/sdm/api-helper/machine/handlerRegistrations";
-import { infoMessage } from "../../../..";
 
 /**
  * Spec for running an embedded command on an ephemeral SDM

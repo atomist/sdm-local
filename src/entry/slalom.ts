@@ -21,8 +21,6 @@ if (isReservedCommand()) {
     runSlalom(resolveConnectionConfig());
 }
 
-
 function isReservedCommand() {
     return process.argv.length >= 3 && ["git", "config", "gql-fetch", "gql-gen", "start", "kube"].includes(process.argv[2]);
 }
-

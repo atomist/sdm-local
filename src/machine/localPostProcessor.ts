@@ -3,13 +3,13 @@ import {
     logger,
 } from "@atomist/automation-client";
 import * as _ from "lodash";
-import { LocalGraphClient } from "../binding/LocalGraphClient";
+import { LocalGraphClient } from "../binding/graph/LocalGraphClient";
+import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessageClient";
+import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
+import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
+import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
 import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
 import { AllMessagesPort } from "../invocation/cli/command/addStartListenerCommand";
-import { BroadcastingMessageClient } from "../invocation/cli/io/BroadcastingMessageClient";
-import { GoalEventForwardingMessageClient } from "../invocation/cli/io/GoalEventForwardingMessageClient";
-import { HttpClientMessageClient } from "../invocation/cli/io/HttpClientMessageClient";
-import { SystemNotificationMessageClient } from "../invocation/cli/io/SystemNotificationMessageClient";
 import {
     CommandHandlerInvocation,
     invokeCommandHandler,

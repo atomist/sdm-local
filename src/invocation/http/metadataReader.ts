@@ -4,7 +4,7 @@ import { AutomationClientInfo } from "../AutomationClientInfo";
 import {
     errorMessage,
     infoMessage,
-} from "../cli/support/consoleOutput";
+} from "../cli/command/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 
 /**

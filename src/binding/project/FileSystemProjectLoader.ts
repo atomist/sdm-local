@@ -6,13 +6,13 @@ import {
     WithLoadedProject,
 } from "@atomist/sdm";
 import * as fs from "fs";
-import { LocalMachineConfig } from "..";
-import { dirFor } from "../binding/expandedTreeUtils";
+import { LocalMachineConfig } from "../../index";
+import { runAndLog } from "../../util/runAndLog";
+import { dirFor } from "./expandedTreeUtils";
 import {
     FileSystemRemoteRepoRef,
     isFileSystemRemoteRepoRef,
-} from "../binding/FileSystemRemoteRepoRef";
-import { runAndLog } from "../util/runAndLog";
+} from "./FileSystemRemoteRepoRef";
 
 /**
  * Project loader that modifies push behavior before acting on project,

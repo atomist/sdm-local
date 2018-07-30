@@ -52,7 +52,6 @@ function createGitHubToken(user: string, password: string, mfa?: string): Promis
 }
 
 export function cliAtomistConfig(argv: any): Promise<number> {
-
     const argTeamId: string = argv["workspace-id"];
     const argGitHubUser: string = argv["github-user"];
     const argGitHubPassword: string = argv["github-password"];

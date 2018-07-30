@@ -44,10 +44,9 @@ export function addClientCommands(yargs: any) {
             console.error(`${Package}: Unhandled Error: ${e.message}`);
             process.exit(101);
         }
-
     })
         .command(["gql-fetch <workspace-id>"], "Introspect GraphQL schema", ya => {
-            return (ya as any)
+            return (ya)
                 .positional("workspace-id", {
                     describe: "Atomist workspace/team ID",
                     required: true,

@@ -7,7 +7,7 @@ import {
     toPaths,
 } from "../../../util/PathElement";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { logExceptionsToConsole } from "../support/consoleOutput";
+import { logExceptionsToConsole } from "./support/consoleOutput";
 import {
     convertToDisplayable,
     runCommandOnRemoteAutomationClient,

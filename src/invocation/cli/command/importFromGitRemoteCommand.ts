@@ -7,10 +7,10 @@ import { infoMessage } from "../../..";
 import {
     sendChannelLinkEvent,
     sendRepoOnboardingEvent,
-} from "../../../binding/repoOnboardingEvents";
+} from "../../../binding/event/repoOnboardingEvents";
 import { addGitHooks } from "../../../setup/addGitHooks";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { logExceptionsToConsole } from "../support/consoleOutput";
+import { logExceptionsToConsole } from "./support/consoleOutput";
 
 export function addImportFromGitRemoteCommand(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({

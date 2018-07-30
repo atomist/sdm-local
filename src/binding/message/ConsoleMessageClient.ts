@@ -16,7 +16,7 @@ import * as _ from "lodash";
 import * as marked from "marked";
 import { MarkedOptions } from "marked";
 import * as TerminalRenderer from "marked-terminal";
-import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
+import { AutomationClientConnectionConfig } from "../../invocation/http/AutomationClientConnectionConfig";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 
 marked.setOptions({

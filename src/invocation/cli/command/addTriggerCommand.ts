@@ -2,7 +2,7 @@ import { Argv } from "yargs";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { HookEvents } from "../../git/handlePushBasedEventOnRepo";
 import { triggerGitEvents } from "../../git/triggerGitEvents";
-import { logExceptionsToConsole } from "../support/consoleOutput";
+import { logExceptionsToConsole } from "./support/consoleOutput";
 
 /**
  * Add a command to triggerGitEvents execution following a git event

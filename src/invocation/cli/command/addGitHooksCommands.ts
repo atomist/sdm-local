@@ -1,20 +1,20 @@
 import { Argv } from "yargs";
 import { LocalMachineConfig } from "../../..";
-import { expandedTreeRepoFinder } from "../../../binding/expandedTreeRepoFinder";
+import { expandedTreeRepoFinder } from "../../../binding/project/expandedTreeRepoFinder";
 import {
     determineCwd,
     parseOwnerAndRepo,
-} from "../../../binding/expandedTreeUtils";
+} from "../../../binding/project/expandedTreeUtils";
 import {
     FileSystemRemoteRepoRef,
     isFileSystemRemoteRepoRef,
-} from "../../../binding/FileSystemRemoteRepoRef";
+} from "../../../binding/project/FileSystemRemoteRepoRef";
 import {
     addGitHooks,
     removeGitHooks,
 } from "../../../setup/addGitHooks";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { logExceptionsToConsole } from "../support/consoleOutput";
+import { logExceptionsToConsole } from "./support/consoleOutput";
 
 /**
  * Command to add git hooks to current directory or all projects

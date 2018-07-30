@@ -3,11 +3,11 @@ import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
-import { expandedTreeRepoFinder } from "../binding/expandedTreeRepoFinder";
-import { FileSystemProjectLoader } from "../binding/FileSystemProjectLoader";
-import { fileSystemProjectPersister } from "../binding/fileSystemProjectPersister";
-import { LocalRepoRefResolver } from "../binding/LocalRepoRefResolver";
-import { LocalRepoTargets } from "../binding/LocalRepoTargets";
+import { expandedTreeRepoFinder } from "../binding/project/expandedTreeRepoFinder";
+import { ExpandedTreeRepoRefResolver } from "../binding/project/ExpandedTreeRepoRefResolver";
+import { FileSystemProjectLoader } from "../binding/project/FileSystemProjectLoader";
+import { fileSystemProjectPersister } from "../binding/project/fileSystemProjectPersister";
+import { LocalRepoTargets } from "../binding/project/LocalRepoTargets";
 import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 
@@ -20,7 +20,7 @@ export function createSdmOptions(localMachineConfig: LocalMachineConfig): Softwa
     // TODO how do we find this?
     const cc = DefaultAutomationClientConnectionConfig;
 
-    const repoRefResolver = new LocalRepoRefResolver(localMachineConfig.repositoryOwnerParentDirectory);
+    const repoRefResolver = new ExpandedTreeRepoRefResolver(localMachineConfig.repositoryOwnerParentDirectory);
     return {
         // TODO this is the only use of sdm-core
         artifactStore: new EphemeralLocalArtifactStore(),

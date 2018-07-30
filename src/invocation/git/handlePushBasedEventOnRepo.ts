@@ -3,10 +3,10 @@ import { GitCommandGitProject } from "@atomist/automation-client/project/git/Git
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { OnPushToAnyBranch } from "@atomist/sdm";
 import { LocalMachineConfig } from "../..";
-import { isAtomistTemporaryBranch } from "../../binding/FileSystemProjectLoader";
-import { FileSystemRemoteRepoRef } from "../../binding/FileSystemRemoteRepoRef";
-import { pushFromLastCommit } from "../../binding/pushFromLastCommit";
-import { errorMessage } from "../cli/support/consoleOutput";
+import { pushFromLastCommit } from "../../binding/event/pushFromLastCommit";
+import { isAtomistTemporaryBranch } from "../../binding/project/FileSystemProjectLoader";
+import { FileSystemRemoteRepoRef } from "../../binding/project/FileSystemRemoteRepoRef";
+import { errorMessage } from "../cli/command/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { invokeEventHandler } from "../http/EventHandlerInvocation";
 import Push = OnPushToAnyBranch.Push;

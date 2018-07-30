@@ -3,14 +3,14 @@ import { GitCommandGitProject } from "@atomist/automation-client/project/git/Git
 import {
     determineCwd,
     withinExpandedTree,
-} from "../../binding/expandedTreeUtils";
-import { FileSystemRemoteRepoRef } from "../../binding/FileSystemRemoteRepoRef";
+} from "../../binding/project/expandedTreeUtils";
+import { FileSystemRemoteRepoRef } from "../../binding/project/FileSystemRemoteRepoRef";
 import { shaHistory } from "../../util/git";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import {
     errorMessage,
     infoMessage,
-} from "../cli/support/consoleOutput";
+} from "../cli/command/support/consoleOutput";
 import { handleGitHookEvent } from "./handlePushBasedEventOnRepo";
 
 /**

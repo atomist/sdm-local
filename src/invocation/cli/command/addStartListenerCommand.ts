@@ -1,7 +1,7 @@
 import { Argv } from "yargs";
+import { startHttpMessageListener } from "../../../binding/message/httpMessageListener";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
-import { startHttpMessageListener } from "../io/httpMessageListener";
-import { logExceptionsToConsole } from "../support/consoleOutput";
+import { logExceptionsToConsole } from "./support/consoleOutput";
 
 export const AllMessagesPort = 6660;
 

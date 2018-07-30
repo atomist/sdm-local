@@ -4,7 +4,7 @@ import {
     MutationOptions,
     QueryOptions,
 } from "@atomist/automation-client/spi/graph/GraphClient";
-import { errorMessage } from "../invocation/cli/support/consoleOutput";
+import { errorMessage } from "../../invocation/cli/command/support/consoleOutput";
 
 /**
  * Local graph client. Returns empty result set or throws an

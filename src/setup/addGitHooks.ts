@@ -10,7 +10,7 @@ import { infoMessage } from "..";
 import {
     errorMessage,
     warningMessage,
-} from "../invocation/cli/support/consoleOutput";
+} from "../invocation/cli/command/support/consoleOutput";
 import { HookEvents } from "../invocation/git/handlePushBasedEventOnRepo";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";

@@ -8,7 +8,10 @@ import {
 } from "@atomist/sdm";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
-export class LocalRepoRefResolver implements RepoRefResolver {
+/**
+ * Resolve RepoRefs into our expanded tree structure
+ */
+export class ExpandedTreeRepoRefResolver implements RepoRefResolver {
 
     public providerIdFromPush(push: OnPushToAnyBranch.Push): string|null {
         return "local";

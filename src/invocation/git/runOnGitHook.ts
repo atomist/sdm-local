@@ -1,7 +1,7 @@
 import { logger } from "@atomist/automation-client";
-import { isAtomistTemporaryBranch } from "../../binding/FileSystemProjectLoader";
-import { logExceptionsToConsole } from "../cli/support/consoleOutput";
-import { suggestStartingAllMessagesListener } from "../cli/support/suggestStartingAllMessagesListener";
+import { isAtomistTemporaryBranch } from "../../binding/project/FileSystemProjectLoader";
+import { logExceptionsToConsole } from "../cli/command/support/consoleOutput";
+import { suggestStartingAllMessagesListener } from "../cli/command/support/suggestStartingAllMessagesListener";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { fetchMetadataFromAutomationClient } from "../http/metadataReader";
 import {
