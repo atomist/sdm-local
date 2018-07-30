@@ -7,7 +7,6 @@ import {
     Secret,
 } from "@atomist/automation-client/internal/invoker/Payload";
 import * as assert from "power-assert";
-import { hasOwnProperty } from "tslint/lib/utils";
 import { isArray } from "util";
 import { newCorrelationId } from "../../machine/correlationId";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
@@ -63,7 +62,7 @@ function propertiesToArgs(o: any): Arg[] {
     }
     const args = [];
     for (const name in o) {
-        if (hasOwnProperty(o, name)) {
+        if (o.hasOwnProperty(o)) {
             args.push({name, value: o[name]});
         }
     }

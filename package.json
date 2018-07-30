@@ -27,14 +27,16 @@
     "@types/inquirer": "0.0.42",
     "@types/node-notifier": "0.0.28",
     "@types/yargs": "^11.0.0",
+    "app-root-path": "^2.0.1",
     "express": "^4.16.3",
+    "fs-extra": "^6.0.1",
     "inquirer": "^6.0.0",
     "json-stringify-safe": "^5.0.1",
     "marked-terminal": "^3.0.0",
     "node-ipc": "^9.1.1",
     "node-notifier": "^5.2.1",
     "open": "0.0.5",
-    "tslint": "^5.10.0"
+    "yargs": "^12.0.1"
   },
   "peerDependencies": {
     "@atomist/sdm": "*",

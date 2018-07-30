@@ -13,15 +13,19 @@ import {
 import { addStartListenerCommand } from "./command/addStartListenerCommand";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addBootstrapCommands } from "./command/bootstrapCommands";
+import { addClientCommands } from "./command/client";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 import { addShowSkillsCommand } from "./command/showSkillsCommand";
+import { readVersion } from "./command/support/commands";
 
 /**
  * Start up the Slalom CLI
  * @return {yargs.Arguments}
  */
-export async function runSlalom(connectionConfig: AutomationClientConnectionConfig) {
+export async function runSlalom(connectionConfig: AutomationClientConnectionConfig, loadMetadata: boolean = true) {
     yargs.usage("Usage: slalom <command> [options]");
+
+    addClientCommands(yargs);
 
     const automationClientInfo = await fetchMetadataFromAutomationClient(connectionConfig);
     verifyLocalSdm(automationClientInfo);
@@ -51,7 +55,9 @@ export async function runSlalom(connectionConfig: AutomationClientConnectionConf
         .wrap(100)
         .strict()
         .completion()
-        .version()
+        .alias("help", ["h", "?"])
+        .version(readVersion())
+        .alias("version", "v")
         .argv;
 }
 
