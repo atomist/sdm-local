@@ -11,7 +11,7 @@ import { configureLocal } from "../machine/localPostProcessor";
 
 const BootstrapPort = 2867;
 
-const CreateMachine = (configure: ConfigureMachine) => (config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine => {
+const createMachine = (configure: ConfigureMachine) => (config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine => {
     const sdm: SoftwareDeliveryMachine = createSoftwareDeliveryMachine(
         {
             name: "Slalom bootstrap machine",
@@ -46,7 +46,7 @@ function configurationFor(repositoryOwnerParentDirectory: string,
             preferLocalSeeds: false,
             forceLocal: true,
         }),
-        configureSdm(CreateMachine(configure), {}),
+        configureSdm(createMachine(configure), {}),
     ];
 
     return cfg;

@@ -26,8 +26,6 @@ export async function runSlalom(connectionConfig: AutomationClientConnectionConf
     const automationClientInfo = await fetchMetadataFromAutomationClient(connectionConfig);
     verifyLocalSdm(automationClientInfo);
 
-    // TODO should not need to connect
-
     addBootstrapCommands(connectionConfig, yargs);
 
     if (!!automationClientInfo.localConfig) {
@@ -35,6 +33,8 @@ export async function runSlalom(connectionConfig: AutomationClientConnectionConf
         removeGitHooksCommand(automationClientInfo, yargs);
         addImportFromGitRemoteCommand(automationClientInfo, yargs);
     }
+
+    // If we were able to connect to an SDM...
     if (!!automationClientInfo.commandsMetadata) {
         addTriggerCommand(automationClientInfo, yargs);
         addStartListenerCommand(connectionConfig, yargs);

@@ -5,8 +5,9 @@ import { createBootstrapMachine } from "../../../../embedded/bootstrap";
 import { AutomationClientConnectionConfig } from "../../../http/AutomationClientConnectionConfig";
 import { fetchMetadataFromAutomationClient } from "../../../http/metadataReader";
 import { errorMessage, logExceptionsToConsole } from "../../support/consoleOutput";
-import { runCommand } from "./runCommand";
+import { runCommandOnRemoteAutomationClient } from "./runCommandOnRemoteAutomationClient";
 import { toParametersListing } from "@atomist/sdm/api-helper/machine/handlerRegistrations";
+import { infoMessage } from "../../../..";
 
 /**
  * Spec for running an embedded command on an ephemeral SDM
@@ -26,51 +27,58 @@ export interface EmbeddedCommandSpec {
 }
 
 /**
- * Add a command, asking for repositoryOwnerParentDirectory and spawn a machine
- * to execute it.
+ * Add a command, asking for repositoryOwnerParentDirectory, and spawn a machine
+ * to execute it. Shut the machine down afterwards.
  * Once the client connects, it will prompt for parameters required by the command.
+ * These parameters can also be passed through using the initial yargs request,
+ * being exposed as optional command parameters.
  * @param {AutomationClientConnectionConfig} connectionConfig
  * @param {yargs.Argv} yargs
  */
-export function addBootstrapCommand(connectionConfig: AutomationClientConnectionConfig,
-                                    yargs: Argv,
-                                    spec: EmbeddedCommandSpec) {
+export function addEmbeddedCommand(connectionConfig: AutomationClientConnectionConfig,
+                                   yargs: Argv,
+                                   spec: EmbeddedCommandSpec) {
     yargs.command({
         command: spec.cliCommand,
         describe: spec.cliDescription,
         builder: ra => {
-            let r = ra.option("repositoryOwnerParentDirectory", {
+            // Always require the repositoryOwnerParentDirectory, as
+            // we cannot create an embedded SDM otherwise
+            ra.option("repositoryOwnerParentDirectory", {
                 required: true,
                 description: "Base of the checked out directory tree the new SDM will operate on",
             });
+
+            // Expose optional parameters for the command's parameters if there are any
             if (!!spec.registration.parameters) {
                 const pl = toParametersListing(spec.registration.parameters);
                 for (const param of pl.parameters) {
-                    r = r.option(param.name, {
+                    ra.option(param.name, {
                         description: param.description,
                         required: false,
                     });
                 }
             }
-            return r;
+            return ra;
         },
         handler: argv => {
             return logExceptionsToConsole(async () => {
                 // infoMessage("repositoryOwnerParentDirectory=%s", argv.repositoryOwnerParentDirectory);
-                return runCommandOnBootstrapMachine(
+                await runCommandOnEmbeddedMachine(
                     argv.repositoryOwnerParentDirectory,
                     spec.configure,
                     spec.registration.name,
                     argv);
+                infoMessage("Execution of command %s complete", spec.registration.name);
             }, connectionConfig.showErrorStacks);
         },
     });
 }
 
-async function runCommandOnBootstrapMachine(repositoryOwnerParentDirectory: string,
-                                            configure: ConfigureMachine,
-                                            name: string,
-                                            params: object) {
+async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: string,
+                                           configure: ConfigureMachine,
+                                           name: string,
+                                           params: object) {
     const cc = await createBootstrapMachine(repositoryOwnerParentDirectory,
         configure);
     const ai = await fetchMetadataFromAutomationClient(cc);
@@ -79,7 +87,7 @@ async function runCommandOnBootstrapMachine(repositoryOwnerParentDirectory: stri
         errorMessage("No command named '%s'\n", name);
         process.exit(1);
     }
-    return runCommand(cc,
+    return runCommandOnRemoteAutomationClient(cc,
         repositoryOwnerParentDirectory,
         hm,
         params);

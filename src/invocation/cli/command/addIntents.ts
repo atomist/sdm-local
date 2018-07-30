@@ -10,8 +10,8 @@ import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../support/consoleOutput";
 import {
     convertToDisplayable,
-    runCommand,
-} from "./support/runCommand";
+    runCommandOnRemoteAutomationClient,
+} from "./support/runCommandOnRemoteAutomationClient";
 
 /**
  * Add commands by name
@@ -137,7 +137,7 @@ async function runByIntent(ai: AutomationClientInfo,
             .map(m => "\t" + m.intent).sort().join("\n")}`);
         process.exit(1);
     }
-    return runCommand(ai.connectionConfig,
+    return runCommandOnRemoteAutomationClient(ai.connectionConfig,
         ai.localConfig.repositoryOwnerParentDirectory,
         hm, command);
 }
@@ -151,5 +151,5 @@ async function runByCommandName(ai: AutomationClientInfo,
             .map(m => "\t" + m.name).sort().join("\n")}`);
         process.exit(1);
     }
-    return runCommand(ai.connectionConfig, ai.localConfig.repositoryOwnerParentDirectory, hm, command);
+    return runCommandOnRemoteAutomationClient(ai.connectionConfig, ai.localConfig.repositoryOwnerParentDirectory, hm, command);
 }

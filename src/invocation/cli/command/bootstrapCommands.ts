@@ -1,8 +1,9 @@
 import { GeneratorRegistration, SoftwareDeliveryMachine } from "@atomist/sdm";
 import { Argv } from "yargs";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
-import { addBootstrapCommand } from "./support/embeddedCommandExecution";
+import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
+//import { UpdatePackageJsonIdentification } from "@atomist/sdm-pack-node";
 
 const sdmGenerator: GeneratorRegistration<{ name: string }> = {
     name: "createSdm",
@@ -10,9 +11,10 @@ const sdmGenerator: GeneratorRegistration<{ name: string }> = {
     parameters: {
         //name: {},
     },
-    transform: async p => {
-        return p;
-    },
+    transform: [
+        //UpdatePackageJsonIdentification,
+        async p => p,
+    ],
 };
 
 export function addBootstrapCommands(connectionConfig: AutomationClientConnectionConfig, yargs: Argv) {
@@ -20,7 +22,7 @@ export function addBootstrapCommands(connectionConfig: AutomationClientConnectio
 }
 
 function addSdmGenerator(connectionConfig: AutomationClientConnectionConfig, yargs: Argv) {
-    addBootstrapCommand(connectionConfig, yargs, {
+    addEmbeddedCommand(connectionConfig, yargs, {
         cliCommand: "new sdm",
         cliDescription: "Create an SDM",
         registration: sdmGenerator,

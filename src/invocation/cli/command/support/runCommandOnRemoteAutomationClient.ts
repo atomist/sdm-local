@@ -1,23 +1,14 @@
 import { logger } from "@atomist/automation-client";
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
-import {
-    CommandHandlerMetadata,
-    Parameter,
-} from "@atomist/automation-client/metadata/automationMetadata";
+import { CommandHandlerMetadata, Parameter, } from "@atomist/automation-client/metadata/automationMetadata";
 import * as inquirer from "inquirer";
 import * as _ from "lodash";
 import { ExpandedTreeMappedParameterResolver } from "../../../../binding/ExpandedTreeMappedParameterResolver";
 import { parseOwnerAndRepo } from "../../../../binding/expandedTreeUtils";
 import { MappedParameterResolver } from "../../../../binding/MappedParameterResolver";
-import {
-    newCorrelationId,
-    pidToPort,
-} from "../../../../machine/correlationId";
+import { newCorrelationId, pidToPort, } from "../../../../machine/correlationId";
 import { AutomationClientConnectionConfig } from "../../../http/AutomationClientConnectionConfig";
-import {
-    CommandHandlerInvocation,
-    invokeCommandHandler,
-} from "../../../http/CommandHandlerInvocation";
+import { CommandHandlerInvocation, invokeCommandHandler, } from "../../../http/CommandHandlerInvocation";
 import { startHttpMessageListener } from "../../io/httpMessageListener";
 import { suggestStartingAllMessagesListener } from "../../support/suggestStartingAllMessagesListener";
 
@@ -25,10 +16,10 @@ import { suggestStartingAllMessagesListener } from "../../support/suggestStartin
  * All invocation goes through this
  * @return {Promise<any>}
  */
-export async function runCommand(connectionConfig: AutomationClientConnectionConfig,
-                                 repositoryOwnerParentDirectory: string,
-                                 hm: CommandHandlerMetadata,
-                                 command: object): Promise<any> {
+export async function runCommandOnRemoteAutomationClient(connectionConfig: AutomationClientConnectionConfig,
+                                                         repositoryOwnerParentDirectory: string,
+                                                         hm: CommandHandlerMetadata,
+                                                         command: object): Promise<any> {
     await suggestStartingAllMessagesListener();
     startHttpMessageListener(connectionConfig, pidToPort(process.pid), true);
     const extraArgs = Object.getOwnPropertyNames(command)
