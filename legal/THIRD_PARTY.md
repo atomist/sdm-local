@@ -14,7 +14,7 @@ This page details all runtime OSS dependencies of `@atomist/slalom`.
 |[Custom: http://npm-stat.com/charts.html](#custom-httpnpm-statcomchartshtml)|3|
 |[Custom: https://github.com/RIAEvangelist/easy-stack](#custom-httpsgithubcomriaevangelisteasy-stack)|1|
 |[ISC](#isc)|21|
-|[MIT](#mit)|146|
+|[MIT](#mit)|145|
 |[Unlicense](#unlicense)|1|
 
 #### Apache-2.0
@@ -102,7 +102,6 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`@types/rx-lite`|`4.0.5`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/rx`|`4.1.1`|Carl de Billy|[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/through`|`0.0.29`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
-|`@types/yargs`|`11.0.0`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`accepts`|`1.3.5`||[https://github.com/jshttp/accepts](https://github.com/jshttp/accepts)|
 |`ansi-escapes`|`3.1.0`|Sindre Sorhus|[https://github.com/sindresorhus/ansi-escapes](https://github.com/sindresorhus/ansi-escapes)|
 |`ansi-regex`|`2.1.1`|Sindre Sorhus|[https://github.com/chalk/ansi-regex](https://github.com/chalk/ansi-regex)|
