@@ -25,6 +25,7 @@ import * as stringify from "json-stringify-safe";
 import * as path from "path";
 
 import { cliAtomistConfig } from "./config";
+import { errorMessage, infoMessage, warningMessage } from "./consoleOutput";
 import { cliGitInfo } from "./gitInfo";
 import { cliAtomistKube } from "./kube";
 
@@ -153,7 +154,7 @@ export function gqlGen(
                 opts.args += ` "${pattern}"`;
             }
         }, err => {
-            console.warn("GraphQL file glob pattern '${pattern}' failed, continuing");
+            warningMessage("GraphQL file glob pattern '${pattern}' failed, continuing");
         })
         .then(() => execBin(opts));
 }
@@ -187,7 +188,7 @@ function execBin(opts: ExecOptions): number {
     opts.checks = [
         () => {
             if (!fs.existsSync(opts.cmd)) {
-                console.error(`Project at '${opts.cwd}' is not a valid automation client project: missing ${opts.cmd}`);
+                errorMessage(`Project at '${opts.cwd}' is not a valid automation client project: missing ${opts.cmd}`);
                 return 1;
             }
             return 0;
@@ -204,7 +205,7 @@ function execJs(opts: ExecOptions): number {
     opts.checks = [
         () => {
             if (!fs.existsSync(script)) {
-                console.error(`Project at '${opts.cwd}' is not a valid automation client project: missing ${script}`);
+                errorMessage(`Project at '${opts.cwd}' is not a valid automation client project: missing ${script}`);
                 return 1;
             }
             return 0;
@@ -246,11 +247,11 @@ function execCmd(opts: ExecOptions): number {
     }
 
     const command = `${opts.cmd} ${opts.args}`;
-    console.info(`${opts.message} in '${opts.cwd}'`);
+    infoMessage(`${opts.message} in '${opts.cwd}'`);
     try {
         child_process.execSync(command, { cwd: opts.cwd, stdio: "inherit", env: process.env });
     } catch (e) {
-        console.error(`Command '${command}' failed: ${e.message}`);
+        errorMessage(`Command '${command}' failed: ${e.message}`);
         return e.status as number;
     }
     return 0;
@@ -265,7 +266,7 @@ export function install(cwd: string): number {
         child_process.execSync(`npm install`,
             { cwd, stdio: "inherit", env: process.env });
     } catch (e) {
-        console.error(`Installation failed`);
+        errorMessage(`Installation failed`);
         return e.status as number;
     }
     return 0;
@@ -280,7 +281,7 @@ export function compile(cwd: string): number {
         child_process.execSync(`npm run compile`,
             { cwd, stdio: "inherit", env: process.env });
     } catch (e) {
-        console.error(`Compilation failed`);
+        errorMessage(`Compilation failed`);
         return e.status as number;
     }
     return 0;
@@ -289,7 +290,7 @@ export function compile(cwd: string): number {
 export function checkPackageJson(cwd: string): boolean {
     const pkgPath = path.join(cwd, "package.json");
     if (!fs.existsSync(pkgPath)) {
-        console.error(`No 'package.json' in '${cwd}'`);
+        errorMessage(`No 'package.json' in '${cwd}'`);
         return false;
     }
     return true;

@@ -22,6 +22,7 @@ import {
     kube,
     start,
 } from "./support/commands";
+import { errorMessage } from "./support/consoleOutput";
 
 const Package = "atomist";
 
@@ -57,7 +58,7 @@ export function addClientCommands(yargs: any) {
             const status = start(argv["change-dir"], argv.install, argv.compile, argv.local);
             process.exit(status);
         } catch (e) {
-            console.error(`${Package}: Unhandled Error: ${e.message}`);
+            errorMessage(`${Package}: Unhandled Error: ${e.message}`);
             process.exit(101);
         }
     })
@@ -86,7 +87,7 @@ export function addClientCommands(yargs: any) {
         }, argv => {
             gqlFetch(argv["change-dir"], argv["workspace-id"], argv.token, argv.install)
                 .then(status => process.exit(status), err => {
-                    console.error(`${Package}: Unhandled Error: ${err.message}`);
+                    errorMessage(`${Package}: Unhandled Error: ${err.message}`);
                     process.exit(101);
                 });
         })
@@ -105,7 +106,7 @@ export function addClientCommands(yargs: any) {
         }, argv => {
             gqlGen(argv["change-dir"], argv.glob, argv.install)
                 .then(status => process.exit(status), err => {
-                    console.error(`${Package}: Unhandled Error: ${err.message}`);
+                    errorMessage(`${Package}: Unhandled Error: ${err.message}`);
                     process.exit(101);
                 });
         })
@@ -119,7 +120,7 @@ export function addClientCommands(yargs: any) {
         }, argv => {
             gitInfo(argv)
                 .then(status => process.exit(status), err => {
-                    console.error(`${Package}: Unhandled Error: ${err.message}`);
+                    errorMessage(`${Package}: Unhandled Error: ${err.message}`);
                     process.exit(101);
                 });
         })
@@ -148,7 +149,7 @@ export function addClientCommands(yargs: any) {
         }, argv => {
             config(argv)
                 .then(status => process.exit(status), err => {
-                    console.error(`${Package}: Unhandled Error: ${err.message}`);
+                    errorMessage(`${Package}: Unhandled Error: ${err.message}`);
                     process.exit(101);
                 });
         })
@@ -165,7 +166,7 @@ export function addClientCommands(yargs: any) {
         }, argv => {
             kube(argv)
                 .then(status => process.exit(status), err => {
-                    console.error(`${Package}: Unhandled Error: ${err.message}`);
+                    errorMessage(`${Package}: Unhandled Error: ${err.message}`);
                     process.exit(101);
                 });
         });

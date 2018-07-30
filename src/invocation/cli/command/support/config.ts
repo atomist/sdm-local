@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import * as GitHubApi from "@octokit/rest";
-import * as inquirer from "inquirer";
-import * as stringify from "json-stringify-safe";
-import * as _ from "lodash";
-import * as os from "os";
-
 import {
     getUserConfig,
     userConfigPath,
     writeUserConfig,
 } from "@atomist/automation-client/configuration";
+import * as GitHubApi from "@octokit/rest";
+import * as inquirer from "inquirer";
+import * as stringify from "json-stringify-safe";
+import * as _ from "lodash";
+import * as os from "os";
+import { errorMessage, infoMessage } from "./consoleOutput";
 
 const github = new GitHubApi();
 
@@ -69,7 +69,7 @@ export function cliAtomistConfig(argv: any): Promise<number> {
     }
     if (argAtomistToken) {
         if (userConfig.token && userConfig.token !== argAtomistToken) {
-            console.log(`Overwriting current token with value from command line.`);
+            infoMessage(`Overwriting current token with value from command line.`);
         }
         userConfig.token = argAtomistToken;
     }
@@ -94,7 +94,7 @@ export function cliAtomistConfig(argv: any): Promise<number> {
 
     const configPath = userConfigPath();
     if (!userConfig.token) {
-        console.log(`
+        infoMessage(`
 As part of the Atomist configuration, we need to create a GitHub
 personal access token for you that will be used to authenticate with
 the Atomist API.  The personal access token will have "read:org" and
@@ -161,7 +161,7 @@ token nor your GitHub username and password.
             } as any as inquirer.Question);
         }
     } else {
-        console.log(`
+        infoMessage(`
 Your Atomist client configuration already has an access token.
 To generate a new token, remove the existing token from
 '${configPath}'
@@ -232,10 +232,10 @@ and run \`atomist config\` again.
         })
         .then(() => writeUserConfig(userConfig))
         .then(() => {
-            console.info(`Successfully created Atomist client configuration: ${configPath}`);
+            infoMessage(`Successfully created Atomist client configuration: ${configPath}`);
             return 0;
         }, err => {
-            console.error(`Failed to create client configuration '${configPath}': ${stringify(err)}`);
+            errorMessage(`Failed to create client configuration '${configPath}': ${stringify(err)}`);
             return 1;
         });
 }

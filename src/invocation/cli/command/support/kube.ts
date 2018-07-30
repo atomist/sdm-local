@@ -24,6 +24,7 @@ import {
     resolveTeamIds,
     resolveToken,
 } from "@atomist/automation-client/configuration";
+import { errorMessage } from "./consoleOutput";
 
 function ghRawUrl(repo: string): string {
     return `https://raw.githubusercontent.com/atomist/${repo}/master`;
@@ -44,12 +45,12 @@ export async function cliAtomistKube(argv: any): Promise<number> {
     const userConfig = getUserConfig();
     const token = resolveToken(userConfig);
     if (!token) {
-        console.error(`No token set, try running 'atomist config' first`);
+        errorMessage(`No token set, try running 'atomist config' first`);
         return Promise.resolve(1);
     }
     const teamIds = resolveTeamIds(userConfig);
     if (!teamIds || teamIds.length < 1) {
-        console.error(`No Atomist workspace/team IDs set, try running 'atomist config' first`);
+        errorMessage(`No Atomist workspace/team IDs set, try running 'atomist config' first`);
         return Promise.resolve(1);
     }
 
@@ -85,7 +86,7 @@ export async function cliAtomistKube(argv: any): Promise<number> {
         try {
             execFileSync("kubectl", args, { stdio: "inherit", env: process.env });
         } catch (e) {
-            console.error(`Command 'kubectl ${args.join(" ")}' failed: ${e.message}`);
+            errorMessage(`Command 'kubectl ${args.join(" ")}' failed: ${e.message}`);
             return Promise.resolve(e.status as number);
         }
     }
