@@ -71,7 +71,6 @@ export function addClientCommands(yargs: yargs.Argv) {
             return (ya)
                 .positional("workspace-id", {
                     describe: "Atomist workspace/team ID",
-                    required: true,
                 })
                 .option("token", {
                     alias: "T",
