@@ -218,7 +218,7 @@ No parameters beyond the command name are required. However, command-specific pa
 
 This project consists of three parts:
 
-- An Atomist **automation client** running in its own process, in a special local mode
+- An Atomist SDM running in its own process, in a special local mode
 - A command line.
 - `git` hooks inserted in those projects you wish to use the local SDM with.
 
