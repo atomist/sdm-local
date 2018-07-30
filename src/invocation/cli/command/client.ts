@@ -15,32 +15,37 @@ const installDescribe = "Run 'npm install' before running/compiling, default is 
 
 export function addClientCommands(yargs: any) {
     yargs.command(["start", "st", "run"], "Start an SDM or automation client", ya => {
-            return ya
-                .option("change-dir", {
-                    alias: "C",
-                    default: process.cwd(),
-                    describe: "Path to automation client project",
-                    type: "string",
-                })
-                .option("compile", {
-                    default: true,
-                    describe: compileDescribe,
-                    type: "boolean",
-                })
-                .option("install", {
-                    describe: installDescribe,
-                    type: "boolean",
-                });
-        }, argv => {
-            try {
-                const status = start(argv["change-dir"], argv.install, argv.compile);
-                process.exit(status);
-            } catch (e) {
-                console.error(`${Package}: Unhandled Error: ${e.message}`);
-                process.exit(101);
-            }
+        return ya
+            .option("change-dir", {
+                alias: "C",
+                default: process.cwd(),
+                describe: "Path to automation client project",
+                type: "string",
+            })
+            .option("compile", {
+                default: true,
+                describe: compileDescribe,
+                type: "boolean",
+            })
+            .option("local", {
+                default: false,
+                describe: "Start in local mode?",
+                type: "boolean",
+            })
+            .option("install", {
+                describe: installDescribe,
+                type: "boolean",
+            });
+    }, argv => {
+        try {
+            const status = start(argv["change-dir"], argv.install, argv.compile, argv.local);
+            process.exit(status);
+        } catch (e) {
+            console.error(`${Package}: Unhandled Error: ${e.message}`);
+            process.exit(101);
+        }
 
-        })
+    })
         .command(["gql-fetch <workspace-id>"], "Introspect GraphQL schema", ya => {
             return (ya as any)
                 .positional("workspace-id", {
@@ -148,5 +153,5 @@ export function addClientCommands(yargs: any) {
                     console.error(`${Package}: Unhandled Error: ${err.message}`);
                     process.exit(101);
                 });
-        })
+        });
 }

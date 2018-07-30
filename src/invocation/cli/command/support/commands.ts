@@ -68,7 +68,11 @@ export function start(
     cwd: string,
     runInstall: boolean = true,
     runCompile: boolean = true,
+    runLocal: boolean = false,
 ): number {
+    if (runLocal) {
+        process.env.ATOMIST_MODE = "local";
+    }
 
     const opts: ExecOptions = {
         cmd: "start.client.js",
@@ -113,7 +117,7 @@ export function gqlFetch(
             const opts: ExecOptions = {
                 cmd: "apollo-codegen",
                 args: `introspect-schema https://automation.atomist.com/graphql/team/${teamId} ` +
-                    `--output ${outSchema} --header "Authorization: token ${token}"`,
+                `--output ${outSchema} --header "Authorization: token ${token}"`,
                 message: `Introspecting GraphQL schema for team ${teamId}`,
                 cwd,
                 runInstall,
