@@ -3,7 +3,7 @@ import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/metadata/automationMetadata";
 import * as inquirer from "inquirer";
 import * as _ from "lodash";
-import { MappedParameterResolver } from "../../../../binding/MappedParameterResolver";
+import { MappedParameterResolver } from "../../../../binding/mapped-parameter/MappedParameterResolver";
 import { startHttpMessageListener } from "../../../../binding/message/httpMessageListener";
 import { ExpandedTreeMappedParameterResolver } from "../../../../binding/project/ExpandedTreeMappedParameterResolver";
 import { parseOwnerAndRepo } from "../../../../binding/project/expandedTreeUtils";
@@ -11,6 +11,7 @@ import { newCorrelationId, pidToPort } from "../../../../machine/correlationId";
 import { AutomationClientConnectionConfig } from "../../../http/AutomationClientConnectionConfig";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../../http/CommandHandlerInvocation";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
+import { FromAnyMappedParameterResolver } from "../../../../binding/mapped-parameter/FromAnyMappedParameterResolver";
 
 /**
  * All invocation goes through this
@@ -30,7 +31,8 @@ export async function runCommandOnRemoteAutomationClient(connectionConfig: Autom
     ]
         .concat(extraArgs);
     await promptForMissingParameters(hm, args);
-    const mpr: MappedParameterResolver = new ExpandedTreeMappedParameterResolver(repositoryOwnerParentDirectory);
+    const mpr: MappedParameterResolver =
+        new FromAnyMappedParameterResolver(new ExpandedTreeMappedParameterResolver(repositoryOwnerParentDirectory));
     const mappedParameters: Array<{ name: any; value: string | undefined }> = hm.mapped_parameters.map(mp => ({
         name: mp.name,
         value: mpr.resolve(mp),

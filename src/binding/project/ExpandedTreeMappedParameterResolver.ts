@@ -2,11 +2,8 @@ import { MappedParameters } from "@atomist/automation-client";
 import { MappedParameterDeclaration } from "@atomist/automation-client/metadata/automationMetadata";
 import { GitHubDotComBase } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import * as os from "os";
-import { MappedParameterResolver } from "../MappedParameterResolver";
+import { MappedParameterResolver } from "../mapped-parameter/MappedParameterResolver";
 import { parseOwnerAndRepo } from "./expandedTreeUtils";
-
-// TODO should really have a set of enrichers,
-// returning a partial function
 
 /**
  * Resolve mapped parameters based on where we are in the directory tree

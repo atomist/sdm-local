@@ -2,5 +2,5 @@ import { MappedParameterDeclaration } from "@atomist/automation-client/metadata/
 
 export interface MappedParameterResolver {
 
-    resolve(md: MappedParameterDeclaration): string|undefined;
+    resolve(md: MappedParameterDeclaration): string | undefined;
 }
