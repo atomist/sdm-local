@@ -4,7 +4,8 @@
     Main entry point script
 */
 
-// process.env.ATOMIST_DISABLE_LOGGING = "true";
+// Disable console logging
+process.env.ATOMIST_DISABLE_LOGGING = "true";
 
 import { runSlalom } from "../invocation/cli/runSlalom";
 import { resolveConnectionConfig } from "./resolveConnectionConfig";

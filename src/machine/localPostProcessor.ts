@@ -26,13 +26,15 @@ import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCom
 /**
  * Configures an automation client in local mode
  * @param {LocalMachineConfig} localMachineConfig
+ * @param forceLocal whether to force local behavior
  * @return {(configuration: Configuration) => Promise<Configuration>}
  */
-export function configureLocal(localMachineConfig: LocalMachineConfig): (configuration: Configuration) => Promise<Configuration> {
+export function configureLocal(
+    localMachineConfig: LocalMachineConfig & { forceLocal?: boolean }): (configuration: Configuration) => Promise<Configuration> {
     return async configuration => {
 
         // Don't mess with a non local machine
-        if (!isLocal()) {
+        if (!(localMachineConfig.forceLocal || isLocal())) {
             return configuration;
         }
 

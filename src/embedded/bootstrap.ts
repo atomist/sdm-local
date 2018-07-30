@@ -1,41 +1,29 @@
 import { Configuration } from "@atomist/automation-client";
 import { automationClient } from "@atomist/automation-client/automationClient";
-import {
-    defaultConfiguration,
-    invokePostProcessors,
-} from "@atomist/automation-client/configuration";
+import { defaultConfiguration, invokePostProcessors } from "@atomist/automation-client/configuration";
 import { SoftwareDeliveryMachine } from "@atomist/sdm";
-import {
-    configureSdm,
-    createSoftwareDeliveryMachine,
-} from "@atomist/sdm-core";
+import { configureSdm, createSoftwareDeliveryMachine } from "@atomist/sdm-core";
+import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
-import { infoMessage } from "..";
 import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
 import { LocalLifecycle } from "../machine/localLifecycle";
 import { configureLocal } from "../machine/localPostProcessor";
 
 const BootstrapPort = 2867;
 
-function createMachine(config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine {
+const CreateMachine = (configure: ConfigureMachine) => (config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine => {
     const sdm: SoftwareDeliveryMachine = createSoftwareDeliveryMachine(
         {
-            name: "Bootstrap Slalom machine",
+            name: "Slalom bootstrap machine",
             configuration: config,
         });
     sdm.addExtensionPacks(LocalLifecycle);
-
-    infoMessage("Adding hello command");
-    sdm.addCommand<{name: string}>({
-        name: "hello",
-        listener: async ci => {
-            return ci.addressChannels(`Hello ${ci.parameters.name}`);
-        },
-    });
+    configure(sdm);
     return sdm;
-}
+};
 
-function configurationFor(repositoryOwnerParentDirectory: string): Configuration {
+function configurationFor(repositoryOwnerParentDirectory: string,
+                          configure: ConfigureMachine): Configuration {
     const cfg = defaultConfiguration();
     cfg.name = "@atomist/slalom-bootstrap";
     cfg.http.port = BootstrapPort;
@@ -56,15 +44,25 @@ function configurationFor(repositoryOwnerParentDirectory: string): Configuration
             repositoryOwnerParentDirectory,
             mergeAutofixes: true,
             preferLocalSeeds: false,
+            forceLocal: true,
         }),
-        configureSdm(createMachine, {}),
+        configureSdm(CreateMachine(configure), {}),
     ];
 
     return cfg;
 }
 
-export async function createBootstrapMachine(repositoryOwnerParentDirectory: string): Promise<AutomationClientConnectionConfig> {
-    const config = await invokePostProcessors(configurationFor(repositoryOwnerParentDirectory));
+/**
+ * Create an embedded SDM to perform bootstrap commands such as
+ * generating a new SDM
+ * @param {string} repositoryOwnerParentDirectory
+ * @return {Promise<AutomationClientConnectionConfig>}
+ */
+export async function createBootstrapMachine(repositoryOwnerParentDirectory: string,
+                                             configure: ConfigureMachine,
+): Promise<AutomationClientConnectionConfig> {
+    const config = await invokePostProcessors(
+        configurationFor(repositoryOwnerParentDirectory, configure));
     const client = automationClient(config);
     return client.run()
         .then(() => ({

@@ -12,7 +12,7 @@ import {
 } from "./command/addIntents";
 import { addStartListenerCommand } from "./command/addStartListenerCommand";
 import { addTriggerCommand } from "./command/addTriggerCommand";
-import { addBootstrapCommand } from "./command/bootstrapCommand";
+import { addBootstrapCommands } from "./command/bootstrapCommands";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 import { addShowSkillsCommand } from "./command/showSkillsCommand";
 
@@ -28,7 +28,7 @@ export async function runSlalom(connectionConfig: AutomationClientConnectionConf
 
     // TODO should not need to connect
 
-    addBootstrapCommand(connectionConfig, yargs);
+    addBootstrapCommands(connectionConfig, yargs);
 
     if (!!automationClientInfo.localConfig) {
         addGitHooksCommand(automationClientInfo, yargs);
