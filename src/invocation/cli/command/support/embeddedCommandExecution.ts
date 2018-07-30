@@ -98,6 +98,13 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
     const cc = await createBootstrapMachine(repositoryOwnerParentDirectory,
         configure);
     const ai = await fetchMetadataFromAutomationClient(cc);
+    if (!ai.commandsMetadata) {
+        errorMessage("Could not connect to the bootstrap SDM at " + cc.baseEndpoint);
+        process.exit(1);
+    }
+    if (!ai.localConfig) {
+        infoMessage("The bootstrap command is not running in local mode\n");
+    }
     const hm = ai.commandsMetadata.find(c => c.name === name);
     if (!hm) {
         errorMessage("No command named '%s'\n", name);

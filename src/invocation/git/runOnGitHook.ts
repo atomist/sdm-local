@@ -16,7 +16,7 @@
 
 import { logger } from "@atomist/automation-client";
 import { isAtomistTemporaryBranch } from "../../binding/project/FileSystemProjectLoader";
-import { logExceptionsToConsole } from "../cli/command/support/consoleOutput";
+import { infoMessage, logExceptionsToConsole } from "../cli/command/support/consoleOutput";
 import { suggestStartingAllMessagesListener } from "../cli/command/support/suggestStartingAllMessagesListener";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { fetchMetadataFromAutomationClient } from "../http/metadataReader";
@@ -37,9 +37,14 @@ export async function runOnGitHook(argv: string[], connectionConfig: AutomationC
     }
     const automationClientInfo = await fetchMetadataFromAutomationClient(connectionConfig);
     await suggestStartingAllMessagesListener();
-    logger.debug("Executing git hook against project %j", invocation);
-    return logExceptionsToConsole(() =>
-            handleGitHookEvent(connectionConfig, automationClientInfo.localConfig, invocation),
-        automationClientInfo.connectionConfig.showErrorStacks,
-    );
+    if (!automationClientInfo.localConfig) {
+        infoMessage("No Software Delivery Machine running; not delivering push event.\n");
+        process.exit(0); // This is a lot faster than just returning. I don't want to make your commit slow.
+    } else {
+        logger.debug("Executing git hook against project %j", invocation);
+        return logExceptionsToConsole(() =>
+                handleGitHookEvent(connectionConfig, automationClientInfo.localConfig, invocation),
+            automationClientInfo.connectionConfig.showErrorStacks,
+        );
+    }
 }

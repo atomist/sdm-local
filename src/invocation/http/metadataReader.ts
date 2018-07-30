@@ -48,9 +48,8 @@ export async function fetchMetadataFromAutomationClient(connectionConfig: Automa
             connectionConfig,
         };
     } catch (e) {
-        errorMessage("Unable to connect to '%s': Is the automation client running?\n\t(%s)\n",
+        errorMessage("Unable to connect to '%s': Is a Software Delivery Machine running?\n\t(%s)\n",
             connectionConfig.baseEndpoint, e);
-        infoMessage("Fewer commands will be available\n");
         return {
             commandsMetadata: undefined,
             localConfig: undefined,

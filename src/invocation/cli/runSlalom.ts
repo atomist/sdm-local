@@ -33,6 +33,7 @@ import { addClientCommands } from "./command/clientCommands";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 import { addShowSkillsCommand } from "./command/showSkillsCommand";
 import { readVersion } from "./command/support/commands";
+import { infoMessage } from "./command/support/consoleOutput";
 
 /**
  * Start up the Slalom CLI
@@ -84,5 +85,9 @@ function verifyLocalSdm(automationClientInfo: AutomationClientInfo) {
     if (!!automationClientInfo.commandsMetadata && !automationClientInfo.localConfig) {
         process.stderr.write("ERROR: SDM detected, but it is not running in local mode.\nPlease set ATOMIST_MODE=local when starting your SDM.\n");
         process.exit(1);
+    }
+    if (!automationClientInfo.localConfig) {
+        // no SDM at all
+        infoMessage("Fewer commands will be available\n");
     }
 }

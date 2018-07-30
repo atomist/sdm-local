@@ -23,7 +23,10 @@ import { AutomationClientConnectionConfig } from "./http/AutomationClientConnect
  */
 export interface AutomationClientInfo {
 
-    commandsMetadata: CommandHandlerMetadata[];
+    /**
+     * If we connected to a machine, include this
+     */
+    commandsMetadata?: CommandHandlerMetadata[];
 
     connectionConfig: AutomationClientConnectionConfig;
 
