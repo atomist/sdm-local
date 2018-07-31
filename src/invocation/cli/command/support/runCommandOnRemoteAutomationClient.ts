@@ -61,7 +61,7 @@ export async function runCommandOnRemoteAutomationClient(connectionConfig: Autom
     };
     logger.debug("Sending invocation %j\n", invocation);
     // Use repo channel if we're in a mapped repo channel
-    const correlationId = newCorrelationId(parseOwnerAndRepo(repositoryOwnerParentDirectory).repo);
+    const correlationId = newCorrelationId({ channel: parseOwnerAndRepo(repositoryOwnerParentDirectory).repo, encodeListenerPort: true });
     return invokeCommandHandler(connectionConfig, invocation, correlationId);
 }
 

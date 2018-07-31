@@ -205,7 +205,7 @@ function execJs(opts: ExecOptions): number {
     opts.checks = [
         () => {
             if (!fs.existsSync(script)) {
-                errorMessage(`Project at '${opts.cwd}' is not a valid automation client project: missing ${script}`);
+                errorMessage(`Project at '${opts.cwd}' is not a valid automation client project: missing ${script}\n`);
                 return 1;
             }
             return 0;
@@ -247,11 +247,11 @@ function execCmd(opts: ExecOptions): number {
     }
 
     const command = `${opts.cmd} ${opts.args}`;
-    infoMessage(`${opts.message} in '${opts.cwd}'`);
+    infoMessage(`${opts.message} in '${opts.cwd}'\n`);
     try {
         child_process.execSync(command, { cwd: opts.cwd, stdio: "inherit", env: process.env });
     } catch (e) {
-        errorMessage(`Command '${command}' failed: ${e.message}`);
+        errorMessage(`Command '${command}' failed: ${e.message}\n`);
         return e.status as number;
     }
     return 0;

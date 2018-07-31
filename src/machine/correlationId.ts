@@ -22,14 +22,18 @@ const ClientType = "slalom";
  * and the channel to use to display messages.
  * @return {string}
  */
-export function newCorrelationId(channel: string = "general"): string {
-    return `${ClientType}-${pidToPort(process.pid)}-${channel}-${new Date().getTime()}`;
+export function newCorrelationId(opts: {
+    channel: string,
+    encodeListenerPort?: boolean,
+} = { channel: "general", encodeListenerPort: false}): string {
+    const encodedPort = opts.encodeListenerPort ? `${pidToPort(process.pid)}-` : "";
+    return `${ClientType}-${encodedPort}${opts.channel || "general"}-${new Date().getTime()}`;
 }
 
-export function clientIdentifier(correlationId: string): number {
+export function clientIdentifier(correlationId: string): number | undefined {
     const pattern = new RegExp(`^${ClientType}\-([^\-]+)\-`);
     const id = correlationId.match(pattern)[1];
-    return parseInt(id, 10);
+    return !!id ? parseInt(id, 10) : undefined;
 }
 
 export function channelFor(correlationId: string): string {

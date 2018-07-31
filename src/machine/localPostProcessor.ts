@@ -115,10 +115,12 @@ function setMessageClient(configuration: Configuration, localMachineConfig: Loca
     configuration.http.messageClientFactory =
         aca => {
             const channel = channelFor(aca.context.correlationId);
+            const clientId = clientIdentifier(aca.context.correlationId);
             return new BroadcastingMessageClient(
                 new HttpClientMessageClient(channel, AllMessagesPort),
                 new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
-                new HttpClientMessageClient(channel, clientIdentifier(aca.context.correlationId)),
+                // Communicate back to client if possible
+                !!clientId ? new HttpClientMessageClient(channel, clientId) : undefined,
                 localMachineConfig.useSystemNotifications ? new SystemNotificationMessageClient(channel) : undefined,
             );
         };
