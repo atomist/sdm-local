@@ -63,13 +63,13 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
             let handlerNames: string[] = [];
             switch (msg.state) {
                 case SdmGoalState.requested:
-                    handlerNames = ["OnAnyRequestedSdmGoal"];
+                    handlerNames = ["FulfillGoalOnRequested"];
                     break;
                 case SdmGoalState.failure :
-                    handlerNames = ["OnAnyCompletedSdmGoal", "OnAnyFailedSdmGoal"];
+                    handlerNames = ["RespondOnGoalCompletion", "RequestDownstreamGoalsOnGoalSuccess"];
                     break;
                 case SdmGoalState.success:
-                    handlerNames = ["OnAnyCompletedSdmGoal", "OnAnySuccessfulSdmGoal"];
+                    handlerNames = ["RespondOnGoalCompletion", "OnAnySuccessfulSdmGoal"];
                     break;
                 default:
                     throw new Error(`Unexpected SdmGoalState '${msg.state}'`)
