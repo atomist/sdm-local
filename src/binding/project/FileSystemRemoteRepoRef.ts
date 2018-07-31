@@ -45,7 +45,7 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
     }): FileSystemRemoteRepoRef {
         const { owner, repo } = parseOwnerAndRepo(opts.repositoryOwnerParentDirectory, opts.baseDir);
         if (!(!!owner && !!repo)) {
-            throw new Error(`Cannot resolve directory [${opts.baseDir}]`);
+            throw new Error(`Cannot parse ${opts.repositoryOwnerParentDirectory}/owner/repo from [${opts.baseDir}]`);
         }
         return new FileSystemRemoteRepoRef({
             repositoryOwnerParentDirectory: opts.repositoryOwnerParentDirectory,

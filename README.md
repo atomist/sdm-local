@@ -54,23 +54,30 @@ Here is an [architecture diagram](https://github.com/atomisthq/slalom/blob/maste
 To create your local SDM, you need to:
 
 - have an SDM. Start by cloning the [seed-sdm](https://github.com/atomist/seed-sdm). (TODO: create a command in this repo to do this)
-- enable local mode. This is safe to commit (TEMPORARY: or will be when slalom is published), because it will not change the functionality in your SDM unless your environment sets LOCAL_MODE to true. (TODO: make an editor in this repo to do this)
-- add an extension pack to a createMachine function, like [this](https://github.com/atomist/sample-sdm/blob/a00aaf3d4b3f8412d131194214da4dc7a5802738/src/atomist.config.ts#L65).
+- provide configuration for local mode. 
+This is safe to commit, because it will not change the functionality in your SDM unless your environment sets ATOMIST_MODE=local or you start the SDM with --local.
 
 ```typescript
-import { LocalLifecycle, supportLocal } from "@atomist/slalom";
+import { ConfigureOptions } from "@atomist/sdm-core";
 
-sdm.addExtensionPacks(LocalLifecycle);
-```
-- add a postProcessor to your configuration in `atomist.config.ts`. [example](https://github.com/atomist/sample-sdm/blob/a00aaf3d4b3f8412d131194214da4dc7a5802738/src/atomist.config.ts#L104)
+const Options: ConfigureOptions = {
+    ...,
+    local: {
+        // defaults to your home directory
+        repositoryOwnerParentDirectory: process.env.SDM_PROJECTS_ROOT || "/Users/me/my-code",
+        mergeAutofixes: true,
+        preferLocalSeeds: true,
+    },
+}
 
-```typescript
+export const configuration = {
+    ...,
 postProcessors: [
-    supportLocal(Config),//  <---- add this
+    configureSdm(createMachine, Options),//  <---- add this
     ...
 ],
+}
 ```
-- define `MyLocalConfig` as a LocalRepositoryConfig. You can use this [example](https://github.com/atomist/sample-sdm/blob/d1f51563683e961b3548aed77c5501221cc968c8/src/local.ts) as-is.
 
 The SDM works on projects that must be `git` repositories.
 

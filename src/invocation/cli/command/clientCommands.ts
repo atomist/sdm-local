@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import * as yargs from "yargs";
 import {
     config,
     gitInfo,
@@ -23,7 +24,6 @@ import {
     start,
 } from "./support/commands";
 import { errorMessage } from "./support/consoleOutput";
-import * as yargs from "yargs";
 
 const Package = "atomist";
 
@@ -195,4 +195,3 @@ function addKubeCommand(yargs: yargs.Argv) {
             });
     });
 }
-

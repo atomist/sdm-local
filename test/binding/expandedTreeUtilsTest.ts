@@ -61,7 +61,7 @@ describe("expandedTreeUtils", () => {
                 owner: "spring-team",
                 repo: "melb1",
             });
-        })
+        });
     });
 
     describe("withinExpandedTree", () => {
