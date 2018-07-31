@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+process.env.ATOMIST_DISABLE_LOGGING = "true";
+
 import { runOnGitHook } from "../invocation/git/runOnGitHook";
 import { resolveConnectionConfig } from "./resolveConnectionConfig";
 
