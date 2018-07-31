@@ -4,6 +4,6 @@ export { runOnGitHook } from "./invocation/git/runOnGitHook";
 export { configureLocal } from "./machine/localPostProcessor";
 export { LocalLifecycle } from "./machine/localLifecycle";
 export { infoMessage } from "./invocation/cli/command/support/consoleOutput";
-export { IsLocal } from "./pushtest/isLocal";
-export { isInLocalMode } from "./machine/isInLocalMode";
+export { IsLocal } from "./sdm/api/pushtest/isLocal";
+export { isInLocalMode } from "./sdm/api/isInLocalMode";
 export { enableSdmDelivery } from "./sdm/sdm-cd/enableSdmDelivery";

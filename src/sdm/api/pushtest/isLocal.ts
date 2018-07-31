@@ -15,7 +15,7 @@
  */
 
 import { predicatePushTest, PushTest } from "@atomist/sdm";
-import { isFileSystemRemoteRepoRef } from "../sdm/binding/project/FileSystemRemoteRepoRef";
+import { isFileSystemRemoteRepoRef } from "../../binding/project/FileSystemRemoteRepoRef";
 
 /**
  * Are we running locally, on a local project?

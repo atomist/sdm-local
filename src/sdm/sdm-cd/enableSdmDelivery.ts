@@ -16,7 +16,7 @@
 
 import { SoftwareDeliveryMachine, whenPushSatisfies, Goals } from "@atomist/sdm";
 import { SdmDeliveryGoal, executeSdmDelivery, IsSdm } from "./SdmDeliveryGoal";
-import { IsLocal } from "../../pushtest/isLocal";
+import { IsLocal } from "../api/pushtest/isLocal";
 
 /**
  * Call this before anything else

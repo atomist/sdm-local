@@ -35,7 +35,7 @@ import {
     clientIdentifier,
 } from "./correlationId";
 import { createSdmOptions } from "./createSdmOptions";
-import { isInLocalMode } from "./isInLocalMode";
+import { isInLocalMode } from "../sdm/api/isInLocalMode";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 
