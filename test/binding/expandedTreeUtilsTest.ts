@@ -53,6 +53,15 @@ describe("expandedTreeUtils", () => {
                 repo: "melb1",
             });
         });
+
+        it("works if base ends with /", () => {
+            const base = "/Users/me/projects/";
+            const dir = base + "spring-team/melb1/";
+            assert.deepEqual(parseOwnerAndRepo(base, dir), {
+                owner: "spring-team",
+                repo: "melb1",
+            });
+        })
     });
 
     describe("withinExpandedTree", () => {
