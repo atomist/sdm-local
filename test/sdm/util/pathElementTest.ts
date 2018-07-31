@@ -15,7 +15,7 @@
  */
 
 import * as assert from "power-assert";
-import { toPaths } from "../../src/util/PathElement";
+import { toPaths } from "../../../src/sdm/util/PathElement";
 
 describe("pathElement", () => {
 

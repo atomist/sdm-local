@@ -28,7 +28,7 @@ import {
     isFileSystemRemoteRepoRef,
 } from "./FileSystemRemoteRepoRef";
 import { LocalMachineConfig } from "../../machine/LocalMachineConfig";
-import { runAndLog } from "../../../util/runAndLog";
+import { runAndLog } from "../../util/runAndLog";
 
 /**
  * Project loader that modifies push behavior before acting on project,

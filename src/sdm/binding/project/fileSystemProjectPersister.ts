@@ -29,11 +29,11 @@ import {
     sendRepoOnboardingEvent,
 } from "../event/repoOnboardingEvents";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
-import { runAndLog } from "../../../util/runAndLog";
+import { runAndLog } from "../../util/runAndLog";
 import { addGitHooksToProject } from "../../../cli/setup/addGitHooks";
 import { handlePushBasedEventOnRepo } from "../../../invocation/git/handlePushBasedEventOnRepo";
 import { AutomationClientConnectionConfig } from "../../../invocation/http/AutomationClientConnectionConfig";
-import { lastSha } from "../../../util/git";
+import { lastSha } from "../../util/git";
 import { LocalMachineConfig } from "../../machine/LocalMachineConfig";
 
 /**

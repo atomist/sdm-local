@@ -21,7 +21,7 @@ import {
     withinExpandedTree,
 } from "../../sdm/binding/project/expandedTreeUtils";
 import { FileSystemRemoteRepoRef } from "../../sdm/binding/project/FileSystemRemoteRepoRef";
-import { shaHistory } from "../../util/git";
+import { shaHistory } from "../../sdm/util/git";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import {
     errorMessage,

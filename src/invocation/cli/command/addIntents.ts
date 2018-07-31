@@ -21,7 +21,7 @@ import { Argv } from "yargs";
 import {
     PathElement,
     toPaths,
-} from "../../../util/PathElement";
+} from "../../../sdm/util/PathElement";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "./support/consoleOutput";
 import {
