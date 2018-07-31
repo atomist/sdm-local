@@ -35,7 +35,7 @@ import {
     clientIdentifier,
 } from "./correlationId";
 import { createSdmOptions } from "./createSdmOptions";
-import { isLocal } from "./isLocal";
+import { isInLocalMode } from "./isInLocalMode";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 
@@ -50,7 +50,7 @@ export function configureLocal(
     return async configuration => {
 
         // Don't mess with a non local machine
-        if (!(localMachineConfig.forceLocal || isLocal())) {
+        if (!(localMachineConfig.forceLocal || isInLocalMode())) {
             return configuration;
         }
 

@@ -26,7 +26,7 @@ import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
 import chalk from "chalk";
 import { HttpBuildStatusUpdater } from "../binding/HttpBuildStatusUpdater";
 import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
-import { isLocal } from "./isLocal";
+import { isInLocalMode } from "./isInLocalMode";
 import Push = OnPushToAnyBranch.Push;
 
 /**
@@ -37,7 +37,7 @@ import Push = OnPushToAnyBranch.Push;
 export const LocalLifecycle: ExtensionPack = {
     ...metadata(),
     configure: sdm => {
-        if (isLocal()) {
+        if (isInLocalMode()) {
             addLocalLifecycle(sdm);
             const bu = sdm as any as BuildStatusUpdater;
             const buu = new HttpBuildStatusUpdater(DefaultAutomationClientConnectionConfig);
