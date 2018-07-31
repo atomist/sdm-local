@@ -6,3 +6,4 @@ export { LocalLifecycle } from "./machine/localLifecycle";
 export { infoMessage } from "./invocation/cli/command/support/consoleOutput";
 export { IsLocal } from "./pushtest/isLocal";
 export { isInLocalMode } from "./machine/isInLocalMode";
+export { enableSdmDelivery } from "./sdm-cd/enableSdmDelivery";
