@@ -19,7 +19,7 @@ import { exec } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";
 import { Argv } from "yargs";
-import { addGitHooks } from "../../../setup/addGitHooks";
+import { addGitHooks } from "../../../cli/setup/addGitHooks";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole, infoMessage } from "./support/consoleOutput";
 import { sendRepoOnboardingEvent, sendChannelLinkEvent } from "../../../sdm/binding/event/repoOnboardingEvents";
