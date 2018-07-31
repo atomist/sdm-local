@@ -36,14 +36,14 @@ export interface EmbeddedCommandSpec {
     registration: CommandRegistration<any>;
 
     /**
-     * Configure the machine to run the command
+     * Configure the sdm.machine to run the command
      */
     configure: ConfigureMachine;
 }
 
 /**
- * Add a command, asking for repositoryOwnerParentDirectory, and spawn a machine
- * to execute it. Shut the machine down afterwards.
+ * Add a command, asking for repositoryOwnerParentDirectory, and spawn a sdm.machine
+ * to execute it. Shut the sdm.machine down afterwards.
  * Once the client connects, it will prompt for parameters required by the command.
  * These parameters can also be passed through using the initial yargs request,
  * being exposed as optional command parameters.

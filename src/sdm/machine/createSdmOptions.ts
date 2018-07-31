@@ -18,14 +18,14 @@ import { SoftwareDeliveryMachineOptions } from "@atomist/sdm";
 import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
-import { EnvironmentTokenCredentialsResolver } from "../sdm/binding/EnvironmentTokenCredentialsResolver";
-import { expandedTreeRepoFinder } from "../sdm/binding/project/expandedTreeRepoFinder";
-import { ExpandedTreeRepoRefResolver } from "../sdm/binding/project/ExpandedTreeRepoRefResolver";
-import { LocalRepoTargets } from "../sdm/binding/project/LocalRepoTargets";
-import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
+import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
+import { expandedTreeRepoFinder } from "../binding/project/expandedTreeRepoFinder";
+import { ExpandedTreeRepoRefResolver } from "../binding/project/ExpandedTreeRepoRefResolver";
+import { LocalRepoTargets } from "../binding/project/LocalRepoTargets";
+import { DefaultAutomationClientConnectionConfig } from "../../entry/resolveConnectionConfig";
 import { LocalMachineConfig } from "./LocalMachineConfig";
-import { FileSystemProjectLoader } from "../sdm/binding/project/FileSystemProjectLoader";
-import { fileSystemProjectPersister } from "../sdm/binding/project/fileSystemProjectPersister";
+import { FileSystemProjectLoader } from "../binding/project/FileSystemProjectLoader";
+import { fileSystemProjectPersister } from "../binding/project/fileSystemProjectPersister";
 
 /**
  * Merge user-supplied configuration with defaults

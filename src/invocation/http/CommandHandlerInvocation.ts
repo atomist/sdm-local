@@ -24,7 +24,7 @@ import {
 } from "@atomist/automation-client/internal/invoker/Payload";
 import * as assert from "power-assert";
 import { isArray } from "util";
-import { newCorrelationId } from "../../machine/correlationId";
+import { newCorrelationId } from "../../sdm/machine/correlationId";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
 

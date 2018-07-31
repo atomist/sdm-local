@@ -25,7 +25,7 @@ import { errorMessage } from "../cli/command/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { invokeEventHandler } from "../http/EventHandlerInvocation";
 import Push = OnPushToAnyBranch.Push;
-import { LocalMachineConfig } from "../../machine/LocalMachineConfig";
+import { LocalMachineConfig } from "../../sdm/machine/LocalMachineConfig";
 
 /**
  * Any event on a local repo

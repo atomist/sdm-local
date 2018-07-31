@@ -22,15 +22,15 @@ import { configureSdm, createSoftwareDeliveryMachine } from "@atomist/sdm-core";
 import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
 import { AutomationClientConnectionConfig } from "../../invocation/http/AutomationClientConnectionConfig";
-import { LocalLifecycle } from "../../machine/localLifecycle";
-import { configureLocal } from "../../machine/localPostProcessor";
+import { LocalLifecycle } from "../../sdm/machine/localLifecycle";
+import { configureLocal } from "../../sdm/machine/localPostProcessor";
 
 const BootstrapPort = 2867;
 
 const createMachine = (configure: ConfigureMachine) => (config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine => {
     const sdm: SoftwareDeliveryMachine = createSoftwareDeliveryMachine(
         {
-            name: "Slalom bootstrap machine",
+            name: "Slalom bootstrap sdm.machine",
             configuration: config,
         });
     sdm.addExtensionPacks(LocalLifecycle);

@@ -1,7 +1,7 @@
 # Slalom: Local Software Delivery Machine
 
-A software delivery machine helps you write and deliver code that is up to your own standards, at scale.
-This project runs a software delivery machine locally on your machine, responding to your commands and your commits.
+A software delivery sdm.machine helps you write and deliver code that is up to your own standards, at scale.
+This project runs a software delivery sdm.machine locally on your sdm.machine, responding to your commands and your commits.
 
 For instance:
 
@@ -11,7 +11,7 @@ For instance:
 - at your command, create a new project by copying and modifying a working project you already have.
 
 For more information on software delivery machines (SDM), see Rod Johnson's blog [Why you need a Software Delivery Machine](https://the-composition.com/why-you-need-a-software-delivery-machine-85e8399cdfc0). This [video](https://vimeo.com/260496136) shows an SDM in action. 
-The blogs and videos show an SDM that connects to Atomist's cloud service. This repository contains a *local* software delivery machine that works on your development machine and responds to your commits, performing whatever actions you decide
+The blogs and videos show an SDM that connects to Atomist's cloud service. This repository contains a *local* software delivery sdm.machine that works on your development sdm.machine and responds to your commits, performing whatever actions you decide
 should happen in response to new code. 
  
 The SDM framework understands code and delivery flows. Further description is in the Atomist [sdm library project](https://github.com/atomist/sdm).
@@ -156,7 +156,7 @@ Success will result in output like the following:
 
 ## Reacting to commits
 
-A software delivery machine reacts to code changes. For instance, when you commit to a Spring Boot application, it can 
+A software delivery sdm.machine reacts to code changes. For instance, when you commit to a Spring Boot application, it can 
 start the app up locally, while running tests.
 When you commit to a Node library, it can publish a snapshot to npm, while running tests, and while fixing any formatting
 errors and performing automated code review and identifying sensitive changes.
@@ -177,7 +177,7 @@ Further projects can be added under the expanded directory tree in three ways:
 Cloning any git project from anywhere under `$SDM_PROJECTS_BASE` and running `slalom add-git-hooks` to add git hooks to it.
 
 ### Symbolic Link
-Go to the correct organization directory, creating it if necessary. Then create a symlink to the required directory elsewhere on your machine. For example:
+Go to the correct organization directory, creating it if necessary. Then create a symlink to the required directory elsewhere on your sdm.machine. For example:
 
 ```
 ln -s /Users/rodjohnson/sforzando-dev/idea-projects/flight1

@@ -25,7 +25,7 @@ import * as express from "express";
 import { AllMessagesPort } from "../../../invocation/cli/command/addStartListenerCommand";
 import { infoMessage } from "../../../invocation/cli/command/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "../../../invocation/http/AutomationClientConnectionConfig";
-import { CommandCompletionDestination } from "../../../machine/support/NotifyOnCompletionAutomationEventListener";
+import { CommandCompletionDestination } from "../../machine/support/NotifyOnCompletionAutomationEventListener";
 import {
     ConsoleMessageClient,
     ProcessStdoutSender,

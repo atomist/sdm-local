@@ -1,8 +1,8 @@
-export { LocalMachineConfig } from "./machine/LocalMachineConfig";
+export { LocalMachineConfig } from "./sdm/machine/LocalMachineConfig";
 export { runSlalom } from "./invocation/cli/runSlalom";
 export { runOnGitHook } from "./invocation/git/runOnGitHook";
-export { configureLocal } from "./machine/localPostProcessor";
-export { LocalLifecycle } from "./machine/localLifecycle";
+export { configureLocal } from "./sdm/machine/localPostProcessor";
+export { LocalLifecycle } from "./sdm/machine/localLifecycle";
 export { infoMessage } from "./invocation/cli/command/support/consoleOutput";
 export { IsLocal } from "./sdm/api/pushtest/isLocal";
 export { isInLocalMode } from "./sdm/api/isInLocalMode";

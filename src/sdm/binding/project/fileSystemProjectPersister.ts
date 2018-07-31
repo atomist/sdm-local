@@ -34,7 +34,7 @@ import { addGitHooksToProject } from "../../../setup/addGitHooks";
 import { handlePushBasedEventOnRepo } from "../../../invocation/git/handlePushBasedEventOnRepo";
 import { AutomationClientConnectionConfig } from "../../../invocation/http/AutomationClientConnectionConfig";
 import { lastSha } from "../../../util/git";
-import { LocalMachineConfig } from "../../../machine/LocalMachineConfig";
+import { LocalMachineConfig } from "../../machine/LocalMachineConfig";
 
 /**
  * Persist the project to the given local directory given expanded directory

@@ -16,7 +16,7 @@
 
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { AutomationClientConnectionConfig } from "./http/AutomationClientConnectionConfig";
-import { LocalMachineConfig } from "../machine/LocalMachineConfig";
+import { LocalMachineConfig } from "../sdm/machine/LocalMachineConfig";
 
 /**
  * Information held in client about an automation client that we've connected to
@@ -24,14 +24,14 @@ import { LocalMachineConfig } from "../machine/LocalMachineConfig";
 export interface AutomationClientInfo {
 
     /**
-     * If we connected to a machine, include this
+     * If we connected to a sdm.machine, include this
      */
     commandsMetadata?: CommandHandlerMetadata[];
 
     connectionConfig: AutomationClientConnectionConfig;
 
     /**
-     * If this is a local machine, include this
+     * If this is a local sdm.machine, include this
      */
     localConfig?: LocalMachineConfig;
 }

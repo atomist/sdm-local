@@ -27,7 +27,7 @@ import {
     FileSystemRemoteRepoRef,
     isFileSystemRemoteRepoRef,
 } from "./FileSystemRemoteRepoRef";
-import { LocalMachineConfig } from "../../../machine/LocalMachineConfig";
+import { LocalMachineConfig } from "../../machine/LocalMachineConfig";
 import { runAndLog } from "../../../util/runAndLog";
 
 /**

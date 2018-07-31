@@ -19,23 +19,23 @@ import {
     logger,
 } from "@atomist/automation-client";
 import * as _ from "lodash";
-import { LocalGraphClient } from "../sdm/binding/graph/LocalGraphClient";
-import { BroadcastingMessageClient } from "../sdm/binding/message/BroadcastingMessageClient";
-import { GoalEventForwardingMessageClient } from "../sdm/binding/message/GoalEventForwardingMessageClient";
-import { HttpClientMessageClient } from "../sdm/binding/message/HttpClientMessageClient";
-import { SystemNotificationMessageClient } from "../sdm/binding/message/SystemNotificationMessageClient";
-import { DefaultAutomationClientConnectionConfig } from "../entry/resolveConnectionConfig";
-import { AllMessagesPort } from "../invocation/cli/command/addStartListenerCommand";
+import { LocalGraphClient } from "../binding/graph/LocalGraphClient";
+import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessageClient";
+import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
+import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
+import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
+import { DefaultAutomationClientConnectionConfig } from "../../entry/resolveConnectionConfig";
+import { AllMessagesPort } from "../../invocation/cli/command/addStartListenerCommand";
 import {
     CommandHandlerInvocation,
     invokeCommandHandler,
-} from "../invocation/http/CommandHandlerInvocation";
+} from "../../invocation/http/CommandHandlerInvocation";
 import {
     channelFor,
     clientIdentifier,
 } from "./correlationId";
 import { createSdmOptions } from "./createSdmOptions";
-import { isInLocalMode } from "../sdm/api/isInLocalMode";
+import { isInLocalMode } from "../api/isInLocalMode";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 
@@ -49,7 +49,7 @@ export function configureLocal(
     localMachineConfig: LocalMachineConfig & { forceLocal?: boolean }): (configuration: Configuration) => Promise<Configuration> {
     return async configuration => {
 
-        // Don't mess with a non local machine
+        // Don't mess with a non local sdm.machine
         if (!(localMachineConfig.forceLocal || isInLocalMode())) {
             return configuration;
         }

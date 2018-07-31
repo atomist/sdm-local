@@ -21,7 +21,7 @@ import {
     infoMessage,
 } from "../cli/command/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
-import { LocalMachineConfig } from "../../machine/LocalMachineConfig";
+import { LocalMachineConfig } from "../../sdm/machine/LocalMachineConfig";
 
 /**
  * Call into an automation client at the given location and retrieve metadata
