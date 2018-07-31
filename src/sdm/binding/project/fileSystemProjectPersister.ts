@@ -23,18 +23,18 @@ import { LocalProject } from "@atomist/automation-client/project/local/LocalProj
 import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
 import * as fs from "fs";
 import { promisify } from "util";
-import { LocalMachineConfig } from "../../index";
-import { handlePushBasedEventOnRepo } from "../../invocation/git/handlePushBasedEventOnRepo";
-import { AutomationClientConnectionConfig } from "../../invocation/http/AutomationClientConnectionConfig";
-import { addGitHooksToProject } from "../../setup/addGitHooks";
-import { lastSha } from "../../util/git";
-import { runAndLog } from "../../util/runAndLog";
 import {
     sendChannelLinkEvent,
     sendRepoCreationEvent,
     sendRepoOnboardingEvent,
 } from "../event/repoOnboardingEvents";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
+import { runAndLog } from "../../../util/runAndLog";
+import { addGitHooksToProject } from "../../../setup/addGitHooks";
+import { handlePushBasedEventOnRepo } from "../../../invocation/git/handlePushBasedEventOnRepo";
+import { AutomationClientConnectionConfig } from "../../../invocation/http/AutomationClientConnectionConfig";
+import { lastSha } from "../../../util/git";
+import { LocalMachineConfig } from "../../../machine/LocalMachineConfig";
 
 /**
  * Persist the project to the given local directory given expanded directory

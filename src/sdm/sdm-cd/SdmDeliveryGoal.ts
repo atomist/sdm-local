@@ -20,7 +20,7 @@ import { logger } from "@atomist/automation-client";
 import { spawnAndWatch } from "@atomist/sdm/api-helper/misc/spawned";
 import { asSpawnCommand } from "@atomist/automation-client/util/spawned";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
-import { isFileSystemRemoteRepoRef } from "../binding/project/FileSystemRemoteRepoRef";
+import { isFileSystemRemoteRepoRef } from "../../sdm/binding/project/FileSystemRemoteRepoRef";
 
 export const SdmDeliveryGoal = new GenericGoal({ uniqueName: "sdmDelivery" },
     "Deliver SDM");

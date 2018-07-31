@@ -29,7 +29,7 @@ import {
     retrieveLogDataForSha,
     shaHistory,
     timestampFromCommit,
-} from "../../util/git";
+} from "../../../util/git";
 import After = PushFields.After;
 import Author = PushForSdmGoal.Author;
 import Before = PushForSdmGoal.Before;

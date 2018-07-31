@@ -19,8 +19,8 @@ import { GitCommandGitProject } from "@atomist/automation-client/project/git/Git
 import {
     determineCwd,
     withinExpandedTree,
-} from "../../binding/project/expandedTreeUtils";
-import { FileSystemRemoteRepoRef } from "../../binding/project/FileSystemRemoteRepoRef";
+} from "../../sdm/binding/project/expandedTreeUtils";
+import { FileSystemRemoteRepoRef } from "../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { shaHistory } from "../../util/git";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import {

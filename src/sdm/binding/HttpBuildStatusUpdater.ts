@@ -20,8 +20,8 @@ import {
     SdmGoalEvent,
 } from "@atomist/sdm";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
-import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
-import { invokeEventHandler } from "../invocation/http/EventHandlerInvocation";
+import { AutomationClientConnectionConfig } from "../../invocation/http/AutomationClientConnectionConfig";
+import { invokeEventHandler } from "../../invocation/http/EventHandlerInvocation";
 
 /**
  * Update build status by posting to an automation client

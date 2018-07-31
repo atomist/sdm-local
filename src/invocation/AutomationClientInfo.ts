@@ -15,8 +15,8 @@
  */
 
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
-import { LocalMachineConfig } from "..";
 import { AutomationClientConnectionConfig } from "./http/AutomationClientConnectionConfig";
+import { LocalMachineConfig } from "../machine/LocalMachineConfig";
 
 /**
  * Information held in client about an automation client that we've connected to

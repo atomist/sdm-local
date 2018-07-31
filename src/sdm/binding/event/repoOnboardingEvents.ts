@@ -21,8 +21,8 @@ import {
     OnChannelLink,
     OnRepoOnboarded,
 } from "@atomist/sdm-core/typings/types";
-import { AutomationClientConnectionConfig } from "../../invocation/http/AutomationClientConnectionConfig";
-import { invokeEventHandler } from "../../invocation/http/EventHandlerInvocation";
+import { AutomationClientConnectionConfig } from "../../../invocation/http/AutomationClientConnectionConfig";
+import { invokeEventHandler } from "../../../invocation/http/EventHandlerInvocation";
 import { repoFieldsFromProject } from "./pushFromLastCommit";
 
 export async function sendRepoCreationEvent(cc: AutomationClientConnectionConfig, id: RepoId) {

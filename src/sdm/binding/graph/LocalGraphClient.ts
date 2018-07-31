@@ -20,7 +20,6 @@ import {
     MutationOptions,
     QueryOptions,
 } from "@atomist/automation-client/spi/graph/GraphClient";
-import { errorMessage } from "../../invocation/cli/command/support/consoleOutput";
 
 /**
  * Local graph client. Returns empty result set or throws an
@@ -39,7 +38,7 @@ export class LocalGraphClient implements GraphClient {
     }
 
     public async executeQuery<T, Q>(query: string, variables?: Q, options?: any): Promise<T> {
-        errorMessage("Returning empty object for query " + query);
+        logger.warn("Returning empty object for query " + query);
         return {} as T;
     }
 

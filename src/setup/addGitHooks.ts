@@ -22,10 +22,10 @@ import chalk from "chalk";
 import * as fs from "fs";
 import * as path from "path";
 import { sprintf } from "sprintf-js";
-import { infoMessage } from "..";
 import {
     errorMessage,
     warningMessage,
+    infoMessage,
 } from "../invocation/cli/command/support/consoleOutput";
 import { HookEvents } from "../invocation/git/handlePushBasedEventOnRepo";
 

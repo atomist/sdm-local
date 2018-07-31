@@ -15,7 +15,7 @@
  */
 
 import * as assert from "power-assert";
-import { parseOwnerAndRepo, withinExpandedTree } from "../../src/binding/project/expandedTreeUtils";
+import { parseOwnerAndRepo, withinExpandedTree } from "../../src/sdm/binding/project/expandedTreeUtils";
 
 describe("expandedTreeUtils", () => {
 

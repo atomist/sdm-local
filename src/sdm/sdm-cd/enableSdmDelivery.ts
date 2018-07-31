@@ -16,7 +16,7 @@
 
 import { SoftwareDeliveryMachine, whenPushSatisfies, Goals } from "@atomist/sdm";
 import { SdmDeliveryGoal, executeSdmDelivery, IsSdm } from "./SdmDeliveryGoal";
-import { IsLocal } from "../pushtest/isLocal";
+import { IsLocal } from "../../pushtest/isLocal";
 
 /**
  * Call this before anything else
@@ -27,5 +27,5 @@ export function enableSdmDelivery(sdm: SoftwareDeliveryMachine) {
         executeSdmDelivery(sdm.configuration.sdm.projectLoader, {}));
     sdm.addGoalContributions(
         whenPushSatisfies(IsSdm, IsLocal).setGoals(
-            new Goals("delivery", SdmDeliveryGoal).andSeal()));
+            new Goals("delivery", SdmDeliveryGoal).andLock()));
 }
