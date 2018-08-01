@@ -17,10 +17,10 @@
 import { logger } from "@atomist/automation-client";
 import { asSpawnCommand } from "@atomist/automation-client/util/spawned";
 import { ExecuteGoal, GenericGoal, predicatePushTest } from "@atomist/sdm";
-import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
-import { spawnAndWatch } from "@atomist/sdm/api-helper/misc/spawned";
+import { poisonAndWait } from "@atomist/sdm/api-helper/misc/spawned";
 import { ProjectLoader } from "@atomist/sdm/spi/project/ProjectLoader";
 import { isFileSystemRemoteRepoRef } from "../../sdm/binding/project/FileSystemRemoteRepoRef";
+import { ChildProcess, spawn } from "child_process";
 
 export const SdmDeliveryGoal = new GenericGoal({ uniqueName: "sdmDelivery" },
     "Deliver SDM");
@@ -30,7 +30,7 @@ export interface SdmDeliveryOptions {
 }
 
 export const IsSdm = predicatePushTest("IsSDM",
-    async p => !!(p.getFile("src/atomist.config.ts")));
+    async p => !!(await p.getFile("src/atomist.config.ts")));
 
 /**
  * Deliver this SDM
@@ -39,14 +39,16 @@ export const IsSdm = predicatePushTest("IsSDM",
  */
 export function executeSdmDelivery(projectLoader: ProjectLoader,
                                    opts: Partial<SdmDeliveryOptions>): ExecuteGoal {
+    const deliveryManager = new DeliveryManager();
     return async goalInvocation => {
-        const { credentials, id } = goalInvocation;
+        const { id } = goalInvocation;
         await goalInvocation.addressChannels("should deliver SDM");
         try {
             if (!isFileSystemRemoteRepoRef(id)) {
+                // Should not have been called
                 throw new Error("Not a local repo ref: " + JSON.stringify(id));
             }
-            await deliver(id.fileSystemLocation);
+            await deliveryManager.deliver(id.fileSystemLocation);
             return { code: 0 };
         } catch (err) {
             logger.error(err);
@@ -55,8 +57,39 @@ export function executeSdmDelivery(projectLoader: ProjectLoader,
     };
 }
 
-async function deliver(baseDir: string) {
-    return spawnAndWatch(asSpawnCommand("slalom start --install=false --local=true --compile=false"),
-        { cwd: baseDir },
-        new LoggingProgressLog("info"));
+const successPatterns = [
+    /Starting Atomist automation client/,
+];
+
+class DeliveryManager {
+
+    private childProcess: ChildProcess;
+
+    public async deliver(baseDir: string) {
+        if (!!this.childProcess) {
+            await poisonAndWait;
+        }
+        const spawnCommand = asSpawnCommand("slalom start --install=false --local=true --compile=false");
+        this.childProcess = await spawn(
+            spawnCommand.command,
+            spawnCommand.args,
+            { cwd: baseDir });
+
+        return new Promise((resolve, reject) => {
+            let stdout = "";
+            this.childProcess.stdout.addListener("data", what => {
+                if (!!what) {
+                    stdout += what;
+                }
+                if (successPatterns.some(successPattern => successPattern.test(stdout))) {
+                    resolve();
+                }
+            });
+            this.childProcess.addListener("exit", () => {
+                reject(new Error("We should have found success message pattern by now!!"));
+            });
+            this.childProcess.addListener("error", reject);
+        });
+    }
+
 }
