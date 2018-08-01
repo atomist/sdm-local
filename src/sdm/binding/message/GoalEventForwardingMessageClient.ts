@@ -29,7 +29,7 @@ import {
 import { SlackMessage } from "@atomist/slack-messages";
 import { isValidSHA1 } from "../../../cli/invocation/git/handlePushBasedEventOnRepo";
 import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
-import { invokeEventHandler } from "../../../cli/invocation/http/EventHandlerInvocation";
+import { invokeEventHandlerUsingHttp } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
 
 export function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
     state: SdmGoalState;
@@ -81,7 +81,7 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
             // We want to return to let this work in the background
             // tslint:disable-next-line:no-floating-promises
             Promise.all(handlerNames.map(name =>
-                invokeEventHandler(this.connectionConfig, {
+                invokeEventHandlerUsingHttp(this.connectionConfig)({
                     name,
                     payload,
                 })));

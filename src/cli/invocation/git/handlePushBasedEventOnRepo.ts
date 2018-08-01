@@ -25,7 +25,7 @@ import Push = OnPushToAnyBranch.Push;
 import { LocalMachineConfig } from "../../../sdm/configuration/LocalMachineConfig";
 import { errorMessage } from "../command/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
-import { invokeEventHandler } from "../http/EventHandlerInvocation";
+import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
 
 /**
  * Any event on a local repo
@@ -151,7 +151,7 @@ export async function handlePushBasedEventOnRepo(cc: AutomationClientConnectionC
     }
 
     const push = await createPush(cc.atomistTeamId, lc.repositoryOwnerParentDirectory, payload);
-    return invokeEventHandler(cc, {
+    return invokeEventHandlerUsingHttp(cc)({
         name: eventHandlerName,
         payload: pushToPayload(push),
     });

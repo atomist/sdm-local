@@ -22,7 +22,7 @@ import {
     OnRepoOnboarded,
 } from "@atomist/sdm-core/typings/types";
 import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
-import { invokeEventHandler } from "../../../cli/invocation/http/EventHandlerInvocation";
+import { invokeEventHandlerUsingHttp } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
 import { repoFieldsFromProject } from "./pushFromLastCommit";
 
 export async function sendRepoCreationEvent(cc: AutomationClientConnectionConfig, id: RepoId) {
@@ -33,7 +33,7 @@ export async function sendRepoCreationEvent(cc: AutomationClientConnectionConfig
             id: `${id.owner}/${id.repo}`,
         }],
     };
-    return invokeEventHandler(cc, {
+    return invokeEventHandlerUsingHttp(cc)({
         name: "OnRepoCreation",
         payload,
     });
@@ -47,7 +47,7 @@ export async function sendChannelLinkEvent(cc: AutomationClientConnectionConfig,
             channel: repo.channels[0],
         }],
     };
-    return invokeEventHandler(cc, {
+    return invokeEventHandlerUsingHttp(cc)({
         name: "OnChannelLink",
         payload,
     });
@@ -59,7 +59,7 @@ export async function sendRepoOnboardingEvent(cc: AutomationClientConnectionConf
             repo: repoFieldsFromProject(cc.atomistTeamId, id) as CoreRepoFieldsAndChannels.Fragment,
         }],
     };
-    return invokeEventHandler(cc, {
+    return invokeEventHandlerUsingHttp(cc)({
         name: "OnRepoOnboarded",
         payload,
     });
