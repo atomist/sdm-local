@@ -22,7 +22,7 @@ import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentToken
 import { expandedTreeRepoFinder } from "../binding/project/expandedTreeRepoFinder";
 import { ExpandedTreeRepoRefResolver } from "../binding/project/ExpandedTreeRepoRefResolver";
 import { LocalRepoTargets } from "../binding/project/LocalRepoTargets";
-import { DefaultAutomationClientConnectionConfig } from "../../entry/resolveConnectionConfig";
+import { DefaultAutomationClientConnectionConfig } from "../../cli/entry/resolveConnectionConfig";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { FileSystemProjectLoader } from "../binding/project/FileSystemProjectLoader";
 import { fileSystemProjectPersister } from "../binding/project/fileSystemProjectPersister";

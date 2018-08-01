@@ -24,7 +24,7 @@ import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessag
 import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
-import { DefaultAutomationClientConnectionConfig } from "../../entry/resolveConnectionConfig";
+import { DefaultAutomationClientConnectionConfig } from "../../cli/entry/resolveConnectionConfig";
 import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
 import {
     CommandHandlerInvocation,

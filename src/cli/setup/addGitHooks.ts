@@ -30,7 +30,7 @@ import {
 import { HookEvents } from "../invocation/git/handlePushBasedEventOnRepo";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";
-const AtomistJsName = "build/src/entry/onGitHook.js";
+const AtomistJsName = "build/src/cli.entry/onGitHook.js";
 
 /**
  * Add Git hooks to the given repo

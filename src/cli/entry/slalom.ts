@@ -17,7 +17,7 @@
  */
 
 /*
-    Main entry point script
+    Main cli.entry point script
 */
 
 // Disable console logging
@@ -25,7 +25,7 @@
     process.env.ATOMIST_DISABLE_LOGGING = "true";
 }
 
- import { runSlalom } from "../cli/invocation/runSlalom";
+ import { runSlalom } from "../invocation/runSlalom";
  import { resolveConnectionConfig } from "./resolveConnectionConfig";
 
 // Prevent loading of metadata for built-in commands

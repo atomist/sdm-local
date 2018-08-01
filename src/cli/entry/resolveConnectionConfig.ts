@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-process.env.ATOMIST_DISABLE_LOGGING = "true";
+import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
 
-import { runOnGitHook } from "../cli/invocation/git/runOnGitHook";
-import { resolveConnectionConfig } from "./resolveConnectionConfig";
+export function resolveConnectionConfig(): AutomationClientConnectionConfig {
+    return DefaultAutomationClientConnectionConfig;
+}
 
-/*
-    Called on git hook invocation
-*/
-
-// tslint:disable-next-line:no-floating-promises
-runOnGitHook(process.argv, resolveConnectionConfig());
+// TODO get from config?
+export const DefaultAutomationClientConnectionConfig: AutomationClientConnectionConfig = {
+    atomistTeamId: "T123",
+    atomistTeamName: "test",
+    baseEndpoint: "http://127.0.0.1:2866",
+};
