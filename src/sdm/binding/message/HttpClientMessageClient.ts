@@ -55,7 +55,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
         if (isSlackMessage(message)) {
             await this.actionStore.storeActions(message);
         } else {
-            logger.info("Jess, this is not a slack message: %j", message);
+            logger.info("Not a slack message: %j", message);
         }
         return this.stream({
             message,

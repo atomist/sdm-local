@@ -77,6 +77,5 @@ function propertiesToArgs(o: any): Arg[] {
         return o;
     }
     const args = Object.keys(o).map(k => ({name: k, value: o[k]}));
-    logger.info("Jess, you have some args: %j", args);
     return args;
 }

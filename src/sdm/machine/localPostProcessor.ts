@@ -108,8 +108,7 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                 return res.json(r);
             });
             exp.get(ActionRoute + "/:description", async (req, res) => {
-                logger.info("Jess! you clicked on an action! %j and %j", req.params, req.query);
-
+                logger.debug("Action clicked:! params=%j; query=%j", req.params, req.query);
                 const actionKey = req.query["key"];
                 if (!actionKey) {
                     logger.error("No action key provided. Please include ?key=< actionKey that has been stored by this sdm >");
@@ -120,10 +119,9 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                     logger.error("Action key %s not found", actionKey);
                     return res.status(404).send("Action not stored. Did you restart the SDM?");
                 }
-                logger.info("Jess! We found the action! %s", JSON.stringify(storedAction, null, 2));
 
                 const command = (storedAction as any).command;
-                logger.info("The parameters are: %j", command.parameters);
+                logger.debug("The parameters are: %j", command.parameters);
                 if (!command) {
                     logger.error("No command stored on action object: %j", storedAction);
                     return res.status(500).send("This will never work");

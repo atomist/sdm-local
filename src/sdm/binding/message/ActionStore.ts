@@ -61,7 +61,6 @@ class InMemoryActionStore {
 }
 
 export function actionKey(message: SlackMessage, index: number): ActionKey {
-    logger.info("Jess, determining message key: %s or %s");
     const messageKey = (message as any).key || (message as any).ts || computeShortSha(message);
     logger.info("Message key computed: %s", messageKey);
     return `${messageKey}-${index}`;
