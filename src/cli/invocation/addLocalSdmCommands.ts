@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-import * as yargs from "yargs";
 import { AutomationClientInfo } from "../AutomationClientInfo";
-import { addAddGitHooksCommand, addRemoveGitHooksCommand } from "./command/addGitHooksCommands";
-import { addCommandsByName, addIntents } from "./command/addIntents";
+import {
+    addAddGitHooksCommand,
+    addRemoveGitHooksCommand,
+} from "./command/addGitHooksCommands";
+import {
+    addCommandsByName,
+    addIntents,
+} from "./command/addIntents";
 import { addStartListenerCommand } from "./command/addStartListenerCommand";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addBootstrapCommands } from "./command/bootstrapCommands";

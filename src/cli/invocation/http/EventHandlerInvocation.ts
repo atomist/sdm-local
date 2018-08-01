@@ -15,12 +15,14 @@
  */
 
 import {
+    automationClientInstance,
     HandlerResult,
     logger,
     Secrets,
 } from "@atomist/automation-client";
 import { Secret } from "@atomist/automation-client/internal/invoker/Payload";
 import { replacer } from "@atomist/automation-client/internal/transport/AbstractRequestProcessor";
+import { EventIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import * as stringify from "json-stringify-safe";
 import * as assert from "power-assert";
 import { newCorrelationId } from "../../../sdm/machine/correlationId";
@@ -39,16 +41,14 @@ export interface EventHandlerInvocation {
  * @param {EventHandlerInvocation} invocation
  * @return {Promise<HandlerResult>}
  */
+// TODO move into better place as this is now HTTP or in process
 export async function invokeEventHandler(config: AutomationClientConnectionConfig,
                                          invocation: EventHandlerInvocation,
                                          correlationId?: string): Promise<HandlerResult> {
-    assert(!!config, "Config must be provided");
-    assert(!!config.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(config));
-    const url = `/event`;
     const data = {
         extensions: {
             operationName: invocation.name,
-            query_id: "q-" + new Date().getTime(),
+            query_id: "q-" + Date.now(),
             team_id: config.atomistTeamId,
             team_name: config.atomistTeamName,
             correlation_id: correlationId || newCorrelationId(),
@@ -63,9 +63,24 @@ export async function invokeEventHandler(config: AutomationClientConnectionConfi
         data: invocation.payload,
     };
 
-    logger.info("Sending %s to event %s using %s", url, invocation.name, stringify(data, replacer));
-    const resp = await postToSdm(config, url, data);
-    assert(resp.code !== 0,
-        "Event handler did not succeed. Returned: " + JSON.stringify(resp, null, 2));
-    return resp;
+    // git hooks call this without a running automationClient in the same process; fall back to HTTP
+    if (!automationClientInstance()) {
+        const url = `/event`;
+        logger.info("Sending %s to event %s using %s", url, invocation.name, stringify(data, replacer));
+        assert(!!config, "Config must be provided");
+        assert(!!config.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(config));
+        const resp = await postToSdm(config, url, data);
+        assert(resp.code !== 0,
+            "Event handler did not succeed. Returned: " + JSON.stringify(resp, null, 2));
+        return resp;
+    } else {
+        logger.info("Invoking %s using %s", invocation.name, stringify(data, replacer));
+        automationClientInstance().processEvent(data as any as EventIncoming, async result => {
+            const results = (Array.isArray(result) ? result : [result]) as HandlerResult[];
+            assert(results.find(r => r.code !== 0),
+                "Event handler did not succeed. Returned: " + JSON.stringify(result, null, 2));
+            return results;
+        });
+    }
+
 }
