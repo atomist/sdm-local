@@ -120,7 +120,7 @@ async function deatomizeScript(p: LocalProject, scriptPath: string) {
         } else {
             await p.deleteFile(scriptPath);
             infoMessage(chalk.gray(sprintf(
-                "removeGitHooks: Removing pure Atomist git hook %s in project at %s\n",
+                "removeGitHooks: Removing Atomist git hook %s in project at %s\n",
                 scriptPath,
                 p.baseDir)));
         }
