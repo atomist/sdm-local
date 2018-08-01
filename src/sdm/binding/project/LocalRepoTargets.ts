@@ -47,7 +47,7 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
     public repo: string;
 
     @Parameter({ description: "Branch or ref. Defaults to 'master'", ...GitBranchRegExp, required: false })
-    public master: string = "master";
+    public branch: string = "master";
 
     @Parameter({ description: "Sha", ...GitShaRegExp, required: false })
     public sha: string;
@@ -69,7 +69,7 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
                 repositoryOwnerParentDirectory: this.repositoryOwnerParentDirectory,
                 owner: this.owner,
                 repo: this.repo,
-                branch: this.sha,
+                branch: this.branch,
                 sha: this.sha,
             }) :
             undefined;
