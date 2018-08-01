@@ -76,11 +76,7 @@ function propertiesToArgs(o: any): Arg[] {
     if (isArray(o)) {
         return o;
     }
-    const args = [];
-    for (const name in o) {
-        if (o.hasOwnProperty(o)) {
-            args.push({name, value: o[name]});
-        }
-    }
+    const args = Object.keys(o).map(k => ({name: k, value: o[k]}));
+    logger.info("Jess, you have some args: %j", args);
     return args;
 }

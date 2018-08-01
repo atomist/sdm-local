@@ -15,7 +15,7 @@
  */
 
 import {
-    Configuration,
+    Configuration, HandlerResult,
     logger,
 } from "@atomist/automation-client";
 import * as _ from "lodash";
@@ -39,6 +39,7 @@ import { createSdmOptions } from "./createSdmOptions";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 import { ActionRoute, ActionStore, freshActionStore } from "../binding/message/ActionStore";
+import * as stringify from "json-stringify-safe";
 
 /**
  * Configures an automation client in local mode
@@ -108,6 +109,7 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
             });
             exp.get(ActionRoute + "/:description", async (req, res) => {
                 logger.info("Jess! you clicked on an action! %j and %j", req.params, req.query);
+
                 const actionKey = req.query["key"];
                 if (!actionKey) {
                     logger.error("No action key provided. Please include ?key=< actionKey that has been stored by this sdm >");
@@ -118,14 +120,33 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                     logger.error("Action key %s not found", actionKey);
                     return res.status(404).send("Action not stored. Did you restart the SDM?");
                 }
-                logger.info("Jess! We found the action! %j", storedAction);
-                return res.json({ code: 0 });
+                logger.info("Jess! We found the action! %s", JSON.stringify(storedAction, null, 2));
+
+                const command = (storedAction as any).command;
+                logger.info("The parameters are: %j", command.parameters);
+                if (!command) {
+                    logger.error("No command stored on action object: %j", storedAction);
+                    return res.status(500).send("This will never work");
+                }
+                return invokeCommandHandler(DefaultAutomationClientConnectionConfig, command)
+                    .then(r => res.json(decircle(r)),
+                        boo => res.status(500).send(boo.message));
             });
         },
     ];
 }
 
-type ButtonStore = {}
+function decircle(result: HandlerResult) {
+    let noncircular = result;
+    try {
+        JSON.stringify(noncircular);
+    } catch (err) {
+        logger.error("Circular object returned from event handler: %s", stringify(result));
+        noncircular = { code: result.code, message: stringify(result.message) };
+        logger.error("Substituting for circular object: %j", noncircular);
+    }
+    return noncircular;
+}
 
 /**
  * Use custom message client to update HTTP listeners and forward goal events back to the SDM via HTTP
