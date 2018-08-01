@@ -1,4 +1,4 @@
-# Slalom: Local Software Delivery Machine
+# sdm-local: Local Software Delivery Machine
 
 A software delivery sdm.machine helps you write and deliver code that is up to your own standards, at scale.
 This project runs a software delivery sdm.machine locally on your sdm.machine, responding to your commands and your commits.
@@ -47,7 +47,7 @@ The instructions here will take you through
 Later, when they've proven useful, you can elevate your push reactions, generators, editors, 
 and commands into the cloud for your whole team to use with [Atomist](www.atomist.com).
 
-Here is an [architecture diagram](https://github.com/atomisthq/slalom/blob/master/docs/local-sdm.png)  (TEMPORARY: linking to the raw image of files doesn't work in private repos)
+Here is an [architecture diagram](https://github.com/atomisthq/sdm-local/blob/master/docs/local-sdm.png)  (TEMPORARY: linking to the raw image of files doesn't work in private repos)
 
 ### Setup
 
@@ -99,16 +99,16 @@ $SDM_PROJECTS_ROOT
 ```
 3) Send commit events from your repositories to your SDM. See "Configure existing projects" below. TODO: test this. how does it know
  
-4) *TEMPORARY for Atomists*: currently Slalom isn't published on npm, so you have to:
+4) *TEMPORARY for Atomists*: currently sdm-local isn't published on npm, so you have to:
 -   clone this repository. In its directory:
 -   `npm install`
 -   `npm run build`
 -   `npm link`
--   Then over in your SDM repo, run `npm link @atomist/slalom`. Any time you `npm install` again, you'll have to re-link Slalom. Also, IntelliJ won't like you because it isn't in the package.json, so it won't recognize references to it. This won't be an issue once this project is public.
+-   Then over in your SDM repo, run `npm link @atomist/sdm-local`. Any time you `npm install` again, you'll have to re-link sdm-local. Also, IntelliJ won't like you because it isn't in the package.json, so it won't recognize references to it. This won't be an issue once this project is public.
 
 ### Startup
 
-TODO: we need to install the atomist CLI.
+Install the cli: `npm install -g @atomist/cli`
 
 Start your SDM in local mode by setting an environment variable and then invoking the atomist CLI. `ATOMIST_MODE=local atomist start`. The SDM will run in the background, listening for commands and events. This terminal will display logs.
 
@@ -121,7 +121,7 @@ Events are triggered by git postCommit hooks. Messages from events don't come ba
 In order to see messages from events (not interspersed with logs), activate a message listener in another terminal:
 
 ```
-slalom listen
+@atomist listen
 
 ```
 
@@ -134,12 +134,12 @@ Add the Atomist git hook to the existing git projects within this directory stru
 running the following command:
 
 ```
-slalom add-git-hooks
+@atomist add-git-hooks
 ```
 
 Success will result in output like the following:
 
-```==> slalom add-git-hooks
+```==> @atomist add-git-hooks
 2018-06-06T11:23:58.003Z [m:85087] [info ] Adding extension pack 'WellKnownGoals' version 0.1.0 from Atomist
 2018-06-06T11:23:58.051Z [m:85087] [info ] Searching under child directory [spring-team] of /Users/rodjohnson/temp/local-sdm
 2018-06-06T11:23:58.052Z [m:85087] [info ] Searching under child directory [undefined] of /Users/rodjohnson/temp/local-sdm
@@ -152,7 +152,7 @@ Success will result in output like the following:
 2018-06-06T11:23:58.080Z [m:85087] [info ] addGitHooks: Adding git post-commit script to project at /Users/rodjohnson/temp/local-sdm/x/y
 ```
 
-> Running `slalom add-git-hooks` is only necessary for pre-existing cloned directories and directories that are cloned using `git` rather than the local SDM.
+> Running `@atomist add-git-hooks` is only necessary for pre-existing cloned directories and directories that are cloned using `git` rather than the local SDM.
 
 ## Reacting to commits
 
@@ -174,7 +174,7 @@ Further projects can be added under the expanded directory tree in three ways:
 
 ### Normal git Clone
 
-Cloning any git project from anywhere under `$SDM_PROJECTS_BASE` and running `slalom add-git-hooks` to add git hooks to it.
+Cloning any git project from anywhere under `$SDM_PROJECTS_BASE` and running `@atomist add-git-hooks` to add git hooks to it.
 
 ### Symbolic Link
 Go to the correct organization directory, creating it if necessary. Then create a symlink to the required directory elsewhere on your sdm.machine. For example:
@@ -182,7 +182,7 @@ Go to the correct organization directory, creating it if necessary. Then create 
 ```
 ln -s /Users/rodjohnson/sforzando-dev/idea-projects/flight1
 ```
-Then run `slalom add-git-hooks` and the linked project will be treated as a normal project.
+Then run `@atomist add-git-hooks` and the linked project will be treated as a normal project.
 
 ### Import Command
 
@@ -191,7 +191,7 @@ GitHub.com repository in the right place in the expanded tree and automatically
  install the git hook:
 
 ```
-slalom import --owner=johnsonr --repo=initializr
+@atomist import --owner=johnsonr --repo=initializr
 
 ```
 This is the recommended way, as it will run Atomist onboarding events for a new repo.
@@ -210,13 +210,13 @@ Only public repos are supported.
 
 ## Running Commands
 ```
-slalom show skills
+@atomist show skills
 ```
 
 Type in intents as follows:
 
 ```
-slalom create spring
+@atomist create spring
 ```
 
 No parameters beyond the command name are required. However, command-specific parameters may be provided in options syntax.
