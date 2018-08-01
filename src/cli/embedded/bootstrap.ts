@@ -21,8 +21,8 @@ import { SoftwareDeliveryMachine } from "@atomist/sdm";
 import { configureSdm, createSoftwareDeliveryMachine } from "@atomist/sdm-core";
 import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
-import { LocalLifecycle } from "../../sdm/machine/localLifecycle";
-import { configureLocal } from "../../sdm/machine/localPostProcessor";
+import { LocalLifecycle } from "../../sdm/configuration/localLifecycle";
+import { configureLocal } from "../../sdm/configuration/localPostProcessor";
 import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
 
 const BootstrapPort = 2867;

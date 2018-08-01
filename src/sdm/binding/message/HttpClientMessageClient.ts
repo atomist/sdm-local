@@ -61,6 +61,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
             message,
             options,
             destinations: [{
+                // TODO hard coding
                 team: "T1234",
                 channels,
             } as SlackDestination],

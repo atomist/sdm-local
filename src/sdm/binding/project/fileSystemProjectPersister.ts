@@ -26,7 +26,7 @@ import { promisify } from "util";
 import { handlePushBasedEventOnRepo } from "../../../cli/invocation/git/handlePushBasedEventOnRepo";
 import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 import { addGitHooksToProject } from "../../../cli/setup/addGitHooks";
-import { LocalMachineConfig } from "../../machine/LocalMachineConfig";
+import { LocalMachineConfig } from "../../configuration/LocalMachineConfig";
 import { lastSha } from "../../util/git";
 import { runAndLog } from "../../util/runAndLog";
 import {

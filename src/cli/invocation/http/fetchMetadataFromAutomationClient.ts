@@ -15,7 +15,7 @@
  */
 
 import axios from "axios";
-import { LocalMachineConfig } from "../../../sdm/machine/LocalMachineConfig";
+import { LocalMachineConfig } from "../../../sdm/configuration/LocalMachineConfig";
 import { AutomationClientInfo, ConnectedClient } from "../../AutomationClientInfo";
 import { errorMessage, infoMessage, } from "../command/support/consoleOutput";
 import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";

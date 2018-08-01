@@ -22,7 +22,7 @@ import {
     WithLoadedProject,
 } from "@atomist/sdm";
 import * as fs from "fs";
-import { LocalMachineConfig } from "../../machine/LocalMachineConfig";
+import { LocalMachineConfig } from "../../configuration/LocalMachineConfig";
 import { runAndLog } from "../../util/runAndLog";
 import { dirFor } from "./expandedTreeUtils";
 import {

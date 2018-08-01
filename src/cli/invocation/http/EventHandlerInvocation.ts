@@ -25,7 +25,7 @@ import { replacer } from "@atomist/automation-client/internal/transport/Abstract
 import { EventIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import * as stringify from "json-stringify-safe";
 import * as assert from "power-assert";
-import { newCorrelationId } from "../../../sdm/machine/correlationId";
+import { newCorrelationId } from "../../../sdm/configuration/correlationId";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
 

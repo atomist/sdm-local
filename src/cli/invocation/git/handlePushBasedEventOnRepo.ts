@@ -22,7 +22,7 @@ import { pushFromLastCommit } from "../../../sdm/binding/event/pushFromLastCommi
 import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSystemProjectLoader";
 import { FileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
 import Push = OnPushToAnyBranch.Push;
-import { LocalMachineConfig } from "../../../sdm/machine/LocalMachineConfig";
+import { LocalMachineConfig } from "../../../sdm/configuration/LocalMachineConfig";
 import { errorMessage } from "../command/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { invokeEventHandler } from "../http/EventHandlerInvocation";

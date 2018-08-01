@@ -18,7 +18,7 @@ import { Argv } from "yargs";
 import { expandedTreeRepoFinder } from "../../../sdm/binding/project/expandedTreeRepoFinder";
 import { determineCwd, parseOwnerAndRepo } from "../../../sdm/binding/project/expandedTreeUtils";
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
-import { LocalMachineConfig } from "../../../sdm/machine/LocalMachineConfig";
+import { LocalMachineConfig } from "../../../sdm/configuration/LocalMachineConfig";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import {
     addGitHooks,
