@@ -30,7 +30,7 @@ import {
 import { HookEvents } from "../invocation/git/handlePushBasedEventOnRepo";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";
-const AtomistJsName = "build/src/cli/entry/onGitHook.js";
+const AtomistJsName = "cli/entry/onGitHook.js";
 
 /**
  * Add Git hooks to the given repo
@@ -51,8 +51,8 @@ export async function addGitHooks(id: RemoteRepoRef,
 }
 
 export async function addGitHooksToProject(p: LocalProject) {
-    const atomistHookScriptPath = path.join(__dirname, "../../../", AtomistHookScriptName);
-    const gitHookScript = path.join(__dirname, "../../../", AtomistJsName);
+    const atomistHookScriptPath = path.join(__dirname, "../../../../", AtomistHookScriptName);
+    const gitHookScript = path.join(__dirname, "../../", AtomistJsName);
 
     for (const event of HookEvents) {
         const toAppend = scriptFragments(atomistHookScriptPath, gitHookScript)[event];
