@@ -54,8 +54,6 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
     public async addressChannels(message: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
         if (isSlackMessage(message)) {
             await this.actionStore.storeActions(message);
-        } else {
-            logger.info("Not a slack message: %j", message);
         }
         return this.stream({
             message,

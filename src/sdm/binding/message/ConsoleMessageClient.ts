@@ -79,7 +79,9 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
                     return this.writeToChannel(channel, msg.text);
                 }
                 (msg.attachments || []).forEach(async att => {
-                    await this.writeToChannel(channel, att.text);
+                    if (!!att.text) {
+                        await this.writeToChannel(channel, att.text);
+                    }
                     (att.actions || []).forEach(async (action, index) => {
                         await this.renderAction(channel, action, actionKey(msg, index));
                     });
