@@ -16,8 +16,6 @@
 
 import * as yargs from "yargs";
 import { AutomationClientInfo } from "../AutomationClientInfo";
-import { AutomationClientConnectionConfig } from "./http/AutomationClientConnectionConfig";
-import { fetchMetadataFromAutomationClient } from "./http/metadataReader";
 import { addAddGitHooksCommand, addRemoveGitHooksCommand, } from "./command/addGitHooksCommands";
 import { addCommandsByName, addIntents, } from "./command/addIntents";
 import { addStartListenerCommand } from "./command/addStartListenerCommand";
@@ -35,40 +33,35 @@ import { SingleDefaultAutomationClientFinder } from "./http/support/SingleDefaul
  */
 export async function addLocalSdmCommands(yargs,
                                           finder: AutomationClientFinder = SingleDefaultAutomationClientFinder) {
-    for (const baseEndpoint of await finder.findAutomationClientUrls()) {
-        const cc: AutomationClientConnectionConfig = {
-            baseEndpoint,
-            atomistTeamId: "T123",
-            atomistTeamName: "test\","
-        };
-        await addCommandsToConnectTo(cc, yargs);
+    for (const client of await finder.findAutomationClients()) {
+        await addCommandsToConnectTo(client, yargs);
     }
 }
 
-async function addCommandsToConnectTo(connectionConfig: AutomationClientConnectionConfig, yargs) {
-    if (!!connectionConfig) {
-        const automationClientInfo = await fetchMetadataFromAutomationClient(connectionConfig);
-        verifyLocalSdm(automationClientInfo);
+/**
+ * Add commands to command to this automation client
+ * @param yargs
+ * @return {Promise<void>}
+ */
+async function addCommandsToConnectTo(client: AutomationClientInfo, yargs) {
+    verifyLocalSdm(client);
 
-        // TODO do these all once
-        addBootstrapCommands(connectionConfig, yargs);
+    // TODO do these all once
+    addBootstrapCommands(client.connectionConfig, yargs);
+    addRemoveGitHooksCommand(client, yargs);
 
-        addRemoveGitHooksCommand(automationClientInfo, yargs);
+    if (!!client.localConfig) {
+        addAddGitHooksCommand(client, yargs);
+        addImportFromGitRemoteCommand(client, yargs);
+    }
 
-        if (!!automationClientInfo.localConfig) {
-            addAddGitHooksCommand(automationClientInfo, yargs);
-            addImportFromGitRemoteCommand(automationClientInfo, yargs);
-        }
-
-
-        // If we were able to connect to an SDM...
-        if (!!automationClientInfo.commandsMetadata) {
-            addTriggerCommand(automationClientInfo, yargs);
-            addStartListenerCommand(connectionConfig, yargs);
-            addCommandsByName(automationClientInfo, yargs);
-            addIntents(automationClientInfo, yargs);
-            addShowSkillsCommand(automationClientInfo, yargs);
-        }
+    // If we were able to connect to an SDM...
+    if (!!client.commandsMetadata) {
+        addTriggerCommand(client, yargs);
+        addStartListenerCommand(client.connectionConfig, yargs);
+        addCommandsByName(client, yargs);
+        addIntents(client, yargs);
+        addShowSkillsCommand(client, yargs);
     }
 }
 

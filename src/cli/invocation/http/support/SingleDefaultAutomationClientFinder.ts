@@ -15,10 +15,19 @@
  */
 
 import { AutomationClientFinder } from "../AutomationClientFinder";
+import { fetchMetadataFromAutomationClient } from "../metadataReader";
 
 export const SingleDefaultAutomationClientFinder: AutomationClientFinder = {
 
-    findAutomationClientUrls() {
-        return Promise.resolve(["http://localhost:2866"]);
+    async findAutomationClients() {
+        try {
+            return [await fetchMetadataFromAutomationClient({
+                baseEndpoint: "http://localhost:2866",
+                atomistTeamName: "",
+                atomistTeamId: "",
+            })];
+        } catch (err) {
+            return [];
+        }
     },
 };

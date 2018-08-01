@@ -15,6 +15,7 @@
  */
 
 import { AutomationClientFinder } from "../AutomationClientFinder";
+import { AutomationClientInfo } from "../../../AutomationClientInfo";
 
 export interface PortRangeOptions {
     lowerPort: number;
@@ -25,7 +26,7 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
 
     private readonly options: PortRangeOptions;
 
-    public async findAutomationClientUrls(): Promise<string[]> {
+    public async findAutomationClients(): Promise<AutomationClientInfo[]> {
         return [];
     }
 
