@@ -1,5 +1,5 @@
 export { LocalMachineConfig } from "./sdm/machine/LocalMachineConfig";
-export { runSlalom } from "./cli/invocation/runSlalom";
+export { addLocalSdmCommands } from "./cli/invocation/addLocalSdmCommands";
 export { runOnGitHook } from "./cli/invocation/git/runOnGitHook";
 export { configureLocal } from "./sdm/machine/localPostProcessor";
 export { LocalLifecycle } from "./sdm/machine/localLifecycle";

@@ -21,22 +21,40 @@
 */
 
 // Disable console logging
- if (!isReservedCommand()) {
+if (!isReservedCommand()) {
     process.env.ATOMIST_DISABLE_LOGGING = "true";
 }
 
- import { runSlalom } from "../invocation/runSlalom";
- import { resolveConnectionConfig } from "./resolveConnectionConfig";
+import { readVersion } from "../invocation/command/support/commands";
+import { addLocalSdmCommands } from "../invocation/addLocalSdmCommands";
+import * as yargs from "yargs";
+import { addClientCommands } from "../invocation/command/clientCommands";
+
+addClientCommands(yargs);
 
 // Prevent loading of metadata for built-in commands
- if (isReservedCommand()) {
+if (!isReservedCommand()) {
     // tslint:disable-next-line:no-floating-promises
-    runSlalom();
+    addLocalSdmCommands(yargs)
+        .then(runCli);
 } else {
-    // tslint:disable-next-line:no-floating-promises
-    runSlalom(resolveConnectionConfig());
+    runCli();
 }
 
- function isReservedCommand() {
+function runCli() {
+    yargs
+        .epilog("Copyright Atomist 2018")
+        .demandCommand(1, "Please provide a command")
+        .help()
+        .wrap(100)
+        .strict()
+        .completion()
+        .alias("help", ["h", "?"])
+        .version(readVersion())
+        .alias("version", "v")
+        .argv;
+}
+
+function isReservedCommand() {
     return process.argv.length >= 3 && ["git", "config", "gql-fetch", "gql-gen", "start", "kube"].includes(process.argv[2]);
 }

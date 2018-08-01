@@ -18,37 +18,39 @@ import * as yargs from "yargs";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { AutomationClientConnectionConfig } from "./http/AutomationClientConnectionConfig";
 import { fetchMetadataFromAutomationClient } from "./http/metadataReader";
-import {
-    addAddGitHooksCommand,
-    addRemoveGitHooksCommand,
-} from "./command/addGitHooksCommands";
-import {
-    addCommandsByName,
-    addIntents,
-} from "./command/addIntents";
+import { addAddGitHooksCommand, addRemoveGitHooksCommand, } from "./command/addGitHooksCommands";
+import { addCommandsByName, addIntents, } from "./command/addIntents";
 import { addStartListenerCommand } from "./command/addStartListenerCommand";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addBootstrapCommands } from "./command/bootstrapCommands";
-import { addClientCommands } from "./command/clientCommands";
 import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
 import { addShowSkillsCommand } from "./command/showSkillsCommand";
-import { readVersion } from "./command/support/commands";
 import { infoMessage } from "./command/support/consoleOutput";
+import { AutomationClientFinder } from "./http/AutomationClientFinder";
+import { SingleDefaultAutomationClientFinder } from "./http/support/SingleDefaultAutomationClientFinder";
 
 /**
  * Start up the Slalom CLI
- * @param connectionConfig if this is supplied, try to connect to a remote SDM
  * @return {yargs.Arguments}
  */
-export async function runSlalom(connectionConfig?: AutomationClientConnectionConfig) {
-    yargs.usage("Usage: slalom <command> [options]");
+export async function addLocalSdmCommands(yargs,
+                                          finder: AutomationClientFinder = SingleDefaultAutomationClientFinder) {
+    for (const baseEndpoint of await finder.findAutomationClientUrls()) {
+        const cc: AutomationClientConnectionConfig = {
+            baseEndpoint,
+            atomistTeamId: "T123",
+            atomistTeamName: "test\","
+        };
+        await addCommandsToConnectTo(cc, yargs);
+    }
+}
 
-    addClientCommands(yargs);
-
+async function addCommandsToConnectTo(connectionConfig: AutomationClientConnectionConfig, yargs) {
     if (!!connectionConfig) {
         const automationClientInfo = await fetchMetadataFromAutomationClient(connectionConfig);
         verifyLocalSdm(automationClientInfo);
 
+        // TODO do these all once
         addBootstrapCommands(connectionConfig, yargs);
 
         addRemoveGitHooksCommand(automationClientInfo, yargs);
@@ -57,6 +59,7 @@ export async function runSlalom(connectionConfig?: AutomationClientConnectionCon
             addAddGitHooksCommand(automationClientInfo, yargs);
             addImportFromGitRemoteCommand(automationClientInfo, yargs);
         }
+
 
         // If we were able to connect to an SDM...
         if (!!automationClientInfo.commandsMetadata) {
@@ -67,18 +70,6 @@ export async function runSlalom(connectionConfig?: AutomationClientConnectionCon
             addShowSkillsCommand(automationClientInfo, yargs);
         }
     }
-
-    return yargs
-        .epilog("Copyright Atomist 2018")
-        .demandCommand(1, "Please provide a command")
-        .help()
-        .wrap(100)
-        .strict()
-        .completion()
-        .alias("help", ["h", "?"])
-        .version(readVersion())
-        .alias("version", "v")
-        .argv;
 }
 
 function verifyLocalSdm(automationClientInfo: AutomationClientInfo) {
