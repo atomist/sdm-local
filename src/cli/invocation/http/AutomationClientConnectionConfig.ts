@@ -19,8 +19,10 @@
  */
 export interface AutomationClientConnectionConfig {
 
+    /** @deprecated replace when we don't use HTTP invocation from within service */
     atomistTeamId: string;
 
+    /** @deprecated replace when we don't use HTTP invocation from within service */
     atomistTeamName: string;
 
     /**
