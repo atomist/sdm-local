@@ -34,6 +34,8 @@ import { MarkedOptions } from "marked";
 import * as TerminalRenderer from "marked-terminal";
 import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
+import { actionDescription, actionKey, ActionRoute } from "./ActionStore";
+import { ActionStore } from "./ActionStore";
 
 marked.setOptions({
     // Define custom renderer
@@ -78,8 +80,8 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
                 }
                 (msg.attachments || []).forEach(async att => {
                     await this.writeToChannel(channel, att.text);
-                    (att.actions || []).forEach(async action => {
-                        await this.renderAction(channel, action);
+                    (att.actions || []).forEach(async (action, index) => {
+                        await this.renderAction(channel, action, actionKey(msg, index));
                     });
                 });
             } else if (typeof msg === "string") {
@@ -100,13 +102,9 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
         return this.sender(`#${users} ${msg}\n`);
     }
 
-    private async renderAction(channel: string, action: slack.Action) {
+    private async renderAction(channel: string, action: slack.Action, actionKey: string) {
         if (action.type === "button") {
-            const a = action as any;
-            let url = `${this.connectionConfig.baseEndpoint}/command/${a.command.name}?`;
-            Object.getOwnPropertyNames(a.command.parameters).forEach(prop => {
-                url += `${prop}=${a.command.parameters[prop]}`;
-            });
+            let url = `${this.connectionConfig.baseEndpoint}${ActionRoute}/${actionDescription(action)}?key=${actionKey}`;
             await this.writeToChannel(channel, `${action.text} - ${url}`);
         } else {
             return this.sender(JSON.stringify(action) + "\n");

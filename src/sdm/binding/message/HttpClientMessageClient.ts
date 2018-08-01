@@ -16,7 +16,7 @@
 
 import { logger } from "@atomist/automation-client";
 import {
-    Destination,
+    Destination, isSlackMessage,
     MessageClient,
     MessageOptions,
     SlackDestination,
@@ -30,6 +30,7 @@ import {
     messageListenerEndpoint,
     StreamedMessage,
 } from "./httpMessageListener";
+import { ActionStore } from "./ActionStore";
 
 /**
  * Message client that POSTS to an Atomist server and logs to a fallback otherwise
@@ -51,6 +52,11 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
     }
 
     public async addressChannels(message: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
+        if (isSlackMessage(message)) {
+            await this.actionStore.storeActions(message);
+        } else {
+            logger.info("Jess, this is not a slack message: %j", message);
+        }
         return this.stream({
             message,
             options,
@@ -80,6 +86,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
 
     constructor(private readonly linkedChannel: string,
                 port: number,
+                private readonly actionStore: ActionStore,
                 private readonly delegate: MessageClient & SlackMessageClient =
                     DevNullMessageClient) {
         this.url = messageListenerEndpoint(port);

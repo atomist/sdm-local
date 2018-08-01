@@ -15,7 +15,7 @@
  */
 
 import {
-    Configuration,
+    Configuration, HandlerResult,
     logger,
 } from "@atomist/automation-client";
 import * as _ from "lodash";
@@ -38,6 +38,8 @@ import {
 import { createSdmOptions } from "./createSdmOptions";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
+import { ActionRoute, ActionStore, freshActionStore } from "../binding/message/ActionStore";
+import * as stringify from "json-stringify-safe";
 
 /**
  * Configures an automation client in local mode
@@ -57,9 +59,12 @@ export function configureLocal(
         logger.info("Disable web socket connection");
         configuration.ws.enabled = false;
 
-        configureWebEndpoints(configuration, localMachineConfig);
+        const globalActionStore = freshActionStore();
 
-        setMessageClient(configuration, localMachineConfig);
+        configureWebEndpoints(configuration, localMachineConfig, globalActionStore);
+
+
+        setMessageClient(configuration, localMachineConfig, globalActionStore);
         setGraphClient(configuration);
 
         if (!configuration.listeners) {
@@ -78,7 +83,7 @@ export function configureLocal(
     };
 }
 
-function configureWebEndpoints(configuration: Configuration, localMachineConfig: LocalMachineConfig) {
+function configureWebEndpoints(configuration: Configuration, localMachineConfig: LocalMachineConfig, actionStore: ActionStore) {
     // Disable auth as we're only expecting local clients
     // TODO what if not basic
     _.set(configuration, "http.auth.basic.enabled", false);
@@ -102,8 +107,45 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                 const r = await invokeCommandHandler(DefaultAutomationClientConnectionConfig, invocation);
                 return res.json(r);
             });
+            exp.get(ActionRoute + "/:description", async (req, res) => {
+                logger.info("Jess! you clicked on an action! %j and %j", req.params, req.query);
+
+                const actionKey = req.query["key"];
+                if (!actionKey) {
+                    logger.error("No action key provided. Please include ?key=< actionKey that has been stored by this sdm >");
+                    return res.status(404).send("Required query parameter: key");
+                }
+                const storedAction = await actionStore.getAction(actionKey);
+                if (!storedAction) {
+                    logger.error("Action key %s not found", actionKey);
+                    return res.status(404).send("Action not stored. Did you restart the SDM?");
+                }
+                logger.info("Jess! We found the action! %s", JSON.stringify(storedAction, null, 2));
+
+                const command = (storedAction as any).command;
+                logger.info("The parameters are: %j", command.parameters);
+                if (!command) {
+                    logger.error("No command stored on action object: %j", storedAction);
+                    return res.status(500).send("This will never work");
+                }
+                return invokeCommandHandler(DefaultAutomationClientConnectionConfig, command)
+                    .then(r => res.json(decircle(r)),
+                        boo => res.status(500).send(boo.message));
+            });
         },
     ];
+}
+
+function decircle(result: HandlerResult) {
+    let noncircular = result;
+    try {
+        JSON.stringify(noncircular);
+    } catch (err) {
+        logger.error("Circular object returned from event handler: %s", stringify(result));
+        noncircular = { code: result.code, message: stringify(result.message) };
+        logger.error("Substituting for circular object: %j", noncircular);
+    }
+    return noncircular;
 }
 
 /**
@@ -111,16 +153,16 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
  * @param {Configuration} configuration
  * @param {LocalMachineConfig} localMachineConfig
  */
-function setMessageClient(configuration: Configuration, localMachineConfig: LocalMachineConfig) {
+function setMessageClient(configuration: Configuration, localMachineConfig: LocalMachineConfig, actionStore: ActionStore) {
     configuration.http.messageClientFactory =
         aca => {
             const channel = channelFor(aca.context.correlationId);
             const clientId = clientIdentifier(aca.context.correlationId);
             return new BroadcastingMessageClient(
-                new HttpClientMessageClient(channel, AllMessagesPort),
+                new HttpClientMessageClient(channel, AllMessagesPort, actionStore),
                 new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
                 // Communicate back to client if possible
-                !!clientId ? new HttpClientMessageClient(channel, clientId) : undefined,
+                !!clientId ? new HttpClientMessageClient(channel, clientId, actionStore) : undefined,
                 localMachineConfig.useSystemNotifications ? new SystemNotificationMessageClient(channel) : undefined,
             );
         };
