@@ -18,24 +18,29 @@ import { logger } from "@atomist/automation-client";
 import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSystemProjectLoader";
 import { infoMessage, logExceptionsToConsole } from "../command/support/consoleOutput";
 import { suggestStartingAllMessagesListener } from "../command/support/suggestStartingAllMessagesListener";
-import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
-import { fetchMetadataFromAutomationClient } from "../http/metadataReader";
-import {
-    argsToGitHookInvocation,
-    handleGitHookEvent,
-} from "./handlePushBasedEventOnRepo";
+import { argsToGitHookInvocation, handleGitHookEvent, } from "./handlePushBasedEventOnRepo";
+import { AutomationClientFinder } from "../http/AutomationClientFinder";
+import { SingleDefaultAutomationClientFinder } from "../http/support/SingleDefaultAutomationClientFinder";
 
 /**
  * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
  */
-export async function runOnGitHook(argv: string[], connectionConfig: AutomationClientConnectionConfig) {
+export async function runOnGitHook(argv: string[],
+                                   clientFinder: AutomationClientFinder = SingleDefaultAutomationClientFinder
+) {
     const invocation = argsToGitHookInvocation(argv);
     if (isAtomistTemporaryBranch(invocation.branch)) {
         logger.info("Ignoring Atomist temporary branch in '%j': Atomist will eventually surface these changes to let hook react",
             invocation);
         return;
     }
-    const automationClientInfo = await fetchMetadataFromAutomationClient(connectionConfig);
+
+    const clients = await clientFinder.findAutomationClients();
+    if (clients.length === 0) {
+        throw new Error("No connected clients found");
+    }
+    const automationClientInfo = clients[0];
+
     await suggestStartingAllMessagesListener();
     if (!automationClientInfo.localConfig) {
         infoMessage("No Software Delivery Machine running; not delivering push event.\n");
@@ -43,7 +48,8 @@ export async function runOnGitHook(argv: string[], connectionConfig: AutomationC
     } else {
         logger.debug("Executing git hook against project %j", invocation);
         return logExceptionsToConsole(() =>
-                handleGitHookEvent(connectionConfig, automationClientInfo.localConfig, invocation),
+                handleGitHookEvent(automationClientInfo.connectionConfig,
+                    automationClientInfo.localConfig, invocation),
             automationClientInfo.connectionConfig.showErrorStacks,
         );
     }
