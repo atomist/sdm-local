@@ -17,7 +17,13 @@
 import { AutomationClientFinder } from "../AutomationClientFinder";
 import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
 
+import * as os from "os";
+
+/**
+ * Connect to the single local default automation client
+ * @type {FixedAutomationClientFinder}
+ */
 export const SingleDefaultAutomationClientFinder: AutomationClientFinder =
     new FixedAutomationClientFinder({
-        baseEndpoint: "http://localhost:2866",
+        baseEndpoint: `http://${os.hostname}::2866`,
     });

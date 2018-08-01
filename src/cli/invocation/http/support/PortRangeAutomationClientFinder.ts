@@ -22,8 +22,15 @@ import { AutomationClientConnectionRequest } from "../AutomationClientConnection
 import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
 import { infoMessage } from "../../../..";
 
+import * as os from "os";
+
 export interface PortRangeOptions {
+
     lowerPort: number;
+
+    /**
+     * Number of ports to check
+     */
     checkRange: number;
 }
 
@@ -37,7 +44,7 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
     public async findAutomationClients(): Promise<AutomationClientInfo[]> {
         const requests: AutomationClientConnectionRequest[] = _.range(this.options.lowerPort, this.options.lowerPort + this.options.checkRange)
             .map(port => ({
-                baseEndpoint: `http://localhost:${port}`,
+                baseEndpoint: `http://${os.hostname}:${port}`,
             }));
         const found = await new FixedAutomationClientFinder(...requests).findAutomationClients();
         infoMessage("Connected to automation clients at %s\n", found.map(f => f.connectionConfig.baseEndpoint));
