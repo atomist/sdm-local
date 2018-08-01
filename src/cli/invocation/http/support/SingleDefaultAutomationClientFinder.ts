@@ -23,8 +23,6 @@ export const SingleDefaultAutomationClientFinder: AutomationClientFinder = {
         try {
             return [await fetchMetadataFromAutomationClient({
                 baseEndpoint: "http://localhost:2866",
-                atomistTeamName: "",
-                atomistTeamId: "",
             })];
         } catch (err) {
             return [];

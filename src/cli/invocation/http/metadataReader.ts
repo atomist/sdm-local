@@ -16,19 +16,16 @@
 
 import axios from "axios";
 import { LocalMachineConfig } from "../../../sdm/machine/LocalMachineConfig";
-import { AutomationClientInfo } from "../../AutomationClientInfo";
-import {
-    errorMessage,
-    infoMessage,
-} from "../command/support/consoleOutput";
-import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
+import { AutomationClientInfo, ConnectedClient } from "../../AutomationClientInfo";
+import { errorMessage, infoMessage, } from "../command/support/consoleOutput";
+import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 
 /**
  * Call into an automation client at the given location and retrieve metadata
  * @param {AutomationClientConnectionConfig} connectionConfig
  * @return {Promise<AutomationClientInfo>}
  */
-export async function fetchMetadataFromAutomationClient(connectionConfig: AutomationClientConnectionConfig): Promise<AutomationClientInfo> {
+export async function fetchMetadataFromAutomationClient(connectionConfig: AutomationClientConnectionRequest): Promise<AutomationClientInfo> {
     infoMessage("Connecting to Automation client at %s (%d)\n", connectionConfig.baseEndpoint, process.pid);
 
     try {
@@ -41,10 +38,16 @@ export async function fetchMetadataFromAutomationClient(connectionConfig: Automa
         } catch {
             // Do nothing. The automation client we're talking to is not in local mode
         }
+        const client: ConnectedClient = resp.data;
         return {
-            client: resp.data,
+            client,
             localConfig,
-            connectionConfig,
+            connectionConfig: {
+                ...connectionConfig,
+                atomistTeamId: client.team_ids[0],
+                // TODO fix this
+                atomistTeamName: "T123",
+            },
         };
     } catch (e) {
         errorMessage("Unable to connect to '%s': Is a Software Delivery Machine running?\n\t(%s)\n",
@@ -52,7 +55,12 @@ export async function fetchMetadataFromAutomationClient(connectionConfig: Automa
         return {
             client: undefined,
             localConfig: undefined,
-            connectionConfig,
+            connectionConfig: {
+                ...connectionConfig,
+                atomistTeamId: undefined,
+                // TODO fix this
+                atomistTeamName: undefined,
+            },
         };
     }
 }

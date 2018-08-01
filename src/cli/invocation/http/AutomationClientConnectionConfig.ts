@@ -14,16 +14,7 @@
  * limitations under the License.
  */
 
-/**
- * How to connect to an automation client
- */
-export interface AutomationClientConnectionConfig {
-
-    /** @deprecated replace when we don't use HTTP invocation from within service */
-    atomistTeamId: string;
-
-    /** @deprecated replace when we don't use HTTP invocation from within service */
-    atomistTeamName: string;
+export interface AutomationClientConnectionRequest {
 
     /**
      * Base endpoint, including port
@@ -33,6 +24,19 @@ export interface AutomationClientConnectionConfig {
     user?: string;
 
     password?: string;
+
+}
+
+/**
+ * How to connect to an automation client
+ */
+export interface AutomationClientConnectionConfig extends AutomationClientConnectionRequest {
+
+    /** @deprecated replace when we don't use HTTP invocation from within service */
+    atomistTeamId: string;
+
+    /** @deprecated replace when we don't use HTTP invocation from within service */
+    atomistTeamName: string;
 
     /**
      * Whether to display error stacks to console
