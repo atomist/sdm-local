@@ -10,7 +10,7 @@ This page details all runtime OSS dependencies of `@atomist/sdm-local`.
 |---------|-------|
 |[Apache-2.0](#apache-20)|2|
 |[BSD-2-Clause](#bsd-2-clause)|1|
-|[BSD-3-Clause](#bsd-3-clause)|1|
+|[BSD-3-Clause](#bsd-3-clause)|2|
 |[Custom: http://npm-stat.com/charts.html](#custom-httpnpm-statcomchartshtml)|3|
 |[Custom: https://github.com/RIAEvangelist/easy-stack](#custom-httpsgithubcomriaevangelisteasy-stack)|1|
 |[ISC](#isc)|21|
@@ -37,6 +37,7 @@ BSD 3-Clause "New" or "Revised" License - [http://www.opensource.org/licenses/BS
 
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
+|`jssha`|`2.3.1`|Brian Turek|[https://github.com/Caligatio/jsSHA](https://github.com/Caligatio/jsSHA)|
 |`qs`|`6.5.1`||[https://github.com/ljharb/qs](https://github.com/ljharb/qs)|
 
 #### Custom: http://npm-stat.com/charts.html
