@@ -1,5 +1,5 @@
 {
-  "name": "@atomist/slalom",
+  "name": "@atomist/sdm-local",
   "version": "0.1.0",
   "description": "Atomist Local Software Delivery Machine",
   "author": "Atomist, Inc.",
