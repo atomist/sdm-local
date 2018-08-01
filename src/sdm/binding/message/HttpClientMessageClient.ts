@@ -16,7 +16,7 @@
 
 import { logger } from "@atomist/automation-client";
 import {
-    Destination,
+    Destination, isSlackMessage,
     MessageClient,
     MessageOptions,
     SlackDestination,
@@ -30,6 +30,7 @@ import {
     messageListenerEndpoint,
     StreamedMessage,
 } from "./httpMessageListener";
+import { ActionStore } from "./ActionStore";
 
 /**
  * Message client that POSTS to an Atomist server and logs to a fallback otherwise
@@ -46,6 +47,9 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
             return;
         }
         const dests = Array.isArray(destinations) ? destinations : [destinations];
+        if (isSlackMessage(msg)) {
+            await this.actionStore.storeActions(msg);
+        }
         return this.stream({ message: msg, options, destinations: dests },
             () => this.delegate.send(msg, destinations, options));
     }
@@ -80,6 +84,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
 
     constructor(private readonly linkedChannel: string,
                 port: number,
+                private readonly actionStore: ActionStore,
                 private readonly delegate: MessageClient & SlackMessageClient =
                     DevNullMessageClient) {
         this.url = messageListenerEndpoint(port);

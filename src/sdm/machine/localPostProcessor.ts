@@ -38,6 +38,7 @@ import {
 import { createSdmOptions } from "./createSdmOptions";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
+import { ActionRoute, ActionStore, freshActionStore } from "../binding/message/ActionStore";
 
 /**
  * Configures an automation client in local mode
@@ -57,9 +58,12 @@ export function configureLocal(
         logger.info("Disable web socket connection");
         configuration.ws.enabled = false;
 
-        configureWebEndpoints(configuration, localMachineConfig);
+        const globalActionStore = freshActionStore();
 
-        setMessageClient(configuration, localMachineConfig);
+        configureWebEndpoints(configuration, localMachineConfig, globalActionStore);
+
+
+        setMessageClient(configuration, localMachineConfig, globalActionStore);
         setGraphClient(configuration);
 
         if (!configuration.listeners) {
@@ -78,7 +82,7 @@ export function configureLocal(
     };
 }
 
-function configureWebEndpoints(configuration: Configuration, localMachineConfig: LocalMachineConfig) {
+function configureWebEndpoints(configuration: Configuration, localMachineConfig: LocalMachineConfig, actionStore: ActionStore) {
     // Disable auth as we're only expecting local clients
     // TODO what if not basic
     _.set(configuration, "http.auth.basic.enabled", false);
@@ -102,25 +106,31 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                 const r = await invokeCommandHandler(DefaultAutomationClientConnectionConfig, invocation);
                 return res.json(r);
             });
+            exp.get(ActionRoute + "/:description", async (req, res) => {
+                logger.info("Jess! you clicked on an action! %j", req.params);
+                return res.json({ code: 0 });
+            });
         },
     ];
 }
+
+type ButtonStore = {}
 
 /**
  * Use custom message client to update HTTP listeners and forward goal events back to the SDM via HTTP
  * @param {Configuration} configuration
  * @param {LocalMachineConfig} localMachineConfig
  */
-function setMessageClient(configuration: Configuration, localMachineConfig: LocalMachineConfig) {
+function setMessageClient(configuration: Configuration, localMachineConfig: LocalMachineConfig, actionStore: ActionStore) {
     configuration.http.messageClientFactory =
         aca => {
             const channel = channelFor(aca.context.correlationId);
             const clientId = clientIdentifier(aca.context.correlationId);
             return new BroadcastingMessageClient(
-                new HttpClientMessageClient(channel, AllMessagesPort),
+                new HttpClientMessageClient(channel, AllMessagesPort, actionStore),
                 new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
                 // Communicate back to client if possible
-                !!clientId ? new HttpClientMessageClient(channel, clientId) : undefined,
+                !!clientId ? new HttpClientMessageClient(channel, clientId, actionStore) : undefined,
                 localMachineConfig.useSystemNotifications ? new SystemNotificationMessageClient(channel) : undefined,
             );
         };
