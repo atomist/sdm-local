@@ -25,14 +25,14 @@ import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteComm
 import { addShowSkillsCommand } from "./command/showSkillsCommand";
 import { infoMessage } from "./command/support/consoleOutput";
 import { AutomationClientFinder } from "./http/AutomationClientFinder";
-import { SingleDefaultAutomationClientFinder } from "./http/support/SingleDefaultAutomationClientFinder";
+import { PortRangeAutomationClientFinder } from "./http/support/PortRangeAutomationClientFinder";
 
 /**
  * Start up the Slalom CLI
  * @return {yargs.Arguments}
  */
 export async function addLocalSdmCommands(yargs,
-                                          finder: AutomationClientFinder = SingleDefaultAutomationClientFinder) {
+                                          finder: AutomationClientFinder = new PortRangeAutomationClientFinder()) {
     for (const client of await finder.findAutomationClients()) {
         await addCommandsToConnectTo(client, yargs);
     }

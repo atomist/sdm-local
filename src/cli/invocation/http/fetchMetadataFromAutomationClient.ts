@@ -26,7 +26,7 @@ import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } f
  * @return {Promise<AutomationClientInfo>}
  */
 export async function fetchMetadataFromAutomationClient(connectionConfig: AutomationClientConnectionRequest): Promise<AutomationClientInfo> {
-    infoMessage("Connecting to Automation client at %s (%d)\n", connectionConfig.baseEndpoint, process.pid);
+    // infoMessage("Connecting to Automation client at %s (%d)\n", connectionConfig.baseEndpoint, process.pid);
 
     try {
         const resp = await axios.get(connectionConfig.baseEndpoint + "/registration", {
@@ -50,8 +50,8 @@ export async function fetchMetadataFromAutomationClient(connectionConfig: Automa
             },
         };
     } catch (e) {
-        errorMessage("Unable to connect to '%s': Is a Software Delivery Machine running?\n\t(%s)\n",
-            connectionConfig.baseEndpoint, e);
+        // errorMessage("Unable to connect to '%s': Is a Software Delivery Machine running?\n\t(%s)\n",
+        //     connectionConfig.baseEndpoint, e);
         return {
             client: undefined,
             localConfig: undefined,

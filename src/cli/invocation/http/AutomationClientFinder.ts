@@ -3,6 +3,9 @@
  */
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 
+/**
+ * Implemented by types that can find automation clients on a local server.
+ */
 export interface AutomationClientFinder {
 
     /**

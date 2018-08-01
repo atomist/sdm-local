@@ -20,7 +20,7 @@ import { CommandRegistration } from "@atomist/sdm/api/registration/CommandRegist
 import { Argv } from "yargs";
 import { createBootstrapMachine } from "../../../embedded/bootstrap";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
-import { fetchMetadataFromAutomationClient } from "../../http/metadataReader";
+import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "./consoleOutput";
 import { runCommandOnRemoteAutomationClient } from "./runCommandOnRemoteAutomationClient";
 

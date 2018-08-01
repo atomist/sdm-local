@@ -21,12 +21,13 @@ import { suggestStartingAllMessagesListener } from "../command/support/suggestSt
 import { argsToGitHookInvocation, handleGitHookEvent, } from "./handlePushBasedEventOnRepo";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { SingleDefaultAutomationClientFinder } from "../http/support/SingleDefaultAutomationClientFinder";
+import { PortRangeAutomationClientFinder } from "../http/support/PortRangeAutomationClientFinder";
 
 /**
  * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
  */
 export async function runOnGitHook(argv: string[],
-                                   clientFinder: AutomationClientFinder = SingleDefaultAutomationClientFinder
+                                   clientFinder: AutomationClientFinder = new PortRangeAutomationClientFinder()
 ) {
     const invocation = argsToGitHookInvocation(argv);
     if (isAtomistTemporaryBranch(invocation.branch)) {

@@ -15,17 +15,9 @@
  */
 
 import { AutomationClientFinder } from "../AutomationClientFinder";
-import { fetchMetadataFromAutomationClient } from "../metadataReader";
+import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
 
-export const SingleDefaultAutomationClientFinder: AutomationClientFinder = {
-
-    async findAutomationClients() {
-        try {
-            return [await fetchMetadataFromAutomationClient({
-                baseEndpoint: "http://localhost:2866",
-            })];
-        } catch (err) {
-            return [];
-        }
-    },
-};
+export const SingleDefaultAutomationClientFinder: AutomationClientFinder =
+    new FixedAutomationClientFinder({
+        baseEndpoint: "http://localhost:2866",
+    });

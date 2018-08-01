@@ -17,20 +17,34 @@
 import { AutomationClientInfo } from "../../../AutomationClientInfo";
 import { AutomationClientFinder } from "../AutomationClientFinder";
 
+import * as _ from "lodash";
+import { AutomationClientConnectionRequest } from "../AutomationClientConnectionConfig";
+import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
+import { infoMessage } from "../../../..";
+
 export interface PortRangeOptions {
     lowerPort: number;
     checkRange: number;
 }
 
+/**
+ * Look across a range of ports
+ */
 export class PortRangeAutomationClientFinder implements AutomationClientFinder {
 
     private readonly options: PortRangeOptions;
 
     public async findAutomationClients(): Promise<AutomationClientInfo[]> {
-        return [];
+        const requests: AutomationClientConnectionRequest[] = _.range(this.options.lowerPort, this.options.lowerPort + this.options.checkRange)
+            .map(port => ({
+                baseEndpoint: `http://localhost:${port}`,
+            }));
+        const found = await new FixedAutomationClientFinder(...requests).findAutomationClients();
+        infoMessage("Connected to automation clients at %s\n", found.map(f => f.connectionConfig.baseEndpoint));
+        return found;
     }
 
-    constructor(opts: Partial<PortRangeOptions>) {
+    constructor(opts: Partial<PortRangeOptions> = {}) {
         this.options = {
             lowerPort: 2866,
             checkRange: 10,
