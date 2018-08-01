@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { automationClientInstance, HandlerResult, logger, Secrets, } from "@atomist/automation-client";
+import { automationClientInstance, HandlerResult, logger, Secrets } from "@atomist/automation-client";
 import { replacer } from "@atomist/automation-client/internal/transport/AbstractRequestProcessor";
 import { EventIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import * as stringify from "json-stringify-safe";
 import * as assert from "power-assert";
-import { newCorrelationId } from "../../../sdm/configuration/correlationId";
 import { EventSender } from "../../../common/EventHandlerInvocation";
+import { newCorrelationId } from "../../../sdm/configuration/correlationId";
 
 /**
  * Invoke an event handler on the automation client at the given location

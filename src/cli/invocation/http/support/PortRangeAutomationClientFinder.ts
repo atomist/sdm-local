@@ -18,9 +18,9 @@ import { AutomationClientInfo } from "../../../AutomationClientInfo";
 import { AutomationClientFinder } from "../AutomationClientFinder";
 
 import * as _ from "lodash";
+import { infoMessage } from "../../../..";
 import { AutomationClientConnectionRequest } from "../AutomationClientConnectionConfig";
 import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
-import { infoMessage } from "../../../..";
 
 import * as os from "os";
 

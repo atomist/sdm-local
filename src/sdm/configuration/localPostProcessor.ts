@@ -18,6 +18,7 @@ import {
     Configuration, HandlerResult,
     logger,
 } from "@atomist/automation-client";
+import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import { DefaultAutomationClientConnectionConfig } from "../../cli/entry/resolveConnectionConfig";
 import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
@@ -27,6 +28,7 @@ import {
 } from "../../cli/invocation/http/CommandHandlerInvocation";
 import { isInLocalMode } from "../api/isInLocalMode";
 import { LocalGraphClient } from "../binding/graph/LocalGraphClient";
+import { ActionRoute, ActionStore, freshActionStore } from "../binding/message/ActionStore";
 import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessageClient";
 import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
@@ -38,8 +40,6 @@ import {
 import { createSdmOptions } from "./createSdmOptions";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
-import { ActionRoute, ActionStore, freshActionStore } from "../binding/message/ActionStore";
-import * as stringify from "json-stringify-safe";
 
 /**
  * Configures an automation client in local mode
@@ -62,7 +62,6 @@ export function configureLocal(
         const globalActionStore = freshActionStore();
 
         configureWebEndpoints(configuration, localMachineConfig, globalActionStore);
-
 
         setMessageClient(configuration, localMachineConfig, globalActionStore);
         setGraphClient(configuration);
@@ -109,7 +108,7 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
             });
             exp.get(ActionRoute + "/:description", async (req, res) => {
                 logger.debug("Action clicked:! params=%j; query=%j", req.params, req.query);
-                const actionKey = req.query["key"];
+                const actionKey = req.query.key;
                 if (!actionKey) {
                     logger.error("No action key provided. Please include ?key=< actionKey that has been stored by this sdm >");
                     return res.status(404).send("Required query parameter: key");

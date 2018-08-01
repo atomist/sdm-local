@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { OnPushToAnyBranch } from "@atomist/sdm";
-import { pushFromLastCommit } from "../../../sdm/binding/event/pushFromLastCommit";
-import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSystemProjectLoader";
-import { FileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
-import { LocalMachineConfig } from "../../../sdm/configuration/LocalMachineConfig";
-import { errorMessage } from "../command/support/consoleOutput";
-import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
-import { EventSender } from "../../../common/EventHandlerInvocation";
-import { invokeEventHandlerInProcess } from "../../../sdm/binding/event/invokeEventHandlerInProcess";
+import { errorMessage } from "../cli/invocation/command/support/consoleOutput";
+import { pushFromLastCommit } from "../sdm/binding/event/pushFromLastCommit";
+import { isAtomistTemporaryBranch } from "../sdm/binding/project/FileSystemProjectLoader";
+import { FileSystemRemoteRepoRef } from "../sdm/binding/project/FileSystemRemoteRepoRef";
+import { LocalMachineConfig } from "../sdm/configuration/LocalMachineConfig";
+import { EventSender } from "./EventHandlerInvocation";
 import Push = OnPushToAnyBranch.Push;
 
 /**
@@ -38,22 +35,9 @@ export interface EventOnRepo {
     sha: string;
 }
 
-export interface GitHookInvocation extends EventOnRepo {
-    event: string;
-}
-
-/**
- * Git hooks we support
- * @type {string[]}
- */
-export const HookEvents = [
-    "post-commit",
-    "post-merge",
-    "pre-receive",
-];
-
 function validateEventOnRepo(payload: EventOnRepo): boolean {
     if (!payload) {
+        // TODO return or throw exception
         errorMessage("Payload must be supplied");
         return false;
     }
@@ -78,56 +62,6 @@ function validateEventOnRepo(payload: EventOnRepo): boolean {
 
 export function isValidSHA1(s: string): boolean {
     return s.match(/[a-fA-F0-9]{40}/) != null;
-}
-
-/**
- * Process the given args (probably from process.argv) into a
- * GitHookInvocation
- * @param {string[]} argv
- * @return {GitHookInvocation}
- */
-export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
-    if (argv.length < 6) {
-        logger.info("Not enough args to run Git hook: All args to git hook invocation are %j", argv);
-        process.exit(0);
-    }
-
-    const args = argv.slice(2);
-    const event: string = args[0];
-    // We can be invoked in the .git/hooks directory or from the git binary itself
-    const baseDir = args[1].replace(/.git[\/hooks]?$/, "")
-        .replace(/\/$/, "");
-    // TODO this is a bit questionable
-    const branch = args[2].replace("refs/heads/", "");
-    const sha = args[3];
-    return { event, baseDir, branch, sha };
-}
-
-/**
- * Invoking the target remote client for this push.
- * @param payload event data
- * @return {Promise<any>}
- */
-// TODO move out of here
-export async function handleGitHookEvent(cc: AutomationClientConnectionConfig,
-                                         lc: LocalMachineConfig,
-                                         payload: GitHookInvocation) {
-    if (!payload) {
-        return errorMessage("Payload must be supplied");
-    }
-    if (!payload.event) {
-        return errorMessage("Invalid git hook invocation payload. Event is required: %j", payload);
-    }
-    if (!HookEvents.includes(payload.event)) {
-        return errorMessage("Unknown git hook event '%s'", event);
-    }
-    if (!lc) {
-        return errorMessage("LocalMachineConfig must be supplied");
-    }
-
-    return handlePushBasedEventOnRepo(cc.atomistTeamId,
-        invokeEventHandlerInProcess(),
-        lc, payload, "SetGoalsOnPush");
 }
 
 /**

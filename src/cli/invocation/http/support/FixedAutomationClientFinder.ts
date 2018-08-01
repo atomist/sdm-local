@@ -15,9 +15,9 @@
  */
 
 import { AutomationClientInfo } from "../../../AutomationClientInfo";
+import { AutomationClientConnectionRequest } from "../AutomationClientConnectionConfig";
 import { AutomationClientFinder } from "../AutomationClientFinder";
 import { fetchMetadataFromAutomationClient } from "../fetchMetadataFromAutomationClient";
-import { AutomationClientConnectionRequest } from "../AutomationClientConnectionConfig";
 
 /**
  * Return connections matching to one or more requests.

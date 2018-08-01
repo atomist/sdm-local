@@ -18,16 +18,16 @@ import { logger } from "@atomist/automation-client";
 import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSystemProjectLoader";
 import { infoMessage, logExceptionsToConsole } from "../command/support/consoleOutput";
 import { suggestStartingAllMessagesListener } from "../command/support/suggestStartingAllMessagesListener";
-import { argsToGitHookInvocation, handleGitHookEvent, } from "./handlePushBasedEventOnRepo";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
-import { PortRangeAutomationClientFinder } from "../http/support/PortRangeAutomationClientFinder";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
+import { PortRangeAutomationClientFinder } from "../http/support/PortRangeAutomationClientFinder";
+import { argsToGitHookInvocation, handleGitHookEvent } from "./handleGitHookEvent";
 
 /**
  * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
  */
 export async function runOnGitHook(argv: string[],
-                                   clientFinder: AutomationClientFinder = new PortRangeAutomationClientFinder()
+                                   clientFinder: AutomationClientFinder = new PortRangeAutomationClientFinder(),
 ) {
     const invocation = argsToGitHookInvocation(argv);
     if (isAtomistTemporaryBranch(invocation.branch)) {

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Secret } from "@atomist/automation-client/internal/invoker/Payload";
 import { HandlerResult } from "@atomist/automation-client";
+import { Secret } from "@atomist/automation-client/internal/invoker/Payload";
 
 export interface EventHandlerInvocation {
     name: string;

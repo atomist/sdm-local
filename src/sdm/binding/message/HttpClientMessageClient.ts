@@ -24,13 +24,13 @@ import {
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
+import { ActionStore } from "./ActionStore";
 import { DevNullMessageClient } from "./devNullMessageClient";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 import {
     messageListenerEndpoint,
     StreamedMessage,
 } from "./httpMessageListener";
-import { ActionStore } from "./ActionStore";
 
 /**
  * Message client that POSTS to an Atomist server and logs to a fallback otherwise

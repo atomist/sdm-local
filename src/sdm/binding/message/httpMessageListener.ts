@@ -26,11 +26,11 @@ import { AllMessagesPort } from "../../../cli/invocation/command/addStartListene
 import { infoMessage } from "../../../cli/invocation/command/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 import { CommandCompletionDestination } from "../../configuration/support/NotifyOnCompletionAutomationEventListener";
+import { ActionRoute, ActionStore, freshActionStore } from "./ActionStore";
 import {
     ConsoleMessageClient,
     ProcessStdoutSender,
 } from "./ConsoleMessageClient";
-import { ActionRoute, ActionStore, freshActionStore } from "./ActionStore";
 
 export const MessageRoute = "/message";
 

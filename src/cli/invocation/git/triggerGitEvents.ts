@@ -27,7 +27,7 @@ import {
     errorMessage,
     infoMessage,
 } from "../command/support/consoleOutput";
-import { handleGitHookEvent } from "./handlePushBasedEventOnRepo";
+import { handleGitHookEvent } from "./handleGitHookEvent";
 
 /**
  * Trigger git events to the given depth in the current project repo

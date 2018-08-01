@@ -27,9 +27,9 @@ import {
     SdmGoalState,
 } from "@atomist/sdm";
 import { SlackMessage } from "@atomist/slack-messages";
-import { isValidSHA1 } from "../../../cli/invocation/git/handlePushBasedEventOnRepo";
 import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 import { invokeEventHandlerUsingHttp } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
+import { isValidSHA1 } from "../../../common/handlePushBasedEventOnRepo";
 
 export function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
     state: SdmGoalState;

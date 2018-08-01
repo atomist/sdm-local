@@ -33,9 +33,9 @@ import * as marked from "marked";
 import { MarkedOptions } from "marked";
 import * as TerminalRenderer from "marked-terminal";
 import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
-import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 import { actionDescription, actionKey, ActionRoute } from "./ActionStore";
 import { ActionStore } from "./ActionStore";
+import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 
 marked.setOptions({
     // Define custom renderer
@@ -104,7 +104,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
 
     private async renderAction(channel: string, action: slack.Action, actionKey: string) {
         if (action.type === "button") {
-            let url = `${this.connectionConfig.baseEndpoint}${ActionRoute}/${actionDescription(action)}?key=${actionKey}`;
+            const url = `${this.connectionConfig.baseEndpoint}${ActionRoute}/${actionDescription(action)}?key=${actionKey}`;
             await this.writeToChannel(channel, `${action.text} - ${url}`);
         } else {
             return this.sender(JSON.stringify(action) + "\n");

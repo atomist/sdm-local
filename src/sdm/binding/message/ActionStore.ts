@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { Action, SlackMessage } from "@atomist/slack-messages";
 import { logger } from "@atomist/automation-client";
 import { computeShaOf } from "@atomist/sdm/api-helper/misc/sha";
+import { Action, SlackMessage } from "@atomist/slack-messages";
+import * as jsSHA from "jssha";
 import * as _ from "lodash";
-import * as jsSHA from "jssha"
 
 export const ActionRoute = "/action";
 
@@ -47,7 +47,7 @@ class InMemoryActionStore {
 
     public async storeActions(sm: SlackMessage) {
         logger.info("Storing actions for message: %s", (sm as any).key);
-        _.flatMap(sm.attachments,a => a.actions)
+        _.flatMap(sm.attachments, a => a.actions)
             .forEach((action, i) => {
             this.actionByKey[actionKey(sm, i)] = action;
         });

@@ -23,19 +23,15 @@ import { LocalProject } from "@atomist/automation-client/project/local/LocalProj
 import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
 import * as fs from "fs";
 import { promisify } from "util";
-import { handlePushBasedEventOnRepo } from "../../../cli/invocation/git/handlePushBasedEventOnRepo";
 import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 import { addGitHooksToProject } from "../../../cli/setup/addGitHooks";
+import { handlePushBasedEventOnRepo } from "../../../common/handlePushBasedEventOnRepo";
 import { LocalMachineConfig } from "../../configuration/LocalMachineConfig";
 import { lastSha } from "../../util/git";
 import { runAndLog } from "../../util/runAndLog";
-import {
-    sendChannelLinkEvent,
-    sendRepoCreationEvent,
-    sendRepoOnboardingEvent,
-} from "../event/repoOnboardingEvents";
-import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 import { invokeEventHandlerInProcess } from "../event/invokeEventHandlerInProcess";
+import { sendChannelLinkEvent, sendRepoCreationEvent, sendRepoOnboardingEvent } from "../event/repoOnboardingEvents";
+import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
 /**
  * Persist the project to the given local directory given expanded directory
@@ -89,7 +85,7 @@ async function emitEventsForNewProject(cc: AutomationClientConnectionConfig,
     const sha = await lastSha(createdProject as GitProject);
     const branch = "master";
 
-    await handlePushBasedEventOnRepo(cc.atomistTeamId, invokeEventHandlerInProcess(), lc,{
+    await handlePushBasedEventOnRepo(cc.atomistTeamId, invokeEventHandlerInProcess(), lc, {
         baseDir: createdProject.baseDir,
         sha,
         branch,

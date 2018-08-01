@@ -19,8 +19,8 @@ import { asSpawnCommand } from "@atomist/automation-client/util/spawned";
 import { ExecuteGoal, GenericGoal, predicatePushTest } from "@atomist/sdm";
 import { poisonAndWait } from "@atomist/sdm/api-helper/misc/spawned";
 import { ProjectLoader } from "@atomist/sdm/spi/project/ProjectLoader";
-import { isFileSystemRemoteRepoRef } from "../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { ChildProcess, spawn } from "child_process";
+import { isFileSystemRemoteRepoRef } from "../../sdm/binding/project/FileSystemRemoteRepoRef";
 
 export const SdmDeliveryGoal = new GenericGoal({ uniqueName: "sdmDelivery" },
     "Deliver SDM");

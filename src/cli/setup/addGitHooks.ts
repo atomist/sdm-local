@@ -27,7 +27,7 @@ import {
     infoMessage,
     warningMessage,
 } from "../../cli/invocation/command/support/consoleOutput";
-import { HookEvents } from "../invocation/git/handlePushBasedEventOnRepo";
+import { HookEvents } from "../invocation/git/handleGitHookEvent";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";
 const AtomistJsName = "cli/entry/onGitHook.js";
