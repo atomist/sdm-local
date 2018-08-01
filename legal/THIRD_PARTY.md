@@ -1,6 +1,6 @@
-# @atomist/slalom
+# @atomist/sdm-local
 
-This page details all runtime OSS dependencies of `@atomist/slalom`.
+This page details all runtime OSS dependencies of `@atomist/sdm-local`.
 
 ## Licenses
 
