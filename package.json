@@ -9,8 +9,8 @@
     "url": "https://github.com/atomist/slalom.git"
   },
   "bin": {
-    "slalom": "./build/src/entry/slalom.js",
-    "@atomist": "./build/src/entry/slalom.js"
+    "slalom": "./build/src/cli/entry/slalom.js",
+    "@atomist": "./build/src/cli/entry/slalom.js"
   },
   "main": "build/src/index.js",
   "typings": "build/src/index.d.ts",
