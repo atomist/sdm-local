@@ -35,6 +35,7 @@ import {
     sendRepoOnboardingEvent,
 } from "../event/repoOnboardingEvents";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
+import { invokeEventHandlerInProcess } from "../event/invokeEventHandlerInProcess";
 
 /**
  * Persist the project to the given local directory given expanded directory
@@ -88,14 +89,14 @@ async function emitEventsForNewProject(cc: AutomationClientConnectionConfig,
     const sha = await lastSha(createdProject as GitProject);
     const branch = "master";
 
-    await handlePushBasedEventOnRepo(cc, lc, {
+    await handlePushBasedEventOnRepo(cc.atomistTeamId, invokeEventHandlerInProcess(), lc,{
         baseDir: createdProject.baseDir,
         sha,
         branch,
     }, "OnFirstPushToRepo");
 
     // This is the first push
-    await handlePushBasedEventOnRepo(cc, lc, {
+    await handlePushBasedEventOnRepo(cc.atomistTeamId, invokeEventHandlerInProcess(), lc, {
         baseDir: createdProject.baseDir,
         sha,
         branch,

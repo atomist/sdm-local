@@ -21,6 +21,7 @@ import { suggestStartingAllMessagesListener } from "../command/support/suggestSt
 import { argsToGitHookInvocation, handleGitHookEvent, } from "./handlePushBasedEventOnRepo";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { PortRangeAutomationClientFinder } from "../http/support/PortRangeAutomationClientFinder";
+import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
 
 /**
  * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
@@ -48,7 +49,8 @@ export async function runOnGitHook(argv: string[],
     } else {
         logger.debug("Executing git hook against project %j", invocation);
         return logExceptionsToConsole(() =>
-                handleGitHookEvent(automationClientInfo.connectionConfig,
+                handleGitHookEvent(
+                    automationClientInfo.connectionConfig,
                     automationClientInfo.localConfig, invocation),
             automationClientInfo.connectionConfig.showErrorStacks,
         );

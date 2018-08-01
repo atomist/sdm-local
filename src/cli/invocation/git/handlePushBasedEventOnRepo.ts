@@ -21,11 +21,12 @@ import { OnPushToAnyBranch } from "@atomist/sdm";
 import { pushFromLastCommit } from "../../../sdm/binding/event/pushFromLastCommit";
 import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSystemProjectLoader";
 import { FileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
-import Push = OnPushToAnyBranch.Push;
 import { LocalMachineConfig } from "../../../sdm/configuration/LocalMachineConfig";
 import { errorMessage } from "../command/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
-import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
+import { EventSender } from "../../../common/EventHandlerInvocation";
+import { invokeEventHandlerInProcess } from "../../../sdm/binding/event/invokeEventHandlerInProcess";
+import Push = OnPushToAnyBranch.Push;
 
 /**
  * Any event on a local repo
@@ -107,6 +108,7 @@ export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
  * @param payload event data
  * @return {Promise<any>}
  */
+// TODO move out of here
 export async function handleGitHookEvent(cc: AutomationClientConnectionConfig,
                                          lc: LocalMachineConfig,
                                          payload: GitHookInvocation) {
@@ -123,7 +125,9 @@ export async function handleGitHookEvent(cc: AutomationClientConnectionConfig,
         return errorMessage("LocalMachineConfig must be supplied");
     }
 
-    return handlePushBasedEventOnRepo(cc, lc, payload, "SetGoalsOnPush");
+    return handlePushBasedEventOnRepo(cc.atomistTeamId,
+        invokeEventHandlerInProcess(),
+        lc, payload, "SetGoalsOnPush");
 }
 
 /**
@@ -132,7 +136,8 @@ export async function handleGitHookEvent(cc: AutomationClientConnectionConfig,
  * @param {string} eventHandlerName
  * @return {Promise<HandlerResult>}
  */
-export async function handlePushBasedEventOnRepo(cc: AutomationClientConnectionConfig,
+export async function handlePushBasedEventOnRepo(atomistTeamId: string,
+                                                 sender: EventSender,
                                                  lc: LocalMachineConfig,
                                                  payload: EventOnRepo,
                                                  eventHandlerName: string,
@@ -150,8 +155,8 @@ export async function handlePushBasedEventOnRepo(cc: AutomationClientConnectionC
         return;
     }
 
-    const push = await createPush(cc.atomistTeamId, lc.repositoryOwnerParentDirectory, payload);
-    return invokeEventHandlerUsingHttp(cc)({
+    const push = await createPush(atomistTeamId, lc.repositoryOwnerParentDirectory, payload);
+    return sender({
         name: eventHandlerName,
         payload: pushToPayload(push),
     });
