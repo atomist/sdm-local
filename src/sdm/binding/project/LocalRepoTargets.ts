@@ -21,7 +21,7 @@ import {
     Parameter,
     Parameters,
 } from "@atomist/automation-client";
-import { GitBranchRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
+import { GitBranchRegExp, GitShaRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
 import { TargetsParams } from "@atomist/automation-client/operations/common/params/TargetsParams";
 import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
 import {
@@ -47,7 +47,10 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
     public repo: string;
 
     @Parameter({ description: "Branch or ref. Defaults to 'master'", ...GitBranchRegExp, required: false })
-    public sha: string = "master";
+    public master: string = "master";
+
+    @Parameter({ description: "Sha", ...GitShaRegExp, required: false })
+    public sha: string;
 
     @Parameter({ description: "regex", required: false })
     public repos: string = ".*";
@@ -66,8 +69,8 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
                 repositoryOwnerParentDirectory: this.repositoryOwnerParentDirectory,
                 owner: this.owner,
                 repo: this.repo,
-                branch: "master",
-                sha: undefined,
+                branch: this.sha,
+                sha: this.sha,
             }) :
             undefined;
         logger.debug("LocalRepoTargets returning %j: state=%j", rr, this);
