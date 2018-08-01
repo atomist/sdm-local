@@ -23,7 +23,7 @@ import { Secret } from "@atomist/automation-client/internal/invoker/Payload";
 import { replacer } from "@atomist/automation-client/internal/transport/AbstractRequestProcessor";
 import * as stringify from "json-stringify-safe";
 import * as assert from "power-assert";
-import { newCorrelationId } from "../../sdm/machine/correlationId";
+import { newCorrelationId } from "../../../sdm/machine/correlationId";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
 

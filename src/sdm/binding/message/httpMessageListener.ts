@@ -22,9 +22,9 @@ import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import * as bodyParser from "body-parser";
 import * as express from "express";
-import { AllMessagesPort } from "../../../invocation/cli/command/addStartListenerCommand";
-import { infoMessage } from "../../../invocation/cli/command/support/consoleOutput";
-import { AutomationClientConnectionConfig } from "../../../invocation/http/AutomationClientConnectionConfig";
+import { AllMessagesPort } from "../../../cli/invocation/command/addStartListenerCommand";
+import { infoMessage } from "../../../cli/invocation/command/support/consoleOutput";
+import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 import { CommandCompletionDestination } from "../../machine/support/NotifyOnCompletionAutomationEventListener";
 import {
     ConsoleMessageClient,

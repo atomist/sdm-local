@@ -18,14 +18,14 @@ import { logger } from "@atomist/automation-client";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { OnPushToAnyBranch } from "@atomist/sdm";
-import { pushFromLastCommit } from "../../sdm/binding/event/pushFromLastCommit";
-import { isAtomistTemporaryBranch } from "../../sdm/binding/project/FileSystemProjectLoader";
-import { FileSystemRemoteRepoRef } from "../../sdm/binding/project/FileSystemRemoteRepoRef";
-import { errorMessage } from "../cli/command/support/consoleOutput";
+import { pushFromLastCommit } from "../../../sdm/binding/event/pushFromLastCommit";
+import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSystemProjectLoader";
+import { FileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
+import { errorMessage } from "../command/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { invokeEventHandler } from "../http/EventHandlerInvocation";
 import Push = OnPushToAnyBranch.Push;
-import { LocalMachineConfig } from "../../sdm/machine/LocalMachineConfig";
+import { LocalMachineConfig } from "../../../sdm/machine/LocalMachineConfig";
 
 /**
  * Any event on a local repo

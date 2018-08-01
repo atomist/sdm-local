@@ -25,11 +25,11 @@ import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventFo
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
 import { DefaultAutomationClientConnectionConfig } from "../../entry/resolveConnectionConfig";
-import { AllMessagesPort } from "../../invocation/cli/command/addStartListenerCommand";
+import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
 import {
     CommandHandlerInvocation,
     invokeCommandHandler,
-} from "../../invocation/http/CommandHandlerInvocation";
+} from "../../cli/invocation/http/CommandHandlerInvocation";
 import {
     channelFor,
     clientIdentifier,

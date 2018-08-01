@@ -16,8 +16,8 @@
 
 import * as yargs from "yargs";
 import { AutomationClientInfo } from "../AutomationClientInfo";
-import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
-import { fetchMetadataFromAutomationClient } from "../http/metadataReader";
+import { AutomationClientConnectionConfig } from "./http/AutomationClientConnectionConfig";
+import { fetchMetadataFromAutomationClient } from "./http/metadataReader";
 import {
     addAddGitHooksCommand,
     addRemoveGitHooksCommand,

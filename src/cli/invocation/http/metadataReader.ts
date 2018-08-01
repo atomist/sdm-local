@@ -15,13 +15,13 @@
  */
 
 import axios from "axios";
-import { AutomationClientInfo } from "../AutomationClientInfo";
+import { AutomationClientInfo } from "../../AutomationClientInfo";
 import {
     errorMessage,
     infoMessage,
-} from "../cli/command/support/consoleOutput";
+} from "../command/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
-import { LocalMachineConfig } from "../../sdm/machine/LocalMachineConfig";
+import { LocalMachineConfig } from "../../../sdm/machine/LocalMachineConfig";
 
 /**
  * Call into an automation client at the given location and retrieve metadata

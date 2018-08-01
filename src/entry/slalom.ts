@@ -25,7 +25,7 @@
     process.env.ATOMIST_DISABLE_LOGGING = "true";
 }
 
- import { runSlalom } from "../invocation/cli/runSlalom";
+ import { runSlalom } from "../cli/invocation/runSlalom";
  import { resolveConnectionConfig } from "./resolveConnectionConfig";
 
 // Prevent loading of metadata for built-in commands

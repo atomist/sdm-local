@@ -18,7 +18,7 @@ import { Argv } from "yargs";
 import {
     addGitHooks,
     removeGitHooks,
-} from "../../../cli/setup/addGitHooks";
+} from "../../setup/addGitHooks";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "./support/consoleOutput";
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";

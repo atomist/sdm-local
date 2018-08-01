@@ -21,7 +21,7 @@ import { SoftwareDeliveryMachine } from "@atomist/sdm";
 import { configureSdm, createSoftwareDeliveryMachine } from "@atomist/sdm-core";
 import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
-import { AutomationClientConnectionConfig } from "../../invocation/http/AutomationClientConnectionConfig";
+import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
 import { LocalLifecycle } from "../../sdm/machine/localLifecycle";
 import { configureLocal } from "../../sdm/machine/localPostProcessor";
 

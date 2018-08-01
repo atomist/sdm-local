@@ -18,9 +18,9 @@ import { ConfigureMachine } from "@atomist/sdm";
 import { toParametersListing } from "@atomist/sdm/api-helper/machine/handlerRegistrations";
 import { CommandRegistration } from "@atomist/sdm/api/registration/CommandRegistration";
 import { Argv } from "yargs";
-import { createBootstrapMachine } from "../../../../cli/embedded/bootstrap";
-import { AutomationClientConnectionConfig } from "../../../http/AutomationClientConnectionConfig";
-import { fetchMetadataFromAutomationClient } from "../../../http/metadataReader";
+import { createBootstrapMachine } from "../../../embedded/bootstrap";
+import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
+import { fetchMetadataFromAutomationClient } from "../../http/metadataReader";
 import { errorMessage, logExceptionsToConsole, infoMessage } from "./consoleOutput";
 import { runCommandOnRemoteAutomationClient } from "./runCommandOnRemoteAutomationClient";
 

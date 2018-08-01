@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
+import { AutomationClientConnectionConfig } from "../cli/invocation/http/AutomationClientConnectionConfig";
 
 export function resolveConnectionConfig(): AutomationClientConnectionConfig {
     return DefaultAutomationClientConnectionConfig;

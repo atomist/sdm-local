@@ -19,14 +19,14 @@ import { GitCommandGitProject } from "@atomist/automation-client/project/git/Git
 import {
     determineCwd,
     withinExpandedTree,
-} from "../../sdm/binding/project/expandedTreeUtils";
-import { FileSystemRemoteRepoRef } from "../../sdm/binding/project/FileSystemRemoteRepoRef";
-import { shaHistory } from "../../sdm/util/git";
-import { AutomationClientInfo } from "../AutomationClientInfo";
+} from "../../../sdm/binding/project/expandedTreeUtils";
+import { FileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
+import { shaHistory } from "../../../sdm/util/git";
+import { AutomationClientInfo } from "../../AutomationClientInfo";
 import {
     errorMessage,
     infoMessage,
-} from "../cli/command/support/consoleOutput";
+} from "../command/support/consoleOutput";
 import { handleGitHookEvent } from "./handlePushBasedEventOnRepo";
 
 /**

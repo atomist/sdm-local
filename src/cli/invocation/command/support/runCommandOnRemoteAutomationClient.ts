@@ -25,8 +25,8 @@ import { startHttpMessageListener } from "../../../../sdm/binding/message/httpMe
 import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/project/ExpandedTreeMappedParameterResolver";
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
 import { newCorrelationId, pidToPort } from "../../../../sdm/machine/correlationId";
-import { AutomationClientConnectionConfig } from "../../../http/AutomationClientConnectionConfig";
-import { CommandHandlerInvocation, invokeCommandHandler } from "../../../http/CommandHandlerInvocation";
+import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
+import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
 
 /**

@@ -33,7 +33,7 @@ import * as marked from "marked";
 import { MarkedOptions } from "marked";
 import * as TerminalRenderer from "marked-terminal";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
-import { AutomationClientConnectionConfig } from "../../../invocation/http/AutomationClientConnectionConfig";
+import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 
 marked.setOptions({
     // Define custom renderer
