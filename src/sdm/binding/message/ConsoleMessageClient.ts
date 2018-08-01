@@ -32,8 +32,8 @@ import * as _ from "lodash";
 import * as marked from "marked";
 import { MarkedOptions } from "marked";
 import * as TerminalRenderer from "marked-terminal";
-import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
+import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 
 marked.setOptions({
     // Define custom renderer

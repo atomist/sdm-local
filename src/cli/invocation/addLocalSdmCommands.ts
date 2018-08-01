@@ -16,8 +16,8 @@
 
 import * as yargs from "yargs";
 import { AutomationClientInfo } from "../AutomationClientInfo";
-import { addAddGitHooksCommand, addRemoveGitHooksCommand, } from "./command/addGitHooksCommands";
-import { addCommandsByName, addIntents, } from "./command/addIntents";
+import { addAddGitHooksCommand, addRemoveGitHooksCommand } from "./command/addGitHooksCommands";
+import { addCommandsByName, addIntents } from "./command/addIntents";
 import { addStartListenerCommand } from "./command/addStartListenerCommand";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addBootstrapCommands } from "./command/bootstrapCommands";
@@ -56,7 +56,7 @@ async function addCommandsToConnectTo(client: AutomationClientInfo, yargs) {
     }
 
     // If we were able to connect to an SDM...
-    if (!!client.commandsMetadata) {
+    if (!!!!client.client) {
         addTriggerCommand(client, yargs);
         addStartListenerCommand(client.connectionConfig, yargs);
         addCommandsByName(client, yargs);
@@ -66,7 +66,7 @@ async function addCommandsToConnectTo(client: AutomationClientInfo, yargs) {
 }
 
 function verifyLocalSdm(automationClientInfo: AutomationClientInfo) {
-    if (!!automationClientInfo.commandsMetadata && !automationClientInfo.localConfig) {
+    if (!!automationClientInfo.connectionConfig && !automationClientInfo.localConfig) {
         process.stderr.write("ERROR: SDM detected, but it is not running in local mode.\nPlease set ATOMIST_MODE=local when starting your SDM.\n");
         process.exit(1);
     }

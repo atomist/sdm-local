@@ -19,14 +19,29 @@ import { AutomationClientConnectionConfig } from "../cli/invocation/http/Automat
 import { LocalMachineConfig } from "../sdm/machine/LocalMachineConfig";
 
 /**
- * Information held in client about an automation client that we've connected to
+ * Parallels what's returned from automation client
+ */
+export interface ConnectedClient {
+
+    api_version: string;
+    name: string;
+    version: string;
+
+    team_ids: string[];
+
+    commands: CommandHandlerMetadata[];
+
+}
+
+/**
+ * Information held in client about an automation client that we've client to
  */
 export interface AutomationClientInfo {
 
     /**
-     * If we connected to a sdm.machine, include this
+     * If we client to a sdm.machine, include this
      */
-    commandsMetadata?: CommandHandlerMetadata[];
+    client?: ConnectedClient;
 
     connectionConfig: AutomationClientConnectionConfig;
 
@@ -34,4 +49,5 @@ export interface AutomationClientInfo {
      * If this is a local sdm.machine, include this
      */
     localConfig?: LocalMachineConfig;
+
 }

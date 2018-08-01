@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { SoftwareDeliveryMachine, whenPushSatisfies, Goals } from "@atomist/sdm";
-import { SdmDeliveryGoal, executeSdmDelivery, IsSdm } from "./SdmDeliveryGoal";
+import { Goals, SoftwareDeliveryMachine, whenPushSatisfies } from "@atomist/sdm";
 import { IsLocal } from "../api/pushtest/isLocal";
+import { executeSdmDelivery, IsSdm, SdmDeliveryGoal } from "./SdmDeliveryGoal";
 
 /**
  * Call this before anything else

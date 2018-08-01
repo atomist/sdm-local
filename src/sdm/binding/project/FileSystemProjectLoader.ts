@@ -22,13 +22,13 @@ import {
     WithLoadedProject,
 } from "@atomist/sdm";
 import * as fs from "fs";
+import { LocalMachineConfig } from "../../machine/LocalMachineConfig";
+import { runAndLog } from "../../util/runAndLog";
 import { dirFor } from "./expandedTreeUtils";
 import {
     FileSystemRemoteRepoRef,
     isFileSystemRemoteRepoRef,
 } from "./FileSystemRemoteRepoRef";
-import { LocalMachineConfig } from "../../machine/LocalMachineConfig";
-import { runAndLog } from "../../util/runAndLog";
 
 /**
  * Project loader that modifies push behavior before acting on project,

@@ -26,7 +26,7 @@ export function addShowSkillsCommand(ai: AutomationClientInfo, yargs: Argv) {
         describe: "Show skills",
         handler: () => {
             return logExceptionsToConsole(async () => {
-                const commands = ai.commandsMetadata;
+                const commands = ai.client.commands;
                 commands.forEach(md => {
                     let msg = "\t" + chalk.cyan(md.intent.map(intent => `"${intent}"`).join(","));
                     msg += "\t" + chalk.green(md.name);

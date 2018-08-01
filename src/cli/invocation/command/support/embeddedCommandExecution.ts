@@ -21,7 +21,7 @@ import { Argv } from "yargs";
 import { createBootstrapMachine } from "../../../embedded/bootstrap";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 import { fetchMetadataFromAutomationClient } from "../../http/metadataReader";
-import { errorMessage, logExceptionsToConsole, infoMessage } from "./consoleOutput";
+import { errorMessage, infoMessage, logExceptionsToConsole } from "./consoleOutput";
 import { runCommandOnRemoteAutomationClient } from "./runCommandOnRemoteAutomationClient";
 
 /**
@@ -97,14 +97,14 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
     const cc = await createBootstrapMachine(repositoryOwnerParentDirectory,
         configure);
     const ai = await fetchMetadataFromAutomationClient(cc);
-    if (!ai.commandsMetadata) {
+    if (!ai.client) {
         errorMessage("Could not connect to the bootstrap SDM at " + cc.baseEndpoint);
         process.exit(1);
     }
     if (!ai.localConfig) {
         infoMessage("The bootstrap command is not running in local mode\n");
     }
-    const hm = ai.commandsMetadata.find(c => c.name === name);
+    const hm = ai.client.commands.find(c => c.name === name);
     if (!hm) {
         errorMessage("No command named '%s'\n", name);
         process.exit(1);

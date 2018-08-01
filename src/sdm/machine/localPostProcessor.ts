@@ -19,23 +19,23 @@ import {
     logger,
 } from "@atomist/automation-client";
 import * as _ from "lodash";
-import { LocalGraphClient } from "../binding/graph/LocalGraphClient";
-import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessageClient";
-import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
-import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
-import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
 import { DefaultAutomationClientConnectionConfig } from "../../cli/entry/resolveConnectionConfig";
 import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
 import {
     CommandHandlerInvocation,
     invokeCommandHandler,
 } from "../../cli/invocation/http/CommandHandlerInvocation";
+import { isInLocalMode } from "../api/isInLocalMode";
+import { LocalGraphClient } from "../binding/graph/LocalGraphClient";
+import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessageClient";
+import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
+import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
+import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
 import {
     channelFor,
     clientIdentifier,
 } from "./correlationId";
 import { createSdmOptions } from "./createSdmOptions";
-import { isInLocalMode } from "../api/isInLocalMode";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 

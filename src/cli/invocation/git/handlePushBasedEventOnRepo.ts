@@ -21,11 +21,11 @@ import { OnPushToAnyBranch } from "@atomist/sdm";
 import { pushFromLastCommit } from "../../../sdm/binding/event/pushFromLastCommit";
 import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSystemProjectLoader";
 import { FileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
+import Push = OnPushToAnyBranch.Push;
+import { LocalMachineConfig } from "../../../sdm/machine/LocalMachineConfig";
 import { errorMessage } from "../command/support/consoleOutput";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { invokeEventHandler } from "../http/EventHandlerInvocation";
-import Push = OnPushToAnyBranch.Push;
-import { LocalMachineConfig } from "../../../sdm/machine/LocalMachineConfig";
 
 /**
  * Any event on a local repo

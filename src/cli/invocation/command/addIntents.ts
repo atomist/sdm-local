@@ -39,7 +39,7 @@ export function addCommandsByName(ai: AutomationClientInfo,
                                   allowUserInput: boolean = true) {
     yargs.command("run", "Run a command",
         args => {
-            ai.commandsMetadata.forEach(hi => {
+            ai.client.commands.forEach(hi => {
                 args.command({
                     command: hi.name,
                     handler: async argv => {
@@ -60,7 +60,7 @@ export function addCommandsByName(ai: AutomationClientInfo,
  */
 export function addIntents(ai: AutomationClientInfo,
                            yargs: Argv, allowUserInput: boolean = true) {
-    const handlers = ai.commandsMetadata
+    const handlers = ai.client.commands
         .filter(hm => !!hm.intent && hm.intent.length > 0);
 
     // Build all words
@@ -85,7 +85,7 @@ function exposeAsCommands(ai: AutomationClientInfo,
                           previous: string[],
                           allowUserInput: boolean) {
     const intent = previous.concat([pe.name]).join(" ");
-    const commandForCompletedIntent = ai.commandsMetadata.find(hm => hm.intent.includes(intent));
+    const commandForCompletedIntent = ai.client.commands.find(hm => hm.intent.includes(intent));
 
     if (pe.kids.length > 0) {
         // Expose both lower case and actual case name
@@ -147,9 +147,9 @@ async function runByIntent(ai: AutomationClientInfo,
                            intent: string,
                            command: any): Promise<any> {
     // writeToConsole({ message: `Recognized intent "${intent}"...`, color: "cyan" });
-    const hm = ai.commandsMetadata.find(h => !!h.intent && h.intent.includes(intent));
+    const hm = ai.client.commands.find(h => !!h.intent && h.intent.includes(intent));
     if (!hm) {
-        process.stdout.write(`No command with intent [${intent}]: Known intents are \n${ai.commandsMetadata
+        process.stdout.write(`No command with intent [${intent}]: Known intents are \n${ai.client.commands
             .map(m => "\t" + m.intent).sort().join("\n")}`);
         process.exit(1);
     }
@@ -161,9 +161,9 @@ async function runByIntent(ai: AutomationClientInfo,
 async function runByCommandName(ai: AutomationClientInfo,
                                 name: string,
                                 command: any): Promise<any> {
-    const hm = ai.commandsMetadata.find(h => h.name === name);
+    const hm = ai.client.commands.find(h => h.name === name);
     if (!hm) {
-        process.stdout.write(`No command with name [${name}]: Known command names are \n${ai.commandsMetadata
+        process.stdout.write(`No command with name [${name}]: Known command names are \n${ai.client.commands
             .map(m => "\t" + m.name).sort().join("\n")}`);
         process.exit(1);
     }

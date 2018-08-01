@@ -25,10 +25,10 @@ if (!isReservedCommand()) {
     process.env.ATOMIST_DISABLE_LOGGING = "true";
 }
 
-import { readVersion } from "../invocation/command/support/commands";
-import { addLocalSdmCommands } from "../invocation/addLocalSdmCommands";
 import * as yargs from "yargs";
+import { addLocalSdmCommands } from "../invocation/addLocalSdmCommands";
 import { addClientCommands } from "../invocation/command/clientCommands";
+import { readVersion } from "../invocation/command/support/commands";
 
 addClientCommands(yargs);
 

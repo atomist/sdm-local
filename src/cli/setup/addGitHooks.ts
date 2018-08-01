@@ -24,8 +24,8 @@ import * as path from "path";
 import { sprintf } from "sprintf-js";
 import {
     errorMessage,
-    warningMessage,
     infoMessage,
+    warningMessage,
 } from "../../cli/invocation/command/support/consoleOutput";
 import { HookEvents } from "../invocation/git/handlePushBasedEventOnRepo";
 

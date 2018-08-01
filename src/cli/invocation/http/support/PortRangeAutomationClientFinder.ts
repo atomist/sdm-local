@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { AutomationClientFinder } from "../AutomationClientFinder";
 import { AutomationClientInfo } from "../../../AutomationClientInfo";
+import { AutomationClientFinder } from "../AutomationClientFinder";
 
 export interface PortRangeOptions {
     lowerPort: number;
@@ -35,7 +35,7 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
             lowerPort: 2866,
             checkRange: 10,
             ...opts,
-        }
+        };
     }
 
 }

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { ProjectLoader } from "@atomist/sdm/spi/project/ProjectLoader";
-import { ExecuteGoal, GenericGoal, predicatePushTest } from "@atomist/sdm";
 import { logger } from "@atomist/automation-client";
-import { spawnAndWatch } from "@atomist/sdm/api-helper/misc/spawned";
 import { asSpawnCommand } from "@atomist/automation-client/util/spawned";
+import { ExecuteGoal, GenericGoal, predicatePushTest } from "@atomist/sdm";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
+import { spawnAndWatch } from "@atomist/sdm/api-helper/misc/spawned";
+import { ProjectLoader } from "@atomist/sdm/spi/project/ProjectLoader";
 import { isFileSystemRemoteRepoRef } from "../../sdm/binding/project/FileSystemRemoteRepoRef";
 
 export const SdmDeliveryGoal = new GenericGoal({ uniqueName: "sdmDelivery" },
@@ -48,8 +48,7 @@ export function executeSdmDelivery(projectLoader: ProjectLoader,
             }
             await deliver(id.fileSystemLocation);
             return { code: 0 };
-        }
-        catch (err) {
+        } catch (err) {
             logger.error(err);
             return { code: 1, message: err.stack };
         }
