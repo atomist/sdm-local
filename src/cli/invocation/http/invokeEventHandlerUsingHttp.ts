@@ -20,7 +20,7 @@ import * as stringify from "json-stringify-safe";
 import * as assert from "power-assert";
 import { EventSender } from "../../../common/EventHandlerInvocation";
 import { newCorrelationId } from "../../../sdm/configuration/correlationId";
-import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
+import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
 
 /**
@@ -28,15 +28,17 @@ import { postToSdm } from "./support/httpInvoker";
  * @param {AutomationClientConnectionConfig} config
  * @return {Promise<HandlerResult>}
  */
-export function invokeEventHandlerUsingHttp(config: AutomationClientConnectionConfig,
+export function invokeEventHandlerUsingHttp(config: AutomationClientConnectionRequest,
+                                            teamId: string,
                                             correlationId?: string): EventSender {
     return async invocation => {
         const data = {
             extensions: {
                 operationName: invocation.name,
                 query_id: "q-" + Date.now(),
-                team_id: config.atomistTeamId,
-                team_name: config.atomistTeamName,
+                team_id: teamId,
+                // TODO fix
+                team_name: teamId,
                 correlation_id: correlationId || newCorrelationId(),
             },
             secrets: (invocation.secrets || []).concat([

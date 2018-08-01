@@ -38,6 +38,8 @@ import { handleGitHookEvent } from "./handleGitHookEvent";
  */
 export async function triggerGitEvents(ai: AutomationClientInfo, event: string, depth: number) {
     const currentDir = determineCwd();
+    // TODO fix this
+    const teamId = "T123";
     if (withinExpandedTree(ai.localConfig.repositoryOwnerParentDirectory, currentDir)) {
         const p = GitCommandGitProject.fromBaseDir(FileSystemRemoteRepoRef.fromDirectory({
                 repositoryOwnerParentDirectory: ai.localConfig.repositoryOwnerParentDirectory,
@@ -54,7 +56,7 @@ export async function triggerGitEvents(ai: AutomationClientInfo, event: string, 
             if (depth > 1) {
                 infoMessage("Sha [%s]\n", sha);
             }
-            const invocation = { event, baseDir: currentDir, branch, sha };
+            const invocation = { event, baseDir: currentDir, branch, sha, teamId };
             logger.debug("Trigger %j", invocation);
             await handleGitHookEvent(ai.connectionConfig, ai.localConfig, invocation);
         }

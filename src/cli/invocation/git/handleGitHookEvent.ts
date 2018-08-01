@@ -16,14 +16,16 @@
 
 import { logger } from "@atomist/automation-client";
 import { EventOnRepo, handlePushBasedEventOnRepo } from "../../../common/handlePushBasedEventOnRepo";
-import { invokeEventHandlerInProcess } from "../../../sdm/binding/event/invokeEventHandlerInProcess";
 import { LocalMachineConfig } from "../../../sdm/configuration/LocalMachineConfig";
 import { errorMessage } from "../command/support/consoleOutput";
-import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
+import { AutomationClientConnectionRequest } from "../http/AutomationClientConnectionConfig";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
 
 export interface GitHookInvocation extends EventOnRepo {
+    // TODO scope to hook events
     event: string;
+
+    teamId: string;
 }
 
 /**
@@ -56,7 +58,10 @@ export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
     // TODO this is a bit questionable
     const branch = args[2].replace("refs/heads/", "");
     const sha = args[3];
-    return { event, baseDir, branch, sha };
+
+    // TODO change this
+    const teamId = "T123";
+    return { event, baseDir, branch, sha, teamId };
 }
 
 /**
@@ -64,7 +69,7 @@ export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
  * @param payload event data
  * @return {Promise<any>}
  */
-export async function handleGitHookEvent(cc: AutomationClientConnectionConfig,
+export async function handleGitHookEvent(cc: AutomationClientConnectionRequest,
                                          lc: LocalMachineConfig,
                                          payload: GitHookInvocation) {
     if (!payload) {
@@ -80,7 +85,7 @@ export async function handleGitHookEvent(cc: AutomationClientConnectionConfig,
         return errorMessage("LocalMachineConfig must be supplied");
     }
 
-    return handlePushBasedEventOnRepo(cc.atomistTeamId,
-        invokeEventHandlerUsingHttp(cc),
+    return handlePushBasedEventOnRepo(payload.teamId,
+        invokeEventHandlerUsingHttp(cc, payload.teamId),
         lc, payload, "SetGoalsOnPush");
 }

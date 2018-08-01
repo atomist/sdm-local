@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-import {
-    HandlerResult,
-    logger,
-} from "@atomist/automation-client";
-import axios, {
-    AxiosError,
-    AxiosRequestConfig,
-    AxiosResponse,
-} from "axios";
+import { HandlerResult, logger, } from "@atomist/automation-client";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, } from "axios";
 import * as _ from "lodash";
-import { AutomationClientConnectionConfig } from "../AutomationClientConnectionConfig";
+import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "../AutomationClientConnectionConfig";
 
 /**
  * Make a post to the SDM
@@ -33,7 +26,7 @@ import { AutomationClientConnectionConfig } from "../AutomationClientConnectionC
  * @param data
  * @return {AxiosPromise}
  */
-export function postToSdm(config: AutomationClientConnectionConfig, relativePath: string, data: any): Promise<HandlerResult> {
+export function postToSdm(config: AutomationClientConnectionRequest, relativePath: string, data: any): Promise<HandlerResult> {
     let url = `${config.baseEndpoint}/${relativePath}`;
     if (relativePath.startsWith("/")) {
         url = `${config.baseEndpoint}${relativePath}`;
@@ -50,7 +43,7 @@ function logResponse(url: string) {
     };
 }
 
-function interpretSdmResponse(config: AutomationClientConnectionConfig, url: string) {
+function interpretSdmResponse(config: AutomationClientConnectionRequest, url: string) {
     return (err: AxiosError): HandlerResult => {
         logger.error("Error accessing %s: %s", url, err.message);
         if (_.get(err, "message", "").includes("ECONNREFUSED")) {
@@ -73,7 +66,7 @@ function interpretSdmResponse(config: AutomationClientConnectionConfig, url: str
     };
 }
 
-function automationServerAuthHeaders(config: AutomationClientConnectionConfig): AxiosRequestConfig {
+function automationServerAuthHeaders(config: AutomationClientConnectionRequest): AxiosRequestConfig {
     return {
         headers: {
             "content-type": "application/json",

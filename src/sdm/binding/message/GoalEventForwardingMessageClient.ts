@@ -81,7 +81,7 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
             // We want to return to let this work in the background
             // tslint:disable-next-line:no-floating-promises
             Promise.all(handlerNames.map(name =>
-                invokeEventHandlerUsingHttp(this.connectionConfig)({
+                invokeEventHandlerUsingHttp(this.connectionConfig, this.connectionConfig.atomistTeamId)({
                     name,
                     payload,
                 })));
