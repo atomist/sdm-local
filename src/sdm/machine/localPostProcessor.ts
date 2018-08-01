@@ -107,7 +107,18 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                 return res.json(r);
             });
             exp.get(ActionRoute + "/:description", async (req, res) => {
-                logger.info("Jess! you clicked on an action! %j", req.params);
+                logger.info("Jess! you clicked on an action! %j and %j", req.params, req.query);
+                const actionKey = req.query["key"];
+                if (!actionKey) {
+                    logger.error("No action key provided. Please include ?key=< actionKey that has been stored by this sdm >");
+                    return res.status(404).send("Required query parameter: key");
+                }
+                const storedAction = await actionStore.getAction(actionKey);
+                if (!storedAction) {
+                    logger.error("Action key %s not found", actionKey);
+                    return res.status(404).send("Action not stored. Did you restart the SDM?");
+                }
+                logger.info("Jess! We found the action! %j", storedAction);
                 return res.json({ code: 0 });
             });
         },

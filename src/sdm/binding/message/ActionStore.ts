@@ -1,5 +1,8 @@
 import { Action, SlackMessage } from "@atomist/slack-messages";
 import { logger } from "@atomist/automation-client";
+import { computeShaOf } from "@atomist/sdm/api-helper/misc/sha";
+import * as _ from "lodash";
+import * as jsSHA from "jssha"
 
 export const ActionRoute = "/action";
 
@@ -20,26 +23,38 @@ export interface ActionStore {
 type ActionKey = string;
 
 export function freshActionStore(): ActionStore {
-    return new InMemoryMessageStore();
+    return new InMemoryActionStore();
 }
 
-class InMemoryMessageStore {
+class InMemoryActionStore {
+    private readonly actionByKey: { [key: string]: Action } = {};
 
     public async storeActions(sm: SlackMessage) {
         logger.info("Storing actions for message: %s", (sm as any).key);
+        _.flatMap(sm.attachments,a => a.actions)
+            .forEach((action, i) => {
+            this.actionByKey[actionKey(sm, i)] = action;
+        });
         return;
     }
 
     public async getAction(key: ActionKey) {
-        logger.info("Getting action: %s", key)
-        return null;
+        logger.info("Getting action: %s", key);
+        return this.actionByKey[key];
     }
 }
 
 export function actionKey(message: SlackMessage, index: number): ActionKey {
     logger.info("Jess, determining message key: %s or %s");
-    const messageKey = (message as any).key || (message as any).ts;
+    const messageKey = (message as any).key || (message as any).ts || computeShortSha(message);
+    logger.info("Message key computed: %s", messageKey);
     return `${messageKey}-${index}`;
+}
+
+function computeShortSha(message: any) {
+    const shaObj = new jsSHA("SHA-1", "TEXT");
+    shaObj.update(JSON.stringify(message));
+    return shaObj.getHash("HEX");
 }
 
 export function actionDescription(action: Action): string {

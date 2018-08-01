@@ -104,11 +104,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
 
     private async renderAction(channel: string, action: slack.Action, actionKey: string) {
         if (action.type === "button") {
-            const a = action as any;
             let url = `${this.connectionConfig.baseEndpoint}${ActionRoute}/${actionDescription(action)}?key=${actionKey}`;
-            // Object.getOwnPropertyNames(a.command.parameters).forEach(prop => {
-            //     url += `${prop}=${a.command.parameters[prop]}`;
-            // });
             await this.writeToChannel(channel, `${action.text} - ${url}`);
         } else {
             return this.sender(JSON.stringify(action) + "\n");

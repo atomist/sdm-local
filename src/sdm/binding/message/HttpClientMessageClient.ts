@@ -47,14 +47,16 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
             return;
         }
         const dests = Array.isArray(destinations) ? destinations : [destinations];
-        if (isSlackMessage(msg)) {
-            await this.actionStore.storeActions(msg);
-        }
         return this.stream({ message: msg, options, destinations: dests },
             () => this.delegate.send(msg, destinations, options));
     }
 
     public async addressChannels(message: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
+        if (isSlackMessage(message)) {
+            await this.actionStore.storeActions(message);
+        } else {
+            logger.info("Jess, this is not a slack message: %j", message);
+        }
         return this.stream({
             message,
             options,
