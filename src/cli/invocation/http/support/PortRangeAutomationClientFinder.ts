@@ -47,7 +47,9 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
                 baseEndpoint: `http://${os.hostname}:${port}`,
             }));
         const found = await new FixedAutomationClientFinder(...requests).findAutomationClients();
-        infoMessage("Connected to automation clients at %s\n", found.map(f => f.connectionConfig.baseEndpoint));
+        if (found.length > 0) {
+            infoMessage("Connected to automation clients at %s\n", found.map(f => f.connectionConfig.baseEndpoint));
+        }
         return found;
     }
 

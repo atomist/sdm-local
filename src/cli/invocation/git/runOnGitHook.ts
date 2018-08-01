@@ -20,7 +20,6 @@ import { infoMessage, logExceptionsToConsole } from "../command/support/consoleO
 import { suggestStartingAllMessagesListener } from "../command/support/suggestStartingAllMessagesListener";
 import { argsToGitHookInvocation, handleGitHookEvent, } from "./handlePushBasedEventOnRepo";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
-import { SingleDefaultAutomationClientFinder } from "../http/support/SingleDefaultAutomationClientFinder";
 import { PortRangeAutomationClientFinder } from "../http/support/PortRangeAutomationClientFinder";
 
 /**

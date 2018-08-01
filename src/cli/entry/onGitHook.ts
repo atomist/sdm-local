@@ -23,4 +23,7 @@ import { runOnGitHook } from "../invocation/git/runOnGitHook";
 */
 
 // tslint:disable-next-line:no-floating-promises
-runOnGitHook(process.argv);
+runOnGitHook(process.argv).catch(err => {
+    process.stderr.write(err.message + "\n");
+    process.exit(1);
+});
