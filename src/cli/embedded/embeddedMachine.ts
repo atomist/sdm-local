@@ -16,16 +16,26 @@
 
 import { Configuration } from "@atomist/automation-client";
 import { automationClient } from "@atomist/automation-client/automationClient";
-import { defaultConfiguration, invokePostProcessors } from "@atomist/automation-client/configuration";
+import {
+    defaultConfiguration,
+    invokePostProcessors,
+    validateConfiguration,
+} from "@atomist/automation-client/configuration";
 import { SoftwareDeliveryMachine } from "@atomist/sdm";
-import { configureSdm, createSoftwareDeliveryMachine } from "@atomist/sdm-core";
+import {
+    configureSdm,
+    createSoftwareDeliveryMachine,
+} from "@atomist/sdm-core";
 import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
-import { LocalLifecycle } from "../../sdm/configuration/localLifecycle";
-import { configureLocal } from "../../sdm/configuration/localPostProcessor";
-import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "../invocation/http/AutomationClientConnectionConfig";
 
 import * as os from "os";
+import { LocalLifecycle } from "../../sdm/configuration/localLifecycle";
+import { configureLocal } from "../../sdm/configuration/localPostProcessor";
+import {
+    AutomationClientConnectionConfig,
+    AutomationClientConnectionRequest,
+} from "../invocation/http/AutomationClientConnectionConfig";
 
 const DefaultBootstrapPort = 2900;
 
@@ -49,6 +59,7 @@ const createMachine = (configure: ConfigureMachine) => (config: SoftwareDelivery
 function configurationFor(options: EmbeddedMachineOptions): Configuration {
     const cfg = defaultConfiguration();
     cfg.name = "@atomist/local-sdm-bootstrap";
+    cfg.teamIds = ["local"];
     cfg.http.port = port(options);
 
     cfg.logging.level = "info";
@@ -86,7 +97,7 @@ export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Pro
     const client = automationClient(config);
     return client.run()
         .then(() => ({
-            baseEndpoint: `${os.hostname}:${port(options)}`,
+            baseEndpoint: `http://${os.hostname}:${port(options)}`,
         }));
 }
 

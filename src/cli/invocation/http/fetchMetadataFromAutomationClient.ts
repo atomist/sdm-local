@@ -43,9 +43,10 @@ export async function fetchMetadataFromAutomationClient(connectionConfig: Automa
             localConfig,
             connectionConfig: {
                 ...connectionConfig,
-                atomistTeamId: client.team_ids[0],
+                // TODO fix this; we need to read the client.config.json as fallback
+                atomistTeamId: client.team_ids ? client.team_ids[0] : "local",
                 // TODO fix this
-                atomistTeamName: "T123",
+                atomistTeamName: "local",
             },
         };
     } catch (e) {
