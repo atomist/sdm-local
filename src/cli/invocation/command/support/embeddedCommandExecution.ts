@@ -50,8 +50,7 @@ export interface EmbeddedCommandSpec {
  * @param {AutomationClientConnectionConfig} connectionConfig
  * @param {yargs.Argv} yargs
  */
-export function addEmbeddedCommand(connectionConfig: AutomationClientConnectionConfig,
-                                   yargs: Argv,
+export function addEmbeddedCommand(yargs: Argv,
                                    spec: EmbeddedCommandSpec) {
     yargs.command({
         command: spec.cliCommand,
@@ -85,7 +84,7 @@ export function addEmbeddedCommand(connectionConfig: AutomationClientConnectionC
                     spec.registration.name,
                     argv);
                 infoMessage("Execution of command %s complete", spec.registration.name);
-            }, connectionConfig.showErrorStacks);
+            }, true);
         },
     });
 }
@@ -94,8 +93,10 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
                                            configure: ConfigureMachine,
                                            name: string,
                                            params: object) {
-    const cc = await createBootstrapMachine(repositoryOwnerParentDirectory,
-        configure);
+    const cc = await createBootstrapMachine({
+        repositoryOwnerParentDirectory,
+        configure
+    });
     const ai = await fetchMetadataFromAutomationClient(cc);
     if (!ai.client) {
         errorMessage("Could not connect to the bootstrap SDM at " + cc.baseEndpoint);

@@ -38,6 +38,7 @@ import { PortRangeAutomationClientFinder } from "./http/support/PortRangeAutomat
  */
 export async function addLocalSdmCommands(yargs,
                                           finder: AutomationClientFinder = new PortRangeAutomationClientFinder()) {
+    addBootstrapCommands(yargs);
     for (const client of await finder.findAutomationClients()) {
         await addCommandsToConnectTo(client, yargs);
     }
@@ -52,7 +53,6 @@ async function addCommandsToConnectTo(client: AutomationClientInfo, yargs) {
     verifyLocalSdm(client);
 
     // TODO do these all once
-    addBootstrapCommands(client.connectionConfig, yargs);
     addRemoveGitHooksCommand(client, yargs);
 
     if (!!client.localConfig) {

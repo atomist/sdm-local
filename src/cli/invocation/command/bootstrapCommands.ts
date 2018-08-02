@@ -34,12 +34,12 @@ const sdmGenerator: GeneratorRegistration<NodeProjectCreationParameters> = {
     ],
 };
 
-export function addBootstrapCommands(connectionConfig: AutomationClientConnectionConfig, yargs: Argv) {
-    addSdmGenerator(connectionConfig, yargs);
+export function addBootstrapCommands(yargs: Argv) {
+    addSdmGenerator(yargs);
 }
 
-function addSdmGenerator(connectionConfig: AutomationClientConnectionConfig, yargs: Argv) {
-    addEmbeddedCommand(connectionConfig, yargs, {
+function addSdmGenerator(yargs: Argv) {
+    addEmbeddedCommand(yargs, {
         cliCommand: "new sdm",
         cliDescription: "Create an SDM",
         registration: sdmGenerator,

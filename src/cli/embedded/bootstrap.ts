@@ -23,9 +23,17 @@ import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
 import { LocalLifecycle } from "../../sdm/configuration/localLifecycle";
 import { configureLocal } from "../../sdm/configuration/localPostProcessor";
-import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
+import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "../invocation/http/AutomationClientConnectionConfig";
 
-const BootstrapPort = 2867;
+import * as os from "os";
+
+const DefaultBootstrapPort = 2900;
+
+export interface BootstrapOptions {
+    repositoryOwnerParentDirectory: string;
+    configure: ConfigureMachine;
+    port?: number;
+}
 
 const createMachine = (configure: ConfigureMachine) => (config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine => {
     const sdm: SoftwareDeliveryMachine = createSoftwareDeliveryMachine(
@@ -38,11 +46,10 @@ const createMachine = (configure: ConfigureMachine) => (config: SoftwareDelivery
     return sdm;
 };
 
-function configurationFor(repositoryOwnerParentDirectory: string,
-                          configure: ConfigureMachine): Configuration {
+function configurationFor(options: BootstrapOptions): Configuration {
     const cfg = defaultConfiguration();
-    cfg.name = "@atomist/slalom-bootstrap";
-    cfg.http.port = BootstrapPort;
+    cfg.name = "@atomist/local-sdm-bootstrap";
+    cfg.http.port = options.port || DefaultBootstrapPort;
 
     cfg.logging.level = "info";
     cfg.logging.file.enabled = false;
@@ -57,12 +64,12 @@ function configurationFor(repositoryOwnerParentDirectory: string,
 
     cfg.postProcessors = [
         configureLocal({
-            repositoryOwnerParentDirectory,
+            repositoryOwnerParentDirectory: options.repositoryOwnerParentDirectory,
             mergeAutofixes: true,
             preferLocalSeeds: false,
             forceLocal: true,
         }),
-        configureSdm(createMachine(configure), {}),
+        configureSdm(createMachine(options.configure), {}),
     ];
 
     return cfg;
@@ -71,19 +78,14 @@ function configurationFor(repositoryOwnerParentDirectory: string,
 /**
  * Create an embedded SDM to perform bootstrap commands such as
  * generating a new SDM
- * @param {string} repositoryOwnerParentDirectory
  * @return {Promise<AutomationClientConnectionConfig>}
  */
-export async function createBootstrapMachine(repositoryOwnerParentDirectory: string,
-                                             configure: ConfigureMachine,
-): Promise<AutomationClientConnectionConfig> {
+export async function createBootstrapMachine(options: BootstrapOptions): Promise<AutomationClientConnectionRequest> {
     const config = await invokePostProcessors(
-        configurationFor(repositoryOwnerParentDirectory, configure));
+        configurationFor(options));
     const client = automationClient(config);
     return client.run()
         .then(() => ({
-            atomistTeamId: "T123",
-            atomistTeamName: "slalom",
-            baseEndpoint: `http://localhost:${BootstrapPort}`,
+            baseEndpoint: `${os.hostname}:${options.port || DefaultBootstrapPort}`,
         }));
 }
