@@ -47,7 +47,12 @@ export const LocalLifecycle: ExtensionPack = {
 };
 
 function pushIdentification(pu: Push) {
-    return `\`${pu.repo.owner}:${pu.repo.name}:${pu.branch}\` - _${pu.commits[0].message}_ \`[${pu.commits[0].sha}]\``;
+    let msg = pu.commits[0].message;
+    if (msg.length > 50) {
+        msg = msg.slice(0, 47) + "...";
+    }
+
+    return `\`${pu.repo.owner}/${pu.repo.name}/${pu.branch}\` _${msg}_ \`[${pu.commits[0].sha.slice(0, 7)}]\``;
 }
 
 /**
@@ -59,25 +64,29 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
         return pu.addressChannels(`Push to ${pushIdentification(pu.push)}`);
     });
     sdm.addGoalsSetListener(async gsi => {
-        return gsi.addressChannels(
-            chalk.yellow(`▶ Goals for ${pushIdentification(gsi.push)} ${
-                gsi.goalSet.goals.map(g => chalk.italic(g.name)).join(" ⏦ ")}\n`) +
-            `\t${chalk.italic(gsi.push.commits[0].message)}\n`);
+        const msg = `${pushIdentification(gsi.push)}
+\t▶ Goals
+\t${gsi.goalSet.goals.map(g => `⏦ ${chalk.italic(g.name)}`).join("\n\t")}`;
+        return gsi.addressChannels(msg);
     });
     sdm.addGoalExecutionListener(async gci => {
         switch (gci.goalEvent.state) {
             case SdmGoalState.success:
-                return gci.addressChannels(chalk.green(`✔ ${gci.goalEvent.description} ${pushIdentification(gci.goalEvent.push)}\n`));
+                return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
+\t${chalk.green(`✔ ${gci.goalEvent.description}`)}`);
             case SdmGoalState.failure:
-                return gci.addressChannels(chalk.red(`✖︎︎ ${gci.goalEvent.description} ${pushIdentification(gci.goalEvent.push)}\n`));
+                return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
+\t${chalk.red(`✖︎︎ ${gci.goalEvent.description}`)}`);
             // case SdmGoalState.requested:
             //     return gci.addressChannels(chalk.red(`✖︎︎ ${gci.goalEvent.description}\n`));
             // waiting_for_approval = "waiting_for_approval",
             // planned = "planned",
             case SdmGoalState.in_process:
-                return gci.addressChannels(chalk.yellow(`⚙︎ ${gci.goalEvent.description} ${pushIdentification(gci.goalEvent.push)}\n`));
+                return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
+\t${chalk.yellow(`⚙︎ ${gci.goalEvent.description}`)}`);
             case SdmGoalState.skipped:
-                return gci.addressChannels(chalk.yellow(`?︎ ${gci.goalEvent.description} ${pushIdentification(gci.goalEvent.push)}\n`));
+                return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
+\t${chalk.yellow(`?︎ ${gci.goalEvent.description}`)}`);
             default:
                 break;
         }
