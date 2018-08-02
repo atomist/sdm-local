@@ -111,6 +111,10 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
     }
     return runCommandOnRemoteAutomationClient(cc,
         repositoryOwnerParentDirectory,
+        {
+            atomistTeamName: "embedded",
+            atomistTeamId: "T0",
+        },
         hm,
         params);
 }

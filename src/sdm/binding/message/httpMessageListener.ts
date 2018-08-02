@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-import {
-    Destination,
-    MessageOptions,
-} from "@atomist/automation-client/spi/message/MessageClient";
+import { Destination, MessageOptions } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import { AllMessagesPort } from "../../../cli/invocation/command/addStartListenerCommand";
 import { infoMessage } from "../../../cli/invocation/command/support/consoleOutput";
-import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
+import { AutomationClientConnectionRequest } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 import { CommandCompletionDestination } from "../../configuration/support/NotifyOnCompletionAutomationEventListener";
-import { ActionRoute, ActionStore, freshActionStore } from "./ActionStore";
-import {
-    ConsoleMessageClient,
-    ProcessStdoutSender,
-} from "./ConsoleMessageClient";
+import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
 
 export const MessageRoute = "/message";
 
@@ -48,7 +41,7 @@ export interface StreamedMessage {
  * @param {number} demonPort
  * @param killOnCommandCompletion should this be shut down on command completion
  */
-export function startHttpMessageListener(cc: AutomationClientConnectionConfig,
+export function startHttpMessageListener(cc: AutomationClientConnectionRequest,
                                          demonPort: number = AllMessagesPort,
                                          killOnCommandCompletion: boolean = false) {
     const messageClient = new ConsoleMessageClient("general", ProcessStdoutSender, cc);

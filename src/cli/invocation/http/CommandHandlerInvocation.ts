@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-import {
-    HandlerResult,
-    logger,
-} from "@atomist/automation-client";
-import {
-    Arg,
-    Secret,
-} from "@atomist/automation-client/internal/invoker/Payload";
+import { HandlerResult, logger } from "@atomist/automation-client";
+import { Arg, Secret } from "@atomist/automation-client/internal/invoker/Payload";
 import * as assert from "power-assert";
 import { isArray } from "util";
 import { newCorrelationId } from "../../../sdm/configuration/correlationId";
-import { AutomationClientConnectionConfig } from "./AutomationClientConnectionConfig";
+import { CommandInvocationTarget } from "../command/support/runCommandOnRemoteAutomationClient";
+import { AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
 
 /**
@@ -43,9 +38,9 @@ export interface CommandHandlerInvocation {
     secrets?: Secret[];
 }
 
-export async function invokeCommandHandler(config: AutomationClientConnectionConfig,
+export async function invokeCommandHandler(config: AutomationClientConnectionRequest,
                                            invocation: CommandHandlerInvocation,
-                                           correlationId?: string): Promise<HandlerResult> {
+                                           invocationSpec: CommandInvocationTarget): Promise<HandlerResult> {
     assert(!!config, "Config must be provided");
     assert(!!config.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(config));
     const url = `/command`;
@@ -53,16 +48,16 @@ export async function invokeCommandHandler(config: AutomationClientConnectionCon
         command: invocation.name,
         parameters: propertiesToArgs(invocation.parameters),
         mapped_parameters: propertiesToArgs(invocation.mappedParameters || {}).concat([
-            {name: "slackTeam", value: config.atomistTeamId},
+            {name: "slackTeam", value: invocationSpec.atomistTeamId},
         ]),
         secrets: (invocation.secrets || []).concat([
             {uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN},
         ]),
-        correlation_id: correlationId || newCorrelationId(),
+        correlation_id: invocationSpec.correlationId || newCorrelationId(),
         api_version: "1",
         team: {
-            id: config.atomistTeamId,
-            name: config.atomistTeamName,
+            id: invocationSpec.atomistTeamId,
+            name: invocationSpec.atomistTeamName,
         },
     };
     logger.debug("Hitting %s to invoke command %s using %j", url, invocation.name, data);

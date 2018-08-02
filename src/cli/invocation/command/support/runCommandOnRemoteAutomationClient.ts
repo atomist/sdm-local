@@ -25,10 +25,17 @@ import { startHttpMessageListener } from "../../../../sdm/binding/message/httpMe
 import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/project/ExpandedTreeMappedParameterResolver";
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
 import { newCorrelationId, pidToPort } from "../../../../sdm/configuration/correlationId";
-import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
+import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionConfig";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
-import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
 import { warningMessage } from "./consoleOutput";
+import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
+
+export interface CommandInvocationTarget {
+
+    atomistTeamId: string;
+    atomistTeamName: string;
+    correlationId?: string;
+}
 
 /**
  * All invocations from the CLI go through this function.
@@ -36,8 +43,9 @@ import { warningMessage } from "./consoleOutput";
  * @param command command populated by yargs
  * @return {Promise<any>}
  */
-export async function runCommandOnRemoteAutomationClient(connectionConfig: AutomationClientConnectionConfig,
+export async function runCommandOnRemoteAutomationClient(connectionConfig: AutomationClientConnectionRequest,
                                                          repositoryOwnerParentDirectory: string,
+                                                         spec: CommandInvocationTarget,
                                                          hm: CommandHandlerMetadata,
                                                          command: object): Promise<any> {
     await suggestStartingAllMessagesListener();
@@ -65,7 +73,10 @@ export async function runCommandOnRemoteAutomationClient(connectionConfig: Autom
     logger.debug("Sending invocation %j\n", invocation);
     // Use repo channel if we're in a mapped repo channel
     const correlationId = newCorrelationId({ channel: parseOwnerAndRepo(repositoryOwnerParentDirectory).repo, encodeListenerPort: true });
-    return invokeCommandHandler(connectionConfig, invocation, correlationId);
+    return invokeCommandHandler(connectionConfig, invocation, {
+        ...spec,
+        correlationId,
+    });
 }
 
 function valid(p: Parameter, value: string): boolean {
@@ -92,7 +103,7 @@ async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[
     }
 
     function validInputDisplay(p: Parameter) {
-        return !!p.valid_input ? (": " + !!p.valid_input): ""
+        return !!p.valid_input ? (": " + !!p.valid_input) : "";
     }
 
     _.sortBy(hi.parameters, p => p.name)

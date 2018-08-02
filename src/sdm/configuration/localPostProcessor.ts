@@ -87,6 +87,9 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
     // TODO what if not basic
     _.set(configuration, "http.auth.basic.enabled", false);
 
+    // TODO shouldn't be necessary
+    const cc = DefaultAutomationClientConnectionConfig;
+
     configuration.http.customizers = [
         exp => {
             // TODO could use this to set local mode for a server - e.g. the name to send to
@@ -102,8 +105,14 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                     parameters: payload,
                     mappedParameters: [],
                 };
-                // TODO parameterize this path
-                const r = await invokeCommandHandler(DefaultAutomationClientConnectionConfig, invocation);
+                // cd: TODO use local invocation
+                const r = await invokeCommandHandler(
+                    cc,
+                    invocation,
+                    {
+                        atomistTeamName: cc.atomistTeamName,
+                        atomistTeamId: cc.atomistTeamId,
+                    });
                 return res.json(r);
             });
             exp.get(ActionRoute + "/:description", async (req, res) => {
@@ -125,7 +134,10 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                     logger.error("No command stored on action object: %j", storedAction);
                     return res.status(500).send("This will never work");
                 }
-                return invokeCommandHandler(DefaultAutomationClientConnectionConfig, command)
+                return invokeCommandHandler(cc, command, {
+                    atomistTeamName: cc.atomistTeamName,
+                    atomistTeamId: cc.atomistTeamId,
+                })
                     .then(r => res.json(decircle(r)),
                         boo => res.status(500).send(boo.message));
             });

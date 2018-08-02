@@ -18,16 +18,10 @@ import { logger } from "@atomist/automation-client";
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import * as _ from "lodash";
 import { Argv } from "yargs";
-import {
-    PathElement,
-    toPaths,
-} from "../../../sdm/util/PathElement";
+import { PathElement, toPaths } from "../../../sdm/util/PathElement";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "./support/consoleOutput";
-import {
-    convertToDisplayable,
-    runCommandOnRemoteAutomationClient,
-} from "./support/runCommandOnRemoteAutomationClient";
+import { convertToDisplayable, runCommandOnRemoteAutomationClient } from "./support/runCommandOnRemoteAutomationClient";
 
 /**
  * Add commands by name
@@ -155,6 +149,10 @@ async function runByIntent(ai: AutomationClientInfo,
     }
     return runCommandOnRemoteAutomationClient(ai.connectionConfig,
         ai.localConfig.repositoryOwnerParentDirectory,
+        {
+            atomistTeamName: ai.connectionConfig.atomistTeamId,
+            atomistTeamId: ai.connectionConfig.atomistTeamName,
+        },
         hm, command);
 }
 
@@ -167,5 +165,12 @@ async function runByCommandName(ai: AutomationClientInfo,
             .map(m => "\t" + m.name).sort().join("\n")}`);
         process.exit(1);
     }
-    return runCommandOnRemoteAutomationClient(ai.connectionConfig, ai.localConfig.repositoryOwnerParentDirectory, hm, command);
+    return runCommandOnRemoteAutomationClient(
+        ai.connectionConfig,
+        ai.localConfig.repositoryOwnerParentDirectory,
+        {
+            atomistTeamName: ai.connectionConfig.atomistTeamName,
+            atomistTeamId: ai.connectionConfig.atomistTeamId,
+        },
+        hm, command);
 }

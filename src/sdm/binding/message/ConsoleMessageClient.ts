@@ -32,7 +32,7 @@ import * as _ from "lodash";
 import * as marked from "marked";
 import { MarkedOptions } from "marked";
 import * as TerminalRenderer from "marked-terminal";
-import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
+import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 import { actionDescription, actionKey, ActionRoute } from "./ActionStore";
 import { ActionStore } from "./ActionStore";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
@@ -124,7 +124,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
 
     constructor(private readonly linkedChannel: string,
                 private readonly sender: Sender,
-                private readonly connectionConfig: AutomationClientConnectionConfig,
+                private readonly connectionConfig: AutomationClientConnectionRequest,
                 public readonly markedOptions: MarkedOptions = {
                     breaks: false,
                 }) {
