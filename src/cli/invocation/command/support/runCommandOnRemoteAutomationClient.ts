@@ -26,16 +26,9 @@ import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/pro
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
 import { newCorrelationId, pidToPort } from "../../../../sdm/configuration/correlationId";
 import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionConfig";
-import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
+import { CommandHandlerInvocation, InvocationTarget, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
 import { warningMessage } from "./consoleOutput";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
-
-export interface CommandInvocationTarget {
-
-    atomistTeamId: string;
-    atomistTeamName: string;
-    correlationId?: string;
-}
 
 /**
  * All invocations from the CLI go through this function.
@@ -45,7 +38,7 @@ export interface CommandInvocationTarget {
  */
 export async function runCommandOnRemoteAutomationClient(connectionConfig: AutomationClientConnectionRequest,
                                                          repositoryOwnerParentDirectory: string,
-                                                         spec: CommandInvocationTarget,
+                                                         spec: InvocationTarget,
                                                          hm: CommandHandlerMetadata,
                                                          command: object): Promise<any> {
     await suggestStartingAllMessagesListener();
@@ -65,18 +58,19 @@ export async function runCommandOnRemoteAutomationClient(connectionConfig: Autom
         value: mpr.resolve(mp),
     }));
     await promptForMissingMappedParameters(hm, mappedParameters);
+
+    const correlationId = newCorrelationId({ channel: parseOwnerAndRepo(repositoryOwnerParentDirectory).repo, encodeListenerPort: true });
+
     const invocation: CommandHandlerInvocation = {
         name: hm.name,
         parameters: args,
         mappedParameters: mappedParameters.filter(mp => !!mp.value),
+        ...spec,
+        correlationId,
     };
     logger.debug("Sending invocation %j\n", invocation);
     // Use repo channel if we're in a mapped repo channel
-    const correlationId = newCorrelationId({ channel: parseOwnerAndRepo(repositoryOwnerParentDirectory).repo, encodeListenerPort: true });
-    return invokeCommandHandler(connectionConfig, invocation, {
-        ...spec,
-        correlationId,
-    });
+    return invokeCommandHandler(connectionConfig, invocation);
 }
 
 function valid(p: Parameter, value: string): boolean {

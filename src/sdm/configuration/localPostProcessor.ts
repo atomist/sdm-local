@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-import {
-    Configuration, HandlerResult,
-    logger,
-} from "@atomist/automation-client";
+import { Configuration, HandlerResult, logger, } from "@atomist/automation-client";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import { DefaultAutomationClientConnectionConfig } from "../../cli/entry/resolveConnectionConfig";
 import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
-import {
-    CommandHandlerInvocation,
-    invokeCommandHandler,
-} from "../../cli/invocation/http/CommandHandlerInvocation";
+import { CommandHandlerInvocation, invokeCommandHandler, } from "../../cli/invocation/http/CommandHandlerInvocation";
 import { isInLocalMode } from "../api/isInLocalMode";
 import { LocalGraphClient } from "../binding/graph/LocalGraphClient";
 import { ActionRoute, ActionStore, freshActionStore } from "../binding/message/ActionStore";
@@ -33,10 +27,7 @@ import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessag
 import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
-import {
-    channelFor,
-    clientIdentifier,
-} from "./correlationId";
+import { channelFor, clientIdentifier, } from "./correlationId";
 import { createSdmOptions } from "./createSdmOptions";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
@@ -104,15 +95,11 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                     name: req.params.name,
                     parameters: payload,
                     mappedParameters: [],
+                    atomistTeamName: cc.atomistTeamName,
+                    atomistTeamId: cc.atomistTeamId,
                 };
                 // cd: TODO use local invocation
-                const r = await invokeCommandHandler(
-                    cc,
-                    invocation,
-                    {
-                        atomistTeamName: cc.atomistTeamName,
-                        atomistTeamId: cc.atomistTeamId,
-                    });
+                const r = await invokeCommandHandler(cc, invocation);
                 return res.json(r);
             });
             exp.get(ActionRoute + "/:description", async (req, res) => {
@@ -129,15 +116,14 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                 }
 
                 const command = (storedAction as any).command;
+                command.atomistTeamName = cc.atomistTeamName;
+                command.atomistTeamId = cc.atomistTeamId;
                 logger.debug("The parameters are: %j", command.parameters);
                 if (!command) {
                     logger.error("No command stored on action object: %j", storedAction);
                     return res.status(500).send("This will never work");
                 }
-                return invokeCommandHandler(cc, command, {
-                    atomistTeamName: cc.atomistTeamName,
-                    atomistTeamId: cc.atomistTeamId,
-                })
+                return invokeCommandHandler(cc, command)
                     .then(r => res.json(decircle(r)),
                         boo => res.status(500).send(boo.message));
             });
