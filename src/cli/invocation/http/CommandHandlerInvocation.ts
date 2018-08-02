@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-import { HandlerResult, logger } from "@atomist/automation-client";
-import { Arg, Secret } from "@atomist/automation-client/internal/invoker/Payload";
+import {
+    automationClientInstance,
+    HandlerResult,
+    logger,
+} from "@atomist/automation-client";
+import {
+    Arg,
+    Secret,
+} from "@atomist/automation-client/internal/invoker/Payload";
+import { CommandIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import * as assert from "power-assert";
 import { isArray } from "util";
+import { InvocationTarget } from "../../../common/InvocationTarget";
 import { newCorrelationId } from "../../../sdm/configuration/correlationId";
 import { AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
-import { InvocationTarget } from "../../../common/InvocationTarget";
 
 /**
  * Allow params to be expressed in an object for convenience
@@ -40,17 +48,15 @@ export interface CommandHandlerInvocation extends InvocationTarget {
 
 export async function invokeCommandHandler(config: AutomationClientConnectionRequest,
                                            invocation: CommandHandlerInvocation): Promise<HandlerResult> {
-    assert(!!config, "Config must be provided");
-    assert(!!config.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(config));
-    const url = `/command`;
+
     const data = {
         command: invocation.name,
         parameters: propertiesToArgs(invocation.parameters),
         mapped_parameters: propertiesToArgs(invocation.mappedParameters || {}).concat([
-            {name: "slackTeam", value: invocation.atomistTeamId},
+            { name: "slackTeam", value: invocation.atomistTeamId },
         ]),
         secrets: (invocation.secrets || []).concat([
-            {uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN},
+            { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },
         ]),
         correlation_id: invocation.correlationId || newCorrelationId(),
         api_version: "1",
@@ -59,17 +65,32 @@ export async function invokeCommandHandler(config: AutomationClientConnectionReq
             name: invocation.atomistTeamName,
         },
     };
-    logger.debug("Hitting %s to invoke command %s using %j", url, invocation.name, data);
-    const resp = await postToSdm(config, url, data);
-    assert(resp.code === 0,
-        "Command handler did not succeed. Returned: " + JSON.stringify(resp, null, 2));
-    return resp;
+
+    if (!automationClientInstance()) {
+        assert(!!config, "Config must be provided");
+        assert(!!config.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(config));
+        const url = `/command`;
+        logger.debug("Hitting %s to invoke command %s using %j", url, invocation.name, data);
+        const resp = await postToSdm(config, url, data);
+        assert(resp.code === 0,
+            "Command handler did not succeed. Returned: " + JSON.stringify(resp, null, 2));
+        return resp;
+    } else {
+        logger.debug("Invoking command %s using %j", invocation.name, data);
+        return automationClientInstance().processCommand(data as CommandIncoming, async result => {
+            const r = await result;
+            assert(r.code === 0,
+                "Command handler did not succeed. Returned: " + JSON.stringify(r, null, 2));
+            return r;
+        });
+    }
+
 }
 
 function propertiesToArgs(o: any): Arg[] {
     if (isArray(o)) {
         return o;
     }
-    const args = Object.keys(o).map(k => ({name: k, value: o[k]}));
+    const args = Object.keys(o).map(k => ({ name: k, value: o[k] }));
     return args;
 }

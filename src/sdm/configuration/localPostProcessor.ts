@@ -98,7 +98,6 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                     atomistTeamName: cc.atomistTeamName,
                     atomistTeamId: cc.atomistTeamId,
                 };
-                // cd: TODO use local invocation
                 const r = await invokeCommandHandler(cc, invocation);
                 return res.json(r);
             });
