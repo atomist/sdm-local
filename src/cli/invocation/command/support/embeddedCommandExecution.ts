@@ -18,7 +18,7 @@ import { ConfigureMachine } from "@atomist/sdm";
 import { toParametersListing } from "@atomist/sdm/api-helper/machine/handlerRegistrations";
 import { CommandRegistration } from "@atomist/sdm/api/registration/CommandRegistration";
 import { Argv } from "yargs";
-import { createBootstrapMachine } from "../../../embedded/bootstrap";
+import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "./consoleOutput";
@@ -60,6 +60,7 @@ export function addEmbeddedCommand(yargs: Argv,
             // we cannot create an embedded SDM otherwise
             ra.option("repositoryOwnerParentDirectory", {
                 required: true,
+                alias: "base",
                 description: "Base of the checked out directory tree the new SDM will operate on",
             });
 
@@ -93,17 +94,17 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
                                            configure: ConfigureMachine,
                                            name: string,
                                            params: object) {
-    const cc = await createBootstrapMachine({
+    const cc = await startEmbeddedMachine({
         repositoryOwnerParentDirectory,
         configure
     });
     const ai = await fetchMetadataFromAutomationClient(cc);
     if (!ai.client) {
-        errorMessage("Could not connect to the bootstrap SDM at " + cc.baseEndpoint);
+        errorMessage("Could not connect to the bootstrap SDM at %s\n", cc.baseEndpoint);
         process.exit(1);
     }
     if (!ai.localConfig) {
-        infoMessage("The bootstrap command is not running in local mode\n");
+        infoMessage("The bootstrap SDM is not running in local mode\n");
     }
     const hm = ai.client.commands.find(c => c.name === name);
     if (!hm) {

@@ -29,7 +29,7 @@ import * as os from "os";
 
 const DefaultBootstrapPort = 2900;
 
-export interface BootstrapOptions {
+export interface EmbeddedMachineOptions {
     repositoryOwnerParentDirectory: string;
     configure: ConfigureMachine;
     port?: number;
@@ -46,10 +46,10 @@ const createMachine = (configure: ConfigureMachine) => (config: SoftwareDelivery
     return sdm;
 };
 
-function configurationFor(options: BootstrapOptions): Configuration {
+function configurationFor(options: EmbeddedMachineOptions): Configuration {
     const cfg = defaultConfiguration();
     cfg.name = "@atomist/local-sdm-bootstrap";
-    cfg.http.port = options.port || DefaultBootstrapPort;
+    cfg.http.port = port(options);
 
     cfg.logging.level = "info";
     cfg.logging.file.enabled = false;
@@ -80,12 +80,16 @@ function configurationFor(options: BootstrapOptions): Configuration {
  * generating a new SDM
  * @return {Promise<AutomationClientConnectionConfig>}
  */
-export async function createBootstrapMachine(options: BootstrapOptions): Promise<AutomationClientConnectionRequest> {
+export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Promise<AutomationClientConnectionRequest> {
     const config = await invokePostProcessors(
         configurationFor(options));
     const client = automationClient(config);
     return client.run()
         .then(() => ({
-            baseEndpoint: `${os.hostname}:${options.port || DefaultBootstrapPort}`,
+            baseEndpoint: `${os.hostname}:${port(options)}`,
         }));
+}
+
+function port(o: EmbeddedMachineOptions) {
+    return o.port || DefaultBootstrapPort;
 }

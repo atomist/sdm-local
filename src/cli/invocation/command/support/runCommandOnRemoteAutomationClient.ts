@@ -39,7 +39,7 @@ import { InvocationTarget } from "../../../../common/InvocationTarget";
  */
 export async function runCommandOnRemoteAutomationClient(connectionConfig: AutomationClientConnectionRequest,
                                                          repositoryOwnerParentDirectory: string,
-                                                         spec: InvocationTarget,
+                                                         target: InvocationTarget,
                                                          hm: CommandHandlerMetadata,
                                                          command: object): Promise<any> {
     await suggestStartingAllMessagesListener();
@@ -66,7 +66,7 @@ export async function runCommandOnRemoteAutomationClient(connectionConfig: Autom
         name: hm.name,
         parameters: args,
         mappedParameters: mappedParameters.filter(mp => !!mp.value),
-        ...spec,
+        ...target,
         correlationId,
     };
     logger.debug("Sending invocation %j\n", invocation);
