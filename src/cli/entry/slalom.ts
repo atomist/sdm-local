@@ -22,7 +22,7 @@
 
 // Disable console logging
 if (!isReservedCommand()) {
-    //process.env.ATOMIST_DISABLE_LOGGING = "true";
+    process.env.ATOMIST_DISABLE_LOGGING = "true";
 }
 
 import * as yargs from "yargs";

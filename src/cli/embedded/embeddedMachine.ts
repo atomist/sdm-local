@@ -19,7 +19,6 @@ import { automationClient } from "@atomist/automation-client/automationClient";
 import {
     defaultConfiguration,
     invokePostProcessors,
-    validateConfiguration,
 } from "@atomist/automation-client/configuration";
 import { SoftwareDeliveryMachine } from "@atomist/sdm";
 import {
