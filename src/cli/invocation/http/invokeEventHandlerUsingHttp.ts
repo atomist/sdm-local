@@ -17,11 +17,13 @@
 import { HandlerResult, logger, Secrets } from "@atomist/automation-client";
 import { replacer } from "@atomist/automation-client/internal/transport/AbstractRequestProcessor";
 import * as stringify from "json-stringify-safe";
-import * as assert from "power-assert";
 import { EventSender } from "../../../common/EventHandlerInvocation";
 import { newCorrelationId } from "../../../sdm/configuration/correlationId";
 import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
+import { InvocationTarget } from "../../../common/InvocationTarget";
+
+import * as assert from "assert";
 
 /**
  * Invoke an event handler on the automation client at the given location
@@ -29,17 +31,16 @@ import { postToSdm } from "./support/httpInvoker";
  * @return {Promise<HandlerResult>}
  */
 export function invokeEventHandlerUsingHttp(config: AutomationClientConnectionRequest,
-                                            teamId: string,
-                                            correlationId?: string): EventSender {
+                                            target: InvocationTarget): EventSender {
+    assert(!!target);
     return async invocation => {
         const data = {
             extensions: {
                 operationName: invocation.name,
                 query_id: "q-" + Date.now(),
-                team_id: teamId,
-                // TODO fix
-                team_name: teamId,
-                correlation_id: correlationId || newCorrelationId(),
+                team_id: target.atomistTeamId,
+                team_name: target.atomistTeamName,
+                correlation_id: target.correlationId || newCorrelationId(),
             },
             secrets: (invocation.secrets || []).concat([
                 { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },

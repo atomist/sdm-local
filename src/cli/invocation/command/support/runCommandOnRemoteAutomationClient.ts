@@ -26,9 +26,10 @@ import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/pro
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
 import { newCorrelationId, pidToPort } from "../../../../sdm/configuration/correlationId";
 import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionConfig";
-import { CommandHandlerInvocation, InvocationTarget, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
+import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
 import { warningMessage } from "./consoleOutput";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
+import { InvocationTarget } from "../../../../common/InvocationTarget";
 
 /**
  * All invocations from the CLI go through this function.

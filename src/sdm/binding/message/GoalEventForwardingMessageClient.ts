@@ -15,17 +15,8 @@
  */
 
 import { logger } from "@atomist/automation-client";
-import {
-    Destination,
-    MessageClient,
-    MessageOptions,
-    SlackMessageClient,
-} from "@atomist/automation-client/spi/message/MessageClient";
-import {
-    OnAnyRequestedSdmGoal,
-    SdmGoalKey,
-    SdmGoalState,
-} from "@atomist/sdm";
+import { Destination, MessageClient, MessageOptions, SlackMessageClient, } from "@atomist/automation-client/spi/message/MessageClient";
+import { OnAnyRequestedSdmGoal, SdmGoalKey, SdmGoalState, } from "@atomist/sdm";
 import { SlackMessage } from "@atomist/slack-messages";
 import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 import { invokeEventHandlerUsingHttp } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
@@ -81,7 +72,7 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
             // We want to return to let this work in the background
             // tslint:disable-next-line:no-floating-promises
             Promise.all(handlerNames.map(name =>
-                invokeEventHandlerUsingHttp(this.connectionConfig, this.connectionConfig.atomistTeamId)({
+                invokeEventHandlerUsingHttp(this.connectionConfig, this.connectionConfig)({
                     name,
                     payload,
                 })));

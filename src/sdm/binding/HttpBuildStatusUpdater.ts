@@ -22,6 +22,7 @@ import {
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
 import { AutomationClientConnectionConfig } from "../../cli/invocation/http/AutomationClientConnectionConfig";
 import { invokeEventHandlerUsingHttp } from "../../cli/invocation/http/invokeEventHandlerUsingHttp";
+import { InvocationTarget } from "../../common/InvocationTarget";
 
 /**
  * Update build status by posting to an automation client
@@ -54,8 +55,13 @@ export class HttpBuildStatusUpdater implements BuildStatusUpdater {
             }],
         };
         const handlerNames = ["InvokeListenersOnBuildComplete"];
+        const target: InvocationTarget = {
+            atomistTeamName: this.acc.atomistTeamId,
+            atomistTeamId: this.acc.atomistTeamId,
+            correlationId: ctx.correlation_id,
+        };
         return Promise.all(handlerNames.map(name =>
-            invokeEventHandlerUsingHttp(this.acc, ctx.correlation_id)({
+            invokeEventHandlerUsingHttp(this.acc, target)({
                 name,
                 payload,
             })));

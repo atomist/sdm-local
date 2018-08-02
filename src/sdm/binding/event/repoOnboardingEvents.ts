@@ -33,7 +33,7 @@ export async function sendRepoCreationEvent(cc: AutomationClientConnectionConfig
             id: `${id.owner}/${id.repo}`,
         }],
     };
-    return invokeEventHandlerUsingHttp(cc, cc.atomistTeamId)({
+    return invokeEventHandlerUsingHttp(cc, cc)({
         name: "OnRepoCreation",
         payload,
     });
@@ -47,7 +47,7 @@ export async function sendChannelLinkEvent(cc: AutomationClientConnectionConfig,
             channel: repo.channels[0],
         }],
     };
-    return invokeEventHandlerUsingHttp(cc, cc.atomistTeamId)({
+    return invokeEventHandlerUsingHttp(cc, cc)({
         name: "OnChannelLink",
         payload,
     });
@@ -59,7 +59,7 @@ export async function sendRepoOnboardingEvent(cc: AutomationClientConnectionConf
             repo: repoFieldsFromProject(cc.atomistTeamId, id) as CoreRepoFieldsAndChannels.Fragment,
         }],
     };
-    return invokeEventHandlerUsingHttp(cc, cc.atomistTeamId)({
+    return invokeEventHandlerUsingHttp(cc, cc)({
         name: "OnRepoOnboarded",
         payload,
     });

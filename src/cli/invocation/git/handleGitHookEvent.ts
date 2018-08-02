@@ -20,6 +20,7 @@ import { LocalMachineConfig } from "../../../sdm/configuration/LocalMachineConfi
 import { errorMessage } from "../command/support/consoleOutput";
 import { AutomationClientConnectionRequest } from "../http/AutomationClientConnectionConfig";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
+import { InvocationTarget } from "../../../common/InvocationTarget";
 
 export interface GitHookInvocation extends EventOnRepo {
     // TODO scope to hook events
@@ -85,7 +86,13 @@ export async function handleGitHookEvent(cc: AutomationClientConnectionRequest,
         return errorMessage("LocalMachineConfig must be supplied");
     }
 
+    const target: InvocationTarget = {
+        atomistTeamId: payload.teamId,
+        // TODO fix
+        atomistTeamName: payload.teamId,
+    };
+
     return handlePushBasedEventOnRepo(payload.teamId,
-        invokeEventHandlerUsingHttp(cc, payload.teamId),
+        invokeEventHandlerUsingHttp(cc, target),
         lc, payload, "SetGoalsOnPush");
 }

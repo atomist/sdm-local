@@ -21,6 +21,7 @@ import { isArray } from "util";
 import { newCorrelationId } from "../../../sdm/configuration/correlationId";
 import { AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
+import { InvocationTarget } from "../../../common/InvocationTarget";
 
 /**
  * Allow params to be expressed in an object for convenience
@@ -28,13 +29,6 @@ import { postToSdm } from "./support/httpInvoker";
 export interface Params {
 
     [propName: string]: string | number;
-}
-
-export interface InvocationTarget {
-
-    atomistTeamId: string;
-    atomistTeamName: string;
-    correlationId?: string;
 }
 
 export interface CommandHandlerInvocation extends InvocationTarget {
