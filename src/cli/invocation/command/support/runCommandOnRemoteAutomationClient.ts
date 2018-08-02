@@ -28,9 +28,12 @@ import { newCorrelationId, pidToPort } from "../../../../sdm/configuration/corre
 import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
+import { warningMessage } from "./consoleOutput";
 
 /**
- * All invocation goes through this
+ * All invocations from the CLI go through this function.
+ * Validate command line arguments and prompt for missing or invalid arguments.
+ * @param command command populated by yargs
  * @return {Promise<any>}
  */
 export async function runCommandOnRemoteAutomationClient(connectionConfig: AutomationClientConnectionConfig,
@@ -65,6 +68,10 @@ export async function runCommandOnRemoteAutomationClient(connectionConfig: Autom
     return invokeCommandHandler(connectionConfig, invocation, correlationId);
 }
 
+function valid(p: Parameter, value: string): boolean {
+    return !p.pattern || new RegExp(p.pattern).test(value);
+}
+
 /**
  * Gather missing parameters from the command line and add them to args
  * @param {CommandHandlerMetadata} hi
@@ -72,28 +79,46 @@ export async function runCommandOnRemoteAutomationClient(connectionConfig: Autom
  * @return {object}
  */
 async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[]): Promise<void> {
-    function mustBeSupplied(p: Parameter) {
-        return p.required && (args.find(a => a.name === p.name) === undefined || args.find(a => a.name === p.name).value === undefined);
+    function findArg(p: Parameter): Arg {
+        return args.find(a => a.name === p.name);
     }
 
-    const questions =
-        hi.parameters
-            .filter(mustBeSupplied)
-            .map(p => {
-                const nameToUse = convertToDisplayable(p.name);
-                return {
-                    name: nameToUse,
-                    default: p.default_value,
-                    message: p.description,
-                    validate: value => {
-                        const pass = !p.pattern || value.match(new RegExp(p.pattern));
-                        if (pass) {
-                            return true;
-                        }
-                        return `Please enter a valid ${nameToUse} - ${p.valid_input}`;
-                    },
-                };
-            });
+    function mustBeSupplied(p: Parameter) {
+        const arg = findArg(p);
+        return p.required && (
+            !arg || arg.value === undefined ||
+            !valid(p, arg.value.toString())
+        );
+    }
+
+    function validInputDisplay(p: Parameter) {
+        return !!p.valid_input ? (": " + !!p.valid_input): ""
+    }
+
+    _.sortBy(hi.parameters, p => p.name)
+        .map(p => ({ parameter: p, arg: findArg(p) }))
+        .filter(pair => !!pair.arg && !!pair.arg.value)
+        .filter(pair => !valid(pair.parameter, pair.arg.value.toString()))
+        .forEach(pair => warningMessage("Value of '%s' for '%s' is invalid%s\n",
+            pair.arg.value, pair.parameter.name,
+            validInputDisplay(pair.parameter)));
+
+    const questions = hi.parameters
+        .filter(mustBeSupplied)
+        .map(p => {
+            const nameToUse = convertToDisplayable(p.name);
+            return {
+                name: nameToUse,
+                default: p.default_value,
+                message: p.description,
+                validate: value => {
+                    if (valid(p, value)) {
+                        return true;
+                    }
+                    return `Please enter a valid ${nameToUse}${validInputDisplay(p)}`;
+                },
+            };
+        });
     const fromPrompt = await inquirer.prompt(questions);
     Object.getOwnPropertyNames(fromPrompt)
         .forEach(enteredName => {
