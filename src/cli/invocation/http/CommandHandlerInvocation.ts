@@ -49,12 +49,13 @@ export interface CommandHandlerInvocation extends InvocationTarget {
 export async function invokeCommandHandler(config: AutomationClientConnectionRequest,
                                            invocation: CommandHandlerInvocation): Promise<HandlerResult> {
 
+    const parameters = propertiesToArgs(invocation.parameters);
     const data = {
         command: invocation.name,
-        parameters: propertiesToArgs(invocation.parameters),
+        parameters,
         mapped_parameters: propertiesToArgs(invocation.mappedParameters || {}).concat([
             { name: "slackTeam", value: invocation.atomistTeamId },
-        ]),
+        ]).concat(parameters), // mapped parameters can also be passed in
         secrets: (invocation.secrets || []).concat([
             { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },
         ]),
@@ -67,6 +68,7 @@ export async function invokeCommandHandler(config: AutomationClientConnectionReq
     };
 
     if (!automationClientInstance()) {
+        // This process is somehow not the SDM, and so maybe there's an SDM that we can pass this on to.
         assert(!!config, "Config must be provided");
         assert(!!config.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(config));
         const url = `/command`;
