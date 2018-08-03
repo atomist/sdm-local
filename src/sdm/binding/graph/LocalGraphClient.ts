@@ -23,7 +23,7 @@ import {
 
 /**
  * Local graph client. Returns empty result set or throws an
- * exception on all calls. GraphQL is not presently supported in Slalom.
+ * exception on all calls. GraphQL is not presently supported in Local SDM.
  */
 export class LocalGraphClient implements GraphClient {
 

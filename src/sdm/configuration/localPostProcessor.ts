@@ -101,7 +101,9 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                     atomistTeamName: cc.atomistTeamName,
                     atomistTeamId: cc.atomistTeamId,
                 };
-                const r = await invokeCommandHandlerInProcess()(invocation);
+                const r = await invokeCommandHandlerInProcess()(invocation)
+                    .then(r => res.json(decircle(r)),
+                    boo => res.status(500).send(boo.message));
                 return res.json(r);
             });
             exp.get(ActionRoute + "/:description", async (req, res) => {
