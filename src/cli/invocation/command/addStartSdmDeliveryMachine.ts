@@ -19,6 +19,9 @@ import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
 import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
 import { SdmCd } from "../../../pack/sdm-cd/SdmCd";
 
+import chalk from "chalk";
+import { fetchMetadataFromAutomationClient } from "../http/fetchMetadataFromAutomationClient";
+
 export const DefaultSdmCdPort = 2901;
 
 /**
@@ -27,14 +30,16 @@ export const DefaultSdmCdPort = 2901;
  */
 export function addStartSdmDeliveryMachine(yargs: Argv) {
     yargs.command({
-        // TODO what's wrong with this
         command: "deliver [port] [base]",
         describe: "Start SDM delivery machine",
         handler: argv =>  {
             return logExceptionsToConsole(async () => {
                 const port = !!argv.port ? parseInt(argv.port) : DefaultSdmCdPort;
                 const where = await startSdmMachine(port, argv.base);
-                infoMessage("Started local SDM delivery machine at %s\n", where.baseEndpoint)
+                const client = await fetchMetadataFromAutomationClient(where);
+                infoMessage("Started local SDM delivery machine %s at %s\n",
+                    chalk.bold(client.client.name),
+                    chalk.underline(where.baseEndpoint));
             }, true);
         },
     });

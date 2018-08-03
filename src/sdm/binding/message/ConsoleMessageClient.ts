@@ -101,7 +101,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
 
     public async addressUsers(msg: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
         logger.debug("MessageClient.addressUsers: Raw mesg=\n%j\nUsers=%s", msg, users);
-        return this.sender(`#${users} ${msg}\n`);
+        return this.sender(`#${users} ${this.dateString()} ${msg}\n`);
     }
 
     private async renderAction(channel: string, action: slack.Action, actionKey: string) {
@@ -119,7 +119,11 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
      * @param {string} markdown
      */
     private writeToChannel(channels: string[] | string, markdown: string) {
-        return this.sender(chalk.gray("#") + marked(` **${channels}** ` + markdown, this.markedOptions));
+        return this.sender(chalk.gray("#") + marked(` **${channels}** ${this.dateString()} ` + markdown, this.markedOptions));
+    }
+
+    private dateString() {
+        return chalk.dim(new Date().toISOString());
     }
 
     constructor(private readonly linkedChannel: string,

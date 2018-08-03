@@ -37,7 +37,8 @@ export async function runOnGitHook(argv: string[],
 
     const clients = await clientFinder.findAutomationClients();
     if (clients.length === 0) {
-        throw new Error("No connected clients found");
+        infoMessage("No Atomist connected clients found");
+        process.exit(0);
     }
     const automationClientInfo = clients[0];
 

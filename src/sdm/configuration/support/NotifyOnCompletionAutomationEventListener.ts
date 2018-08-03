@@ -22,6 +22,10 @@ import { CommandInvocation } from "@atomist/automation-client/internal/invoker/P
 import { AutomationEventListenerSupport } from "@atomist/automation-client/server/AutomationEventListener";
 import { CustomEventDestination } from "@atomist/automation-client/spi/message/MessageClient";
 
+/**
+ * Well-known destination for messages on command completion
+ * @type {CustomEventDestination}
+ */
 export const CommandCompletionDestination = new CustomEventDestination("completion");
 
 /**
@@ -33,7 +37,24 @@ export class NotifyOnCompletionAutomationEventListener extends AutomationEventLi
         return ctx.messageClient.send("Success", CommandCompletionDestination);
     }
 
-    public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<void> {
-        return ctx.messageClient.send("Failure", CommandCompletionDestination);
+    public commandFailed(payload: CommandInvocation, ctx: HandlerContext, error: any): Promise<void> {
+        return ctx.messageClient.send({
+            kind: FailureKind,
+            error,
+        }, CommandCompletionDestination);
     }
+}
+
+const FailureKind = "failure";
+
+export interface FailureMessage {
+
+    kind: "failure";
+
+    error: any;
+
+}
+
+export function isFailureMessage(o: any): o is FailureMessage {
+    return o.kind === FailureKind;
 }

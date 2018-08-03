@@ -20,9 +20,9 @@ import axios from "axios";
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import { AllMessagesPort } from "../../../cli/invocation/command/addStartListenerCommand";
-import { infoMessage } from "../../../cli/invocation/command/support/consoleOutput";
+import { errorMessage, infoMessage } from "../../../cli/invocation/command/support/consoleOutput";
 import { AutomationClientConnectionRequest } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
-import { CommandCompletionDestination } from "../../configuration/support/NotifyOnCompletionAutomationEventListener";
+import { CommandCompletionDestination, isFailureMessage } from "../../configuration/support/NotifyOnCompletionAutomationEventListener";
 import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
 
 export const MessageRoute = "/message";
@@ -50,7 +50,11 @@ export function startHttpMessageListener(port: number = AllMessagesPort,
     app.get("/", (req, res) => res.send("Atomist Listener Demon\n"));
 
     app.post(MessageRoute, (req, res, next) => {
+        // Shut down the listener
         if (killOnCommandCompletion && req.body.destinations.some(d => d.rootType === CommandCompletionDestination.rootType)) {
+            if (isFailureMessage(req.body.message)) {
+                errorMessage("Command failure\n%j\n", req.body.message);
+            }
             process.exit(0);
             return;
         }
@@ -63,6 +67,7 @@ export function startHttpMessageListener(port: number = AllMessagesPort,
     app.listen(port,
         () => {
             if (!killOnCommandCompletion) {
+                // It's not a transient destination
                 infoMessage(`Atomist Slalom: Listening on port ${port}...\n`);
             }
         },
