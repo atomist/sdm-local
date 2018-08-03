@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-const ClientType = "slalom";
+import { infoMessage } from "../..";
+
+const ClientType = "atomist-cli";
 
 /**
  * Create a correctly formatted correlation ID. We encode the port that
@@ -22,15 +24,22 @@ const ClientType = "slalom";
  * and the channel to use to display messages.
  * @return {string}
  */
-export function newCorrelationId(opts: {
+export async function newCorrelationId(opts: {
     channel: string,
     encodeListenerPort?: boolean,
-} = { channel: "general", encodeListenerPort: false}): string {
-    const encodedPort = opts.encodeListenerPort ? `${pidToPort(process.pid)}-` : "";
-    return `${ClientType}-${encodedPort}${opts.channel || "general"}-${new Date().getTime()}`;
+} = { channel: "general", encodeListenerPort: false}): Promise<string> {
+    const encodedPort = opts.encodeListenerPort ? `${await portToListenOnFor(process.pid)}-` : "";
+    const corrId = `${ClientType}-${encodedPort}${opts.channel || "general"}-${new Date().getTime()}`;
+    infoMessage("New correlation id %s", corrId);
+    return corrId;
 }
 
-export function clientIdentifier(correlationId: string): number | undefined {
+/**
+ * Return the port to respond to this on
+ * @param {string} correlationId
+ * @return {number | undefined}
+ */
+export function portToRespondOn(correlationId: string): number | undefined {
     const pattern = new RegExp(`^${ClientType}\-([^\-]+)\-`);
     const id = correlationId.match(pattern)[1];
     return !!id ? parseInt(id, 10) : undefined;
@@ -42,6 +51,24 @@ export function channelFor(correlationId: string): string {
     return channel;
 }
 
-export function pidToPort(pid: number): number {
-    return pid % 55536 + 10000;
+const LowerPort = 10000;
+
+const portfinder = require("portfinder");
+
+// Keep track of ports we've used
+const pidToPort: { [index: number]: number} = [];
+
+/**
+ * Return the port to listen on for this process id
+ * @param {number} pid
+ * @return {number}
+ */
+export async function portToListenOnFor(pid: number): Promise<number> {
+    const foundPort = pidToPort[pid];
+    if (foundPort !== undefined) {
+        return foundPort;
+    }
+    const port = await portfinder.getPortPromise({/*host: this.options.baseUrl,*/ port: LowerPort});
+    pidToPort[pid] = port;
+    return port;
 }

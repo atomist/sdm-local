@@ -27,7 +27,7 @@ import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessag
 import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
-import { channelFor, clientIdentifier, } from "./correlationId";
+import { channelFor, portToRespondOn, } from "./correlationId";
 import { createSdmOptions } from "./createSdmOptions";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
@@ -153,7 +153,7 @@ function setMessageClient(configuration: Configuration, localMachineConfig: Loca
             // TOD parameterize this
             const machineAddress: AutomationClientConnectionRequest = { baseEndpoint: "http://localhost:2866" };
             const channel = channelFor(aca.context.correlationId);
-            const clientId = clientIdentifier(aca.context.correlationId);
+            const clientId = portToRespondOn(aca.context.correlationId);
             return new BroadcastingMessageClient(
                 new HttpClientMessageClient(channel, AllMessagesPort, machineAddress,
                     actionStore),

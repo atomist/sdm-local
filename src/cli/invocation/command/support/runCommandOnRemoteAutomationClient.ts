@@ -24,7 +24,7 @@ import { MappedParameterResolver } from "../../../../sdm/binding/mapped-paramete
 import { startHttpMessageListener } from "../../../../sdm/binding/message/httpMessageListener";
 import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/project/ExpandedTreeMappedParameterResolver";
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
-import { newCorrelationId, pidToPort } from "../../../../sdm/configuration/correlationId";
+import { newCorrelationId, portToListenOnFor } from "../../../../sdm/configuration/correlationId";
 import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionConfig";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
 import { warningMessage } from "./consoleOutput";
@@ -43,7 +43,7 @@ export async function runCommandOnRemoteAutomationClient(connectionConfig: Autom
                                                          hm: CommandHandlerMetadata,
                                                          command: object): Promise<any> {
     await suggestStartingAllMessagesListener();
-    startHttpMessageListener(pidToPort(process.pid), true);
+    startHttpMessageListener(await portToListenOnFor(process.pid), true);
     const extraArgs = Object.getOwnPropertyNames(command)
         .map(name => ({ name: convertToUsable(name), value: command[name] }))
         .filter(keep => !!keep.value);
@@ -60,7 +60,7 @@ export async function runCommandOnRemoteAutomationClient(connectionConfig: Autom
     }));
     await promptForMissingMappedParameters(hm, mappedParameters);
 
-    const correlationId = newCorrelationId({ channel: parseOwnerAndRepo(repositoryOwnerParentDirectory).repo, encodeListenerPort: true });
+    const correlationId = await newCorrelationId({ channel: parseOwnerAndRepo(repositoryOwnerParentDirectory).repo, encodeListenerPort: true });
 
     const invocation: CommandHandlerInvocation = {
         name: hm.name,
