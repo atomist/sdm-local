@@ -23,7 +23,6 @@ import { AutomationClientConnectionRequest } from "../AutomationClientConnection
 import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
 
 import * as os from "os";
-import { DefaultSdmCdPort } from "../../command/addStartSdmDeliveryMachine";
 import chalk from "chalk";
 
 export interface PortRangeOptions {
@@ -34,6 +33,12 @@ export interface PortRangeOptions {
      * Number of ports to check
      */
     checkRange: number;
+
+    /**
+     * Additional ports to try to connect to.
+     * Used for well-known ports
+     */
+    additionalPorts?: number[];
 }
 
 /**
@@ -45,7 +50,8 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
 
     public async findAutomationClients(): Promise<AutomationClientInfo[]> {
         const requests: AutomationClientConnectionRequest[] =
-            _.range(this.options.lowerPort, this.options.lowerPort + this.options.checkRange).concat([DefaultSdmCdPort])
+            _.range(this.options.lowerPort, this.options.lowerPort + this.options.checkRange)
+                .concat(this.options.additionalPorts || [])
                 .map(port => ({
                     baseEndpoint: `http://${os.hostname}:${port}`,
                 }));

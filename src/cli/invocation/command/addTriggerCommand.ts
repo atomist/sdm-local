@@ -24,7 +24,7 @@ import { logExceptionsToConsole } from "./support/consoleOutput";
  * Add a command to triggerGitEvents execution following a git event
  * @param {yargs.Argv} yargs
  */
-export function addTriggerCommand(ai: AutomationClientInfo, yargs: Argv) {
+export function addTriggerCommand(yargs: Argv, clients: AutomationClientInfo[]) {
     yargs.command({
         command: "trigger <event> [depth]",
         describe: "Trigger commit action on the current repository",
@@ -37,7 +37,8 @@ export function addTriggerCommand(ai: AutomationClientInfo, yargs: Argv) {
             });
         },
         handler: ya => {
-            return logExceptionsToConsole(() => triggerGitEvents(ai, ya.event, ya.depth), ai.connectionConfig.showErrorStacks);
+            return logExceptionsToConsole(() => triggerGitEvents(clients, ya.event, ya.depth),
+                true);
         },
     });
 }

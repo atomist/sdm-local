@@ -24,21 +24,25 @@ import { addImportFromGitRemoteCommand } from "./command/addImportFromGitRemoteC
 import { addShowSkillsCommand } from "./command/showSkillsCommand";
 import { infoMessage } from "./command/support/consoleOutput";
 import { AutomationClientFinder } from "./http/AutomationClientFinder";
-import { PortRangeAutomationClientFinder } from "./http/support/PortRangeAutomationClientFinder";
 import { Argv } from "yargs";
 import { addStartSdmDeliveryMachine } from "./command/addStartSdmDeliveryMachine";
+import { defaultAutomationClientFinder } from "./http/support/defaultAutomationClientFinder";
 
 /**
  * Start up the Slalom CLI
  * @return {yargs.Arguments}
  */
 export async function addLocalSdmCommands(yargs: Argv,
-                                          finder: AutomationClientFinder = new PortRangeAutomationClientFinder()) {
+                                          finder: AutomationClientFinder = defaultAutomationClientFinder()) {
     addBootstrapCommands(yargs);
     addStartSdmDeliveryMachine(yargs);
     addStartListenerCommand(yargs);
 
-    for (const client of await finder.findAutomationClients()) {
+    const clients = await finder.findAutomationClients();
+    addTriggerCommand(yargs, clients);
+
+    // TODO filter on directories
+    for (const client of clients) {
         await addCommandsToConnectTo(client, yargs);
     }
 }
@@ -61,7 +65,6 @@ async function addCommandsToConnectTo(client: AutomationClientInfo, yargs: Argv)
 
     // If we were able to connect to an SDM...
     if (!!client.client) {
-        addTriggerCommand(client, yargs);
         addCommandsByName(client, yargs);
         addIntents(client, yargs);
         addShowSkillsCommand(client, yargs);

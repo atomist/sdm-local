@@ -19,15 +19,14 @@ import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSyste
 import { infoMessage, logExceptionsToConsole } from "../command/support/consoleOutput";
 import { suggestStartingAllMessagesListener } from "../command/support/suggestStartingAllMessagesListener";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
-import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
-import { PortRangeAutomationClientFinder } from "../http/support/PortRangeAutomationClientFinder";
 import { argsToGitHookInvocation, handleGitHookEvent } from "./handleGitHookEvent";
+import { defaultAutomationClientFinder } from "../http/support/defaultAutomationClientFinder";
 
 /**
  * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
  */
 export async function runOnGitHook(argv: string[],
-                                   clientFinder: AutomationClientFinder = new PortRangeAutomationClientFinder(),
+                                   clientFinder: AutomationClientFinder = defaultAutomationClientFinder(),
 ) {
     const invocation = argsToGitHookInvocation(argv);
     if (isAtomistTemporaryBranch(invocation.branch)) {

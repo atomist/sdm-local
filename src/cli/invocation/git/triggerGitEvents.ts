@@ -28,15 +28,22 @@ import {
     infoMessage,
 } from "../command/support/consoleOutput";
 import { handleGitHookEvent } from "./handleGitHookEvent";
+import { PortRangeAutomationClientFinder } from "../http/support/PortRangeAutomationClientFinder";
+import { AutomationClientFinder } from "../http/AutomationClientFinder";
 
 /**
  * Trigger git events to the given depth in the current project repo
- * @param {AutomationClientInfo} ai
+ * @param clients clients to dispatch to
  * @param {string} event
  * @param {number} depth
  * @return {Promise<void>}
  */
-export async function triggerGitEvents(ai: AutomationClientInfo, event: string, depth: number) {
+export async function triggerGitEvents(clients: AutomationClientInfo[], event: string, depth: number) {
+    const relevantClients = clients.filter(client => !!client.localConfig && withinExpandedTree(client.localConfig.repositoryOwnerParentDirectory));
+    await Promise.all(relevantClients.map(client => triggerGitEventsOn(client, event, depth)));
+}
+
+async function triggerGitEventsOn(ai: AutomationClientInfo, event: string, depth: number) {
     const currentDir = determineCwd();
     // TODO fix this
     const teamId = "T123";
@@ -58,11 +65,14 @@ export async function triggerGitEvents(ai: AutomationClientInfo, event: string, 
             }
             const invocation = { event, baseDir: currentDir, branch, sha, teamId };
             logger.debug("Trigger %j", invocation);
+            infoMessage("Sending event %j to machine %s\n", invocation, ai.client.name);
             await handleGitHookEvent(ai.connectionConfig, ai.localConfig, invocation);
         }
     } else {
         errorMessage(
-            `Working directory ${currentDir} is not within expanded working tree under ${ai.localConfig.repositoryOwnerParentDirectory}`);
-        process.exit(1);
+            "Working directory %s is not within expanded working tree under %s for machine %s\n",
+            currentDir,
+            ai.localConfig.repositoryOwnerParentDirectory,
+            ai.client.name);
     }
 }
