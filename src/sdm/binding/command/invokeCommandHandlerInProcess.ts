@@ -48,8 +48,9 @@ export function invokeCommandHandlerInProcess(): CommandHandlerInvoker {
             logger.debug("Invoking command %s using %j", invocation.name, data);
             return automationClientInstance().processCommand(data as CommandIncoming, async result => {
                 const r = await result;
-                assert(r.code === 0,
-                    "Command handler did not succeed. Returned: " + JSON.stringify(r, null, 2));
+                if(r.code !== 0) {
+                    logger.error("Command handler did not succeed. Returned: " + JSON.stringify(r, null, 2));
+                }
                 return r;
             });
         }

@@ -68,7 +68,7 @@ export function startHttpMessageListener(port: number = AllMessagesPort,
         () => {
             if (!killOnCommandCompletion) {
                 // It's not a transient destination
-                infoMessage(`Atomist Slalom: Listening on port ${port}...\n`);
+                infoMessage(`Atomist Local SDM: Listening on port ${port}...\n`);
             }
         },
     );

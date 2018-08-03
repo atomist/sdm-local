@@ -51,7 +51,7 @@ export interface EmbeddedMachineOptions {
 const createMachine = (configure: ConfigureMachine) => (config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine => {
     const sdm: SoftwareDeliveryMachine = createSoftwareDeliveryMachine(
         {
-            name: "Slalom bootstrap sdm.machine",
+            name: "Local bootstrap sdm.machine",
             configuration: config,
         });
     sdm.addExtensionPacks(LocalLifecycle);

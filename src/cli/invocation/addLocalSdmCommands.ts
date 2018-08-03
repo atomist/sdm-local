@@ -29,7 +29,7 @@ import { AutomationClientFinder } from "./http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "./http/support/defaultAutomationClientFinder";
 
 /**
- * Start up the Slalom CLI
+ * Start up the CLI
  * @return {yargs.Arguments}
  */
 export async function addLocalSdmCommands(yargs: Argv,
