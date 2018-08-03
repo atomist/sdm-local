@@ -22,8 +22,8 @@ import { infoMessage } from "../../../..";
 import { AutomationClientConnectionRequest } from "../AutomationClientConnectionConfig";
 import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
 
-import * as os from "os";
 import chalk from "chalk";
+import * as os from "os";
 
 export interface PortRangeOptions {
 

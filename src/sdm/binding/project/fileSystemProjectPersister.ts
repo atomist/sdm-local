@@ -21,12 +21,12 @@ import { ProjectPersister } from "@atomist/automation-client/operations/generate
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
 import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
+import { LocalModeConfiguration } from "@atomist/sdm-core";
 import * as fs from "fs";
 import { promisify } from "util";
 import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 import { addGitHooksToProject } from "../../../cli/setup/addGitHooks";
 import { handlePushBasedEventOnRepo } from "../../../common/handlePushBasedEventOnRepo";
-import { LocalModeConfiguration } from "@atomist/sdm-core";
 import { lastSha } from "../../util/git";
 import { runAndLog } from "../../util/runAndLog";
 import { invokeEventHandlerInProcess } from "../event/invokeEventHandlerInProcess";

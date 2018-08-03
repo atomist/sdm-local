@@ -27,9 +27,9 @@ import {
     errorMessage,
     infoMessage,
 } from "../command/support/consoleOutput";
-import { handleGitHookEvent } from "./handleGitHookEvent";
-import { PortRangeAutomationClientFinder } from "../http/support/PortRangeAutomationClientFinder";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
+import { PortRangeAutomationClientFinder } from "../http/support/PortRangeAutomationClientFinder";
+import { handleGitHookEvent } from "./handleGitHookEvent";
 
 /**
  * Trigger git events to the given depth in the current project repo

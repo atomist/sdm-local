@@ -19,6 +19,7 @@ import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/metadata/automationMetadata";
 import * as inquirer from "inquirer";
 import * as _ from "lodash";
+import { InvocationTarget } from "../../../../common/InvocationTarget";
 import { FromAnyMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/FromAnyMappedParameterResolver";
 import { MappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/MappedParameterResolver";
 import { startHttpMessageListener } from "../../../../sdm/binding/message/httpMessageListener";
@@ -29,7 +30,6 @@ import { AutomationClientConnectionRequest } from "../../http/AutomationClientCo
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
 import { warningMessage } from "./consoleOutput";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
-import { InvocationTarget } from "../../../../common/InvocationTarget";
 
 /**
  * All invocations from the CLI go through this function.

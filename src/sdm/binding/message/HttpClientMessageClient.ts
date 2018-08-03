@@ -24,6 +24,7 @@ import {
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
+import { AutomationClientConnectionRequest } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 import { ActionStore } from "./ActionStore";
 import { DevNullMessageClient } from "./devNullMessageClient";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
@@ -31,7 +32,6 @@ import {
     messageListenerEndpoint,
     StreamedMessage,
 } from "./httpMessageListener";
-import { AutomationClientConnectionRequest } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 
 /**
  * Message client that POSTS to an Atomist server and logs to a fallback otherwise
@@ -52,7 +52,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
                 message: msg,
                 machineAddress: this.machineAddress,
                 options,
-                destinations: dests
+                destinations: dests,
             },
             () => this.delegate.send(msg, destinations, options));
     }

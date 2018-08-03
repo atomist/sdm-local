@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-import { Configuration, HandlerResult, logger, } from "@atomist/automation-client";
+import { Configuration, HandlerResult, logger } from "@atomist/automation-client";
+import { LocalModeConfiguration } from "@atomist/sdm-core";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import { DefaultAutomationClientConnectionConfig } from "../../cli/entry/resolveConnectionConfig";
 import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
-import { CommandHandlerInvocation, invokeCommandHandler, } from "../../cli/invocation/http/CommandHandlerInvocation";
+import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
+import { CommandHandlerInvocation, invokeCommandHandler } from "../../cli/invocation/http/CommandHandlerInvocation";
 import { isInLocalMode } from "../api/isInLocalMode";
 import { LocalGraphClient } from "../binding/graph/LocalGraphClient";
 import { ActionRoute, ActionStore, freshActionStore } from "../binding/message/ActionStore";
@@ -27,11 +29,9 @@ import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessag
 import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
-import { channelFor, portToRespondOn, } from "./correlationId";
+import { channelFor, portToRespondOn } from "./correlationId";
 import { createSdmOptions } from "./createSdmOptions";
-import { LocalModeConfiguration } from "@atomist/sdm-core";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
-import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
 
 import * as assert from "assert";
 

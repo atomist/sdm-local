@@ -18,10 +18,10 @@ import { HandlerResult, logger, Secrets } from "@atomist/automation-client";
 import { replacer } from "@atomist/automation-client/internal/transport/AbstractRequestProcessor";
 import * as stringify from "json-stringify-safe";
 import { EventSender } from "../../../common/EventHandlerInvocation";
+import { InvocationTarget } from "../../../common/InvocationTarget";
 import { newCorrelationId } from "../../../sdm/configuration/correlationId";
 import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
-import { InvocationTarget } from "../../../common/InvocationTarget";
 
 import * as assert from "assert";
 

@@ -29,13 +29,13 @@ import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
 
 import * as os from "os";
+import { determineDefaultRepositoryOwnerParentDirectory } from "../../sdm/configuration/createSdmOptions";
 import { LocalLifecycle } from "../../sdm/configuration/localLifecycle";
 import { configureLocal } from "../../sdm/configuration/localPostProcessor";
 import {
     AutomationClientConnectionConfig,
     AutomationClientConnectionRequest,
 } from "../invocation/http/AutomationClientConnectionConfig";
-import { determineDefaultRepositoryOwnerParentDirectory } from "../../sdm/configuration/createSdmOptions";
 
 const DefaultBootstrapPort = 2900;
 
@@ -111,4 +111,3 @@ export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Pro
             baseEndpoint: `http://${os.hostname}:${optsToUse.port}`,
         }));
 }
-

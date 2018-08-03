@@ -15,9 +15,9 @@
  */
 
 import { ExtensionPack, Goals, SoftwareDeliveryMachine, whenPushSatisfies } from "@atomist/sdm";
-import { IsLocal } from "../../sdm/api/pushtest/isLocal";
-import { executeSdmDelivery, IsSdm, SdmDeliveryGoal } from "./SdmDeliveryGoal";
 import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
+import { PushTests } from "../../sdm/api/pushTests";
+import { executeSdmDelivery, IsSdm, SdmDeliveryGoal } from "./SdmDeliveryGoal";
 
 /**
  * Add this before anything else as it relies on goal locking
@@ -30,7 +30,7 @@ export const SdmCd: ExtensionPack = {
         sdm.addGoalImplementation("SDM CD", SdmDeliveryGoal,
             executeSdmDelivery(sdm.configuration.sdm.projectLoader, {}));
         sdm.addGoalContributions(
-            whenPushSatisfies(IsSdm, IsLocal).setGoals(
+            whenPushSatisfies(IsSdm, PushTests).setGoals(
                 new Goals("delivery", SdmDeliveryGoal).andLock()));
     },
 };

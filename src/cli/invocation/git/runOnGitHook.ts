@@ -19,8 +19,8 @@ import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSyste
 import { infoMessage, logExceptionsToConsole } from "../command/support/consoleOutput";
 import { suggestStartingAllMessagesListener } from "../command/support/suggestStartingAllMessagesListener";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
-import { argsToGitHookInvocation, handleGitHookEvent } from "./handleGitHookEvent";
 import { defaultAutomationClientFinder } from "../http/support/defaultAutomationClientFinder";
+import { argsToGitHookInvocation, handleGitHookEvent } from "./handleGitHookEvent";
 
 /**
  * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>

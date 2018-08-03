@@ -21,8 +21,8 @@ import {
     ProjectLoadingParameters,
     WithLoadedProject,
 } from "@atomist/sdm";
-import * as fs from "fs";
 import { LocalModeConfiguration } from "@atomist/sdm-core";
+import * as fs from "fs";
 import { runAndLog } from "../../util/runAndLog";
 import { dirFor } from "./expandedTreeUtils";
 import {

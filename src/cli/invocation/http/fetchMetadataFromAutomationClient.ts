@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import axios from "axios";
 import { LocalModeConfiguration } from "@atomist/sdm-core";
+import axios from "axios";
 import { AutomationClientInfo, ConnectedClient } from "../../AutomationClientInfo";
 import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 

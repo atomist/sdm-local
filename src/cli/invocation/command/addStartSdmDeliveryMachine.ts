@@ -15,9 +15,9 @@
  */
 
 import { Argv } from "yargs";
-import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
-import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
 import { SdmCd } from "../../../pack/sdm-cd/SdmCd";
+import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
+import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
 
 import chalk from "chalk";
 import { fetchMetadataFromAutomationClient } from "../http/fetchMetadataFromAutomationClient";

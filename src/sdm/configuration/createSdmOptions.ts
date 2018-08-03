@@ -18,6 +18,8 @@ import { SoftwareDeliveryMachineOptions } from "@atomist/sdm";
 import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
+import * as os from "os";
+import * as path from "path";
 import { DefaultAutomationClientConnectionConfig } from "../../cli/entry/resolveConnectionConfig";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
 import { expandedTreeRepoFinder } from "../binding/project/expandedTreeRepoFinder";
@@ -25,8 +27,6 @@ import { ExpandedTreeRepoRefResolver } from "../binding/project/ExpandedTreeRepo
 import { FileSystemProjectLoader } from "../binding/project/FileSystemProjectLoader";
 import { fileSystemProjectPersister } from "../binding/project/fileSystemProjectPersister";
 import { LocalRepoTargets } from "../binding/project/LocalRepoTargets";
-import * as os from "os";
-import * as path from "path";
 
 import { LocalModeConfiguration } from "@atomist/sdm-core";
 

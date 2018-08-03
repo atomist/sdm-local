@@ -15,11 +15,20 @@
  */
 
 import { predicatePushTest, PushTest } from "@atomist/sdm";
-import { isFileSystemRemoteRepoRef } from "../../binding/project/FileSystemRemoteRepoRef";
+import { isFileSystemRemoteRepoRef } from "../binding/project/FileSystemRemoteRepoRef";
+import { isInLocalMode } from "./isInLocalMode";
 
 /**
- * Are we running locally, on a local project?
+ * Is this a local project?
  * @type {PredicatePushTest}
  */
-export const IsLocal: PushTest = predicatePushTest("IsLocal",
+export const PushTests: PushTest = predicatePushTest("IsLocal",
     async p => isFileSystemRemoteRepoRef(p.id));
+
+/**
+ * Is this SDM running in local mode?
+ */
+export const IsInLocalMode: PushTest = {
+    name: "IsInLocalMode",
+    mapping: async () => isInLocalMode(),
+};

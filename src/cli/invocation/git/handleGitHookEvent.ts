@@ -15,12 +15,12 @@
  */
 
 import { logger } from "@atomist/automation-client";
-import { EventOnRepo, handlePushBasedEventOnRepo } from "../../../common/handlePushBasedEventOnRepo";
 import { LocalModeConfiguration } from "@atomist/sdm-core";
+import { EventOnRepo, handlePushBasedEventOnRepo } from "../../../common/handlePushBasedEventOnRepo";
+import { InvocationTarget } from "../../../common/InvocationTarget";
 import { errorMessage } from "../command/support/consoleOutput";
 import { AutomationClientConnectionRequest } from "../http/AutomationClientConnectionConfig";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
-import { InvocationTarget } from "../../../common/InvocationTarget";
 
 export interface GitHookInvocation extends EventOnRepo {
     // TODO scope to hook events

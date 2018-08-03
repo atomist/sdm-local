@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 export interface InvocationTarget {
 
     atomistTeamId: string;

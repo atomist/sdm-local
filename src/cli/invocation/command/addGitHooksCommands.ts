@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
+import { LocalModeConfiguration } from "@atomist/sdm-core";
 import { Argv } from "yargs";
 import { expandedTreeRepoFinder } from "../../../sdm/binding/project/expandedTreeRepoFinder";
 import { determineCwd, parseOwnerAndRepo } from "../../../sdm/binding/project/expandedTreeUtils";
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
-import { LocalModeConfiguration } from "@atomist/sdm-core";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import {
     addGitHooks,

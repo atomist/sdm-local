@@ -96,7 +96,7 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
                                            params: object) {
     const cc = await startEmbeddedMachine({
         repositoryOwnerParentDirectory,
-        configure
+        configure,
     });
     const ai = await fetchMetadataFromAutomationClient(cc);
     if (!ai.client) {

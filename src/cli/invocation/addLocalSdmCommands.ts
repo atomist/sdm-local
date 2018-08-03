@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
+import { Argv } from "yargs";
 import { AutomationClientInfo } from "../AutomationClientInfo";
-import { addAddGitHooksCommand, addRemoveGitHooksCommand, } from "./command/addGitHooksCommands";
-import { addCommandsByName, addIntents, } from "./command/addIntents";
-import { addStartListenerCommand } from "./command/addStartListenerCommand";
-import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addBootstrapCommands } from "./command/addBootstrapCommands";
+import { addAddGitHooksCommand, addRemoveGitHooksCommand } from "./command/addGitHooksCommands";
 import { addImportFromGitRemoteCommand } from "./command/addImportFromGitRemoteCommand";
+import { addCommandsByName, addIntents } from "./command/addIntents";
+import { addStartListenerCommand } from "./command/addStartListenerCommand";
+import { addStartSdmDeliveryMachine } from "./command/addStartSdmDeliveryMachine";
+import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addShowSkillsCommand } from "./command/showSkillsCommand";
 import { infoMessage } from "./command/support/consoleOutput";
 import { AutomationClientFinder } from "./http/AutomationClientFinder";
-import { Argv } from "yargs";
-import { addStartSdmDeliveryMachine } from "./command/addStartSdmDeliveryMachine";
 import { defaultAutomationClientFinder } from "./http/support/defaultAutomationClientFinder";
 
 /**

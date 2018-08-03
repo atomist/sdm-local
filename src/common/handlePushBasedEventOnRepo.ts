@@ -17,11 +17,11 @@
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { OnPushToAnyBranch } from "@atomist/sdm";
+import { LocalModeConfiguration } from "@atomist/sdm-core";
 import { errorMessage } from "../cli/invocation/command/support/consoleOutput";
 import { pushFromLastCommit } from "../sdm/binding/event/pushFromLastCommit";
 import { isAtomistTemporaryBranch } from "../sdm/binding/project/FileSystemProjectLoader";
 import { FileSystemRemoteRepoRef } from "../sdm/binding/project/FileSystemRemoteRepoRef";
-import { LocalModeConfiguration } from "@atomist/sdm-core";
 import { EventSender } from "./EventHandlerInvocation";
 import Push = OnPushToAnyBranch.Push;
 
