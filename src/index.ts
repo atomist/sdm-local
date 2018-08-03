@@ -1,4 +1,3 @@
-export { LocalMachineConfig } from "./sdm/configuration/LocalMachineConfig";
 export { addLocalSdmCommands } from "./cli/invocation/addLocalSdmCommands";
 export { runOnGitHook } from "./cli/invocation/git/runOnGitHook";
 export { configureLocal } from "./sdm/configuration/localPostProcessor";

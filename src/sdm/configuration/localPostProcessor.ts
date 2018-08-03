@@ -29,17 +29,19 @@ import { HttpClientMessageClient } from "../binding/message/HttpClientMessageCli
 import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
 import { channelFor, portToRespondOn, } from "./correlationId";
 import { createSdmOptions } from "./createSdmOptions";
-import { LocalMachineConfig } from "./LocalMachineConfig";
+import { LocalModeConfiguration } from "@atomist/sdm-core";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
 
+import * as assert from "assert";
+
 /**
  * Configures an automation client in local mode
- * @param {LocalMachineConfig} localMachineConfig
+ * @param {LocalModeConfiguration} localMachineConfig
  * @return {(configuration: Configuration) => Promise<Configuration>}
  */
 export function configureLocal(
-    localMachineConfig: LocalMachineConfig & { forceLocal?: boolean }): (configuration: Configuration) => Promise<Configuration> {
+    localMachineConfig: LocalModeConfiguration & { forceLocal?: boolean }): (configuration: Configuration) => Promise<Configuration> {
     return async configuration => {
 
         // Don't mess with a non local sdm.machine
@@ -73,7 +75,7 @@ export function configureLocal(
     };
 }
 
-function configureWebEndpoints(configuration: Configuration, localMachineConfig: LocalMachineConfig, actionStore: ActionStore) {
+function configureWebEndpoints(configuration: Configuration, localMachineConfig: LocalModeConfiguration, actionStore: ActionStore) {
     // Disable auth as we're only expecting local clients
     // TODO what if not basic
     _.set(configuration, "http.auth.basic.enabled", false);
@@ -145,13 +147,14 @@ function decircle(result: HandlerResult) {
 /**
  * Use custom message client to update HTTP listeners and forward goal events back to the SDM via HTTP
  * @param {Configuration} configuration
- * @param {LocalMachineConfig} localMachineConfig
+ * @param {LocalModeConfiguration} localMachineConfig
  */
-function setMessageClient(configuration: Configuration, localMachineConfig: LocalMachineConfig, actionStore: ActionStore) {
+function setMessageClient(configuration: Configuration, localMachineConfig: LocalModeConfiguration, actionStore: ActionStore) {
     configuration.http.messageClientFactory =
         aca => {
             // TOD parameterize this
             const machineAddress: AutomationClientConnectionRequest = { baseEndpoint: "http://localhost:2866" };
+            assert(!!aca.context.correlationId);
             const channel = channelFor(aca.context.correlationId);
             const clientId = portToRespondOn(aca.context.correlationId);
             return new BroadcastingMessageClient(

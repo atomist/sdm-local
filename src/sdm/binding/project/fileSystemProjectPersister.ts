@@ -26,7 +26,7 @@ import { promisify } from "util";
 import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 import { addGitHooksToProject } from "../../../cli/setup/addGitHooks";
 import { handlePushBasedEventOnRepo } from "../../../common/handlePushBasedEventOnRepo";
-import { LocalMachineConfig } from "../../configuration/LocalMachineConfig";
+import { LocalModeConfiguration } from "@atomist/sdm-core";
 import { lastSha } from "../../util/git";
 import { runAndLog } from "../../util/runAndLog";
 import { invokeEventHandlerInProcess } from "../event/invokeEventHandlerInProcess";
@@ -39,7 +39,7 @@ import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
  * our git hooks.
  * @return {ProjectPersister}
  */
-export function fileSystemProjectPersister(cc: AutomationClientConnectionConfig, lc: LocalMachineConfig): ProjectPersister {
+export function fileSystemProjectPersister(cc: AutomationClientConnectionConfig, lc: LocalModeConfiguration): ProjectPersister {
     return async (p, _, id, params) => {
         const baseDir = `${lc.repositoryOwnerParentDirectory}/${id.owner}/${id.repo}`;
         const frr = FileSystemRemoteRepoRef.fromDirectory({
@@ -77,7 +77,7 @@ export function fileSystemProjectPersister(cc: AutomationClientConnectionConfig,
  * @return {Promise<void>}
  */
 async function emitEventsForNewProject(cc: AutomationClientConnectionConfig,
-                                       lc: LocalMachineConfig,
+                                       lc: LocalModeConfiguration,
                                        createdProject: LocalProject,
                                        id: RepoRef) {
     await sendRepoCreationEvent(cc, id);

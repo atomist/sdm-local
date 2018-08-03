@@ -25,29 +25,43 @@ import { ExpandedTreeRepoRefResolver } from "../binding/project/ExpandedTreeRepo
 import { FileSystemProjectLoader } from "../binding/project/FileSystemProjectLoader";
 import { fileSystemProjectPersister } from "../binding/project/fileSystemProjectPersister";
 import { LocalRepoTargets } from "../binding/project/LocalRepoTargets";
-import { LocalMachineConfig } from "./LocalMachineConfig";
+import * as os from "os";
+import * as path from "path";
+
+import { LocalModeConfiguration } from "@atomist/sdm-core";
 
 /**
  * Merge user-supplied configuration with defaults
  * to provide configuration for a local-mode SDM
- * @param {LocalMachineConfig} localMachineConfig
  */
-export function createSdmOptions(localMachineConfig: LocalMachineConfig): SoftwareDeliveryMachineOptions {
+export function createSdmOptions(localModeConfig: LocalModeConfiguration): SoftwareDeliveryMachineOptions {
     // TODO how do we find this?
     const cc = DefaultAutomationClientConnectionConfig;
 
-    const repoRefResolver = new ExpandedTreeRepoRefResolver(localMachineConfig.repositoryOwnerParentDirectory);
+    const configToUse: LocalModeConfiguration = {
+        repositoryOwnerParentDirectory: determineDefaultRepositoryOwnerParentDirectory(),
+        preferLocalSeeds: true,
+        ...localModeConfig,
+    };
+
+    const repoRefResolver = new ExpandedTreeRepoRefResolver(configToUse.repositoryOwnerParentDirectory);
     return {
         // TODO this is the only use of sdm-core
         artifactStore: new EphemeralLocalArtifactStore(),
         projectLoader: new FileSystemProjectLoader(
             new CachingProjectLoader(),
-            localMachineConfig),
+            configToUse),
         logFactory: async (context, goal) => new LoggingProgressLog(goal.name, "info"),
         credentialsResolver: EnvironmentTokenCredentialsResolver,
         repoRefResolver,
-        repoFinder: expandedTreeRepoFinder(localMachineConfig.repositoryOwnerParentDirectory),
-        projectPersister: fileSystemProjectPersister(cc, localMachineConfig),
-        targets: () => new LocalRepoTargets(localMachineConfig.repositoryOwnerParentDirectory),
+        repoFinder: expandedTreeRepoFinder(configToUse.repositoryOwnerParentDirectory),
+        projectPersister: fileSystemProjectPersister(cc, configToUse),
+        targets: () => new LocalRepoTargets(configToUse.repositoryOwnerParentDirectory),
     };
+}
+
+const DefaultAtomistRoot = "atomist";
+
+function determineDefaultRepositoryOwnerParentDirectory() {
+    return process.env.ATOMIST_ROOT || path.join(os.homedir(), DefaultAtomistRoot);
 }

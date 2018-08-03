@@ -18,7 +18,7 @@ import { Argv } from "yargs";
 import { expandedTreeRepoFinder } from "../../../sdm/binding/project/expandedTreeRepoFinder";
 import { determineCwd, parseOwnerAndRepo } from "../../../sdm/binding/project/expandedTreeUtils";
 import { FileSystemRemoteRepoRef, isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
-import { LocalMachineConfig } from "../../../sdm/configuration/LocalMachineConfig";
+import { LocalModeConfiguration } from "@atomist/sdm-core";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import {
     addGitHooks,
@@ -53,7 +53,7 @@ export function addRemoveGitHooksCommand(ai: AutomationClientInfo, yargs: Argv) 
     });
 }
 
-async function installHookOrHooks(lc: LocalMachineConfig) {
+async function installHookOrHooks(lc: LocalModeConfiguration) {
     const repositoryOwnerParentDirectory = lc.repositoryOwnerParentDirectory;
     const { owner, repo } = parseOwnerAndRepo(repositoryOwnerParentDirectory);
     if (!!owner && !!repo) {
@@ -67,7 +67,7 @@ async function installHookOrHooks(lc: LocalMachineConfig) {
     return installAllGitHooks(lc);
 }
 
-async function removeHookOrHooks(lc?: LocalMachineConfig) {
+async function removeHookOrHooks(lc?: LocalModeConfiguration) {
     if (!lc) {
         const cwd = determineCwd();
         return removeGitHooks(cwd);
@@ -88,7 +88,7 @@ async function removeHookOrHooks(lc?: LocalMachineConfig) {
  * * Install git hooks in all git projects under our expanded directory structure
  * @return {Promise<void>}
  */
-async function installAllGitHooks(lc: LocalMachineConfig) {
+async function installAllGitHooks(lc: LocalModeConfiguration) {
     const repoFinder = expandedTreeRepoFinder(lc.repositoryOwnerParentDirectory);
     const allRepos = await repoFinder(undefined);
     for (const rr of allRepos) {
@@ -99,7 +99,7 @@ async function installAllGitHooks(lc: LocalMachineConfig) {
     }
 }
 
-async function removeAllGitHooks(lc: LocalMachineConfig) {
+async function removeAllGitHooks(lc: LocalModeConfiguration) {
     const repoFinder = expandedTreeRepoFinder(lc.repositoryOwnerParentDirectory);
     const allRepos = await repoFinder(undefined);
     for (const rr of allRepos) {

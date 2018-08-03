@@ -22,7 +22,7 @@ import {
     WithLoadedProject,
 } from "@atomist/sdm";
 import * as fs from "fs";
-import { LocalMachineConfig } from "../../configuration/LocalMachineConfig";
+import { LocalModeConfiguration } from "@atomist/sdm-core";
 import { runAndLog } from "../../util/runAndLog";
 import { dirFor } from "./expandedTreeUtils";
 import {
@@ -52,7 +52,7 @@ export class FileSystemProjectLoader implements ProjectLoader {
     }
 
     constructor(private readonly delegate: ProjectLoader,
-                private readonly config: LocalMachineConfig,
+                private readonly config: LocalModeConfiguration,
                 private readonly preprocess: (p: GitProject) => Promise<GitProject> = changeToPushToAtomistBranch(config)) {
     }
 
@@ -77,7 +77,7 @@ export function isAtomistTemporaryBranch(branch: string) {
  * Change the behavior of our project to push to an Atomist branch and merge if it cannot
  * push to the checked out branch.
  */
-function changeToPushToAtomistBranch(localConfig: LocalMachineConfig): (p: GitProject) => Promise<GitProject> {
+function changeToPushToAtomistBranch(localConfig: LocalModeConfiguration): (p: GitProject) => Promise<GitProject> {
     return async p => {
         p.push = async opts => {
             try {

@@ -40,7 +40,7 @@ export function invokeEventHandlerUsingHttp(config: AutomationClientConnectionRe
                 query_id: "q-" + Date.now(),
                 team_id: target.atomistTeamId,
                 team_name: target.atomistTeamName,
-                correlation_id: target.correlationId || newCorrelationId(),
+                correlation_id: target.correlationId || await newCorrelationId(),
             },
             secrets: (invocation.secrets || []).concat([
                 { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },

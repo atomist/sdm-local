@@ -37,7 +37,7 @@ export function invokeEventHandlerInProcess(correlationId?: string): EventSender
                 query_id: "q-" + Date.now(),
                 team_id,
                 team_name,
-                correlation_id: correlationId || newCorrelationId(),
+                correlation_id: correlationId || await newCorrelationId(),
             },
             secrets: (invocation.secrets || []).concat([
                 { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },

@@ -15,7 +15,7 @@
  */
 
 import axios from "axios";
-import { LocalMachineConfig } from "../../../sdm/configuration/LocalMachineConfig";
+import { LocalModeConfiguration } from "@atomist/sdm-core";
 import { AutomationClientInfo, ConnectedClient } from "../../AutomationClientInfo";
 import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 
@@ -31,7 +31,7 @@ export async function fetchMetadataFromAutomationClient(connectionConfig: Automa
         const resp = await axios.get(connectionConfig.baseEndpoint + "/registration", {
             timeout: 5 * 1000,
         });
-        let localConfig: LocalMachineConfig;
+        let localConfig: LocalModeConfiguration;
         try {
             localConfig = (await axios.get(connectionConfig.baseEndpoint + "/local/configuration")).data;
         } catch {

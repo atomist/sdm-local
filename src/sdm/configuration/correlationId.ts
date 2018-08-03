@@ -44,6 +44,7 @@ export function portToRespondOn(correlationId: string): number | undefined {
 
 export function channelFor(correlationId: string): string {
     const pattern = new RegExp(`^${ClientType}\-[^\-]+\-([^\-]+)`);
+    process.stdout.write(`corrid='${correlationId}'`);
     const channel = correlationId.match(pattern)[1];
     return channel;
 }

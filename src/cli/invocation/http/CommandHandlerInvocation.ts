@@ -59,7 +59,7 @@ export async function invokeCommandHandler(config: AutomationClientConnectionReq
         secrets: (invocation.secrets || []).concat([
             { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },
         ]),
-        correlation_id: invocation.correlationId || newCorrelationId(),
+        correlation_id: invocation.correlationId || await newCorrelationId(),
         api_version: "1",
         team: {
             id: invocation.atomistTeamId,

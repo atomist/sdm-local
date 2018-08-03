@@ -21,7 +21,7 @@ import { errorMessage } from "../cli/invocation/command/support/consoleOutput";
 import { pushFromLastCommit } from "../sdm/binding/event/pushFromLastCommit";
 import { isAtomistTemporaryBranch } from "../sdm/binding/project/FileSystemProjectLoader";
 import { FileSystemRemoteRepoRef } from "../sdm/binding/project/FileSystemRemoteRepoRef";
-import { LocalMachineConfig } from "../sdm/configuration/LocalMachineConfig";
+import { LocalModeConfiguration } from "@atomist/sdm-core";
 import { EventSender } from "./EventHandlerInvocation";
 import Push = OnPushToAnyBranch.Push;
 
@@ -72,7 +72,7 @@ export function isValidSHA1(s: string): boolean {
  */
 export async function handlePushBasedEventOnRepo(atomistTeamId: string,
                                                  sender: EventSender,
-                                                 lc: LocalMachineConfig,
+                                                 lc: LocalModeConfiguration,
                                                  payload: EventOnRepo,
                                                  eventHandlerName: string,
                                                  pushToPayload: (p: Push) => object = p => ({

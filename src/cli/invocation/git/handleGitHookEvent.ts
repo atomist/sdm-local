@@ -16,7 +16,7 @@
 
 import { logger } from "@atomist/automation-client";
 import { EventOnRepo, handlePushBasedEventOnRepo } from "../../../common/handlePushBasedEventOnRepo";
-import { LocalMachineConfig } from "../../../sdm/configuration/LocalMachineConfig";
+import { LocalModeConfiguration } from "@atomist/sdm-core";
 import { errorMessage } from "../command/support/consoleOutput";
 import { AutomationClientConnectionRequest } from "../http/AutomationClientConnectionConfig";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
@@ -71,7 +71,7 @@ export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
  * @return {Promise<any>}
  */
 export async function handleGitHookEvent(cc: AutomationClientConnectionRequest,
-                                         lc: LocalMachineConfig,
+                                         lc: LocalModeConfiguration,
                                          payload: GitHookInvocation) {
     if (!payload) {
         return errorMessage("Payload must be supplied");
@@ -83,7 +83,7 @@ export async function handleGitHookEvent(cc: AutomationClientConnectionRequest,
         return errorMessage("Unknown git hook event '%s'", event);
     }
     if (!lc) {
-        return errorMessage("LocalMachineConfig must be supplied");
+        return errorMessage("LocalModeConfiguration must be supplied");
     }
 
     const target: InvocationTarget = {
