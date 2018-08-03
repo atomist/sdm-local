@@ -11,11 +11,8 @@ This page details all runtime OSS dependencies of `@atomist/sdm-local`.
 |[Apache-2.0](#apache-20)|2|
 |[BSD-2-Clause](#bsd-2-clause)|1|
 |[BSD-3-Clause](#bsd-3-clause)|2|
-|[Custom: http://npm-stat.com/charts.html](#custom-httpnpm-statcomchartshtml)|3|
-|[Custom: https://github.com/RIAEvangelist/easy-stack](#custom-httpsgithubcomriaevangelisteasy-stack)|1|
 |[ISC](#isc)|21|
 |[MIT](#mit)|145|
-|[Unlicense](#unlicense)|1|
 
 #### Apache-2.0
 Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
@@ -39,20 +36,6 @@ BSD 3-Clause "New" or "Revised" License - [http://www.opensource.org/licenses/BS
 |------|---------|-----------|------------|
 |`jssha`|`2.3.1`|Brian Turek|[https://github.com/Caligatio/jsSHA](https://github.com/Caligatio/jsSHA)|
 |`qs`|`6.5.1`||[https://github.com/ljharb/qs](https://github.com/ljharb/qs)|
-
-#### Custom: http://npm-stat.com/charts.html
-
-| Name | Version | Publisher | Repository |
-|------|---------|-----------|------------|
-|`easy-stack`|`1.0.0`|Brandon Nozaki Miller|[https://github.com/RIAEvangelist/easy-stack](https://github.com/RIAEvangelist/easy-stack)|
-|`js-message`|`1.0.5`|Brandon Nozaki Miller|[https://github.com/RIAEvangelist/js-message](https://github.com/RIAEvangelist/js-message)|
-|`node-ipc`|`9.1.1`|Brandon Nozaki Miller|[https://github.com/RIAEvangelist/node-ipc](https://github.com/RIAEvangelist/node-ipc)|
-
-#### Custom: https://github.com/RIAEvangelist/easy-stack
-
-| Name | Version | Publisher | Repository |
-|------|---------|-----------|------------|
-|`js-queue`|`2.0.0`|Brandon Nozaki Miller|[https://github.com/RIAEvangelist/js-queue](https://github.com/RIAEvangelist/js-queue)|
 
 #### ISC
 ISC License - [https://www.isc.org/downloads/software-support-policy/isc-license/](https://www.isc.org/downloads/software-support-policy/isc-license/)
@@ -231,13 +214,6 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`wrap-ansi`|`2.1.0`|Sindre Sorhus|[https://github.com/chalk/wrap-ansi](https://github.com/chalk/wrap-ansi)|
 |`xregexp`|`4.0.0`|Steven Levithan|[https://github.com/slevithan/xregexp](https://github.com/slevithan/xregexp)|
 |`yargs`|`12.0.1`||[https://github.com/yargs/yargs](https://github.com/yargs/yargs)|
-
-#### Unlicense
-The Unlicense - [http://unlicense.org/](http://unlicense.org/)
-
-| Name | Version | Publisher | Repository |
-|------|---------|-----------|------------|
-|`event-pubsub`|`4.3.0`|Brandon Nozaki Miller|[https://github.com/RIAEvangelist/event-pubsub](https://github.com/RIAEvangelist/event-pubsub)|
 
 ## Contact
 
