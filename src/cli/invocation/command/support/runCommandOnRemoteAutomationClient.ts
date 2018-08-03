@@ -28,8 +28,9 @@ import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeU
 import { newCorrelationId, portToListenOnFor } from "../../../../sdm/configuration/correlationId";
 import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionConfig";
 import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
-import { warningMessage } from "./consoleOutput";
+import { infoMessage, warningMessage } from "./consoleOutput";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
+import chalk from "chalk";
 
 /**
  * All invocations from the CLI go through this function.
@@ -74,7 +75,7 @@ export async function runCommandOnRemoteAutomationClient(connectionConfig: Autom
     return invokeCommandHandler(connectionConfig, invocation);
 }
 
-function valid(p: Parameter, value: string): boolean {
+function valid(p: Parameter, value: any): boolean {
     return !p.pattern || new RegExp(p.pattern).test(value);
 }
 
@@ -97,8 +98,8 @@ async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[
         );
     }
 
-    function validInputDisplay(p: Parameter) {
-        return !!p.valid_input ? (": " + !!p.valid_input) : "";
+    function validInputDisplay(p: Parameter): string {
+        return p.valid_input ? (": " + chalk.italic(p.valid_input)) : "";
     }
 
     _.sortBy(hi.parameters, p => p.name)

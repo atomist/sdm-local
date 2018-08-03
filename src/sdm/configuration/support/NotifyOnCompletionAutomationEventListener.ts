@@ -38,6 +38,7 @@ export class NotifyOnCompletionAutomationEventListener extends AutomationEventLi
     }
 
     public commandFailed(payload: CommandInvocation, ctx: HandlerContext, error: any): Promise<void> {
+        // Route the failure report to the client
         return ctx.messageClient.send({
             kind: FailureKind,
             error,
