@@ -31,6 +31,6 @@ export const SdmCd: ExtensionPack = {
             executeSdmDelivery(sdm.configuration.sdm.projectLoader, {}));
         sdm.addGoalContributions(
             whenPushSatisfies(IsSdm, PushTests).setGoals(
-                new Goals("delivery", SdmDeliveryGoal).andLock()));
+                new Goals("delivery", SdmDeliveryGoal)));
     },
 };

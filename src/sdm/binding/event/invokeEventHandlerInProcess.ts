@@ -51,7 +51,7 @@ export function invokeEventHandlerInProcess(correlationId?: string): EventSender
 
         // git hooks call this without a running automationClient in the same process; fall back to HTTP
         if (!automationClientInstance()) {
-            throw new Error("Must be running locally");
+            throw new Error("This function must be invoked inside an automation client locally");
         } else {
             logger.info("Invoking %s using %s", invocation.name, stringify(data, replacer));
             return automationClientInstance().processEvent(data as any as EventIncoming, async result => {

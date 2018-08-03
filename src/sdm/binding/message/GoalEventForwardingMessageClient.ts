@@ -19,8 +19,8 @@ import { Destination, MessageClient, MessageOptions, SlackMessageClient } from "
 import { OnAnyRequestedSdmGoal, SdmGoalKey, SdmGoalState } from "@atomist/sdm";
 import { SlackMessage } from "@atomist/slack-messages";
 import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
-import { invokeEventHandlerUsingHttp } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
 import { isValidSHA1 } from "../../../common/handlePushBasedEventOnRepo";
+import { invokeEventHandlerInProcess } from "../event/invokeEventHandlerInProcess";
 
 export function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
     state: SdmGoalState;
@@ -32,8 +32,12 @@ export function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
 }
 
 /**
- * Forward goals only. Will dispatch goal events to the appropriate event handler
- * within the SDM at the known address
+ * Runs inside an SDM in local mode. As Goal storage uses
+ * a MessageClient, this enables a local SDM to react to goals that
+ * it has set. This implementation ignores other messages and forwards
+ * goals only.
+ * Will dispatch goal events to the appropriate event handler
+ * within the SDM at the known address.
  */
 export class GoalEventForwardingMessageClient implements MessageClient, SlackMessageClient {
 
@@ -72,7 +76,7 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
             // We want to return to let this work in the background
             // tslint:disable-next-line:no-floating-promises
             Promise.all(handlerNames.map(name =>
-                invokeEventHandlerUsingHttp(this.connectionConfig, this.connectionConfig)({
+                invokeEventHandlerInProcess()({
                     name,
                     payload,
                 })));
@@ -87,7 +91,7 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
         // Ignore
     }
 
-    public constructor(private readonly connectionConfig: AutomationClientConnectionConfig) {
+    public constructor() {
     }
 
 }

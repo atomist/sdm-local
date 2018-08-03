@@ -59,7 +59,7 @@ export function addEmbeddedCommand(yargs: Argv,
             // Always require the repositoryOwnerParentDirectory, as
             // we cannot create an embedded SDM otherwise
             ra.option("repositoryOwnerParentDirectory", {
-                required: true,
+                required: false,
                 alias: "base",
                 description: "Base of the checked out directory tree the new SDM will operate on",
             });

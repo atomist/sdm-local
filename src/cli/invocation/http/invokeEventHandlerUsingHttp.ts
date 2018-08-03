@@ -53,7 +53,8 @@ export function invokeEventHandlerUsingHttp(config: AutomationClientConnectionRe
         };
 
         const url = `/event`;
-        logger.info("Sending %s to event %s using %s", url, invocation.name, stringify(data, replacer));
+        logger.info("Calling url %s to handler %s using %s",
+            url, invocation.name, stringify(data, replacer));
         assert(!!config, "Config must be provided");
         assert(!!config.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(config));
         const resp = await postToSdm(config, url, data);

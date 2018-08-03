@@ -149,7 +149,9 @@ function decircle(result: HandlerResult) {
  * @param {Configuration} configuration
  * @param {LocalModeConfiguration} localMachineConfig
  */
-function setMessageClient(configuration: Configuration, localMachineConfig: LocalModeConfiguration, actionStore: ActionStore) {
+function setMessageClient(configuration: Configuration,
+                          localMachineConfig: LocalModeConfiguration,
+                          actionStore: ActionStore) {
     configuration.http.messageClientFactory =
         aca => {
             // TOD parameterize this
@@ -160,7 +162,7 @@ function setMessageClient(configuration: Configuration, localMachineConfig: Loca
             return new BroadcastingMessageClient(
                 new HttpClientMessageClient(channel, AllMessagesPort, machineAddress,
                     actionStore),
-                new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
+                new GoalEventForwardingMessageClient(),
                 // Communicate back to client if possible
                 !!clientId ? new HttpClientMessageClient(channel, clientId, machineAddress, actionStore) : undefined,
                 localMachineConfig.useSystemNotifications ? new SystemNotificationMessageClient(channel) : undefined,
