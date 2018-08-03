@@ -68,5 +68,6 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
 }
 
 function showInfo(aci: AutomationClientInfo) {
-    return `${chalk.bold(aci.client.name)} @ ${chalk.underline(aci.connectionConfig.baseEndpoint)}`;
+    const local = aci.localConfig ? aci.localConfig.repositoryOwnerParentDirectory : "(remote)";
+    return `${chalk.bold(aci.client.name)} @ ${chalk.underline(aci.connectionConfig.baseEndpoint)} - ${local}`;
 }

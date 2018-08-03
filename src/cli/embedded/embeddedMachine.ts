@@ -35,6 +35,7 @@ import {
     AutomationClientConnectionConfig,
     AutomationClientConnectionRequest,
 } from "../invocation/http/AutomationClientConnectionConfig";
+import { determineDefaultRepositoryOwnerParentDirectory } from "../../sdm/configuration/createSdmOptions";
 
 const DefaultBootstrapPort = 2900;
 
@@ -42,7 +43,7 @@ const DefaultBootstrapPort = 2900;
  * Options for starting an embedded machine.
  */
 export interface EmbeddedMachineOptions {
-    repositoryOwnerParentDirectory: string;
+    repositoryOwnerParentDirectory?: string;
     configure: ConfigureMachine;
     port?: number;
 }
@@ -62,7 +63,7 @@ function configurationFor(options: EmbeddedMachineOptions): Configuration {
     const cfg = defaultConfiguration();
     cfg.name = "@atomist/local-sdm-bootstrap";
     cfg.teamIds = ["local"];
-    cfg.http.port = port(options);
+    cfg.http.port = options.port;
 
     cfg.logging.level = "info";
     cfg.logging.file.enabled = false;
@@ -94,15 +95,17 @@ function configurationFor(options: EmbeddedMachineOptions): Configuration {
  * @return {Promise<AutomationClientConnectionConfig>}
  */
 export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Promise<AutomationClientConnectionRequest> {
+    const optsToUse: EmbeddedMachineOptions = {
+        repositoryOwnerParentDirectory: determineDefaultRepositoryOwnerParentDirectory(),
+        port: DefaultBootstrapPort,
+        ...options,
+    };
     const config = await invokePostProcessors(
-        configurationFor(options));
+        configurationFor(optsToUse));
     const client = automationClient(config);
     return client.run()
         .then(() => ({
-            baseEndpoint: `http://${os.hostname}:${port(options)}`,
+            baseEndpoint: `http://${os.hostname}:${optsToUse.port}`,
         }));
 }
 
-function port(o: EmbeddedMachineOptions) {
-    return o.port || DefaultBootstrapPort;
-}

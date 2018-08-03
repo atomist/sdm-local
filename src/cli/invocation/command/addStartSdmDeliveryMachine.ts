@@ -28,21 +28,21 @@ export const DefaultSdmCdPort = 2901;
 export function addStartSdmDeliveryMachine(yargs: Argv) {
     yargs.command({
         // TODO what's wrong with this
-        command: "deliver [port]",
+        command: "deliver [port] [base]",
         describe: "Start SDM delivery machine",
         handler: argv =>  {
             return logExceptionsToConsole(async () => {
                 const port = !!argv.port ? parseInt(argv.port) : DefaultSdmCdPort;
-                const where = await startSdmMachine(port);
+                const where = await startSdmMachine(port, argv.base);
                 infoMessage("Started local SDM delivery machine at %s\n", where.baseEndpoint)
             }, true);
         },
     });
 }
 
-async function startSdmMachine(port: number) {
+async function startSdmMachine(port: number, repositoryOwnerParentDirectory?: string) {
     return startEmbeddedMachine({
-        repositoryOwnerParentDirectory: "x",
+        repositoryOwnerParentDirectory,
         port,
         configure: sdm => {
             sdm.addExtensionPacks(SdmCd);

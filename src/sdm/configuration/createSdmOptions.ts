@@ -62,6 +62,6 @@ export function createSdmOptions(localModeConfig: LocalModeConfiguration): Softw
 
 const DefaultAtomistRoot = "atomist";
 
-function determineDefaultRepositoryOwnerParentDirectory() {
+export function determineDefaultRepositoryOwnerParentDirectory() {
     return process.env.ATOMIST_ROOT || path.join(os.homedir(), DefaultAtomistRoot);
 }
