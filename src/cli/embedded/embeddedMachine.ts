@@ -96,9 +96,9 @@ function configurationFor(options: EmbeddedMachineOptions): Configuration {
  */
 export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Promise<AutomationClientConnectionRequest> {
     const optsToUse: EmbeddedMachineOptions = {
-        repositoryOwnerParentDirectory: determineDefaultRepositoryOwnerParentDirectory(),
         port: DefaultBootstrapPort,
         ...options,
+        repositoryOwnerParentDirectory: options.repositoryOwnerParentDirectory || determineDefaultRepositoryOwnerParentDirectory(),
     };
     const config = await invokePostProcessors(
         configurationFor(optsToUse));
