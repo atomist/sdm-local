@@ -23,6 +23,8 @@ import { AutomationClientConnectionRequest } from "../AutomationClientConnection
 import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
 
 import * as os from "os";
+import { DefaultSdmCdPort } from "../../command/addStartSdmDeliveryMachine";
+import chalk from "chalk";
 
 export interface PortRangeOptions {
 
@@ -42,13 +44,15 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
     private readonly options: PortRangeOptions;
 
     public async findAutomationClients(): Promise<AutomationClientInfo[]> {
-        const requests: AutomationClientConnectionRequest[] = _.range(this.options.lowerPort, this.options.lowerPort + this.options.checkRange)
-            .map(port => ({
-                baseEndpoint: `http://${os.hostname}:${port}`,
-            }));
+        const requests: AutomationClientConnectionRequest[] =
+            _.range(this.options.lowerPort, this.options.lowerPort + this.options.checkRange).concat([DefaultSdmCdPort])
+                .map(port => ({
+                    baseEndpoint: `http://${os.hostname}:${port}`,
+                }));
         const found = await new FixedAutomationClientFinder(...requests).findAutomationClients();
         if (found.length > 0) {
-            infoMessage("Connected to automation clients at %s\n", found.map(f => f.connectionConfig.baseEndpoint));
+            infoMessage(`Connected to ${chalk.bold(found.length.toString())} automation clients \n\t%s\n\n`,
+                found.map(showInfo).join("\n\t"));
         }
         return found;
     }
@@ -61,4 +65,8 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
         };
     }
 
+}
+
+function showInfo(aci: AutomationClientInfo) {
+    return `${chalk.bold(aci.client.name)} @ ${chalk.underline(aci.connectionConfig.baseEndpoint)}`;
 }

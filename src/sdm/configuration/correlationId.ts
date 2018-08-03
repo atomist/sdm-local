@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { infoMessage } from "../..";
-
 const ClientType = "atomist-cli";
 
 /**
@@ -30,7 +28,6 @@ export async function newCorrelationId(opts: {
 } = { channel: "general", encodeListenerPort: false}): Promise<string> {
     const encodedPort = opts.encodeListenerPort ? `${await portToListenOnFor(process.pid)}-` : "";
     const corrId = `${ClientType}-${encodedPort}${opts.channel || "general"}-${new Date().getTime()}`;
-    infoMessage("New correlation id %s", corrId);
     return corrId;
 }
 

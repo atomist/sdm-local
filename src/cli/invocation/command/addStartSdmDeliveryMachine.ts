@@ -15,7 +15,7 @@
  */
 
 import { Argv } from "yargs";
-import { logExceptionsToConsole } from "./support/consoleOutput";
+import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
 import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
 import { SdmCd } from "../../../pack/sdm-cd/SdmCd";
 
@@ -27,19 +27,20 @@ export const DefaultSdmCdPort = 2901;
  */
 export function addStartSdmDeliveryMachine(yargs: Argv) {
     yargs.command({
-        command: "start delivery [port]",
-        aliases: "d",
+        // TODO what's wrong with this
+        command: "deliver [port]",
         describe: "Start SDM delivery machine",
-        handler: argv => {
+        handler: argv =>  {
             return logExceptionsToConsole(async () => {
                 const port = !!argv.port ? parseInt(argv.port) : DefaultSdmCdPort;
-                await startMachine(port);
+                const where = await startSdmMachine(port);
+                infoMessage("Started local SDM delivery machine at %s\n", where.baseEndpoint)
             }, true);
         },
     });
 }
 
-async function startMachine(port: number) {
+async function startSdmMachine(port: number) {
     return startEmbeddedMachine({
         repositoryOwnerParentDirectory: "x",
         port,
