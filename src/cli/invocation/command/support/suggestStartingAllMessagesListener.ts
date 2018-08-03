@@ -26,6 +26,6 @@ export async function suggestStartingAllMessagesListener() {
     const running = await isListenerRunning();
     if (!running) {
         infoMessage(`################### To see a complete message stream from across all commands and events, ` +
-            `please start the Slalom listener by typing\n\t${chalk.yellow("@atomist listen")}\n###################\n\n`);
+            `please start the Local SDM listener by typing\n\t${chalk.yellow("@atomist listen")}\n###################\n\n`);
     }
 }

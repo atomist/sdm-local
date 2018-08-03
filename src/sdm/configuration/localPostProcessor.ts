@@ -100,8 +100,9 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                     atomistTeamName: cc.atomistTeamName,
                     atomistTeamId: cc.atomistTeamId,
                 };
-                const r = await invokeCommandHandler(cc, invocation);
-                return res.json(r);
+                return invokeCommandHandler(cc, invocation)
+                    .then(r => res.json(decircle(r)),
+                        boo => res.status(500).send(boo.message));
             });
             exp.get(ActionRoute + "/:description", async (req, res) => {
                 logger.debug("Action clicked:! params=%j; query=%j", req.params, req.query);

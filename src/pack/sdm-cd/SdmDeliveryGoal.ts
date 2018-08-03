@@ -69,7 +69,7 @@ class DeliveryManager {
         if (!!this.childProcess) {
             await poisonAndWait;
         }
-        const spawnCommand = asSpawnCommand("slalom start --install=false --local=true --compile=false");
+        const spawnCommand = asSpawnCommand("@atomist start --install=false --local=true --compile=false");
         this.childProcess = await spawn(
             spawnCommand.command,
             spawnCommand.args,
