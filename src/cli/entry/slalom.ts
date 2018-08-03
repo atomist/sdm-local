@@ -21,7 +21,7 @@
 */
 
 // Disable console logging
-if (!isReservedCommand()) {
+if (!(isReservedCommand() || isDelivery())) {
     process.env.ATOMIST_DISABLE_LOGGING = "true";
 }
 
@@ -57,4 +57,8 @@ function runCli() {
 
 function isReservedCommand() {
     return process.argv.length >= 3 && ["git", "config", "gql-fetch", "gql-gen", "start", "kube"].includes(process.argv[2]);
+}
+
+function isDelivery() {
+    return process.argv.length >= 3 && ["deliver"].includes(process.argv[2]);
 }

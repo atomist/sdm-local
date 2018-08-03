@@ -76,6 +76,9 @@ function configurationFor(options: EmbeddedMachineOptions): Configuration {
     cfg.ingesters = [];
     cfg.listeners = [];
 
+    cfg.token = "not.your.token";
+    cfg.apiKey = "not.your.token";
+
     cfg.postProcessors = [
         configureLocal({
             repositoryOwnerParentDirectory: options.repositoryOwnerParentDirectory,
