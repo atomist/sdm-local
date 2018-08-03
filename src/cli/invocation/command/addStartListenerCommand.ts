@@ -21,14 +21,18 @@ import { logExceptionsToConsole } from "./support/consoleOutput";
 
 export const AllMessagesPort = 6660;
 
-export function addStartListenerCommand(connectionConfig: AutomationClientConnectionConfig, yargs: Argv) {
+/**
+ * @param {AutomationClientConnectionConfig} connectionConfig
+ * @param {yargs.Argv} yargs
+ */
+export function addStartListenerCommand(yargs: Argv) {
     yargs.command({
         command: "listen",
         describe: "Start listener daemon to display messages",
         handler: () => {
             return logExceptionsToConsole(async () =>
-                    startHttpMessageListener(connectionConfig, AllMessagesPort),
-                connectionConfig.showErrorStacks);
+                    startHttpMessageListener(AllMessagesPort),
+                true);
         },
     });
 }

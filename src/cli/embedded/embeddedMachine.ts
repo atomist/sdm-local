@@ -38,6 +38,9 @@ import {
 
 const DefaultBootstrapPort = 2900;
 
+/**
+ * Options for starting an embedded machine.
+ */
 export interface EmbeddedMachineOptions {
     repositoryOwnerParentDirectory: string;
     configure: ConfigureMachine;

@@ -31,11 +31,11 @@ import { channelFor, clientIdentifier, } from "./correlationId";
 import { createSdmOptions } from "./createSdmOptions";
 import { LocalMachineConfig } from "./LocalMachineConfig";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
+import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
 
 /**
  * Configures an automation client in local mode
  * @param {LocalMachineConfig} localMachineConfig
- * @param forceLocal whether to force local behavior
  * @return {(configuration: Configuration) => Promise<Configuration>}
  */
 export function configureLocal(
@@ -150,13 +150,16 @@ function decircle(result: HandlerResult) {
 function setMessageClient(configuration: Configuration, localMachineConfig: LocalMachineConfig, actionStore: ActionStore) {
     configuration.http.messageClientFactory =
         aca => {
+            // TOD parameterize this
+            const machineAddress: AutomationClientConnectionRequest = { baseEndpoint: "http://localhost:2866" };
             const channel = channelFor(aca.context.correlationId);
             const clientId = clientIdentifier(aca.context.correlationId);
             return new BroadcastingMessageClient(
-                new HttpClientMessageClient(channel, AllMessagesPort, actionStore),
+                new HttpClientMessageClient(channel, AllMessagesPort, machineAddress,
+                    actionStore),
                 new GoalEventForwardingMessageClient(DefaultAutomationClientConnectionConfig),
                 // Communicate back to client if possible
-                !!clientId ? new HttpClientMessageClient(channel, clientId, actionStore) : undefined,
+                !!clientId ? new HttpClientMessageClient(channel, clientId, machineAddress, actionStore) : undefined,
                 localMachineConfig.useSystemNotifications ? new SystemNotificationMessageClient(channel) : undefined,
             );
         };

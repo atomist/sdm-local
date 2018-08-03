@@ -31,6 +31,7 @@ import {
     messageListenerEndpoint,
     StreamedMessage,
 } from "./httpMessageListener";
+import { AutomationClientConnectionRequest } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 
 /**
  * Message client that POSTS to an Atomist server and logs to a fallback otherwise
@@ -47,7 +48,12 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
             return;
         }
         const dests = Array.isArray(destinations) ? destinations : [destinations];
-        return this.stream({ message: msg, options, destinations: dests },
+        return this.stream({
+                message: msg,
+                machineAddress: this.machineAddress,
+                options,
+                destinations: dests
+            },
             () => this.delegate.send(msg, destinations, options));
     }
 
@@ -58,6 +64,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
         return this.stream({
             message,
             options,
+            machineAddress: this.machineAddress,
             destinations: [{
                 // TODO hard coding
                 team: "T1234",
@@ -70,6 +77,12 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
         return this.addressChannels(message, users, options);
     }
 
+    /**
+     * Send the message to the client
+     * @param {StreamedMessage} sm
+     * @param {() => Promise<any>} fallback
+     * @return {Promise<any>}
+     */
     private async stream(sm: StreamedMessage, fallback: () => Promise<any>) {
         try {
             logger.debug(`Write to url ${this.url}: ${JSON.stringify(sm)}`);
@@ -85,6 +98,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
 
     constructor(private readonly linkedChannel: string,
                 port: number,
+                private readonly machineAddress: AutomationClientConnectionRequest,
                 private readonly actionStore: ActionStore,
                 private readonly delegate: MessageClient & SlackMessageClient =
                     DevNullMessageClient) {

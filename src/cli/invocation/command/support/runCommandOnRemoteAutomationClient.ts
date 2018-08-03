@@ -43,7 +43,7 @@ export async function runCommandOnRemoteAutomationClient(connectionConfig: Autom
                                                          hm: CommandHandlerMetadata,
                                                          command: object): Promise<any> {
     await suggestStartingAllMessagesListener();
-    startHttpMessageListener(connectionConfig, pidToPort(process.pid), true);
+    startHttpMessageListener(pidToPort(process.pid), true);
     const extraArgs = Object.getOwnPropertyNames(command)
         .map(name => ({ name: convertToUsable(name), value: command[name] }))
         .filter(keep => !!keep.value);

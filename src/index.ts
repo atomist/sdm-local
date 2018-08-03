@@ -6,4 +6,4 @@ export { LocalLifecycle } from "./sdm/configuration/localLifecycle";
 export { infoMessage } from "./cli/invocation/command/support/consoleOutput";
 export { IsLocal } from "./sdm/api/pushtest/isLocal";
 export { isInLocalMode } from "./sdm/api/isInLocalMode";
-export { enableSdmDelivery } from "./sdm/sdm-cd/enableSdmDelivery";
+export { SdmCd } from "./pack/sdm-cd/SdmCd";

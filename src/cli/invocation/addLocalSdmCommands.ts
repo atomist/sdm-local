@@ -15,30 +15,29 @@
  */
 
 import { AutomationClientInfo } from "../AutomationClientInfo";
-import {
-    addAddGitHooksCommand,
-    addRemoveGitHooksCommand,
-} from "./command/addGitHooksCommands";
-import {
-    addCommandsByName,
-    addIntents,
-} from "./command/addIntents";
+import { addAddGitHooksCommand, addRemoveGitHooksCommand, } from "./command/addGitHooksCommands";
+import { addCommandsByName, addIntents, } from "./command/addIntents";
 import { addStartListenerCommand } from "./command/addStartListenerCommand";
 import { addTriggerCommand } from "./command/addTriggerCommand";
-import { addBootstrapCommands } from "./command/bootstrapCommands";
-import { addImportFromGitRemoteCommand } from "./command/importFromGitRemoteCommand";
+import { addBootstrapCommands } from "./command/addBootstrapCommands";
+import { addImportFromGitRemoteCommand } from "./command/addImportFromGitRemoteCommand";
 import { addShowSkillsCommand } from "./command/showSkillsCommand";
 import { infoMessage } from "./command/support/consoleOutput";
 import { AutomationClientFinder } from "./http/AutomationClientFinder";
 import { PortRangeAutomationClientFinder } from "./http/support/PortRangeAutomationClientFinder";
+import { Argv } from "yargs";
+import { addStartSdmDeliveryMachine } from "./command/addStartSdmDeliveryMachine";
 
 /**
  * Start up the Slalom CLI
  * @return {yargs.Arguments}
  */
-export async function addLocalSdmCommands(yargs,
+export async function addLocalSdmCommands(yargs: Argv,
                                           finder: AutomationClientFinder = new PortRangeAutomationClientFinder()) {
     addBootstrapCommands(yargs);
+    addStartSdmDeliveryMachine(yargs);
+    addStartListenerCommand(yargs);
+
     for (const client of await finder.findAutomationClients()) {
         await addCommandsToConnectTo(client, yargs);
     }
@@ -49,7 +48,7 @@ export async function addLocalSdmCommands(yargs,
  * @param yargs
  * @return {Promise<void>}
  */
-async function addCommandsToConnectTo(client: AutomationClientInfo, yargs) {
+async function addCommandsToConnectTo(client: AutomationClientInfo, yargs: Argv) {
     verifyLocalSdm(client);
 
     // TODO do these all once
@@ -61,9 +60,8 @@ async function addCommandsToConnectTo(client: AutomationClientInfo, yargs) {
     }
 
     // If we were able to connect to an SDM...
-    if (!!!!client.client) {
+    if (!!client.client) {
         addTriggerCommand(client, yargs);
-        addStartListenerCommand(client.connectionConfig, yargs);
         addCommandsByName(client, yargs);
         addIntents(client, yargs);
         addShowSkillsCommand(client, yargs);

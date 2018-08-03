@@ -34,17 +34,16 @@ export interface StreamedMessage {
     message: string | SlackMessage;
     destinations: Destination[];
     options: MessageOptions;
+    machineAddress: AutomationClientConnectionRequest;
 }
 
 /**
- * Listen to HTTP messages from HttpClientMessageClient
- * @param {number} demonPort
+ * Start process to listen to HTTP messages from HttpClientMessageClient
+ * @param {number} port
  * @param killOnCommandCompletion should this be shut down on command completion
  */
-export function startHttpMessageListener(cc: AutomationClientConnectionRequest,
-                                         demonPort: number = AllMessagesPort,
+export function startHttpMessageListener(port: number = AllMessagesPort,
                                          killOnCommandCompletion: boolean = false) {
-    const messageClient = new ConsoleMessageClient("general", ProcessStdoutSender, cc);
     const app = express();
     app.use(bodyParser.json());
 
@@ -55,15 +54,16 @@ export function startHttpMessageListener(cc: AutomationClientConnectionRequest,
             process.exit(0);
             return;
         }
+        const messageClient = new ConsoleMessageClient("general", ProcessStdoutSender, req.body.machineAddress);
         return messageClient.send(req.body.message, req.body.destinations)
             .then(() => res.send("Read message " + JSON.stringify(req.body) + "\n"))
             .catch(next);
     });
 
-    app.listen(demonPort,
+    app.listen(port,
         () => {
             if (!killOnCommandCompletion) {
-                infoMessage(`Atomist Slalom: Listening on port ${demonPort}...\n`);
+                infoMessage(`Atomist Slalom: Listening on port ${port}...\n`);
             }
         },
     );

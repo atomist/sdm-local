@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-import { Goals, SoftwareDeliveryMachine, whenPushSatisfies } from "@atomist/sdm";
-import { IsLocal } from "../api/pushtest/isLocal";
+import { ExtensionPack, Goals, SoftwareDeliveryMachine, whenPushSatisfies } from "@atomist/sdm";
+import { IsLocal } from "../../sdm/api/pushtest/isLocal";
 import { executeSdmDelivery, IsSdm, SdmDeliveryGoal } from "./SdmDeliveryGoal";
+import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
 
 /**
- * Call this before anything else
+ * Add this before anything else as it relies on goal locking
  * @param {SoftwareDeliveryMachine} sdm
  */
-export function enableSdmDelivery(sdm: SoftwareDeliveryMachine) {
-    sdm.addGoalImplementation("SDM CD", SdmDeliveryGoal,
-        executeSdmDelivery(sdm.configuration.sdm.projectLoader, {}));
-    sdm.addGoalContributions(
-        whenPushSatisfies(IsSdm, IsLocal).setGoals(
-            new Goals("delivery", SdmDeliveryGoal).andLock()));
-}
+export const SdmCd: ExtensionPack = {
+    ...metadata(),
+    name: "SdmCd",
+    configure: sdm => {
+        sdm.addGoalImplementation("SDM CD", SdmDeliveryGoal,
+            executeSdmDelivery(sdm.configuration.sdm.projectLoader, {}));
+        sdm.addGoalContributions(
+            whenPushSatisfies(IsSdm, IsLocal).setGoals(
+                new Goals("delivery", SdmDeliveryGoal).andLock()));
+    },
+};
