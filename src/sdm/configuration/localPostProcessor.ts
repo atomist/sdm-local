@@ -21,7 +21,6 @@ import * as _ from "lodash";
 import { DefaultAutomationClientConnectionConfig } from "../../cli/entry/resolveConnectionConfig";
 import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
-import { CommandHandlerInvocation, invokeCommandHandler } from "../../cli/invocation/http/CommandHandlerInvocation";
 import { isInLocalMode } from "../api/isInLocalMode";
 import { LocalGraphClient } from "../binding/graph/LocalGraphClient";
 import { ActionRoute, ActionStore, freshActionStore } from "../binding/message/ActionStore";
@@ -34,6 +33,8 @@ import { createSdmOptions } from "./createSdmOptions";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 
 import * as assert from "assert";
+import { CommandHandlerInvocation } from "../../common/CommandHandlerInvocation";
+import { invokeCommandHandlerInProcess } from "../binding/command/invokeCommandHandlerInProcess";
 
 /**
  * Configures an automation client in local mode
@@ -100,7 +101,7 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                     atomistTeamName: cc.atomistTeamName,
                     atomistTeamId: cc.atomistTeamId,
                 };
-                const r = await invokeCommandHandler(cc, invocation);
+                const r = await invokeCommandHandlerInProcess()(invocation);
                 return res.json(r);
             });
             exp.get(ActionRoute + "/:description", async (req, res) => {
@@ -124,7 +125,7 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                     logger.error("No command stored on action object: %j", storedAction);
                     return res.status(500).send("This will never work");
                 }
-                return invokeCommandHandler(cc, command)
+                return invokeCommandHandlerInProcess()(command)
                     .then(r => res.json(decircle(r)),
                         boo => res.status(500).send(boo.message));
             });

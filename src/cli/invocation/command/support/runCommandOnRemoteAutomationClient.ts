@@ -27,10 +27,11 @@ import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/pro
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
 import { newCorrelationId, portToListenOnFor } from "../../../../sdm/configuration/correlationId";
 import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionConfig";
-import { CommandHandlerInvocation, invokeCommandHandler } from "../../http/CommandHandlerInvocation";
+import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUsingHttp";
 import { infoMessage, warningMessage } from "./consoleOutput";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
 import chalk from "chalk";
+import { CommandHandlerInvocation } from "../../../../common/CommandHandlerInvocation";
 
 /**
  * All invocations from the CLI go through this function.
@@ -72,7 +73,7 @@ export async function runCommandOnRemoteAutomationClient(connectionConfig: Autom
     };
     logger.debug("Sending invocation %j\n", invocation);
     // Use repo channel if we're in a mapped repo channel
-    return invokeCommandHandler(connectionConfig, invocation);
+    return invokeCommandHandlerUsingHttp(connectionConfig)(invocation);
 }
 
 function valid(p: Parameter, value: any): boolean {
