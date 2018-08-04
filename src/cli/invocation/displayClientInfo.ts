@@ -24,5 +24,6 @@ import chalk from "chalk";
  */
 export function displayClientInfo(aci: AutomationClientInfo): string {
     const local = aci.localConfig ? aci.localConfig.repositoryOwnerParentDirectory : "(remote)";
-    return `${chalk.bold(aci.client.name)} @ ${chalk.underline(aci.connectionConfig.baseEndpoint)} - ${local}`;
+    const reg = aci.connectionConfig.baseEndpoint + "/registration";
+    return `${chalk.bold(aci.client.name)} @ ${chalk.underline(aci.connectionConfig.baseEndpoint)} - ${local} - ${reg}`;
 }

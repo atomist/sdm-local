@@ -28,6 +28,7 @@
     "@types/node-notifier": "0.0.28",
     "app-root-path": "^2.0.1",
     "express": "^4.16.3",
+    "find-process": "^1.1.1",
     "fs-extra": "^6.0.1",
     "inquirer": "^6.0.0",
     "json-stringify-safe": "^5.0.1",

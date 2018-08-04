@@ -25,6 +25,7 @@ import { fetchMetadataFromAutomationClient } from "../../../cli/invocation/http/
 import { SdmDeliveryOptions } from "./SdmDeliveryOptions";
 import * as os from "os";
 import { displayClientInfo } from "../../../cli/invocation/displayClientInfo";
+import { runAndLog } from "../../../sdm/util/runAndLog";
 
 export const LocalSdmDeliveryGoal = new GenericGoal(
     { uniqueName: "sdmDelivery" },
@@ -46,7 +47,7 @@ export function executeLocalSdmDelivery(options: SdmDeliveryOptions): ExecuteGoa
         try {
             await goalInvocation.addressChannels(`Beginning SDM delivery for SDM at ${id.fileSystemLocation}`);
             const client = await deliveryManager.deliver(id.fileSystemLocation, options, goalInvocation);
-            await goalInvocation.addressChannels(`SDM updated: ${displayClientInfo(client)}`);
+            await goalInvocation.addressChannels(`SDM updated: ${displayClientInfo(client)}: pid=${client.pid}`);
             return { code: 0 };
         } catch (err) {
             logger.error(err);
@@ -69,17 +70,18 @@ class DeliveryManager {
 
     public async deliver(baseDir: string,
                          options: SdmDeliveryOptions,
-                         goalInvocation: GoalInvocation): Promise<AutomationClientInfo> {
+                         goalInvocation: GoalInvocation): Promise<AutomationClientInfo & { pid: number }> {
         let childProcess = this.childProcesses[baseDir];
+
+        await killPrevious(baseDir);
         if (!!childProcess) {
             await goalInvocation.addressChannels(`Terminating process with pid \`${childProcess.pid}\` for SDM at ${baseDir}`);
-            await poisonAndWait(childProcess);
         } else {
             await goalInvocation.addressChannels(`No previous process found for SDM at ${baseDir}`);
         }
 
         const spawnCommand = asSpawnCommand("slalom start --install=false --local=true --compile=false");
-        childProcess = await spawn(
+        childProcess = spawn(
             spawnCommand.command,
             spawnCommand.args,
             { cwd: baseDir });
@@ -91,7 +93,7 @@ class DeliveryManager {
         childProcess.stdout.on("data", what => newLineDelimitedLog.write(what.toString()));
         childProcess.stderr.on("data", what => newLineDelimitedLog.write(what.toString()));
 
-        return new Promise<AutomationClientInfo>((resolve, reject) => {
+        return new Promise<AutomationClientInfo & { pid: number }>((resolve, reject) => {
             let stdout = "";
             childProcess.stdout.addListener("data", async what => {
                 if (!!what) {
@@ -102,16 +104,19 @@ class DeliveryManager {
                         baseEndpoint: `http://${os.hostname()}:${options.port}`,
                     };
                     await fetchMetadataFromAutomationClient(ccr)
-                        .then(aca => resolve(aca))
+                        .then(aca => resolve({
+                            pid: childProcess.pid,
+                            ...aca,
+                        }))
                         .catch(reject);
                 }
             });
             childProcess.addListener("exit", () => {
-                this.childProcesses.delete[baseDir];
+                this.childProcesses[baseDir] = undefined;
                 reject(new Error("Error starting managed SDM. We should have found success message pattern by now! Please check logs"));
             });
             childProcess.addListener("error", err => {
-                this.childProcesses.delete[baseDir];
+                this.childProcesses[baseDir] = undefined;
                 return reject(err);
             });
         });
@@ -119,13 +124,26 @@ class DeliveryManager {
 
 }
 
+const find = require("find-process");
+
 function poisonAndWait(childProcess: ChildProcess) {
     if (!childProcess.connected) {
-        logger.warn("Child process with pid %d is not connected", childProcess.pid);
+        logger.warn("**Child process with pid %d is not connected", childProcess.pid);
     } else {
-        childProcess.kill();
+        process.kill(-childProcess.pid);
         return new Promise((resolve, reject) => childProcess.on("close", () => {
             resolve();
         }));
+    }
+}
+
+async function killPrevious(baseDir: string) {
+    const key = `${baseDir}/node_modules/@atomist/automation-client/start.client.js`;
+    const cmd = `for pid in $(ps -ef | grep "${key}" | awk '{print $2}'); do kill -9 $pid; done`;
+    let result;
+    try {
+        result = await runAndLog(cmd, {});
+    } catch (err) {
+        logger.warn("%j", result);
     }
 }
