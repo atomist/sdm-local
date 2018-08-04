@@ -124,19 +124,7 @@ class DeliveryManager {
 
 }
 
-const find = require("find-process");
-
-function poisonAndWait(childProcess: ChildProcess) {
-    if (!childProcess.connected) {
-        logger.warn("**Child process with pid %d is not connected", childProcess.pid);
-    } else {
-        process.kill(-childProcess.pid);
-        return new Promise((resolve, reject) => childProcess.on("close", () => {
-            resolve();
-        }));
-    }
-}
-
+// This is rather heavy-handed: Kills all processes that have started in this directory
 async function killPrevious(baseDir: string) {
     const key = `${baseDir}/node_modules/@atomist/automation-client/start.client.js`;
     const cmd = `for pid in $(ps -ef | grep "${key}" | awk '{print $2}'); do kill -9 $pid; done`;
