@@ -16,11 +16,12 @@
 
 import { ExtensionPack, Goals, SoftwareDeliveryMachine, whenPushSatisfies } from "@atomist/sdm";
 import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
-import { PushTests } from "../../sdm/api/pushTests";
-import { executeSdmDelivery, IsSdm, SdmDeliveryGoal } from "./SdmDeliveryGoal";
+import { PushTests } from "../../../sdm/api/pushTests";
+import { executeSdmDelivery, SdmDeliveryGoal } from "./SdmDeliveryGoal";
+import { IsSdm } from "./IsSdm";
 
 /**
- * Add this before anything else as it relies on goal locking
+ * Extension pack that automatically delivers an SDM
  * @param {SoftwareDeliveryMachine} sdm
  */
 export const SdmCd: ExtensionPack = {

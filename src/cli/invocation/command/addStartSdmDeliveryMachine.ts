@@ -15,7 +15,7 @@
  */
 
 import { Argv } from "yargs";
-import { SdmCd } from "../../../pack/sdm-cd/SdmCd";
+import { SdmCd } from "../../../pack/sdm-cd/support/SdmCd";
 import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
 import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
 

@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
-export { SdmCd } from "./SdmCd";
+export { SdmCd } from "./support/SdmCd";
 
-export { IsSdm } from "./SdmDeliveryGoal";
+export { IsSdm } from "./support/IsSdm";
+
+export { SdmDeliveryGoal } from "./support/SdmDeliveryGoal";
+
+export { executeSdmDelivery } from "./support/SdmDeliveryGoal";
