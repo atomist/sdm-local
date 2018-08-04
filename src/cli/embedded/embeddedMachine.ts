@@ -16,15 +16,9 @@
 
 import { Configuration } from "@atomist/automation-client";
 import { automationClient } from "@atomist/automation-client/automationClient";
-import {
-    defaultConfiguration,
-    invokePostProcessors,
-} from "@atomist/automation-client/configuration";
+import { defaultConfiguration, invokePostProcessors, } from "@atomist/automation-client/configuration";
 import { SoftwareDeliveryMachine } from "@atomist/sdm";
-import {
-    configureSdm,
-    createSoftwareDeliveryMachine,
-} from "@atomist/sdm-core";
+import { configureSdm, createSoftwareDeliveryMachine, } from "@atomist/sdm-core";
 import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
 
@@ -32,10 +26,9 @@ import * as os from "os";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../sdm/configuration/createSdmOptions";
 import { LocalLifecycle } from "../../sdm/configuration/localLifecycle";
 import { configureLocal } from "../../sdm/configuration/localPostProcessor";
-import {
-    AutomationClientConnectionConfig,
-    AutomationClientConnectionRequest,
-} from "../invocation/http/AutomationClientConnectionConfig";
+import { AutomationClientConnectionConfig, } from "../invocation/http/AutomationClientConnectionConfig";
+import { AutomationClientInfo } from "../AutomationClientInfo";
+import { fetchMetadataFromAutomationClient } from "../invocation/http/fetchMetadataFromAutomationClient";
 
 const DefaultBootstrapPort = 2900;
 
@@ -97,7 +90,7 @@ function configurationFor(options: EmbeddedMachineOptions): Configuration {
  * generating a new SDM
  * @return {Promise<AutomationClientConnectionConfig>}
  */
-export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Promise<AutomationClientConnectionRequest> {
+export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Promise<AutomationClientInfo> {
     const optsToUse: EmbeddedMachineOptions = {
         port: DefaultBootstrapPort,
         ...options,
@@ -106,8 +99,9 @@ export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Pro
     const config = await invokePostProcessors(
         configurationFor(optsToUse));
     const client = automationClient(config);
-    return client.run()
-        .then(() => ({
-            baseEndpoint: `http://${os.hostname}:${optsToUse.port}`,
-        }));
+    await client.run();
+    const coords = {
+        baseEndpoint: `http://${os.hostname}:${optsToUse.port}`,
+    };
+    return fetchMetadataFromAutomationClient(coords);
 }

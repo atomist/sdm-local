@@ -24,6 +24,7 @@ import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
 
 import chalk from "chalk";
 import * as os from "os";
+import { displayClientInfo } from "../../displayClientInfo";
 
 export interface PortRangeOptions {
 
@@ -58,7 +59,7 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
         const found = await new FixedAutomationClientFinder(...requests).findAutomationClients();
         if (found.length > 0) {
             infoMessage(`Connected to ${chalk.bold(found.length.toString())} automation clients \n\t%s\n\n`,
-                found.map(showInfo).join("\n\t"));
+                found.map(displayClientInfo).join("\n\t"));
         }
         return found;
     }
@@ -71,9 +72,4 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
         };
     }
 
-}
-
-function showInfo(aci: AutomationClientInfo) {
-    const local = aci.localConfig ? aci.localConfig.repositoryOwnerParentDirectory : "(remote)";
-    return `${chalk.bold(aci.client.name)} @ ${chalk.underline(aci.connectionConfig.baseEndpoint)} - ${local}`;
 }

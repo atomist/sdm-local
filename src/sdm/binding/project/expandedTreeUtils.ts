@@ -26,7 +26,7 @@ function trimTrailingSlash(dir: string): string {
  */
 export function parseOwnerAndRepo(repositoryOwnerParentDirectory: string,
                                   baseDir: string = determineCwd()): { owner?: string, repo?: string } {
-    if (!baseDir.startsWith(repositoryOwnerParentDirectory)) {
+    if (!repositoryOwnerParentDirectory || !baseDir.startsWith(repositoryOwnerParentDirectory)) {
         return {};
     }
     const pathUnder = trimTrailingSlash(baseDir

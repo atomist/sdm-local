@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
 import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
 import { appendOrCreateFileContent } from "@atomist/sdm/api-helper/project/appendOrCreate";
@@ -22,11 +21,7 @@ import chalk from "chalk";
 import * as fs from "fs";
 import * as path from "path";
 import { sprintf } from "sprintf-js";
-import {
-    errorMessage,
-    infoMessage,
-    warningMessage,
-} from "../../cli/invocation/command/support/consoleOutput";
+import { errorMessage, infoMessage, warningMessage, } from "../../cli/invocation/command/support/consoleOutput";
 import { HookEvents } from "../invocation/git/handleGitHookEvent";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";
@@ -34,14 +29,12 @@ const AtomistJsName = "cli/entry/onGitHook.js";
 
 /**
  * Add Git hooks to the given repo
- * @param {RemoteRepoRef} id
  * @param {string} projectBaseDir
  * @return {Promise<void>}
  */
-export async function addGitHooks(id: RemoteRepoRef,
-                                  projectBaseDir: string) {
+export async function addGitHooks(projectBaseDir: string) {
     if (fs.existsSync(`${projectBaseDir}/.git`)) {
-        const p = await NodeFsLocalProject.fromExistingDirectory(id, projectBaseDir);
+        const p = await NodeFsLocalProject.fromExistingDirectory(undefined, projectBaseDir);
         return addGitHooksToProject(p);
     } else {
         infoMessage(
@@ -75,7 +68,7 @@ export async function addGitHooksToProject(p: LocalProject) {
 
 export async function removeGitHooks(baseDir: string) {
     if (fs.existsSync(`${baseDir}/.git`)) {
-        const p = await NodeFsLocalProject.fromExistingDirectory({ owner: "doesn't", repo: "matter"}, baseDir);
+        const p = await NodeFsLocalProject.fromExistingDirectory({ owner: "doesn't", repo: "matter" }, baseDir);
         for (const hookFile of HookEvents) {
             await deatomizeScript(p, `/.git/hooks/${hookFile}`);
         }

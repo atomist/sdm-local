@@ -37,6 +37,8 @@ export async function addLocalSdmCommands(yargs: Argv,
     addBootstrapCommands(yargs);
     addStartSdmDeliveryMachine(yargs);
     addStartListenerCommand(yargs);
+    addAddGitHooksCommand(yargs);
+    addRemoveGitHooksCommand(yargs);
 
     const clients = await finder.findAutomationClients();
     addTriggerCommand(yargs, clients);
@@ -55,11 +57,7 @@ export async function addLocalSdmCommands(yargs: Argv,
 async function addCommandsToConnectTo(client: AutomationClientInfo, yargs: Argv) {
     verifyLocalSdm(client);
 
-    // TODO do these all once
-    addRemoveGitHooksCommand(client, yargs);
-
     if (!!client.localConfig) {
-        addAddGitHooksCommand(client, yargs);
         addImportFromGitRemoteCommand(client, yargs);
     }
 

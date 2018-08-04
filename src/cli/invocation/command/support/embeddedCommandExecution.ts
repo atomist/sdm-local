@@ -19,7 +19,6 @@ import { toParametersListing } from "@atomist/sdm/api-helper/machine/handlerRegi
 import { CommandRegistration } from "@atomist/sdm/api/registration/CommandRegistration";
 import { Argv } from "yargs";
 import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
-import { AutomationClientConnectionConfig } from "../../http/AutomationClientConnectionConfig";
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "./consoleOutput";
 import { runCommandOnRemoteAutomationClient } from "./runCommandOnRemoteAutomationClient";
@@ -47,7 +46,6 @@ export interface EmbeddedCommandSpec {
  * Once the client connects, it will prompt for parameters required by the command.
  * These parameters can also be passed through using the initial yargs request,
  * being exposed as optional command parameters.
- * @param {AutomationClientConnectionConfig} connectionConfig
  * @param {yargs.Argv} yargs
  */
 export function addEmbeddedCommand(yargs: Argv,
@@ -94,13 +92,13 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
                                            configure: ConfigureMachine,
                                            name: string,
                                            params: object) {
-    const cc = await startEmbeddedMachine({
+    const aca = await startEmbeddedMachine({
         repositoryOwnerParentDirectory,
         configure,
     });
-    const ai = await fetchMetadataFromAutomationClient(cc);
+    const ai = await fetchMetadataFromAutomationClient(aca.connectionConfig);
     if (!ai.client) {
-        errorMessage("Could not connect to the bootstrap SDM at %s\n", cc.baseEndpoint);
+        errorMessage("Could not connect to the bootstrap SDM at %s\n", aca.connectionConfig.baseEndpoint);
         process.exit(1);
     }
     if (!ai.localConfig) {
@@ -111,7 +109,7 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
         errorMessage("No command named '%s'\n", name);
         process.exit(1);
     }
-    return runCommandOnRemoteAutomationClient(cc,
+    return runCommandOnRemoteAutomationClient(aca.connectionConfig,
         repositoryOwnerParentDirectory,
         {
             atomistTeamName: "embedded",

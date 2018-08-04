@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import { exec } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";
@@ -49,8 +48,7 @@ async function importFromGitRemote(ai: AutomationClientInfo,
     }
     await promisify(exec)(`git clone ${remoteBase}/${owner}/${repo}`,
         { cwd: orgDir });
-    await addGitHooks(new GitHubRepoRef(owner, repo),
-        `${orgDir}/${repo}`);
+    await addGitHooks(`${orgDir}/${repo}`);
     await sendRepoOnboardingEvent(ai.connectionConfig, { owner, repo});
     await sendChannelLinkEvent(ai.connectionConfig, { owner, repo});
 }

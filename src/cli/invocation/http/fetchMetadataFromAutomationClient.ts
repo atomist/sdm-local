@@ -25,8 +25,6 @@ import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } f
  * @return {Promise<AutomationClientInfo>}
  */
 export async function fetchMetadataFromAutomationClient(connectionConfig: AutomationClientConnectionRequest): Promise<AutomationClientInfo> {
-    // infoMessage("Connecting to Automation client at %s (%d)\n", connectionConfig.baseEndpoint, process.pid);
-
     try {
         const resp = await axios.get(connectionConfig.baseEndpoint + "/registration", {
             timeout: 5 * 1000,
