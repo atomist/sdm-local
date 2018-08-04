@@ -123,20 +123,22 @@ async function deatomizeScript(p: LocalProject, scriptPath: string) {
 /* tslint:disable */
 
 /**
- * Indexed fragments
+ * Indexed templates fragments for use in git hooks
  * @param {string} atomistHookScriptPath
  * @param {string} gitHookScript
- * @param {string} event
  * @return {{"pre-receive": string}}
  */
 function scriptFragments(atomistHookScriptPath: string, gitHookScript: string) {
 
     return {
         "pre-receive": `
-oldrev=$(git rev-parse $1)
-newrev=$(git rev-parse $2)
-refname="$3"
-${atomistHookScriptPath} ${gitHookScript} pre-receive \${PWD} $refname $newrev
+while read oldrev newrev refname
+do        
+    oldrev=$(git rev-parse $1)
+    newrev=$(git rev-parse $2)
+    refname="$3"
+    ${atomistHookScriptPath} ${gitHookScript} pre-receive \${PWD} $refname $newrev
+done
 `,
         "post-commit": `
 sha=$(git rev-parse HEAD)
