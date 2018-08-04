@@ -1,5 +1,3 @@
-import { portToListenOnFor } from "../sdm/configuration/portAllocation";
-
 /*
  * Copyright © 2018 Atomist, Inc.
  *

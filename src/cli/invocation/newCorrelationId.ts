@@ -1,5 +1,3 @@
-import { portToListenOnFor } from "../../sdm/configuration/portAllocation";
-
 /*
  * Copyright © 2018 Atomist, Inc.
  *
@@ -16,7 +14,8 @@ import { portToListenOnFor } from "../../sdm/configuration/portAllocation";
  * limitations under the License.
  */
 
-const ClientType = "atomist-cli";
+import { portToListenOnFor } from "./portAllocation";
+import { ClientType } from "../../common/parseCorrelationId";
 
 /**
  * Create a correctly formatted correlation ID. We encode the port that

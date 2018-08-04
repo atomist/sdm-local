@@ -19,7 +19,7 @@ import { Arg, } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import * as assert from "power-assert";
 import { isArray } from "util";
-import { newCliCorrelationId } from "../correlationId";
+import { newCliCorrelationId } from "../newCorrelationId";
 import { AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
 import { CommandHandlerInvoker } from "../../../common/CommandHandlerInvocation";

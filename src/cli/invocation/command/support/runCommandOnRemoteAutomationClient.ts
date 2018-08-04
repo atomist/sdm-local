@@ -25,14 +25,14 @@ import { MappedParameterResolver } from "../../../../sdm/binding/mapped-paramete
 import { startHttpMessageListener } from "../../../../sdm/binding/message/httpMessageListener";
 import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/project/ExpandedTreeMappedParameterResolver";
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
-import { newCliCorrelationId } from "../../correlationId";
+import { newCliCorrelationId } from "../../newCorrelationId";
 import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionConfig";
 import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUsingHttp";
 import { infoMessage, warningMessage } from "./consoleOutput";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
 import chalk from "chalk";
 import { CommandHandlerInvocation } from "../../../../common/CommandHandlerInvocation";
-import { portToListenOnFor } from "../../../../sdm/configuration/portAllocation";
+import { portToListenOnFor } from "../../portAllocation";
 
 /**
  * All invocations from the CLI go through this function.

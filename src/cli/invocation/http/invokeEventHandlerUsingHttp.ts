@@ -19,7 +19,7 @@ import { replacer } from "@atomist/automation-client/internal/transport/Abstract
 import * as stringify from "json-stringify-safe";
 import { EventSender } from "../../../common/EventHandlerInvocation";
 import { InvocationTarget } from "../../../common/InvocationTarget";
-import { newCliCorrelationId } from "../correlationId";
+import { newCliCorrelationId } from "../newCorrelationId";
 import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
 

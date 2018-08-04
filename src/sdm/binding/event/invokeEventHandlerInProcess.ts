@@ -20,7 +20,7 @@ import { EventIncoming } from "@atomist/automation-client/internal/transport/Req
 import * as stringify from "json-stringify-safe";
 import * as assert from "power-assert";
 import { EventSender } from "../../../common/EventHandlerInvocation";
-import { newCliCorrelationId } from "../../../cli/invocation/correlationId";
+import { newCliCorrelationId } from "../../../cli/invocation/newCorrelationId";
 
 /**
  * Invoke an event handler on the automation client at the given location

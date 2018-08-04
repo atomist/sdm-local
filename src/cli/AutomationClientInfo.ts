@@ -34,7 +34,7 @@ export interface ConnectedClient {
 }
 
 /**
- * Information held in client about an automation client that we've client to
+ * Information held in client about an automation client that we've connected to
  */
 export interface AutomationClientInfo {
 
@@ -46,7 +46,7 @@ export interface AutomationClientInfo {
     connectionConfig: AutomationClientConnectionConfig;
 
     /**
-     * If this is a local sdm.machine, include this
+     * If this is a local SDM, include this
      */
     localConfig?: LocalModeConfiguration;
 

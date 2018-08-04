@@ -19,10 +19,11 @@ const LowerPort = 10000;
 const portfinder = require("portfinder");
 
 // Keep track of ports we've used
-const pidToPort: { [index: number]: number} = [];
+const pidToPort: { [index: number]: number } = [];
 
 /**
- * Return the port to listen on for this process id
+ * Return the port to listen on for this process id.
+ * Keep track of ports we've used
  * @param {number} pid
  * @return {number}
  */
@@ -31,7 +32,7 @@ export async function portToListenOnFor(pid: number): Promise<number> {
     if (foundPort !== undefined) {
         return foundPort;
     }
-    const port = await portfinder.getPortPromise({/*host: this.options.baseUrl,*/ port: LowerPort});
+    const port = await portfinder.getPortPromise({ /*host: this.options.baseUrl,*/ port: LowerPort });
     pidToPort[pid] = port;
     return port;
 }

@@ -19,7 +19,7 @@ import { Arg, } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import * as assert from "power-assert";
 import { isArray } from "util";
-import { newCliCorrelationId } from "../../../cli/invocation/correlationId";
+import { newCliCorrelationId } from "../../../cli/invocation/newCorrelationId";
 import { CommandHandlerInvoker } from "../../../common/CommandHandlerInvocation";
 
 export function invokeCommandHandlerInProcess(): CommandHandlerInvoker {
