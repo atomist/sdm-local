@@ -20,9 +20,10 @@ import { infoMessage, logExceptionsToConsole } from "../command/support/consoleO
 import { suggestStartingAllMessagesListener } from "../command/support/suggestStartingAllMessagesListener";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "../http/support/defaultAutomationClientFinder";
-import { argsToGitHookInvocation, GitHookInvocation, handleGitHookEvent } from "./handleGitHookEvent";
+import { GitHookInvocation, handleGitHookEvent } from "./handleGitHookEvent";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { renderEventDispatch } from "../../ui/renderClientInfo";
+import { argsToGitHookInvocation } from "../../entry/argsToGitHookInvocation";
 
 /**
  * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
