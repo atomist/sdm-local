@@ -30,7 +30,7 @@ export function sdmCd(options: SdmDeliveryOptions): ExtensionPack {
         name: "SdmCd",
         configure: sdm => {
             sdm.addGoalImplementation("SDM CD", LocalSdmDeliveryGoal,
-                executeLocalSdmDelivery(sdm.configuration.sdm.projectLoader, options));
+                executeLocalSdmDelivery(options));
             sdm.addGoalContributions(
                 whenPushSatisfies(IsSdm, PushTests).setGoals(
                     new Goals("delivery", LocalSdmDeliveryGoal)));

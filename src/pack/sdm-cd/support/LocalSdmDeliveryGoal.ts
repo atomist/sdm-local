@@ -16,9 +16,7 @@
 
 import { logger } from "@atomist/automation-client";
 import { asSpawnCommand } from "@atomist/automation-client/util/spawned";
-import { ExecuteGoal, GenericGoal, ProgressLog } from "@atomist/sdm";
-import { poisonAndWait } from "@atomist/sdm/api-helper/misc/spawned";
-import { ProjectLoader } from "@atomist/sdm/spi/project/ProjectLoader";
+import { ExecuteGoal, GenericGoal, GoalInvocation } from "@atomist/sdm";
 import { ChildProcess, spawn } from "child_process";
 import { isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { DelimitedWriteProgressLogDecorator } from "@atomist/sdm/api-helper/log/DelimitedWriteProgressLogDecorator";
@@ -28,15 +26,14 @@ import { SdmDeliveryOptions } from "./SdmDeliveryOptions";
 import * as os from "os";
 import { displayClientInfo } from "../../../cli/invocation/displayClientInfo";
 
-export const LocalSdmDeliveryGoal = new GenericGoal({ uniqueName: "sdmDelivery" },
+export const LocalSdmDeliveryGoal = new GenericGoal(
+    { uniqueName: "sdmDelivery" },
     "Deliver SDM");
 
 /**
  * Deliver this SDM
- * @param projectLoader use to load projects
  */
-export function executeLocalSdmDelivery(projectLoader: ProjectLoader,
-                                        options: SdmDeliveryOptions): ExecuteGoal {
+export function executeLocalSdmDelivery(options: SdmDeliveryOptions): ExecuteGoal {
     const deliveryManager = new DeliveryManager();
 
     return async goalInvocation => {
@@ -48,7 +45,7 @@ export function executeLocalSdmDelivery(projectLoader: ProjectLoader,
 
         try {
             await goalInvocation.addressChannels(`Beginning SDM delivery for SDM at ${id.fileSystemLocation}`);
-            const client = await deliveryManager.deliver(id.fileSystemLocation, goalInvocation.progressLog, options);
+            const client = await deliveryManager.deliver(id.fileSystemLocation, options, goalInvocation);
             await goalInvocation.addressChannels(`SDM updated: ${displayClientInfo(client)}`);
             return { code: 0 };
         } catch (err) {
@@ -68,27 +65,35 @@ const successPatterns = [
  */
 class DeliveryManager {
 
-    private childProcess: ChildProcess;
+    private childProcesses: { [baseDir: string]: ChildProcess } = {};
 
-    public async deliver(baseDir: string, log: ProgressLog, options: SdmDeliveryOptions): Promise<AutomationClientInfo> {
-        if (!!this.childProcess) {
-            await poisonAndWait;
+    public async deliver(baseDir: string,
+                         options: SdmDeliveryOptions,
+                         goalInvocation: GoalInvocation): Promise<AutomationClientInfo> {
+        let childProcess = this.childProcesses[baseDir];
+        if (!!childProcess) {
+            await goalInvocation.addressChannels(`Terminating process with pid \`${childProcess.pid}\` for SDM at ${baseDir}`);
+            await poisonAndWait(childProcess);
+        } else {
+            await goalInvocation.addressChannels(`No previous process found for SDM at ${baseDir}`);
         }
 
         const spawnCommand = asSpawnCommand("slalom start --install=false --local=true --compile=false");
-        this.childProcess = await spawn(
+        childProcess = await spawn(
             spawnCommand.command,
             spawnCommand.args,
             { cwd: baseDir });
 
+        this.childProcesses[baseDir] = childProcess;
+
         // Record output from child process
-        const newLineDelimitedLog = new DelimitedWriteProgressLogDecorator(log, "\n");
-        this.childProcess.stdout.on("data", what => newLineDelimitedLog.write(what.toString()));
-        this.childProcess.stderr.on("data", what => newLineDelimitedLog.write(what.toString()));
+        const newLineDelimitedLog = new DelimitedWriteProgressLogDecorator(goalInvocation.progressLog, "\n");
+        childProcess.stdout.on("data", what => newLineDelimitedLog.write(what.toString()));
+        childProcess.stderr.on("data", what => newLineDelimitedLog.write(what.toString()));
 
         return new Promise<AutomationClientInfo>((resolve, reject) => {
             let stdout = "";
-            this.childProcess.stdout.addListener("data", async what => {
+            childProcess.stdout.addListener("data", async what => {
                 if (!!what) {
                     stdout += what;
                 }
@@ -101,11 +106,26 @@ class DeliveryManager {
                         .catch(reject);
                 }
             });
-            this.childProcess.addListener("exit", () => {
-                return reject(new Error("Error starting managed SDM. We should have found success message pattern by now! Please check logs"));
+            childProcess.addListener("exit", () => {
+                this.childProcesses.delete[baseDir];
+                reject(new Error("Error starting managed SDM. We should have found success message pattern by now! Please check logs"));
             });
-            this.childProcess.addListener("error", reject);
+            childProcess.addListener("error", err => {
+                this.childProcesses.delete[baseDir];
+                return reject(err);
+            });
         });
     }
 
+}
+
+function poisonAndWait(childProcess: ChildProcess) {
+    if (!childProcess.connected) {
+        logger.warn("Child process with pid %d is not connected", childProcess.pid);
+    } else {
+        childProcess.kill();
+        return new Promise((resolve, reject) => childProcess.on("close", () => {
+            resolve();
+        }));
+    }
 }
