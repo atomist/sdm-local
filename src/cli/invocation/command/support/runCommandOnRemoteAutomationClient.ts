@@ -25,13 +25,14 @@ import { MappedParameterResolver } from "../../../../sdm/binding/mapped-paramete
 import { startHttpMessageListener } from "../../../../sdm/binding/message/httpMessageListener";
 import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/project/ExpandedTreeMappedParameterResolver";
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
-import { newCorrelationId, portToListenOnFor } from "../../../../sdm/configuration/correlationId";
+import { newCliCorrelationId } from "../../correlationId";
 import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionConfig";
 import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUsingHttp";
 import { infoMessage, warningMessage } from "./consoleOutput";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
 import chalk from "chalk";
 import { CommandHandlerInvocation } from "../../../../common/CommandHandlerInvocation";
+import { portToListenOnFor } from "../../../../sdm/configuration/portAllocation";
 
 /**
  * All invocations from the CLI go through this function.
@@ -62,7 +63,7 @@ export async function runCommandOnRemoteAutomationClient(connectionConfig: Autom
     }));
     await promptForMissingMappedParameters(hm, mappedParameters);
 
-    const correlationId = await newCorrelationId({ channel: parseOwnerAndRepo(repositoryOwnerParentDirectory).repo, encodeListenerPort: true });
+    const correlationId = await newCliCorrelationId({ channel: parseOwnerAndRepo(repositoryOwnerParentDirectory).repo, encodeListenerPort: true });
 
     const invocation: CommandHandlerInvocation = {
         name: hm.name,

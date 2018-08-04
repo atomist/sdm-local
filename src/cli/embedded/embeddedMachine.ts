@@ -24,7 +24,7 @@ import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/S
 
 import * as os from "os";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../sdm/configuration/createSdmOptions";
-import { LocalLifecycle } from "../../sdm/configuration/localLifecycle";
+import { LocalLifecycle } from "../../sdm/ui/localLifecycle";
 import { configureLocal } from "../../sdm/configuration/localPostProcessor";
 import { AutomationClientConnectionConfig, } from "../invocation/http/AutomationClientConnectionConfig";
 import { AutomationClientInfo } from "../AutomationClientInfo";

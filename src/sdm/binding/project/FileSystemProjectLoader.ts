@@ -99,7 +99,7 @@ function changeToPushToAtomistBranch(localConfig: LocalModeConfiguration): (p: G
 
                 if (localConfig.mergeAutofixes) {
                     const originalRepoDir = dirFor(localConfig.repositoryOwnerParentDirectory, p.id.owner, p.id.repo);
-                    // infoMessage(`Trying merge in ${originalRepoDir}\n`);
+                    logger.info("Trying merge in %s", originalRepoDir);
                     // Automerge it
                     await runAndLog(`git merge ${newBranch}`, { cwd: originalRepoDir });
                 }

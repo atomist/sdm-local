@@ -28,44 +28,53 @@ import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessag
 import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
-import { channelFor, portToRespondOn } from "./correlationId";
 import { createSdmOptions } from "./createSdmOptions";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 
 import * as assert from "assert";
 import { CommandHandlerInvocation } from "../../common/CommandHandlerInvocation";
 import { invokeCommandHandlerInProcess } from "../binding/command/invokeCommandHandlerInProcess";
+import { parseChannel, parsePort } from "../../common/parseCorrelationId";
+
+const DefaultLocalLocalModeConfiguration: LocalModeConfiguration = {
+    preferLocalSeeds: true,
+    mergeAutofixes: true,
+    useSystemNotifications: false,
+};
 
 /**
  * Configures an automation client in local mode
- * @param {LocalModeConfiguration} localMachineConfig
+ * @param {LocalModeConfiguration} localModeConfiguration
  * @return {(configuration: Configuration) => Promise<Configuration>}
  */
 export function configureLocal(
-    localMachineConfig: LocalModeConfiguration & { forceLocal?: boolean }): (configuration: Configuration) => Promise<Configuration> {
+    localModeConf: LocalModeConfiguration & { forceLocal?: boolean }): (configuration: Configuration) => Promise<Configuration> {
     return async configuration => {
 
-        // Don't mess with a non local sdm.machine
-        if (!(localMachineConfig.forceLocal || isInLocalMode())) {
+        // Don't mess with a non local SDM
+        if (!(localModeConf.forceLocal || isInLocalMode())) {
             return configuration;
         }
+
+        // Get sensible defaults
+        const localModeConfiguration = {
+            ...DefaultLocalLocalModeConfiguration,
+            ...localModeConf,
+        };
 
         logger.info("Disable web socket connection");
         configuration.ws.enabled = false;
 
         const globalActionStore = freshActionStore();
 
-        configureWebEndpoints(configuration, localMachineConfig, globalActionStore);
+        configureWebEndpoints(configuration, localModeConfiguration, globalActionStore);
 
-        setMessageClient(configuration, localMachineConfig, globalActionStore);
+        setMessageClient(configuration, localModeConfiguration, globalActionStore);
         setGraphClient(configuration);
 
-        if (!configuration.listeners) {
-            configuration.listeners = [];
-        }
-        configuration.listeners.push(new NotifyOnCompletionAutomationEventListener());
+        addListeners(configuration);
 
-        const localModeSdmConfigurationElements = createSdmOptions(localMachineConfig);
+        const localModeSdmConfigurationElements = createSdmOptions(localModeConfiguration);
 
         // Need extra config to know how to set things in the SDM
         configuration.sdm = {
@@ -103,7 +112,7 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
                 };
                 const r = await invokeCommandHandlerInProcess()(invocation)
                     .then(r => res.json(decircle(r)),
-                    boo => res.status(500).send(boo.message));
+                        boo => res.status(500).send(boo.message));
                 return res.json(r);
             });
             exp.get(ActionRoute + "/:description", async (req, res) => {
@@ -135,6 +144,13 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
     ];
 }
 
+function addListeners(configuration: Configuration) {
+    if (!configuration.listeners) {
+        configuration.listeners = [];
+    }
+    configuration.listeners.push(new NotifyOnCompletionAutomationEventListener());
+}
+
 function decircle(result: HandlerResult) {
     let noncircular = result;
     try {
@@ -160,8 +176,8 @@ function setMessageClient(configuration: Configuration,
             // TOD parameterize this
             const machineAddress: AutomationClientConnectionRequest = { baseEndpoint: "http://localhost:2866" };
             assert(!!aca.context.correlationId);
-            const channel = channelFor(aca.context.correlationId);
-            const clientId = portToRespondOn(aca.context.correlationId);
+            const channel = parseChannel(aca.context.correlationId);
+            const clientId = parsePort(aca.context.correlationId);
             return new BroadcastingMessageClient(
                 new HttpClientMessageClient(channel, AllMessagesPort, machineAddress,
                     actionStore),

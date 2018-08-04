@@ -20,7 +20,7 @@ import { EventIncoming } from "@atomist/automation-client/internal/transport/Req
 import * as stringify from "json-stringify-safe";
 import * as assert from "power-assert";
 import { EventSender } from "../../../common/EventHandlerInvocation";
-import { newCorrelationId } from "../../../sdm/configuration/correlationId";
+import { newCliCorrelationId } from "../../../cli/invocation/correlationId";
 
 /**
  * Invoke an event handler on the automation client at the given location
@@ -37,7 +37,7 @@ export function invokeEventHandlerInProcess(correlationId?: string): EventSender
                 query_id: "q-" + Date.now(),
                 team_id,
                 team_name,
-                correlation_id: correlationId || await newCorrelationId(),
+                correlation_id: correlationId || await newCliCorrelationId(),
             },
             secrets: (invocation.secrets || []).concat([
                 { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },

@@ -19,7 +19,7 @@ import { replacer } from "@atomist/automation-client/internal/transport/Abstract
 import * as stringify from "json-stringify-safe";
 import { EventSender } from "../../../common/EventHandlerInvocation";
 import { InvocationTarget } from "../../../common/InvocationTarget";
-import { newCorrelationId } from "../../../sdm/configuration/correlationId";
+import { newCliCorrelationId } from "../correlationId";
 import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
 
@@ -40,7 +40,7 @@ export function invokeEventHandlerUsingHttp(config: AutomationClientConnectionRe
                 query_id: "q-" + Date.now(),
                 team_id: target.atomistTeamId,
                 team_name: target.atomistTeamName,
-                correlation_id: target.correlationId || await newCorrelationId(),
+                correlation_id: target.correlationId || await newCliCorrelationId(),
             },
             secrets: (invocation.secrets || []).concat([
                 { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },

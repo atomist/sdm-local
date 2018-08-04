@@ -19,7 +19,7 @@ import { Arg, } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import * as assert from "power-assert";
 import { isArray } from "util";
-import { newCorrelationId } from "../../../sdm/configuration/correlationId";
+import { newCliCorrelationId } from "../../../cli/invocation/correlationId";
 import { CommandHandlerInvoker } from "../../../common/CommandHandlerInvocation";
 
 export function invokeCommandHandlerInProcess(): CommandHandlerInvoker {
@@ -34,7 +34,7 @@ export function invokeCommandHandlerInProcess(): CommandHandlerInvoker {
             secrets: (invocation.secrets || []).concat([
                 { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },
             ]),
-            correlation_id: invocation.correlationId || await newCorrelationId(),
+            correlation_id: invocation.correlationId || await newCliCorrelationId(),
             api_version: "1",
             team: {
                 id: invocation.atomistTeamId,
