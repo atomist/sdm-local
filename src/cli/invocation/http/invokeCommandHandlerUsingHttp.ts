@@ -51,15 +51,17 @@ export function invokeCommandHandlerUsingHttp(config: AutomationClientConnection
             const url = `/command`;
             logger.debug("Hitting %s to invoke command %s using %j", url, invocation.name, data);
             const resp = await postToSdm(config, url, data);
-            assert(resp.code === 0,
-                "Command handler did not succeed. Returned: " + JSON.stringify(resp, null, 2));
+            if(resp.code !== 0) {
+                logger.error("Command handler did not succeed. Returned: " + JSON.stringify(resp, null, 2));
+            }
             return resp;
         } else {
             logger.debug("Invoking command %s using %j", invocation.name, data);
             return automationClientInstance().processCommand(data as CommandIncoming, async result => {
                 const r = await result;
-                assert(r.code === 0,
-                    "Command handler did not succeed. Returned: " + JSON.stringify(r, null, 2));
+                if(r.code !== 0) {
+                    logger.error("Command handler did not succeed. Returned: " + JSON.stringify(r, null, 2));
+                }
                 return r;
             });
         }

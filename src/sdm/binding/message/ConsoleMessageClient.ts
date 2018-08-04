@@ -34,7 +34,6 @@ import { MarkedOptions } from "marked";
 import * as TerminalRenderer from "marked-terminal";
 import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 import { actionDescription, actionKey, ActionRoute } from "./ActionStore";
-import { ActionStore } from "./ActionStore";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 
 marked.setOptions({
