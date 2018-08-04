@@ -21,6 +21,7 @@ import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
 
 import chalk from "chalk";
 import { fetchMetadataFromAutomationClient } from "../http/fetchMetadataFromAutomationClient";
+import { determineDefaultRepositoryOwnerParentDirectory } from "../../../sdm/configuration/createSdmOptions";
 
 export const DefaultSdmCdPort = 2901;
 
@@ -30,12 +31,24 @@ export const DefaultSdmCdPort = 2901;
  */
 export function addStartSdmDeliveryMachine(yargs: Argv) {
     yargs.command({
-        command: "deliver [port] [base]",
+        command: "deliver",
         describe: "Start SDM delivery machine",
+        builder: args => {
+            return args.option("port", {
+                required: false,
+                default: DefaultSdmCdPort,
+                type: "number",
+                description: `Port for the delivery SDM. Defaults to ${DefaultSdmCdPort}`,
+            }).option("base", {
+                required: false,
+                default: undefined,
+                alias: "repositoryOwnerParentDirectory",
+                description: `Base directory for the delivery SDM: Defaults to ${determineDefaultRepositoryOwnerParentDirectory()}`,
+            });
+        },
         handler: argv =>  {
             return logExceptionsToConsole(async () => {
-                const port = !!argv.port ? parseInt(argv.port) : DefaultSdmCdPort;
-                const where = await startSdmMachine(port, argv.base);
+                const where = await startSdmMachine(argv.port, argv.base);
                 const client = await fetchMetadataFromAutomationClient(where);
                 infoMessage("Started local SDM delivery machine %s at %s\n",
                     chalk.bold(client.client.name),
