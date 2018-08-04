@@ -5,4 +5,4 @@ export { LocalLifecycle } from "./sdm/configuration/localLifecycle";
 export { infoMessage } from "./cli/invocation/command/support/consoleOutput";
 export * from "./sdm/api/pushTests";
 export { isInLocalMode } from "./sdm/api/isInLocalMode";
-export { SdmCd } from "./pack/sdm-cd/support/SdmCd";
+export { sdmCd } from "./pack/sdm-cd/support/SdmCd";

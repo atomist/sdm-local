@@ -15,11 +15,10 @@
  */
 
 import { Argv } from "yargs";
-import { SdmCd } from "../../../pack/sdm-cd/support/SdmCd";
+import { sdmCd } from "../../../pack/sdm-cd/support/SdmCd";
 import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
 import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
 
-import chalk from "chalk";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../sdm/configuration/createSdmOptions";
 import { displayClientInfo } from "../displayClientInfo";
 
@@ -46,7 +45,7 @@ export function addStartSdmDeliveryMachine(yargs: Argv) {
                 description: `Base directory for the delivery SDM: Defaults to ${determineDefaultRepositoryOwnerParentDirectory()}`,
             });
         },
-        handler: argv =>  {
+        handler: argv => {
             return logExceptionsToConsole(async () => {
                 const client = await startSdmMachine(argv.port, argv.base);
                 infoMessage("Started local SDM delivery machine %s\n",
@@ -61,7 +60,7 @@ async function startSdmMachine(port: number, repositoryOwnerParentDirectory?: st
         repositoryOwnerParentDirectory,
         port,
         configure: sdm => {
-            sdm.addExtensionPacks(SdmCd);
+            sdm.addExtensionPacks(sdmCd({ port }));
         },
     });
 }

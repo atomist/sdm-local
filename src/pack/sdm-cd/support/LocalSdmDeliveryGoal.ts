@@ -22,31 +22,34 @@ import { ProjectLoader } from "@atomist/sdm/spi/project/ProjectLoader";
 import { ChildProcess, spawn } from "child_process";
 import { isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { DelimitedWriteProgressLogDecorator } from "@atomist/sdm/api-helper/log/DelimitedWriteProgressLogDecorator";
+import { AutomationClientInfo } from "../../../cli/AutomationClientInfo";
+import { fetchMetadataFromAutomationClient } from "../../../cli/invocation/http/fetchMetadataFromAutomationClient";
+import { SdmDeliveryOptions } from "./SdmDeliveryOptions";
+import * as os from "os";
+import { displayClientInfo } from "../../../cli/invocation/displayClientInfo";
 
-export const SdmDeliveryGoal = new GenericGoal({ uniqueName: "sdmDelivery" },
+export const LocalSdmDeliveryGoal = new GenericGoal({ uniqueName: "sdmDelivery" },
     "Deliver SDM");
-
-export interface SdmDeliveryOptions {
-
-}
 
 /**
  * Deliver this SDM
  * @param projectLoader use to load projects
- * @param opts options
  */
-export function executeSdmDelivery(projectLoader: ProjectLoader,
-                                   opts: Partial<SdmDeliveryOptions>): ExecuteGoal {
+export function executeLocalSdmDelivery(projectLoader: ProjectLoader,
+                                        options: SdmDeliveryOptions): ExecuteGoal {
     const deliveryManager = new DeliveryManager();
+
     return async goalInvocation => {
         const { id } = goalInvocation;
-        await goalInvocation.addressChannels("should deliver SDM");
+        if (!isFileSystemRemoteRepoRef(id)) {
+            // Should not have been called
+            throw new Error("Not a local repo ref: " + JSON.stringify(id));
+        }
+
         try {
-            if (!isFileSystemRemoteRepoRef(id)) {
-                // Should not have been called
-                throw new Error("Not a local repo ref: " + JSON.stringify(id));
-            }
-            await deliveryManager.deliver(id.fileSystemLocation, goalInvocation.progressLog);
+            await goalInvocation.addressChannels(`Beginning SDM delivery for SDM at ${id.fileSystemLocation}`);
+            const client = await deliveryManager.deliver(id.fileSystemLocation, goalInvocation.progressLog, options);
+            await goalInvocation.addressChannels(`SDM updated: ${displayClientInfo(client)}`);
             return { code: 0 };
         } catch (err) {
             logger.error(err);
@@ -67,7 +70,7 @@ class DeliveryManager {
 
     private childProcess: ChildProcess;
 
-    public async deliver(baseDir: string, log: ProgressLog) {
+    public async deliver(baseDir: string, log: ProgressLog, options: SdmDeliveryOptions): Promise<AutomationClientInfo> {
         if (!!this.childProcess) {
             await poisonAndWait;
         }
@@ -83,18 +86,23 @@ class DeliveryManager {
         this.childProcess.stdout.on("data", what => newLineDelimitedLog.write(what.toString()));
         this.childProcess.stderr.on("data", what => newLineDelimitedLog.write(what.toString()));
 
-        return new Promise((resolve, reject) => {
+        return new Promise<AutomationClientInfo>((resolve, reject) => {
             let stdout = "";
-            this.childProcess.stdout.addListener("data", what => {
+            this.childProcess.stdout.addListener("data", async what => {
                 if (!!what) {
                     stdout += what;
                 }
                 if (successPatterns.some(successPattern => successPattern.test(stdout))) {
-                    resolve();
+                    const ccr = {
+                        baseEndpoint: `http://${os.hostname()}:${options.port}`,
+                    };
+                    await fetchMetadataFromAutomationClient(ccr)
+                        .then(aca => resolve(aca))
+                        .catch(reject);
                 }
             });
             this.childProcess.addListener("exit", () => {
-                reject(new Error("Error starting managed SDM. We should have found success message pattern by now! Please check logs"));
+                return reject(new Error("Error starting managed SDM. We should have found success message pattern by now! Please check logs"));
             });
             this.childProcess.addListener("error", reject);
         });
