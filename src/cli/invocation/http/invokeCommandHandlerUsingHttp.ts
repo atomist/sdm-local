@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-import { automationClientInstance, logger, } from "@atomist/automation-client";
-import { Arg, } from "@atomist/automation-client/internal/invoker/Payload";
-import { CommandIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
+import { logger, } from "@atomist/automation-client";
 import * as assert from "power-assert";
-import { isArray } from "util";
 import { newCliCorrelationId } from "../newCorrelationId";
 import { AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
 import { CommandHandlerInvoker } from "../../../common/CommandHandlerInvocation";
+import { propertiesToArgs } from "../../../common/propertiesToArgs";
 
 export function invokeCommandHandlerUsingHttp(config: AutomationClientConnectionRequest): CommandHandlerInvoker {
     return async invocation => {
@@ -44,34 +42,14 @@ export function invokeCommandHandlerUsingHttp(config: AutomationClientConnection
             },
         };
 
-        if (!automationClientInstance()) {
-            // This process is somehow not the SDM, and so maybe there's an SDM that we can pass this on to.
-            assert(!!config, "Config must be provided");
-            assert(!!config.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(config));
-            const url = `/command`;
-            logger.debug("Hitting %s to invoke command %s using %j", url, invocation.name, data);
-            const resp = await postToSdm(config, url, data);
-            if(resp.code !== 0) {
-                logger.error("Command handler did not succeed. Returned: " + JSON.stringify(resp, null, 2));
-            }
-            return resp;
-        } else {
-            logger.debug("Invoking command %s using %j", invocation.name, data);
-            return automationClientInstance().processCommand(data as CommandIncoming, async result => {
-                const r = await result;
-                if(r.code !== 0) {
-                    logger.error("Command handler did not succeed. Returned: " + JSON.stringify(r, null, 2));
-                }
-                return r;
-            });
+        assert(!!config, "Config must be provided");
+        assert(!!config.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(config));
+        const url = `/command`;
+        logger.debug("Hitting %s to invoke command %s using %j", url, invocation.name, data);
+        const resp = await postToSdm(config, url, data);
+        if (resp.code !== 0) {
+            logger.error("Command handler did not succeed. Returned: " + JSON.stringify(resp, null, 2));
         }
+        return resp;
     };
-}
-
-function propertiesToArgs(o: any): Arg[] {
-    if (isArray(o)) {
-        return o;
-    }
-    const args = Object.keys(o).map(k => ({ name: k, value: o[k] }));
-    return args;
 }

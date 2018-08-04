@@ -15,12 +15,10 @@
  */
 
 import { automationClientInstance, logger, } from "@atomist/automation-client";
-import { Arg, } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
-import * as assert from "power-assert";
-import { isArray } from "util";
 import { newCliCorrelationId } from "../../../cli/invocation/newCorrelationId";
 import { CommandHandlerInvoker } from "../../../common/CommandHandlerInvocation";
+import { propertiesToArgs } from "../../../common/propertiesToArgs";
 
 export function invokeCommandHandlerInProcess(): CommandHandlerInvoker {
     return async invocation => {
@@ -57,10 +55,3 @@ export function invokeCommandHandlerInProcess(): CommandHandlerInvoker {
     };
 }
 
-function propertiesToArgs(o: any): Arg[] {
-    if (isArray(o)) {
-        return o;
-    }
-    const args = Object.keys(o).map(k => ({ name: k, value: o[k] }));
-    return args;
-}
