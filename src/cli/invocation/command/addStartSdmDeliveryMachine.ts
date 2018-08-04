@@ -20,7 +20,7 @@ import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
 import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
 
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../sdm/configuration/createSdmOptions";
-import { displayClientInfo } from "../displayClientInfo";
+import { renderClientInfo } from "../../ui/renderClientInfo";
 
 export const DefaultSdmCdPort = 2901;
 
@@ -49,7 +49,7 @@ export function addStartSdmDeliveryMachine(yargs: Argv) {
             return logExceptionsToConsole(async () => {
                 const client = await startSdmMachine(argv.port, argv.base);
                 infoMessage("Started local SDM delivery machine %s\n",
-                    displayClientInfo(client));
+                    renderClientInfo(client));
             }, true);
         },
     });

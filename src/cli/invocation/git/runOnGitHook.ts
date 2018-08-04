@@ -20,7 +20,9 @@ import { infoMessage, logExceptionsToConsole } from "../command/support/consoleO
 import { suggestStartingAllMessagesListener } from "../command/support/suggestStartingAllMessagesListener";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "../http/support/defaultAutomationClientFinder";
-import { argsToGitHookInvocation, handleGitHookEvent } from "./handleGitHookEvent";
+import { argsToGitHookInvocation, GitHookInvocation, handleGitHookEvent } from "./handleGitHookEvent";
+import { AutomationClientInfo } from "../../AutomationClientInfo";
+import { renderEventDispatch } from "../../ui/renderClientInfo";
 
 /**
  * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
@@ -35,19 +37,23 @@ export async function runOnGitHook(argv: string[],
         return;
     }
 
+    await suggestStartingAllMessagesListener();
     const clients = await clientFinder.findAutomationClients();
     if (clients.length === 0) {
         infoMessage("No Atomist connected clients found");
         process.exit(0);
     }
-    const automationClientInfo = clients[0];
+    return Promise.all(clients.map(client => sendTo(client, invocation)));
+}
 
-    await suggestStartingAllMessagesListener();
+
+async function sendTo(automationClientInfo: AutomationClientInfo, invocation: GitHookInvocation) {
     if (!automationClientInfo.localConfig) {
-        infoMessage("No Software Delivery Machine running; not delivering push event.\n");
-        process.exit(0); // This is a lot faster than just returning. I don't want to make your commit slow.
+        infoMessage("Not a local machine; not delivering push event.\n");
+        // process.exit(0); // This is a lot faster than just returning. I don't want to make your commit slow.
     } else {
         logger.debug("Executing git hook against project %j", invocation);
+        infoMessage(renderEventDispatch(automationClientInfo, invocation));
         return logExceptionsToConsole(() =>
                 handleGitHookEvent(
                     automationClientInfo.connectionConfig,

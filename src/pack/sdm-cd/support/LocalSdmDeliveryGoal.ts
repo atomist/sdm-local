@@ -24,7 +24,7 @@ import { AutomationClientInfo } from "../../../cli/AutomationClientInfo";
 import { fetchMetadataFromAutomationClient } from "../../../cli/invocation/http/fetchMetadataFromAutomationClient";
 import { SdmDeliveryOptions } from "./SdmDeliveryOptions";
 import * as os from "os";
-import { displayClientInfo } from "../../../cli/invocation/displayClientInfo";
+import { renderClientInfo } from "../../../cli/ui/renderClientInfo";
 import { runAndLog } from "../../../sdm/util/runAndLog";
 
 export const LocalSdmDeliveryGoal = new GenericGoal(
@@ -47,7 +47,7 @@ export function executeLocalSdmDelivery(options: SdmDeliveryOptions): ExecuteGoa
         try {
             await goalInvocation.addressChannels(`Beginning SDM delivery for SDM at ${id.fileSystemLocation}`);
             const client = await deliveryManager.deliver(id.fileSystemLocation, options, goalInvocation);
-            await goalInvocation.addressChannels(`SDM updated: ${displayClientInfo(client)}: pid=${client.pid}`);
+            await goalInvocation.addressChannels(`SDM updated: ${renderClientInfo(client)}: pid=${client.pid}`);
             return { code: 0 };
         } catch (err) {
             logger.error(err);

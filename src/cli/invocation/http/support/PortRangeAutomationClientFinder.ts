@@ -24,7 +24,7 @@ import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
 
 import chalk from "chalk";
 import * as os from "os";
-import { displayClientInfo } from "../../displayClientInfo";
+import { renderClientInfo } from "../../../ui/renderClientInfo";
 
 export interface PortRangeOptions {
 
@@ -59,7 +59,7 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
         const found = await new FixedAutomationClientFinder(...requests).findAutomationClients();
         if (found.length > 0) {
             infoMessage(`Connected to ${chalk.bold(found.length.toString())} automation clients \n\t%s\n\n`,
-                found.map(displayClientInfo).join("\n\t"));
+                found.map(renderClientInfo).join("\n\t"));
         }
         return found;
     }

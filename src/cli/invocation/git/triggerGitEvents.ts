@@ -30,6 +30,7 @@ import {
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { PortRangeAutomationClientFinder } from "../http/support/PortRangeAutomationClientFinder";
 import { handleGitHookEvent } from "./handleGitHookEvent";
+import { renderEventDispatch } from "../../ui/renderClientInfo";
 
 /**
  * Trigger git events to the given depth in the current project repo
@@ -65,7 +66,7 @@ async function triggerGitEventsOn(ai: AutomationClientInfo, event: string, depth
             }
             const invocation = { event, baseDir: currentDir, branch, sha, teamId };
             logger.debug("Trigger %j", invocation);
-            infoMessage("Sending event %j to machine %s\n", invocation, ai.client.name);
+            infoMessage(renderEventDispatch(ai, invocation));
             await handleGitHookEvent(ai.connectionConfig, ai.localConfig, invocation);
         }
     } else {

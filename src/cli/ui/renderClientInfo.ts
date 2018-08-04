@@ -16,14 +16,21 @@
 
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import chalk from "chalk";
+import { sprintf } from "sprintf-js";
 
 /**
  * Format information about this automation for the console
  * @param {AutomationClientInfo} aci
  * @return {string}
  */
-export function displayClientInfo(aci: AutomationClientInfo): string {
+export function renderClientInfo(aci: AutomationClientInfo): string {
     const local = aci.localConfig ? aci.localConfig.repositoryOwnerParentDirectory : "(remote)";
     const reg = aci.connectionConfig.baseEndpoint + "/registration";
     return `${chalk.bold(aci.client.name)} @ ${chalk.underline(aci.connectionConfig.baseEndpoint)} - ${local} - ${reg}`;
+}
+
+export function renderEventDispatch(aci: AutomationClientInfo, what: any) {
+    return sprintf("Sending event %s to machine %s\n",
+        chalk.yellow(JSON.stringify(what)),
+        chalk.underline(aci.client.name));
 }
