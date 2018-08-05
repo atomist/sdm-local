@@ -162,15 +162,13 @@ async function deatomizeScript(p: LocalProject, scriptPath: string) {
  */
 function scriptFragments(atomistHookScriptPath: string, gitHookScript: string) {
 
+    // TODO why does the hook need be verbose?
     return {
         "pre-receive": `
-while read oldrev newrev refname
-do        
-    oldrev=$(git rev-parse $1)
-    newrev=$(git rev-parse $2)
-    refname="$3"
-    ${atomistHookScriptPath} ${gitHookScript} pre-receive \${PWD} $refname $newrev
-done
+export ATOMIST_GITHOOK_VERBOSE="true"
+
+read oldrev newrev refname
+${atomistHookScriptPath} ${gitHookScript} pre-receive \${PWD} $refname $newrev
 `,
         "post-commit": `
 sha=$(git rev-parse HEAD)

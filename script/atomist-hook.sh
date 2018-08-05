@@ -13,6 +13,9 @@ hookDir=$3
 branch=$4
 sha=$5
 
+# Uncomment for debugging
+# ATOMIST_GITHOOK_VERBOSE="true"
+
 case "$ATOMIST_GITHOOK_VERBOSE" in
  true)
     node $script\
