@@ -42,8 +42,8 @@ export function startHttpMessageListener(port: number = AllMessagesPort,
             if (isFailureMessage(req.body.message)) {
                 errorMessage("Command failure\n%j\n", req.body.message);
             }
+            res.send({ terminating: true });
             process.exit(0);
-            return;
         }
         const messageClient = new ConsoleMessageClient("general", ProcessStdoutSender, req.body.machineAddress);
         return messageClient.send(req.body.message, req.body.destinations)
