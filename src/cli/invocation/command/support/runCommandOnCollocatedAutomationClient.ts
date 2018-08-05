@@ -31,7 +31,7 @@ import { AutomationClientConnectionRequest } from "../../http/AutomationClientCo
 import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUsingHttp";
 import { newCliCorrelationId } from "../../newCorrelationId";
 import { portToListenOnFor } from "../../portAllocation";
-import { infoMessage, warningMessage } from "./consoleOutput";
+import { warningMessage } from "./consoleOutput";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
 
 /**
@@ -40,11 +40,11 @@ import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessages
  * @param command command populated by yargs
  * @return {Promise<any>}
  */
-export async function runCommandOnRemoteAutomationClient(connectionConfig: AutomationClientConnectionRequest,
-                                                         repositoryOwnerParentDirectory: string,
-                                                         target: InvocationTarget,
-                                                         hm: CommandHandlerMetadata,
-                                                         command: object): Promise<any> {
+export async function runCommandOnCollocatedAutomationClient(connectionConfig: AutomationClientConnectionRequest,
+                                                             repositoryOwnerParentDirectory: string,
+                                                             target: InvocationTarget,
+                                                             hm: CommandHandlerMetadata,
+                                                             command: object): Promise<any> {
     await suggestStartingAllMessagesListener();
     startHttpMessageListener(await portToListenOnFor(process.pid), true);
     const extraArgs = Object.getOwnPropertyNames(command)

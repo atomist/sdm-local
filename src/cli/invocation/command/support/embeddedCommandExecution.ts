@@ -21,7 +21,7 @@ import { Argv } from "yargs";
 import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "./consoleOutput";
-import { runCommandOnRemoteAutomationClient } from "./runCommandOnRemoteAutomationClient";
+import { runCommandOnCollocatedAutomationClient } from "./runCommandOnCollocatedAutomationClient";
 
 /**
  * Spec for running an embedded command on an ephemeral SDM
@@ -109,7 +109,7 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
         errorMessage("No command named '%s'\n", name);
         process.exit(1);
     }
-    return runCommandOnRemoteAutomationClient(aca.connectionConfig,
+    return runCommandOnCollocatedAutomationClient(aca.connectionConfig,
         repositoryOwnerParentDirectory,
         {
             atomistTeamName: "embedded",

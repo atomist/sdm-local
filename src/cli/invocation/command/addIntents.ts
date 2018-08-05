@@ -21,7 +21,7 @@ import { Argv } from "yargs";
 import { PathElement, toPaths } from "../../../sdm/util/PathElement";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "./support/consoleOutput";
-import { convertToDisplayable, runCommandOnRemoteAutomationClient } from "./support/runCommandOnRemoteAutomationClient";
+import { convertToDisplayable, runCommandOnCollocatedAutomationClient } from "./support/runCommandOnCollocatedAutomationClient";
 
 /**
  * Add commands by name
@@ -147,7 +147,7 @@ async function runByIntent(ai: AutomationClientInfo,
             .map(m => "\t" + m.intent).sort().join("\n")}`);
         process.exit(1);
     }
-    return runCommandOnRemoteAutomationClient(ai.connectionConfig,
+    return runCommandOnCollocatedAutomationClient(ai.connectionConfig,
         ai.localConfig.repositoryOwnerParentDirectory,
         {
             atomistTeamName: ai.connectionConfig.atomistTeamId,
@@ -165,7 +165,7 @@ async function runByCommandName(ai: AutomationClientInfo,
             .map(m => "\t" + m.name).sort().join("\n")}`);
         process.exit(1);
     }
-    return runCommandOnRemoteAutomationClient(
+    return runCommandOnCollocatedAutomationClient(
         ai.connectionConfig,
         ai.localConfig.repositoryOwnerParentDirectory,
         {
