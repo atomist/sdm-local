@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { automationClientInstance, logger, } from "@atomist/automation-client";
+import { automationClientInstance, logger } from "@atomist/automation-client";
 import { CommandIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import { newCliCorrelationId } from "../../../cli/invocation/newCorrelationId";
 import { CommandHandlerInvoker } from "../../../common/CommandHandlerInvocation";
@@ -46,7 +46,7 @@ export function invokeCommandHandlerInProcess(): CommandHandlerInvoker {
             logger.debug("Invoking command %s using %j", invocation.name, data);
             return automationClientInstance().processCommand(data as CommandIncoming, async result => {
                 const r = await result;
-                if(r.code !== 0) {
+                if (r.code !== 0) {
                     logger.error("Command handler did not succeed. Returned: " + JSON.stringify(r, null, 2));
                 }
                 return r;
@@ -54,4 +54,3 @@ export function invokeCommandHandlerInProcess(): CommandHandlerInvoker {
         }
     };
 }
-

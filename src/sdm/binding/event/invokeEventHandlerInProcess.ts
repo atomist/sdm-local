@@ -19,8 +19,8 @@ import { replacer } from "@atomist/automation-client/internal/transport/Abstract
 import { EventIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import * as stringify from "json-stringify-safe";
 import * as assert from "power-assert";
-import { EventSender } from "../../../common/EventHandlerInvocation";
 import { newCliCorrelationId } from "../../../cli/invocation/newCorrelationId";
+import { EventSender } from "../../../common/EventHandlerInvocation";
 
 /**
  * Invoke an event handler on the automation client at the given location

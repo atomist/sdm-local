@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { InvocationTarget } from "./InvocationTarget";
-import { Arg, Secret } from "@atomist/automation-client/internal/invoker/Payload";
 import { HandlerResult } from "@atomist/automation-client";
+import { Arg, Secret } from "@atomist/automation-client/internal/invoker/Payload";
+import { InvocationTarget } from "./InvocationTarget";
 
 /**
  * Allow params to be expressed in an object for convenience

@@ -17,22 +17,22 @@
 import { logger } from "@atomist/automation-client";
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/metadata/automationMetadata";
+import chalk from "chalk";
 import * as inquirer from "inquirer";
 import * as _ from "lodash";
+import { CommandHandlerInvocation } from "../../../../common/CommandHandlerInvocation";
 import { InvocationTarget } from "../../../../common/InvocationTarget";
 import { FromAnyMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/FromAnyMappedParameterResolver";
 import { MappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/MappedParameterResolver";
-import { startHttpMessageListener } from "../../../../sdm/binding/message/httpMessageListener";
 import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/project/ExpandedTreeMappedParameterResolver";
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
-import { newCliCorrelationId } from "../../newCorrelationId";
+import { startHttpMessageListener } from "../../../../sdm/ui/httpMessageListener";
 import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionConfig";
 import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUsingHttp";
+import { newCliCorrelationId } from "../../newCorrelationId";
+import { portToListenOnFor } from "../../portAllocation";
 import { infoMessage, warningMessage } from "./consoleOutput";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
-import chalk from "chalk";
-import { CommandHandlerInvocation } from "../../../../common/CommandHandlerInvocation";
-import { portToListenOnFor } from "../../portAllocation";
 
 /**
  * All invocations from the CLI go through this function.

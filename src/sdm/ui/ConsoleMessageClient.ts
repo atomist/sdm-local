@@ -32,9 +32,9 @@ import * as _ from "lodash";
 import * as marked from "marked";
 import { MarkedOptions } from "marked";
 import * as TerminalRenderer from "marked-terminal";
-import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
-import { actionDescription, actionKey, ActionRoute } from "./ActionStore";
-import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
+import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
+import { actionDescription, actionKey, ActionRoute } from "../binding/message/ActionStore";
+import { isSdmGoalStoreOrUpdate } from "../binding/message/GoalEventForwardingMessageClient";
 
 marked.setOptions({
     // Define custom renderer
@@ -125,6 +125,14 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
         return chalk.dim(new Date().toISOString());
     }
 
+    /**
+     * Construct a new ConsoleMessageClient, supporting actionable messages.
+     * @param {string} linkedChannel
+     * @param {Sender} sender
+     * @param {AutomationClientConnectionRequest} connectionConfig config to use to
+     * format URLs to call back the source SDM
+     * @param {marked.MarkedOptions} markedOptions
+     */
     constructor(private readonly linkedChannel: string,
                 private readonly sender: Sender,
                 private readonly connectionConfig: AutomationClientConnectionRequest,

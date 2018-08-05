@@ -20,13 +20,7 @@ import {
 } from "@atomist/automation-client";
 import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
 import { AutomationEventListenerSupport } from "@atomist/automation-client/server/AutomationEventListener";
-import { CustomEventDestination } from "@atomist/automation-client/spi/message/MessageClient";
-
-/**
- * Well-known destination for messages on command completion
- * @type {CustomEventDestination}
- */
-export const CommandCompletionDestination = new CustomEventDestination("completion");
+import { CommandCompletionDestination } from "../../../common/CommandCompletionDestination";
 
 /**
  * Event listener that sends an event on command termination

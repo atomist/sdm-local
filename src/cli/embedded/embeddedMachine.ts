@@ -16,18 +16,18 @@
 
 import { Configuration } from "@atomist/automation-client";
 import { automationClient } from "@atomist/automation-client/automationClient";
-import { defaultConfiguration, invokePostProcessors, } from "@atomist/automation-client/configuration";
+import { defaultConfiguration, invokePostProcessors } from "@atomist/automation-client/configuration";
 import { SoftwareDeliveryMachine } from "@atomist/sdm";
-import { configureSdm, createSoftwareDeliveryMachine, } from "@atomist/sdm-core";
+import { configureSdm, createSoftwareDeliveryMachine } from "@atomist/sdm-core";
 import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
 
 import * as os from "os";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../sdm/configuration/createSdmOptions";
-import { LocalLifecycle } from "../../sdm/ui/localLifecycle";
 import { configureLocal } from "../../sdm/configuration/localPostProcessor";
-import { AutomationClientConnectionConfig, } from "../invocation/http/AutomationClientConnectionConfig";
+import { LocalLifecycle } from "../../sdm/ui/localLifecycle";
 import { AutomationClientInfo } from "../AutomationClientInfo";
+import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
 import { fetchMetadataFromAutomationClient } from "../invocation/http/fetchMetadataFromAutomationClient";
 
 const DefaultBootstrapPort = 2900;

@@ -33,8 +33,8 @@ import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCom
 
 import * as assert from "assert";
 import { CommandHandlerInvocation } from "../../common/CommandHandlerInvocation";
-import { invokeCommandHandlerInProcess } from "../binding/command/invokeCommandHandlerInProcess";
 import { parseChannel, parsePort } from "../../common/parseCorrelationId";
+import { invokeCommandHandlerInProcess } from "../binding/command/invokeCommandHandlerInProcess";
 
 const DefaultLocalLocalModeConfiguration: LocalModeConfiguration = {
     preferLocalSeeds: true,
@@ -177,13 +177,20 @@ function setMessageClient(configuration: Configuration,
             const machineAddress: AutomationClientConnectionRequest = { baseEndpoint: "http://localhost:2866" };
             assert(!!aca.context.correlationId);
             const channel = parseChannel(aca.context.correlationId);
-            const clientId = parsePort(aca.context.correlationId);
+            const port = parsePort(aca.context.correlationId);
             return new BroadcastingMessageClient(
-                new HttpClientMessageClient(channel, AllMessagesPort, machineAddress,
-                    actionStore),
+                new HttpClientMessageClient({
+                    channel,
+                    port: AllMessagesPort, machineAddress,
+                    actionStore,
+                    transient: false,
+                }),
                 new GoalEventForwardingMessageClient(),
                 // Communicate back to client if possible
-                !!clientId ? new HttpClientMessageClient(channel, clientId, machineAddress, actionStore) : undefined,
+                !!port ? new HttpClientMessageClient({
+                    channel, port, machineAddress, actionStore,
+                    transient: true,
+                }) : undefined,
                 localMachineConfig.useSystemNotifications ? new SystemNotificationMessageClient(channel) : undefined,
             );
         };

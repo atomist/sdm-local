@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { logger, } from "@atomist/automation-client";
+import { logger } from "@atomist/automation-client";
 import * as assert from "power-assert";
+import { CommandHandlerInvoker } from "../../../common/CommandHandlerInvocation";
+import { propertiesToArgs } from "../../../common/propertiesToArgs";
 import { newCliCorrelationId } from "../newCorrelationId";
 import { AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
-import { CommandHandlerInvoker } from "../../../common/CommandHandlerInvocation";
-import { propertiesToArgs } from "../../../common/propertiesToArgs";
 
 export function invokeCommandHandlerUsingHttp(config: AutomationClientConnectionRequest): CommandHandlerInvoker {
     return async invocation => {

@@ -17,15 +17,15 @@
 import { logger } from "@atomist/automation-client";
 import { asSpawnCommand } from "@atomist/automation-client/util/spawned";
 import { ExecuteGoal, GenericGoal, GoalInvocation } from "@atomist/sdm";
-import { ChildProcess, spawn } from "child_process";
-import { isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { DelimitedWriteProgressLogDecorator } from "@atomist/sdm/api-helper/log/DelimitedWriteProgressLogDecorator";
+import { ChildProcess, spawn } from "child_process";
+import * as os from "os";
 import { AutomationClientInfo } from "../../../cli/AutomationClientInfo";
 import { fetchMetadataFromAutomationClient } from "../../../cli/invocation/http/fetchMetadataFromAutomationClient";
-import { SdmDeliveryOptions } from "./SdmDeliveryOptions";
-import * as os from "os";
 import { renderClientInfo } from "../../../cli/ui/renderClientInfo";
+import { isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { runAndLog } from "../../../sdm/util/runAndLog";
+import { SdmDeliveryOptions } from "./SdmDeliveryOptions";
 
 export const LocalSdmDeliveryGoal = new GenericGoal(
     { uniqueName: "sdmDelivery" },
@@ -66,7 +66,7 @@ const successPatterns = [
  */
 class DeliveryManager {
 
-    private childProcesses: { [baseDir: string]: ChildProcess } = {};
+    private readonly childProcesses: { [baseDir: string]: ChildProcess } = {};
 
     public async deliver(baseDir: string,
                          options: SdmDeliveryOptions,

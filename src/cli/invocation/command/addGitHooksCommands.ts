@@ -18,7 +18,7 @@ import { Argv } from "yargs";
 import { expandedTreeRepoFinder } from "../../../sdm/binding/project/expandedTreeRepoFinder";
 import { determineCwd } from "../../../sdm/binding/project/expandedTreeUtils";
 import { isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
-import { addGitHooks, removeGitHooks, } from "../../setup/addGitHooks";
+import { addGitHooks, removeGitHooks } from "../../setup/addGitHooks";
 import { logExceptionsToConsole } from "./support/consoleOutput";
 
 /**
@@ -33,7 +33,7 @@ export function addAddGitHooksCommand(yargs: Argv) {
             return args.option("base", {
                 required: false,
                 description: "Base for machine to add",
-            })
+            });
         },
         handler: argv => {
             return logExceptionsToConsole(() => installHookOrHooks(argv.base), true);
@@ -49,7 +49,7 @@ export function addRemoveGitHooksCommand(yargs: Argv) {
             return args.option("base", {
                 required: false,
                 description: "Base for machine to remove",
-            })
+            });
         },
         handler: args => {
             return logExceptionsToConsole(() => {

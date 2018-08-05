@@ -14,28 +14,15 @@
  * limitations under the License.
  */
 
-import { Destination, MessageOptions } from "@atomist/automation-client/spi/message/MessageClient";
-import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import * as bodyParser from "body-parser";
 import * as express from "express";
-import { AllMessagesPort } from "../../../cli/invocation/command/addStartListenerCommand";
-import { errorMessage, infoMessage } from "../../../cli/invocation/command/support/consoleOutput";
-import { AutomationClientConnectionRequest } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
-import { CommandCompletionDestination, isFailureMessage } from "../../configuration/support/NotifyOnCompletionAutomationEventListener";
+import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
+import { errorMessage, infoMessage } from "../../cli/invocation/command/support/consoleOutput";
+import { CommandCompletionDestination } from "../../common/CommandCompletionDestination";
+import { MessageRoute } from "../../common/httpMessaging";
+import { isFailureMessage } from "../configuration/support/NotifyOnCompletionAutomationEventListener";
 import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
-
-export const MessageRoute = "/message";
-
-/**
- * Payload data structure used by HTTP message communication
- */
-export interface StreamedMessage {
-    message: string | SlackMessage;
-    destinations: Destination[];
-    options: MessageOptions;
-    machineAddress: AutomationClientConnectionRequest;
-}
 
 /**
  * Start process to listen to HTTP messages from HttpClientMessageClient

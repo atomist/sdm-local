@@ -16,7 +16,8 @@
 
 import { logger } from "@atomist/automation-client";
 import {
-    Destination, isSlackMessage,
+    Destination,
+    isSlackMessage,
     MessageClient,
     MessageOptions,
     SlackDestination,
@@ -25,21 +26,24 @@ import {
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import { AutomationClientConnectionRequest } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
+import { StreamedMessage } from "../../../common/httpMessaging";
+import { messageListenerEndpoint } from "../../ui/httpMessageListener";
 import { ActionStore } from "./ActionStore";
-import { DevNullMessageClient } from "./devNullMessageClient";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
-import {
-    messageListenerEndpoint,
-    StreamedMessage,
-} from "./httpMessageListener";
 
 /**
- * Message client that POSTS to an Atomist server and logs to a fallback otherwise
+ * Server-side Message client that POSTS to an Atomist client listener (which
+ * is itself a server) and logs to a fallback otherwise.
+ * There's one distinct HTTP message client for each address.
  */
 export class HttpClientMessageClient implements MessageClient, SlackMessageClient {
 
+    private readonly url: string;
+
+    private dead: boolean;
+
     public async respond(message: any, options?: MessageOptions): Promise<any> {
-        return this.addressChannels(message, this.linkedChannel, options);
+        return this.addressChannels(message, this.options.channel, options);
     }
 
     public async send(msg: string | SlackMessage, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
@@ -49,28 +53,27 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
         }
         const dests = Array.isArray(destinations) ? destinations : [destinations];
         return this.stream({
-                message: msg,
-                machineAddress: this.machineAddress,
-                options,
-                destinations: dests,
-            },
-            () => this.delegate.send(msg, destinations, options));
+            message: msg,
+            machineAddress: this.options.machineAddress,
+            options,
+            destinations: dests,
+        });
     }
 
     public async addressChannels(message: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
         if (isSlackMessage(message)) {
-            await this.actionStore.storeActions(message);
+            await this.options.actionStore.storeActions(message);
         }
         return this.stream({
             message,
             options,
-            machineAddress: this.machineAddress,
+            machineAddress: this.options.machineAddress,
             destinations: [{
                 // TODO hard coding
                 team: "T1234",
                 channels,
             } as SlackDestination],
-        }, () => this.delegate.addressChannels(message, channels, options));
+        });
     }
 
     public async addressUsers(message: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
@@ -80,28 +83,31 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
     /**
      * Send the message to the client
      * @param {StreamedMessage} sm
-     * @param {() => Promise<any>} fallback
      * @return {Promise<any>}
      */
-    private async stream(sm: StreamedMessage, fallback: () => Promise<any>) {
+    private async stream(sm: StreamedMessage) {
         try {
-            logger.debug(`Write to url ${this.url}: ${JSON.stringify(sm)}`);
-            await axios.post(this.url, sm);
-            logger.info(`Wrote to url ${this.url}: ${JSON.stringify(sm)}`);
+            if (!this.dead) {
+                logger.debug(`Write to url ${this.url}: ${JSON.stringify(sm)}`);
+                await axios.post(this.url, sm);
+                logger.info(`Wrote to url ${this.url}: ${JSON.stringify(sm)}`);
+            }
         } catch (err) {
+            if (this.options.transient) {
+                // Stop sending messages here. it must have gone away
+                this.dead = true;
+            }
             logger.info("Cannot POST to log service at [%s]: %s", this.url, err.message);
-            return fallback();
         }
     }
 
-    private readonly url: string;
-
-    constructor(private readonly linkedChannel: string,
-                port: number,
-                private readonly machineAddress: AutomationClientConnectionRequest,
-                private readonly actionStore: ActionStore,
-                private readonly delegate: MessageClient & SlackMessageClient =
-                    DevNullMessageClient) {
-        this.url = messageListenerEndpoint(port);
+    constructor(public readonly options: {
+        channel: string,
+        port: number,
+        transient: boolean,
+        machineAddress: AutomationClientConnectionRequest,
+        actionStore: ActionStore,
+    }) {
+        this.url = messageListenerEndpoint(options.port);
     }
 }

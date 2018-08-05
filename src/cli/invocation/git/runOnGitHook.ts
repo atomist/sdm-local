@@ -16,14 +16,14 @@
 
 import { logger } from "@atomist/automation-client";
 import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSystemProjectLoader";
+import { AutomationClientInfo } from "../../AutomationClientInfo";
+import { argsToGitHookInvocation } from "../../entry/argsToGitHookInvocation";
+import { renderEventDispatch } from "../../ui/renderClientInfo";
 import { infoMessage, logExceptionsToConsole } from "../command/support/consoleOutput";
 import { suggestStartingAllMessagesListener } from "../command/support/suggestStartingAllMessagesListener";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "../http/support/defaultAutomationClientFinder";
 import { GitHookInvocation, handleGitHookEvent } from "./handleGitHookEvent";
-import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { renderEventDispatch } from "../../ui/renderClientInfo";
-import { argsToGitHookInvocation } from "../../entry/argsToGitHookInvocation";
 
 /**
  * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
@@ -46,7 +46,6 @@ export async function runOnGitHook(argv: string[],
     }
     return Promise.all(clients.map(client => sendTo(client, invocation)));
 }
-
 
 async function sendTo(automationClientInfo: AutomationClientInfo, invocation: GitHookInvocation) {
     if (!automationClientInfo.localConfig) {

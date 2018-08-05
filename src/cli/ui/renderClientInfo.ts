@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { AutomationClientInfo } from "../AutomationClientInfo";
 import chalk from "chalk";
 import { sprintf } from "sprintf-js";
+import { AutomationClientInfo } from "../AutomationClientInfo";
 
 /**
  * Format information about this automation for the console

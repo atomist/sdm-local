@@ -17,8 +17,8 @@
 import { ExtensionPack, Goals, whenPushSatisfies } from "@atomist/sdm";
 import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
 import { PushTests } from "../../../sdm/api/pushTests";
-import { executeLocalSdmDelivery, LocalSdmDeliveryGoal } from "./LocalSdmDeliveryGoal";
 import { IsSdm } from "./IsSdm";
+import { executeLocalSdmDelivery, LocalSdmDeliveryGoal } from "./LocalSdmDeliveryGoal";
 import { SdmDeliveryOptions } from "./SdmDeliveryOptions";
 
 /**

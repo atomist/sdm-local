@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { portToListenOnFor } from "./portAllocation";
 import { ClientType } from "../../common/parseCorrelationId";
+import { portToListenOnFor } from "./portAllocation";
 
 /**
  * Create a correctly formatted correlation ID. We encode the port that

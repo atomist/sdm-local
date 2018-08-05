@@ -15,7 +15,7 @@
  */
 
 import { Argv } from "yargs";
-import { startHttpMessageListener } from "../../../sdm/binding/message/httpMessageListener";
+import { startHttpMessageListener } from "../../../sdm/ui/httpMessageListener";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { logExceptionsToConsole } from "./support/consoleOutput";
 
