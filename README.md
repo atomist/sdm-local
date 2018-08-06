@@ -36,7 +36,17 @@ Use the following commands (TODO `@atomist` will be replaced by Atomist)
 @atomist new sdm
 ```
 
-In order to see what's happening across all your automation clients, start a local lifecycle listener. This plays the same role as Atomist lifecycle in Slack, showing activity on your repositories. 
+In order to see what's happening across all your automation clients, start a local lifecycle listener. This plays the same role as Atomist lifecycle in Slack, showing activity on your repositories.
+
+```
+@atomist listen
+``` 
+
+Deliver SDM
+
+```
+@atomist deliver
+```
 
 
 ## Usage
