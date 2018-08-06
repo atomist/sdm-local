@@ -22,6 +22,7 @@ import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "./consoleOutput";
 import { runCommandOnCollocatedAutomationClient } from "./runCommandOnCollocatedAutomationClient";
+import { HandlerResult } from "@atomist/automation-client";
 
 /**
  * Spec for running an embedded command on an ephemeral SDM
@@ -38,6 +39,12 @@ export interface EmbeddedCommandSpec {
      * Configure the sdm.machine to run the command
      */
     configure: ConfigureMachine;
+
+    /**
+     * Action to perform after running the command
+     * @return {Promise<any>}
+     */
+    thenDo?: (h: HandlerResult) => Promise<any>;
 }
 
 /**
@@ -60,6 +67,7 @@ export function addEmbeddedCommand(yargs: Argv,
                 required: false,
                 alias: "base",
                 description: "Base of the checked out directory tree the new SDM will operate on",
+                default: undefined,
             });
 
             // Expose optional parameters for the command's parameters if there are any
@@ -81,7 +89,8 @@ export function addEmbeddedCommand(yargs: Argv,
                     argv.repositoryOwnerParentDirectory,
                     spec.configure,
                     spec.registration.name,
-                    argv);
+                    argv,
+                    spec.thenDo);
                 infoMessage("Execution of command %s complete", spec.registration.name);
             }, true);
         },
@@ -91,7 +100,8 @@ export function addEmbeddedCommand(yargs: Argv,
 async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: string,
                                            configure: ConfigureMachine,
                                            name: string,
-                                           params: object) {
+                                           params: object,
+                                           thenDo: (h: HandlerResult) => Promise<any>) {
     const aca = await startEmbeddedMachine({
         repositoryOwnerParentDirectory,
         configure,
@@ -116,5 +126,5 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
             atomistTeamId: "T0",
         },
         hm,
-        params);
+        params, thenDo);
 }

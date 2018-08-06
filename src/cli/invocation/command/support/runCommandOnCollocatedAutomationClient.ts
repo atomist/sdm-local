@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
+import { HandlerResult, logger } from "@atomist/automation-client";
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/metadata/automationMetadata";
 import chalk from "chalk";
@@ -26,13 +26,13 @@ import { FromAnyMappedParameterResolver } from "../../../../sdm/binding/mapped-p
 import { MappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/MappedParameterResolver";
 import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/project/ExpandedTreeMappedParameterResolver";
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
-import { startHttpMessageListener } from "../../../../sdm/ui/httpMessageListener";
 import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionConfig";
 import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUsingHttp";
 import { newCliCorrelationId } from "../../newCorrelationId";
 import { portToListenOnFor } from "../../portAllocation";
 import { warningMessage } from "./consoleOutput";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
+import { HttpMessageListener } from "../../../../sdm/ui/HttpMessageListener";
 
 /**
  * All invocations from the CLI to local SDMs go through this function.
@@ -44,9 +44,10 @@ export async function runCommandOnCollocatedAutomationClient(connectionConfig: A
                                                              repositoryOwnerParentDirectory: string,
                                                              target: InvocationTarget,
                                                              hm: CommandHandlerMetadata,
-                                                             command: object): Promise<any> {
+                                                             command: object,
+                                                             thenDo?: (h: HandlerResult) => Promise<any>): Promise<any> {
     await suggestStartingAllMessagesListener();
-    startHttpMessageListener(await portToListenOnFor(process.pid), true);
+    const listener = new HttpMessageListener(await portToListenOnFor(process.pid), true).start();
     const extraArgs = Object.getOwnPropertyNames(command)
         .map(name => ({ name: convertToUsable(name), value: command[name] }))
         .filter(keep => !!keep.value);
@@ -74,7 +75,14 @@ export async function runCommandOnCollocatedAutomationClient(connectionConfig: A
     };
     logger.debug("Sending invocation %j\n", invocation);
     // Use repo channel if we're in a mapped repo channel
-    return invokeCommandHandlerUsingHttp(connectionConfig)(invocation);
+    const r = await invokeCommandHandlerUsingHttp(connectionConfig)(invocation);
+    if (!!thenDo) {
+        await thenDo(r);
+    }
+    if (listener.canTerminate) {
+        process.exit(0);
+    }
+    return r;
 }
 
 function valid(p: Parameter, value: any): boolean {

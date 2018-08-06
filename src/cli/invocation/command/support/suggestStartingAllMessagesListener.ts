@@ -15,7 +15,7 @@
  */
 
 import chalk from "chalk";
-import { isListenerRunning } from "../../../../sdm/ui/httpMessageListener";
+import { isListenerRunning } from "../../../../sdm/ui/HttpMessageListener";
 import { infoMessage } from "./consoleOutput";
 
 /**

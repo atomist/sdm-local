@@ -15,7 +15,7 @@
  */
 
 import { Argv } from "yargs";
-import { startHttpMessageListener } from "../../../sdm/ui/httpMessageListener";
+import { HttpMessageListener } from "../../../sdm/ui/HttpMessageListener";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { logExceptionsToConsole } from "./support/consoleOutput";
 
@@ -31,7 +31,7 @@ export function addStartListenerCommand(yargs: Argv) {
         describe: "Start listener daemon to display messages",
         handler: () => {
             return logExceptionsToConsole(async () =>
-                    startHttpMessageListener(AllMessagesPort),
+                    new HttpMessageListener(AllMessagesPort),
                 true);
         },
     });

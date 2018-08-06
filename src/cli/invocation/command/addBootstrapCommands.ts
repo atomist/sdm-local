@@ -21,6 +21,7 @@ import { AutomationClientConnectionConfig } from "../http/AutomationClientConnec
 import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
 import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
+import { infoMessage } from "./support/consoleOutput";
 
 /**
  * Generator that can create a new SDM
@@ -44,6 +45,9 @@ function addSdmGenerator(yargs: Argv) {
         cliDescription: "Create an SDM",
         registration: sdmGenerator,
         configure: configureBootstrapMachine,
+        thenDo: async () => {
+            infoMessage("Type 'atomist deliver' to start CD for your new SDM");
+        },
     });
 }
 
