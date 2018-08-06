@@ -23,9 +23,9 @@ import {
 } from "@atomist/sdm-core/typings/types";
 import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 import { invokeEventHandlerUsingHttp } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
-import { repoFieldsFromProject } from "./pushFromLastCommit";
 import { EventSender } from "../../../common/EventHandlerInvocation";
 import { LocalTeamContext } from "../../../common/LocalTeamContext";
+import { repoFieldsFromProject } from "./pushFromLastCommit";
 
 export async function sendRepoCreationEvent(cc: LocalTeamContext, id: RepoId, eventSender: EventSender) {
     const payload: OnRepoCreation.Subscription = {

@@ -20,9 +20,9 @@ import { EventIncoming } from "@atomist/automation-client/internal/transport/Req
 import * as stringify from "json-stringify-safe";
 import * as assert from "power-assert";
 import { newCliCorrelationId } from "../../../cli/invocation/newCorrelationId";
-import { EventSender } from "../../../common/EventHandlerInvocation";
-import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
 import { DefaultTeamContextResolver } from "../../../common/binding/defaultTeamContextResolver";
+import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
+import { EventSender } from "../../../common/EventHandlerInvocation";
 
 /**
  * Invoke an event handler on the automation client at the given location
@@ -63,7 +63,6 @@ export function invokeEventHandlerInProcess(correlationId?: string,
                 "Event handler did not succeed. Returned: " + JSON.stringify(result, null, 2));
             return results;
         });
-
 
     };
 }

@@ -15,12 +15,12 @@
  */
 
 import { Argv } from "yargs";
+import { DefaultTeamContextResolver } from "../../../common/binding/defaultTeamContextResolver";
+import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { HookEvents } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
 import { logExceptionsToConsole } from "./support/consoleOutput";
-import { DefaultTeamContextResolver } from "../../../common/binding/defaultTeamContextResolver";
-import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
 
 /**
  * Add a command to triggerGitEvents execution following a git event

@@ -15,8 +15,8 @@
  */
 
 import { logger } from "@atomist/automation-client";
-import { GitHookInvocation } from "../invocation/git/handleGitHookEvent";
 import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
+import { GitHookInvocation } from "../invocation/git/handleGitHookEvent";
 
 /**
  * Process the given args (probably from process.argv) into a

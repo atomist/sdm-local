@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { TeamContextResolver } from "./TeamContextResolver";
-import { warningMessage } from "../../cli/invocation/command/support/consoleOutput";
 import * as os from "os";
+import { warningMessage } from "../../cli/invocation/command/support/consoleOutput";
 import { LocalTeamContext } from "../LocalTeamContext";
+import { TeamContextResolver } from "./TeamContextResolver";
 
 const DefaultTeamId = "T123";
 
@@ -38,7 +38,7 @@ export class EnvironmentTeamContextResolver implements TeamContextResolver {
         return {
             atomistTeamId,
             atomistTeamName: os.hostname(),
-        }
+        };
     }
 
 }

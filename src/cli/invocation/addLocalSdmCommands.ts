@@ -15,6 +15,8 @@
  */
 
 import { Argv } from "yargs";
+import { DefaultTeamContextResolver } from "../../common/binding/defaultTeamContextResolver";
+import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { addBootstrapCommands } from "./command/addBootstrapCommands";
 import { addAddGitHooksCommand, addRemoveGitHooksCommand } from "./command/addGitHooksCommands";
@@ -27,8 +29,6 @@ import { addShowSkillsCommand } from "./command/showSkillsCommand";
 import { infoMessage } from "./command/support/consoleOutput";
 import { AutomationClientFinder } from "./http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "./http/support/defaultAutomationClientFinder";
-import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
-import { DefaultTeamContextResolver } from "../../common/binding/defaultTeamContextResolver";
 
 /**
  * Start up the CLI

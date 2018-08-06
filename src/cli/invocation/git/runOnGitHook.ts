@@ -15,6 +15,7 @@
  */
 
 import { logger } from "@atomist/automation-client";
+import { DefaultTeamContextResolver } from "../../../common/binding/defaultTeamContextResolver";
 import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSystemProjectLoader";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { argsToGitHookInvocation } from "../../entry/argsToGitHookInvocation";
@@ -24,7 +25,6 @@ import { suggestStartingAllMessagesListener } from "../command/support/suggestSt
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "../http/support/defaultAutomationClientFinder";
 import { GitHookInvocation, handleGitHookEvent } from "./handleGitHookEvent";
-import { DefaultTeamContextResolver } from "../../../common/binding/defaultTeamContextResolver";
 
 /**
  * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
@@ -48,6 +48,12 @@ export async function runOnGitHook(argv: string[],
     return Promise.all(clients.map(client => sendTo(client, invocation)));
 }
 
+/**
+ * Send to a single automation client
+ * @param {AutomationClientInfo} automationClientInfo
+ * @param {GitHookInvocation} invocation
+ * @return {Promise<void>}
+ */
 async function sendTo(automationClientInfo: AutomationClientInfo, invocation: GitHookInvocation) {
     if (!automationClientInfo.localConfig) {
         infoMessage("Not a local machine; not delivering push event.\n");

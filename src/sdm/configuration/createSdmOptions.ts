@@ -15,12 +15,14 @@
  */
 
 import { SoftwareDeliveryMachineOptions } from "@atomist/sdm";
-import { EphemeralLocalArtifactStore } from "@atomist/sdm-core";
+import { EphemeralLocalArtifactStore, LocalModeConfiguration } from "@atomist/sdm-core";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
 import * as os from "os";
 import * as path from "path";
-import { DefaultAutomationClientConnectionConfig } from "../../cli/entry/resolveConnectionConfig";
+import { defaultAutomationClientFinder } from "../../cli/invocation/http/support/defaultAutomationClientFinder";
+import { DefaultTeamContextResolver } from "../../common/binding/defaultTeamContextResolver";
+import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
 import { expandedTreeRepoFinder } from "../binding/project/expandedTreeRepoFinder";
 import { ExpandedTreeRepoRefResolver } from "../binding/project/ExpandedTreeRepoRefResolver";
@@ -28,15 +30,13 @@ import { FileSystemProjectLoader } from "../binding/project/FileSystemProjectLoa
 import { fileSystemProjectPersister } from "../binding/project/fileSystemProjectPersister";
 import { LocalRepoTargets } from "../binding/project/LocalRepoTargets";
 
-import { LocalModeConfiguration } from "@atomist/sdm-core";
-
 /**
  * Merge user-supplied configuration with defaults
  * to provide configuration for a local-mode SDM
  */
-export function createSdmOptions(localModeConfig: LocalModeConfiguration): SoftwareDeliveryMachineOptions {
-    // TODO how do we find this?
-    const cc = DefaultAutomationClientConnectionConfig;
+export function createSdmOptions(localModeConfig: LocalModeConfiguration,
+                                 teamContextResolver: TeamContextResolver = DefaultTeamContextResolver): SoftwareDeliveryMachineOptions {
+    const automationClientFinder = defaultAutomationClientFinder();
 
     const configToUse: LocalModeConfiguration = {
         repositoryOwnerParentDirectory: determineDefaultRepositoryOwnerParentDirectory(),
@@ -46,7 +46,6 @@ export function createSdmOptions(localModeConfig: LocalModeConfiguration): Softw
 
     const repoRefResolver = new ExpandedTreeRepoRefResolver(configToUse.repositoryOwnerParentDirectory);
     return {
-        // TODO this is the only use of sdm-core
         artifactStore: new EphemeralLocalArtifactStore(),
         projectLoader: new FileSystemProjectLoader(
             new CachingProjectLoader(),
@@ -55,7 +54,7 @@ export function createSdmOptions(localModeConfig: LocalModeConfiguration): Softw
         credentialsResolver: EnvironmentTokenCredentialsResolver,
         repoRefResolver,
         repoFinder: expandedTreeRepoFinder(configToUse.repositoryOwnerParentDirectory),
-        projectPersister: fileSystemProjectPersister(cc, configToUse),
+        projectPersister: fileSystemProjectPersister(teamContextResolver.teamContext, configToUse, automationClientFinder),
         targets: () => new LocalRepoTargets(configToUse.repositoryOwnerParentDirectory),
     };
 }

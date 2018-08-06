@@ -24,30 +24,31 @@ import { NodeFsLocalProject } from "@atomist/automation-client/project/local/Nod
 import { LocalModeConfiguration } from "@atomist/sdm-core";
 import * as fs from "fs";
 import { promisify } from "util";
-import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
+import { AutomationClientFinder } from "../../../cli/invocation/http/AutomationClientFinder";
+import { invokeEventHandlerUsingHttpOnAll } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
 import { addGitHooksToProject } from "../../../cli/setup/addGitHooks";
 import { handlePushBasedEventOnRepo } from "../../../common/handlePushBasedEventOnRepo";
+import { LocalTeamContext } from "../../../common/LocalTeamContext";
 import { lastSha } from "../../util/git";
 import { runAndLog } from "../../util/runAndLog";
 import { invokeEventHandlerInProcess } from "../event/invokeEventHandlerInProcess";
 import { sendChannelLinkEvent, sendRepoCreationEvent, sendRepoOnboardingEvent } from "../event/repoOnboardingEvents";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
-import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
-import { EventSender } from "../../../common/EventHandlerInvocation";
-import { LocalTeamContext } from "../../../common/LocalTeamContext";
-import { invokeEventHandlerUsingHttp } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
 
 /**
  * Persist the project to the given local directory given expanded directory
  * conventions. Perform a git init and other after actions, such as installing
- * our git hooks.
+ * our git hooks. Fires off the necessary new repo events using HTTP to
+ * all local automation clients.
  * @return {ProjectPersister}
  */
-export function fileSystemProjectPersister(cc: AutomationClientConnectionConfig, lc: LocalModeConfiguration): ProjectPersister {
+export function fileSystemProjectPersister(teamContext: LocalTeamContext,
+                                           localModeCofiguration: LocalModeConfiguration,
+                                           automationClientFinder: AutomationClientFinder): ProjectPersister {
     return async (p, _, id, params) => {
-        const baseDir = `${lc.repositoryOwnerParentDirectory}/${id.owner}/${id.repo}`;
+        const baseDir = `${localModeCofiguration.repositoryOwnerParentDirectory}/${id.owner}/${id.repo}`;
         const frr = FileSystemRemoteRepoRef.fromDirectory({
-            repositoryOwnerParentDirectory: lc.repositoryOwnerParentDirectory,
+            repositoryOwnerParentDirectory: localModeCofiguration.repositoryOwnerParentDirectory,
             baseDir,
         });
         // Override target repo to get file url
@@ -66,27 +67,21 @@ export function fileSystemProjectPersister(cc: AutomationClientConnectionConfig,
         await runAndLog("git add .", { cwd: baseDir });
         await runAndLog(`git commit -a -m "Initial commit from Atomist"`, { cwd: baseDir });
         await addGitHooksToProject(createdProject);
-        const eventSender = invokeEventHandlerUsingHttp(cc, cc);
 
-        await emitEventsForNewProject(cc, lc, createdProject, id,
-            eventSender);
+        await emitEventsForNewProject(teamContext, localModeCofiguration, createdProject, id, automationClientFinder);
         return successOn(createdProject);
     };
 }
 
 /**
  * Send events that should apply to a new project
- * @param {AutomationClientConnectionConfig} cc
- * @param {} lc
- * @param {LocalProject} createdProject
- * @param {RepoRef} id
- * @return {Promise<void>}
  */
 async function emitEventsForNewProject(cc: LocalTeamContext,
                                        lc: LocalModeConfiguration,
                                        createdProject: LocalProject,
                                        id: RepoRef,
-                                       eventSender: EventSender) {
+                                       automationClientFinder: AutomationClientFinder) {
+    const eventSender = await invokeEventHandlerUsingHttpOnAll(automationClientFinder, cc);
     await sendRepoCreationEvent(cc, id, eventSender);
 
     const sha = await lastSha(createdProject as GitProject);

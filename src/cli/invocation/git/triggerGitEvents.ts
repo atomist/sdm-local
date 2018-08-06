@@ -16,6 +16,7 @@
 
 import { logger } from "@atomist/automation-client";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
+import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
 import {
     determineCwd,
     withinExpandedTree,
@@ -31,7 +32,6 @@ import {
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { PortRangeAutomationClientFinder } from "../http/support/PortRangeAutomationClientFinder";
 import { handleGitHookEvent } from "./handleGitHookEvent";
-import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
 
 /**
  * Trigger git events to the given depth in the current project repo

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { HandlerResult, logger, Secrets } from "@atomist/automation-client";
+import { HandlerResult, logger, Secrets, Success } from "@atomist/automation-client";
 import { replacer } from "@atomist/automation-client/internal/transport/AbstractRequestProcessor";
 import * as stringify from "json-stringify-safe";
 import { EventSender } from "../../../common/EventHandlerInvocation";
@@ -24,6 +24,23 @@ import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } f
 import { postToSdm } from "./support/httpInvoker";
 
 import * as assert from "assert";
+import { AutomationClientFinder } from "./AutomationClientFinder";
+
+/**
+ * Invoke the event handler on all these clients
+ * @param {AutomationClientFinder} clientFinder
+ * @param {InvocationTarget} target
+ * @return {EventSender}
+ */
+export async function invokeEventHandlerUsingHttpOnAll(clientFinder: AutomationClientFinder,
+                                                       target: InvocationTarget): Promise<EventSender> {
+    const clients = await clientFinder.findAutomationClients();
+    return async invocation => {
+        await Promise.all(clients.map(client =>
+            invokeEventHandlerUsingHttp(client.connectionConfig, target)(invocation)));
+        return Success;
+    };
+}
 
 /**
  * Invoke an event handler on the automation client at the given location
