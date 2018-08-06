@@ -15,12 +15,11 @@
  */
 
 import { Argv } from "yargs";
-import { DefaultTeamContextResolver } from "../../../common/binding/defaultTeamContextResolver";
 import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { HookEvents } from "../git/handleGitHookEvent";
+import { HookEvent } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
-import { logExceptionsToConsole } from "./support/consoleOutput";
+import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
 
 /**
  * Add a command to triggerGitEvents execution following a git event
@@ -34,15 +33,17 @@ export function addTriggerCommand(yargs: Argv,
         describe: "Trigger commit action on the current repository",
         builder: ra => {
             return ra.positional("event", {
-                choices: HookEvents,
+                choices: Object.values(HookEvent),
             }).positional("depth", {
                 type: "number",
                 default: 1,
             });
         },
         handler: ya => {
-            return logExceptionsToConsole(() =>
-                    triggerGitEvents(clients, ya.event, ya.depth, teamContextResolver),
+            return logExceptionsToConsole(() => {
+                    infoMessage("Dispatching git event '%s' to %d clients (not all may process it)...\n", ya.event, clients.length);
+                    return triggerGitEvents(clients, ya.event, ya.depth, teamContextResolver);
+                },
                 true);
         },
     });

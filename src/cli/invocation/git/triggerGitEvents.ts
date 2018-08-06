@@ -40,13 +40,17 @@ import { handleGitHookEvent } from "./handleGitHookEvent";
  * @param {number} depth
  * @return {Promise<void>}
  */
-export async function triggerGitEvents(clients: AutomationClientInfo[], event: string, depth: number,
+export async function triggerGitEvents(clients: AutomationClientInfo[],
+                                       event: string,
+                                       depth: number,
                                        teamContextResolver: TeamContextResolver) {
     const relevantClients = clients.filter(client => !!client.localConfig && withinExpandedTree(client.localConfig.repositoryOwnerParentDirectory));
     await Promise.all(relevantClients.map(client => triggerGitEventsOn(client, event, depth, teamContextResolver)));
 }
 
-async function triggerGitEventsOn(ai: AutomationClientInfo, event: string, depth: number,
+async function triggerGitEventsOn(ai: AutomationClientInfo,
+                                  event: string,
+                                  depth: number,
                                   teamContextResolver: TeamContextResolver) {
     const currentDir = determineCwd();
     const teamId = teamContextResolver.teamContext.atomistTeamId;

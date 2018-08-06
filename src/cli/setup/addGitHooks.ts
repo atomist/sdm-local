@@ -21,7 +21,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { sprintf } from "sprintf-js";
 import { errorMessage, infoMessage, warningMessage } from "../../cli/invocation/command/support/consoleOutput";
-import { HookEvents } from "../invocation/git/handleGitHookEvent";
+import { HookEvent } from "../invocation/git/handleGitHookEvent";
 
 const AtomistHookScriptName = "script/atomist-hook.sh";
 const AtomistJsName = "cli/entry/onGitHook.js";
@@ -46,7 +46,7 @@ export async function addGitHooksToProject(p: LocalProject) {
     const atomistHookScriptPath = path.join(__dirname, "../../../../", AtomistHookScriptName);
     const gitHookScript = path.join(__dirname, "../../", AtomistJsName);
 
-    for (const event of HookEvents) {
+    for (const event of Object.values(HookEvent)) {
         const atomistContent = scriptFragments(atomistHookScriptPath, gitHookScript)[event];
         if (!atomistContent) {
             errorMessage("Unable to create git script content for event '%s'", event);
@@ -63,7 +63,7 @@ export async function addGitHooksToProject(p: LocalProject) {
 export async function removeGitHooks(baseDir: string) {
     if (fs.existsSync(`${baseDir}/.git`)) {
         const p = await NodeFsLocalProject.fromExistingDirectory({ owner: "doesn't", repo: "matter" }, baseDir);
-        for (const hookFile of HookEvents) {
+        for (const hookFile of Object.values(HookEvent)) {
             await deatomizeScript(p, `/.git/hooks/${hookFile}`);
         }
     } else {

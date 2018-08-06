@@ -22,7 +22,7 @@ import { AutomationClientConnectionRequest } from "../http/AutomationClientConne
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
 
 export interface GitHookInvocation extends EventOnRepo {
-    // TODO scope to hook events
+
     event: string;
 
     teamId: string;
@@ -32,11 +32,11 @@ export interface GitHookInvocation extends EventOnRepo {
  * Git hooks we support
  * @type {string[]}
  */
-export const HookEvents = [
-    "post-commit",
-    "post-merge",
-    "pre-receive",
-];
+export enum HookEvent {
+    PostCommit = "post-commit",
+    PostMerge = "post-merge",
+    PreReceive = "pre-receive",
+}
 
 /**
  * Invoking the target remote client for this push.
@@ -52,7 +52,7 @@ export async function handleGitHookEvent(cc: AutomationClientConnectionRequest,
     if (!payload.event) {
         return errorMessage("Invalid git hook invocation payload. Event is required: %j", payload);
     }
-    if (!HookEvents.includes(payload.event)) {
+    if (!Object.values(HookEvent).includes(payload.event)) {
         return errorMessage("Unknown git hook event '%s'", event);
     }
     if (!lc) {
