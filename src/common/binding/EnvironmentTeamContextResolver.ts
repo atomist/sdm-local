@@ -32,7 +32,7 @@ export class EnvironmentTeamContextResolver implements TeamContextResolver {
         if (!!teams) {
             atomistTeamId = teams.split(",")[0];
         } else {
-            warningMessage("ATOMIST_TEAMS environment variable not set: Using default of %s", DefaultTeamId);
+            warningMessage("ATOMIST_TEAMS environment variable not set: Using default of %s\n", DefaultTeamId);
             atomistTeamId = DefaultTeamId;
         }
         return {

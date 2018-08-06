@@ -28,7 +28,7 @@ import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessag
 import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
-import { createSdmOptions } from "./createSdmOptions";
+import { createSdmOptions, determineDefaultRepositoryOwnerParentDirectory } from "./createSdmOptions";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 
 import * as assert from "assert";
@@ -42,6 +42,7 @@ const DefaultLocalLocalModeConfiguration: LocalModeConfiguration = {
     preferLocalSeeds: true,
     mergeAutofixes: true,
     useSystemNotifications: false,
+    repositoryOwnerParentDirectory: determineDefaultRepositoryOwnerParentDirectory(),
 };
 
 /**
@@ -87,7 +88,7 @@ export function configureLocal(
     };
 }
 
-function configureWebEndpoints(configuration: Configuration, localMachineConfig: LocalModeConfiguration, actionStore: ActionStore) {
+function configureWebEndpoints(configuration: Configuration, localModeConfiguration: LocalModeConfiguration, actionStore: ActionStore) {
     // Disable auth as we're only expecting local clients
     // TODO what if not basic
     _.set(configuration, "http.auth.basic.enabled", false);
@@ -99,7 +100,7 @@ function configureWebEndpoints(configuration: Configuration, localMachineConfig:
         exp => {
             // TODO could use this to set local mode for a server - e.g. the name to send to
             exp.get("/local/configuration", async (req, res) => {
-                res.json(localMachineConfig);
+                res.json(localModeConfiguration);
             });
             // Add a GET route for convenient links to command handler invocation, as a normal automation client doesn't expose one
             exp.get("/command/:name", async (req, res) => {
