@@ -16,7 +16,6 @@
 
 import { LocalModeConfiguration } from "@atomist/sdm-core";
 import axios from "axios";
-import { infoMessage } from "../../..";
 import { AutomationClientInfo, ConnectedClient } from "../../AutomationClientInfo";
 import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 
@@ -26,7 +25,6 @@ import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } f
  * @return {Promise<AutomationClientInfo>}
  */
 export async function fetchMetadataFromAutomationClient(connectionConfig: AutomationClientConnectionRequest): Promise<AutomationClientInfo> {
-    infoMessage("Trying for %j", connectionConfig);
     try {
         const resp = await axios.get(connectionConfig.baseEndpoint + "/registration", {
             timeout: 5 * 1000,
