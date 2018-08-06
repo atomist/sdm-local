@@ -16,17 +16,17 @@
 
 import { Argv } from "yargs";
 import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
-import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { HookEvent } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
 import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
+import { AutomationClientFinder } from "../http/AutomationClientFinder";
 
 /**
  * Add a command to triggerGitEvents execution following a git event
  * @param {yargs.Argv} yargs
  */
 export function addTriggerCommand(yargs: Argv,
-                                  clients: AutomationClientInfo[],
+                                  automationClientFinder: AutomationClientFinder,
                                   teamContextResolver: TeamContextResolver) {
     yargs.command({
         command: "trigger <event> [depth]",
@@ -40,7 +40,8 @@ export function addTriggerCommand(yargs: Argv,
             });
         },
         handler: ya => {
-            return logExceptionsToConsole(() => {
+            return logExceptionsToConsole(async () => {
+                    const clients = await automationClientFinder.findAutomationClients();
                     infoMessage("Dispatching git event '%s' to %d clients (not all may process it)...\n", ya.event, clients.length);
                     return triggerGitEvents(clients, ya.event, ya.depth, teamContextResolver);
                 },
