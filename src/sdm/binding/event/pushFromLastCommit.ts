@@ -56,7 +56,9 @@ export function repoFieldsFromProject(teamId: string, id: RepoRef): CoreRepoFiel
                 team: { id: teamId },
             },
         ],
-        // TODO hardcoded
+        /**
+         * Default branch is a GitHub concept, so it will always be master here.
+         */
         defaultBranch: "master",
     };
 }
