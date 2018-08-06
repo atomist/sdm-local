@@ -29,6 +29,7 @@ import { AutomationClientInfo } from "../AutomationClientInfo";
 import { AutomationClientConnectionConfig } from "../invocation/http/AutomationClientConnectionConfig";
 import { fetchMetadataFromAutomationClient } from "../invocation/http/fetchMetadataFromAutomationClient";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../common/configuration/defaultLocalModeConfiguration";
+import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 
 const DefaultBootstrapPort = 2900;
 
@@ -101,7 +102,7 @@ export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Pro
     const client = automationClient(config);
     await client.run();
     const coords = {
-        baseEndpoint: `http://${os.hostname}:${optsToUse.port}`,
+        baseEndpoint: `http://${defaultHostUrlAliaser().alias()}:${optsToUse.port}`,
     };
     return fetchMetadataFromAutomationClient(coords);
 }

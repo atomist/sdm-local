@@ -25,6 +25,7 @@ import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
 import chalk from "chalk";
 import * as os from "os";
 import { renderClientInfo } from "../../../ui/renderClientInfo";
+import { defaultHostUrlAliaser } from "../../../../common/util/http/defaultLocalHostUrlAliaser";
 
 export interface PortRangeOptions {
 
@@ -54,7 +55,7 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
             _.range(this.options.lowerPort, this.options.lowerPort + this.options.checkRange)
                 .concat(this.options.additionalPorts || [])
                 .map(port => ({
-                    baseEndpoint: `http://${os.hostname}:${port}`,
+                    baseEndpoint: `http://${defaultHostUrlAliaser().alias()}:${port}`,
                 }));
         const found = await new FixedAutomationClientFinder(...requests).findAutomationClients();
         if (found.length > 0) {

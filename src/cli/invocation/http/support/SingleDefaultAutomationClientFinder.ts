@@ -17,7 +17,7 @@
 import { AutomationClientFinder } from "../AutomationClientFinder";
 import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
 
-import * as os from "os";
+import { defaultHostUrlAliaser } from "../../../../common/util/http/defaultLocalHostUrlAliaser";
 
 /**
  * Connect to the single local default automation client
@@ -25,5 +25,5 @@ import * as os from "os";
  */
 export const SingleDefaultAutomationClientFinder: AutomationClientFinder =
     new FixedAutomationClientFinder({
-        baseEndpoint: `http://${os.hostname}::2866`,
+        baseEndpoint: `http://${defaultHostUrlAliaser().alias()}::2866`,
     });

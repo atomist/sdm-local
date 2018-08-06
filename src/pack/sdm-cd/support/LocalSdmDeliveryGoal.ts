@@ -26,6 +26,7 @@ import { renderClientInfo } from "../../../cli/ui/renderClientInfo";
 import { isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { runAndLog } from "../../../sdm/util/runAndLog";
 import { SdmDeliveryOptions } from "./SdmDeliveryOptions";
+import { defaultHostUrlAliaser } from "../../../common/util/http/defaultLocalHostUrlAliaser";
 
 export const LocalSdmDeliveryGoal = new GenericGoal(
     { uniqueName: "sdmDelivery" },
@@ -101,7 +102,7 @@ class DeliveryManager {
                 }
                 if (successPatterns.some(successPattern => successPattern.test(stdout))) {
                     const ccr = {
-                        baseEndpoint: `http://${os.hostname()}:${options.port}`,
+                        baseEndpoint: `http://${defaultHostUrlAliaser().alias()}:${options.port}`,
                     };
                     await fetchMetadataFromAutomationClient(ccr)
                         .then(aca => resolve({

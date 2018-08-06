@@ -38,6 +38,7 @@ import { invokeCommandHandlerInProcess } from "../binding/command/invokeCommandH
 
 import * as os from "os";
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
+import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 
 /**
  * Configures an automation client in local mode
@@ -171,7 +172,9 @@ function setMessageClient(configuration: Configuration,
     configuration.http.messageClientFactory =
         aca => {
             // TOD parameterize this - can use multicast
-            const machineAddress: AutomationClientConnectionRequest = { baseEndpoint: `http://${os.hostname()}:2866` };
+            const machineAddress: AutomationClientConnectionRequest = {
+                baseEndpoint: `http://${defaultHostUrlAliaser().alias()}:2866`
+            };
 
             assert(!!aca.context.correlationId);
             const channel = parseChannel(aca.context.correlationId);
