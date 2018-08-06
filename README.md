@@ -36,6 +36,8 @@ Use the following commands (TODO `@atomist` will be replaced by Atomist)
 @atomist new sdm
 ```
 
+In order to see what's happening across all your automation clients, start a local lifecycle listener. This plays the same role as Atomist lifecycle in Slack, showing activity on your repositories. 
+
 
 ## Usage
 
@@ -237,10 +239,11 @@ Environment variables
 
 The following ports are required:
 
-- `2866`: The default port for your Automation client
+- `2866`: The default port for your Automation client. By default ports 2866-2876 are regularly checked for running automation clients, so if you restrict your clients to these ports you do not need to configure anything.
 - `6660`: The default port for listening to all Atomist messages
-- [Port range above `10000`]: Used for routing messages back to command line.
+- [Port range above `10000`]: Atomist will find free ports for routing messages back to command line. These ports will be used only during command execution.
 
+> To start additional automation clients, increment the port by 1 for each after 2866.
 
 ## Roadmap
 
