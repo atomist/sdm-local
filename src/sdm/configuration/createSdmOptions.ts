@@ -18,8 +18,6 @@ import { SoftwareDeliveryMachineOptions } from "@atomist/sdm";
 import { EphemeralLocalArtifactStore, LocalModeConfiguration } from "@atomist/sdm-core";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
-import * as os from "os";
-import * as path from "path";
 import { defaultAutomationClientFinder } from "../../cli/invocation/http/support/defaultAutomationClientFinder";
 import { DefaultTeamContextResolver } from "../../common/binding/defaultTeamContextResolver";
 import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
@@ -29,6 +27,7 @@ import { ExpandedTreeRepoRefResolver } from "../binding/project/ExpandedTreeRepo
 import { FileSystemProjectLoader } from "../binding/project/FileSystemProjectLoader";
 import { fileSystemProjectPersister } from "../binding/project/fileSystemProjectPersister";
 import { LocalRepoTargets } from "../binding/project/LocalRepoTargets";
+import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
 
 /**
  * Merge user-supplied configuration with defaults
@@ -39,8 +38,7 @@ export function createSdmOptions(localModeConfig: LocalModeConfiguration,
     const automationClientFinder = defaultAutomationClientFinder();
 
     const configToUse: LocalModeConfiguration = {
-        repositoryOwnerParentDirectory: determineDefaultRepositoryOwnerParentDirectory(),
-        preferLocalSeeds: true,
+        ...defaultLocalLocalModeConfiguration(),
         ...localModeConfig,
     };
 
@@ -57,10 +55,4 @@ export function createSdmOptions(localModeConfig: LocalModeConfiguration,
         projectPersister: fileSystemProjectPersister(teamContextResolver.teamContext, configToUse, automationClientFinder),
         targets: () => new LocalRepoTargets(configToUse.repositoryOwnerParentDirectory),
     };
-}
-
-const DefaultAtomistRoot = "atomist";
-
-export function determineDefaultRepositoryOwnerParentDirectory() {
-    return process.env.ATOMIST_ROOT || path.join(os.homedir(), DefaultAtomistRoot);
 }

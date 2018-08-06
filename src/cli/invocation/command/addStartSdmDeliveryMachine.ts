@@ -19,8 +19,8 @@ import { sdmCd } from "../../../pack/sdm-cd/support/SdmCd";
 import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
 import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
 
-import { determineDefaultRepositoryOwnerParentDirectory } from "../../../sdm/configuration/createSdmOptions";
 import { renderClientInfo } from "../../ui/renderClientInfo";
+import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
 
 export const DefaultSdmCdPort = 2901;
 

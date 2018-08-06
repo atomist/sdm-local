@@ -28,7 +28,7 @@ import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessag
 import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
-import { createSdmOptions, determineDefaultRepositoryOwnerParentDirectory } from "./createSdmOptions";
+import { createSdmOptions } from "./createSdmOptions";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 
 import * as assert from "assert";
@@ -37,13 +37,7 @@ import { parseChannel, parsePort } from "../../common/parseCorrelationId";
 import { invokeCommandHandlerInProcess } from "../binding/command/invokeCommandHandlerInProcess";
 
 import * as os from "os";
-
-const DefaultLocalLocalModeConfiguration: LocalModeConfiguration = {
-    preferLocalSeeds: true,
-    mergeAutofixes: true,
-    useSystemNotifications: false,
-    repositoryOwnerParentDirectory: determineDefaultRepositoryOwnerParentDirectory(),
-};
+import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
 
 /**
  * Configures an automation client in local mode
@@ -61,7 +55,7 @@ export function configureLocal(
 
         // Get sensible defaults
         const localModeConfiguration = {
-            ...DefaultLocalLocalModeConfiguration,
+            ...defaultLocalLocalModeConfiguration(),
             ...localModeConf,
         };
 
