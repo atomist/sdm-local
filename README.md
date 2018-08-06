@@ -46,7 +46,7 @@ Deliver SDM
 
 ```
 @atomist deliver
-``` 
+```
 
 
 ## Usage

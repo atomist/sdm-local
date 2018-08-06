@@ -35,7 +35,7 @@ import { warningMessage } from "./consoleOutput";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
 
 /**
- * All invocations from the CLI go through this function.
+ * All invocations from the CLI to local SDMs go through this function.
  * Validate command line arguments and prompt for missing or invalid arguments.
  * @param command command populated by yargs
  * @return {Promise<any>}
