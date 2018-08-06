@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { HandlerResult } from "@atomist/automation-client";
 import { ConfigureMachine } from "@atomist/sdm";
 import { toParametersListing } from "@atomist/sdm/api-helper/machine/handlerRegistrations";
 import { CommandRegistration } from "@atomist/sdm/api/registration/CommandRegistration";
@@ -22,7 +23,6 @@ import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "./consoleOutput";
 import { runCommandOnCollocatedAutomationClient } from "./runCommandOnCollocatedAutomationClient";
-import { HandlerResult } from "@atomist/automation-client";
 
 /**
  * Spec for running an embedded command on an ephemeral SDM

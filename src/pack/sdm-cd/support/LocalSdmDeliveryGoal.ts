@@ -23,10 +23,10 @@ import * as os from "os";
 import { AutomationClientInfo } from "../../../cli/AutomationClientInfo";
 import { fetchMetadataFromAutomationClient } from "../../../cli/invocation/http/fetchMetadataFromAutomationClient";
 import { renderClientInfo } from "../../../cli/ui/renderClientInfo";
+import { defaultHostUrlAliaser } from "../../../common/util/http/defaultLocalHostUrlAliaser";
 import { isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { runAndLog } from "../../../sdm/util/runAndLog";
 import { SdmDeliveryOptions } from "./SdmDeliveryOptions";
-import { defaultHostUrlAliaser } from "../../../common/util/http/defaultLocalHostUrlAliaser";
 
 export const LocalSdmDeliveryGoal = new GenericGoal(
     { uniqueName: "sdmDelivery" },

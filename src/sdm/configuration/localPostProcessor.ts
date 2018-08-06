@@ -15,13 +15,13 @@
  */
 
 import { Configuration, HandlerResult, logger } from "@atomist/automation-client";
+import { isInLocalMode } from "@atomist/sdm-core";
 import { LocalModeConfiguration } from "@atomist/sdm-core";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import { DefaultAutomationClientConnectionConfig } from "../../cli/entry/resolveConnectionConfig";
 import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
-import { isInLocalMode } from "@atomist/sdm-core";
 import { LocalGraphClient } from "../binding/graph/LocalGraphClient";
 import { ActionRoute, ActionStore, freshActionStore } from "../binding/message/ActionStore";
 import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessageClient";
@@ -173,7 +173,7 @@ function setMessageClient(configuration: Configuration,
         aca => {
             // TOD parameterize this - can use multicast
             const machineAddress: AutomationClientConnectionRequest = {
-                baseEndpoint: `http://${defaultHostUrlAliaser().alias()}:2866`
+                baseEndpoint: `http://${defaultHostUrlAliaser().alias()}:2866`,
             };
 
             assert(!!aca.context.correlationId);

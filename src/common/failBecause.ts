@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 /**
  * Can be used anywhere we need a value, to fail
  * @param {string} msg

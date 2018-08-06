@@ -21,13 +21,13 @@ import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingPro
 import { defaultAutomationClientFinder } from "../../cli/invocation/http/support/defaultAutomationClientFinder";
 import { DefaultTeamContextResolver } from "../../common/binding/defaultTeamContextResolver";
 import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
+import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
 import { expandedTreeRepoFinder } from "../binding/project/expandedTreeRepoFinder";
 import { ExpandedTreeRepoRefResolver } from "../binding/project/ExpandedTreeRepoRefResolver";
 import { FileSystemProjectLoader } from "../binding/project/FileSystemProjectLoader";
 import { fileSystemProjectPersister } from "../binding/project/fileSystemProjectPersister";
 import { LocalRepoTargets } from "../binding/project/LocalRepoTargets";
-import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
 
 /**
  * Merge user-supplied configuration with defaults

@@ -17,14 +17,14 @@
 import axios from "axios";
 import * as bodyParser from "body-parser";
 import * as express from "express";
+import * as http from "http";
 import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
 import { errorMessage, infoMessage } from "../../cli/invocation/command/support/consoleOutput";
 import { CommandCompletionDestination } from "../../common/CommandCompletionDestination";
 import { MessageRoute } from "../../common/httpMessaging";
+import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 import { isFailureMessage } from "../configuration/support/NotifyOnCompletionAutomationEventListener";
 import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
-import * as http from "http";
-import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 
 /**
  * Start process to listen to HTTP messages from HttpClientMessageClient

@@ -24,8 +24,8 @@ import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
 
 import chalk from "chalk";
 import * as os from "os";
-import { renderClientInfo } from "../../../ui/renderClientInfo";
 import { defaultHostUrlAliaser } from "../../../../common/util/http/defaultLocalHostUrlAliaser";
+import { renderClientInfo } from "../../../ui/renderClientInfo";
 
 export interface PortRangeOptions {
 

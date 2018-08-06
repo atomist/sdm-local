@@ -20,8 +20,8 @@ import { Argv } from "yargs";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
 import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
-import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 import { infoMessage } from "./support/consoleOutput";
+import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 
 /**
  * Generator that can create a new SDM

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+import { logger } from "@atomist/automation-client";
 import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
 import { CredentialsResolver } from "@atomist/sdm";
-import { logger } from "@atomist/automation-client";
 
 export const EnvironmentTokenCredentialsResolver: CredentialsResolver = {
 
@@ -33,7 +33,7 @@ export const EnvironmentTokenCredentialsResolver: CredentialsResolver = {
 const DefaultGitHubToken = "not.a.real.token";
 
 function credentialsFromEnvironment(): ProjectOperationCredentials {
-    let token = process.env.GITHUB_TOKEN;
+    const token = process.env.GITHUB_TOKEN;
     if (!token) {
         logger.warn("GITHUB_TOKEN not set in environment: Defaulting to '%s'", DefaultGitHubToken);
     }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import * as os from "os";
 
 /**
@@ -30,12 +29,12 @@ export const LocalHostLocalHostUrlAliaser: LocalHostUrlAliaser = {
 
     alias() {
         return "localhost";
-    }
+    },
 };
 
 export const HostnameLocalHostUrlAliaser: LocalHostUrlAliaser = {
 
     alias() {
         return os.hostname();
-    }
+    },
 };

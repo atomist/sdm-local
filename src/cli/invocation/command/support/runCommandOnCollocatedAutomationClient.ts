@@ -26,13 +26,13 @@ import { FromAnyMappedParameterResolver } from "../../../../sdm/binding/mapped-p
 import { MappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/MappedParameterResolver";
 import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/project/ExpandedTreeMappedParameterResolver";
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
+import { HttpMessageListener } from "../../../../sdm/ui/HttpMessageListener";
 import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionConfig";
 import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUsingHttp";
 import { newCliCorrelationId } from "../../newCorrelationId";
 import { portToListenOnFor } from "../../portAllocation";
 import { warningMessage } from "./consoleOutput";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
-import { HttpMessageListener } from "../../../../sdm/ui/HttpMessageListener";
 
 /**
  * All invocations from the CLI to local SDMs go through this function.

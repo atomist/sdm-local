@@ -18,8 +18,8 @@ import { Argv } from "yargs";
 import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
 import { HookEvent } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
-import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
+import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
 
 /**
  * Add a command to triggerGitEvents execution following a git event
