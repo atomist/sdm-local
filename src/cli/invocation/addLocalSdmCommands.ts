@@ -27,6 +27,8 @@ import { addShowSkillsCommand } from "./command/showSkillsCommand";
 import { infoMessage } from "./command/support/consoleOutput";
 import { AutomationClientFinder } from "./http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "./http/support/defaultAutomationClientFinder";
+import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
+import { DefaultTeamContextResolver } from "../../common/binding/defaultTeamContextResolver";
 
 /**
  * Start up the CLI
@@ -34,6 +36,8 @@ import { defaultAutomationClientFinder } from "./http/support/defaultAutomationC
  */
 export async function addLocalSdmCommands(yargs: Argv,
                                           finder: AutomationClientFinder = defaultAutomationClientFinder()) {
+    const teamContextResolver: TeamContextResolver = DefaultTeamContextResolver;
+
     addBootstrapCommands(yargs);
     addStartSdmDeliveryMachine(yargs);
     addStartListenerCommand(yargs);
@@ -41,7 +45,7 @@ export async function addLocalSdmCommands(yargs: Argv,
     addRemoveGitHooksCommand(yargs);
 
     const clients = await finder.findAutomationClients();
-    addTriggerCommand(yargs, clients);
+    addTriggerCommand(yargs, clients, teamContextResolver);
 
     // TODO filter on directories
     for (const client of clients) {

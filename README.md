@@ -228,6 +228,7 @@ Environment variables
 - `ATOMIST_ROOT`: Default system-wide location for Atomist expanded directory tree. Defaults to `<user home>/atomist`
 - `ATOMIST_GITHOOK_VERBOSE`: Make Atomist git hooks synchronous (although they will never block a git action, and display output to the console
 
+- `ATOMIST_TEAMS`: Shared with Atomist cloud service. Comma-separated list of teams we will use.
 
 - `SLACK_TEAM`
 - `SLACK_USER_NAME`

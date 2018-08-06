@@ -24,6 +24,7 @@ import { suggestStartingAllMessagesListener } from "../command/support/suggestSt
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "../http/support/defaultAutomationClientFinder";
 import { GitHookInvocation, handleGitHookEvent } from "./handleGitHookEvent";
+import { DefaultTeamContextResolver } from "../../../common/binding/defaultTeamContextResolver";
 
 /**
  * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
@@ -31,7 +32,7 @@ import { GitHookInvocation, handleGitHookEvent } from "./handleGitHookEvent";
 export async function runOnGitHook(argv: string[],
                                    clientFinder: AutomationClientFinder = defaultAutomationClientFinder(),
 ) {
-    const invocation = argsToGitHookInvocation(argv);
+    const invocation = argsToGitHookInvocation(argv, DefaultTeamContextResolver);
     if (isAtomistTemporaryBranch(invocation.branch)) {
         logger.info("Ignoring Atomist temporary branch in '%j': Atomist will eventually surface these changes to let hook react",
             invocation);

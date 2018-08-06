@@ -19,12 +19,16 @@ import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { HookEvents } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
 import { logExceptionsToConsole } from "./support/consoleOutput";
+import { DefaultTeamContextResolver } from "../../../common/binding/defaultTeamContextResolver";
+import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
 
 /**
  * Add a command to triggerGitEvents execution following a git event
  * @param {yargs.Argv} yargs
  */
-export function addTriggerCommand(yargs: Argv, clients: AutomationClientInfo[]) {
+export function addTriggerCommand(yargs: Argv,
+                                  clients: AutomationClientInfo[],
+                                  teamContextResolver: TeamContextResolver) {
     yargs.command({
         command: "trigger <event> [depth]",
         describe: "Trigger commit action on the current repository",
@@ -37,7 +41,8 @@ export function addTriggerCommand(yargs: Argv, clients: AutomationClientInfo[]) 
             });
         },
         handler: ya => {
-            return logExceptionsToConsole(() => triggerGitEvents(clients, ya.event, ya.depth),
+            return logExceptionsToConsole(() =>
+                    triggerGitEvents(clients, ya.event, ya.depth, teamContextResolver),
                 true);
         },
     });

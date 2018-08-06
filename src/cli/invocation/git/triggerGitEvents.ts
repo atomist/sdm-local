@@ -31,6 +31,7 @@ import {
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { PortRangeAutomationClientFinder } from "../http/support/PortRangeAutomationClientFinder";
 import { handleGitHookEvent } from "./handleGitHookEvent";
+import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
 
 /**
  * Trigger git events to the given depth in the current project repo
@@ -39,15 +40,16 @@ import { handleGitHookEvent } from "./handleGitHookEvent";
  * @param {number} depth
  * @return {Promise<void>}
  */
-export async function triggerGitEvents(clients: AutomationClientInfo[], event: string, depth: number) {
+export async function triggerGitEvents(clients: AutomationClientInfo[], event: string, depth: number,
+                                       teamContextResolver: TeamContextResolver) {
     const relevantClients = clients.filter(client => !!client.localConfig && withinExpandedTree(client.localConfig.repositoryOwnerParentDirectory));
-    await Promise.all(relevantClients.map(client => triggerGitEventsOn(client, event, depth)));
+    await Promise.all(relevantClients.map(client => triggerGitEventsOn(client, event, depth, teamContextResolver)));
 }
 
-async function triggerGitEventsOn(ai: AutomationClientInfo, event: string, depth: number) {
+async function triggerGitEventsOn(ai: AutomationClientInfo, event: string, depth: number,
+                                  teamContextResolver: TeamContextResolver) {
     const currentDir = determineCwd();
-    // TODO fix this
-    const teamId = "T123";
+    const teamId = teamContextResolver.atomistTeamId;
     if (withinExpandedTree(ai.localConfig.repositoryOwnerParentDirectory, currentDir)) {
         const p = GitCommandGitProject.fromBaseDir(FileSystemRemoteRepoRef.fromDirectory({
                 repositoryOwnerParentDirectory: ai.localConfig.repositoryOwnerParentDirectory,

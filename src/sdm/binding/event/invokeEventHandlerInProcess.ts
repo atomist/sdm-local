@@ -21,16 +21,23 @@ import * as stringify from "json-stringify-safe";
 import * as assert from "power-assert";
 import { newCliCorrelationId } from "../../../cli/invocation/newCorrelationId";
 import { EventSender } from "../../../common/EventHandlerInvocation";
+import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
+import { DefaultTeamContextResolver } from "../../../common/binding/defaultTeamContextResolver";
 
 /**
  * Invoke an event handler on the automation client at the given location
  * @return {Promise<HandlerResult>}
  */
-export function invokeEventHandlerInProcess(correlationId?: string): EventSender {
+export function invokeEventHandlerInProcess(correlationId?: string,
+                                            teamContextResolver: TeamContextResolver = DefaultTeamContextResolver): EventSender {
     return async invocation => {
-        // TODO fix hardcoding
-        const team_id = "T123";
-        const team_name = "TEAM";
+        if (!automationClientInstance()) {
+            throw new Error("This function must be invoked inside an automation client locally");
+        }
+
+        const team_id = teamContextResolver.atomistTeamId;
+        const team_name = teamContextResolver.atomistTeamName;
+
         const data = {
             extensions: {
                 operationName: invocation.name,
@@ -49,18 +56,14 @@ export function invokeEventHandlerInProcess(correlationId?: string): EventSender
             data: invocation.payload,
         };
 
-        // git hooks call this without a running automationClient in the same process; fall back to HTTP
-        if (!automationClientInstance()) {
-            throw new Error("This function must be invoked inside an automation client locally");
-        } else {
-            logger.info("Invoking %s using %s", invocation.name, stringify(data, replacer));
-            return automationClientInstance().processEvent(data as any as EventIncoming, async result => {
-                const results = (Array.isArray(result) ? result : [result]) as HandlerResult[];
-                assert(results.find(r => r.code !== 0),
-                    "Event handler did not succeed. Returned: " + JSON.stringify(result, null, 2));
-                return results;
-            });
-        }
+        logger.info("Invoking %s using %s", invocation.name, stringify(data, replacer));
+        return automationClientInstance().processEvent(data as any as EventIncoming, async result => {
+            const results = (Array.isArray(result) ? result : [result]) as HandlerResult[];
+            assert(results.find(r => r.code !== 0),
+                "Event handler did not succeed. Returned: " + JSON.stringify(result, null, 2));
+            return results;
+        });
+
 
     };
 }

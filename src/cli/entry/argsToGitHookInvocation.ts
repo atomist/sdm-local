@@ -16,14 +16,17 @@
 
 import { logger } from "@atomist/automation-client";
 import { GitHookInvocation } from "../invocation/git/handleGitHookEvent";
+import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
 
 /**
  * Process the given args (probably from process.argv) into a
  * GitHookInvocation
- * @param {string[]} argv
+ * @param {string[]} argv command line args
+ * @param teamContextResolver resolver to find team id
  * @return {GitHookInvocation}
  */
-export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
+export function argsToGitHookInvocation(argv: string[],
+                                        teamContextResolver: TeamContextResolver): GitHookInvocation {
     if (argv.length < 6) {
         logger.info("Not enough args to run Git hook: All args to git hook invocation are %j", argv);
         process.exit(0);
@@ -34,11 +37,9 @@ export function argsToGitHookInvocation(argv: string[]): GitHookInvocation {
     // We can be invoked in the .git/hooks directory or from the git binary itself
     const baseDir = args[1].replace(/.git[\/hooks]?$/, "")
         .replace(/\/$/, "");
-    // TODO this is a bit questionable
     const branch = args[2].replace("refs/heads/", "");
     const sha = args[3];
 
-    // TODO change this
-    const teamId = "T123";
+    const teamId = teamContextResolver.atomistTeamId;
     return { event, baseDir, branch, sha, teamId };
 }
