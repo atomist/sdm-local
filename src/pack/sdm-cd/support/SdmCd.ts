@@ -16,8 +16,8 @@
 
 import { ExtensionPack, Goals, whenPushSatisfies } from "@atomist/sdm";
 import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
-import { PushTests } from "../../../sdm/api/pushTests";
 import { IsSdm } from "./IsSdm";
+import { IsInLocalMode } from "@atomist/sdm-core";
 import { executeLocalSdmDelivery, LocalSdmDeliveryGoal } from "./LocalSdmDeliveryGoal";
 import { SdmDeliveryOptions } from "./SdmDeliveryOptions";
 
@@ -32,7 +32,7 @@ export function sdmCd(options: SdmDeliveryOptions): ExtensionPack {
             sdm.addGoalImplementation("SDM CD", LocalSdmDeliveryGoal,
                 executeLocalSdmDelivery(options));
             sdm.addGoalContributions(
-                whenPushSatisfies(IsSdm, PushTests).setGoals(
+                whenPushSatisfies(IsSdm, IsInLocalMode).setGoals(
                     new Goals("delivery", LocalSdmDeliveryGoal)));
         },
     };

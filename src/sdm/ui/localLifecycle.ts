@@ -25,7 +25,7 @@ import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/lo
 import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
 import chalk from "chalk";
 import { DefaultAutomationClientConnectionConfig } from "../../cli/entry/resolveConnectionConfig";
-import { isInLocalMode } from "../api/isInLocalMode";
+import { isInLocalMode } from "@atomist/sdm-core";
 import { HttpBuildStatusUpdater } from "../binding/HttpBuildStatusUpdater";
 import Push = OnPushToAnyBranch.Push;
 

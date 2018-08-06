@@ -21,7 +21,7 @@ import * as _ from "lodash";
 import { DefaultAutomationClientConnectionConfig } from "../../cli/entry/resolveConnectionConfig";
 import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
-import { isInLocalMode } from "../api/isInLocalMode";
+import { isInLocalMode } from "@atomist/sdm-core";
 import { LocalGraphClient } from "../binding/graph/LocalGraphClient";
 import { ActionRoute, ActionStore, freshActionStore } from "../binding/message/ActionStore";
 import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessageClient";

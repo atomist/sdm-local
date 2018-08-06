@@ -232,6 +232,11 @@ This project consists of three parts:
 - A command line.
 - `git` hooks inserted in those projects you wish to use the local SDM with.
 
+## Troubleshooting
+
+- *I can't see my command in the CLI*: Check that the relevant SDM is running in local mode. The list of commands (beyond the built-in commands) is built dynamically on every invocation, so if the relevant SDM isn't running the SDM will not respond to those commands.
+
+
 ## Advanced Setup
 
 ### Mapped Parameters and Secrets
