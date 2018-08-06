@@ -36,6 +36,8 @@ import { CommandHandlerInvocation } from "../../common/CommandHandlerInvocation"
 import { parseChannel, parsePort } from "../../common/parseCorrelationId";
 import { invokeCommandHandlerInProcess } from "../binding/command/invokeCommandHandlerInProcess";
 
+import * as os from "os";
+
 const DefaultLocalLocalModeConfiguration: LocalModeConfiguration = {
     preferLocalSeeds: true,
     mergeAutofixes: true,
@@ -173,8 +175,9 @@ function setMessageClient(configuration: Configuration,
                           actionStore: ActionStore) {
     configuration.http.messageClientFactory =
         aca => {
-            // TOD parameterize this
-            const machineAddress: AutomationClientConnectionRequest = { baseEndpoint: "http://localhost:2866" };
+            // TOD parameterize this - can use multicast
+            const machineAddress: AutomationClientConnectionRequest = { baseEndpoint: `http://${os.hostname()}:2866` };
+
             assert(!!aca.context.correlationId);
             const channel = parseChannel(aca.context.correlationId);
             const port = parsePort(aca.context.correlationId);

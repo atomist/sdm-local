@@ -23,6 +23,7 @@ import { CommandCompletionDestination } from "../../common/CommandCompletionDest
 import { MessageRoute } from "../../common/httpMessaging";
 import { isFailureMessage } from "../configuration/support/NotifyOnCompletionAutomationEventListener";
 import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
+import * as os from "os";
 
 /**
  * Start process to listen to HTTP messages from HttpClientMessageClient
@@ -67,11 +68,11 @@ export function startHttpMessageListener(port: number = AllMessagesPort,
  * @return {string}
  */
 export function messageListenerEndpoint(demonPort: number): string {
-    return `http://localhost:${demonPort}${MessageRoute}`;
+    return `http://${os.hostname()}:${demonPort}${MessageRoute}`;
 }
 
 export function messageListenerRoot(demonPort: number): string {
-    return `http://localhost:${demonPort}/`;
+    return `http://${os.hostname()}:${demonPort}/`;
 }
 
 export async function isListenerRunning(demonPort: number = AllMessagesPort): Promise<boolean> {
