@@ -36,13 +36,13 @@ Use the following commands (TODO `@atomist` will be replaced by Atomist)
 @atomist new sdm
 ```
 
-In order to see what's happening across all your automation clients, start a local lifecycle listener. This plays the same role as Atomist lifecycle in Slack, showing activity on your repositories.
+In order to see what's happening across all your automation clients, start a local lifecycle listener. This plays the same role as Atomist lifecycle in Slack, showing activity on your repositories. The console will display messages:
 
 ```
 @atomist listen
 ``` 
 
-Deliver SDM
+You will certainly want CD for your own SDMs! However, this requires special support as an SDM would need to shut itself down to deliver itself. Thus there is a command to run a dedicated SDM to deliver other SDMs. Start it as follows:
 
 ```
 @atomist deliver
@@ -75,10 +75,11 @@ Here is an [architecture diagram](https://github.com/atomisthq/sdm-local/blob/ma
 
 ### Setup
 
-To create your local SDM, you need to:
+To create your local SDM, execute:
 
-****
-
+```
+@atomist new sdm
+```
 
 The SDM works only on `git` repositories.
 
