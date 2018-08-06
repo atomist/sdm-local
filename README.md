@@ -1,6 +1,6 @@
 # sdm-local: Local Software Delivery Machine
 
-A software delivery sdm.machine helps you write and deliver code that is up to your own standards, at scale.
+A **software delivery machine** (SDM) helps you write and deliver code that is up to your own standards, at scale.
 This project runs a software delivery sdm.machine locally on your sdm.machine, responding to your commands and your commits.
 
 For instance:
@@ -10,7 +10,7 @@ For instance:
 - at your command, perform common code changes that you program (such as upgrade a library). It can do this across all the repositories you have checked out, and tell you if this causes any build failures.
 - at your command, create a new project by copying and modifying a working project you already have.
 
-For more information on software delivery machines (SDM), see Rod Johnson's blog [Why you need a Software Delivery Machine](https://the-composition.com/why-you-need-a-software-delivery-machine-85e8399cdfc0). This [video](https://vimeo.com/260496136) shows an SDM in action. 
+For more information on software delivery machines, see Rod Johnson's blog [Why you need a Software Delivery Machine](https://the-composition.com/why-you-need-a-software-delivery-machine-85e8399cdfc0). This [video](https://vimeo.com/260496136) shows an SDM in action. 
 The blogs and videos show an SDM that connects to Atomist's cloud service. This repository contains a *local* software delivery sdm.machine that works on your development sdm.machine and responds to your commits, performing whatever actions you decide
 should happen in response to new code. 
  
@@ -21,6 +21,21 @@ open source and can be used without the
 Atomist service. However, the code you write it can
 run unchanged to benefit your entire team if you do
 connect to the Atomist service, as the `SoftwareDeliveryMachine` API is identical between local and cloud SDMs.
+
+## Quick Start
+
+Install the atomist CLI (**TODO doesn't yet work**)
+
+```
+npm i -g @atomist/cli
+```
+
+Use the following commands (TODO `@atomist` will be replaced by Atomist)
+
+```
+@atomist new sdm
+```
+
 
 ## Usage
 
@@ -35,14 +50,11 @@ you program into it.
 The instructions here will take you through 
 
    * Initializing your local SDM
-   * Seeing it react to a push
-      * then changing how it reacts to your push
+   * Seeing it react to a push, then changing how it reacts to your push
    * Creating a new project with a generator
-      * then changing it to work from a project of your choice
-   * Changing code with an editor
-      * then making your own code editor
-   * Running a command
-      * then making your own commands
+   * Changing to project creation to work from a project of your choice
+   * Invoking a *code transform* to change code in one or more projects, then writing your own code transfor
+   * Running a command, then making your own commands
 
 Later, when they've proven useful, you can elevate your push reactions, generators, editors, 
 and commands into the cloud for your whole team to use with [Atomist](www.atomist.com).
@@ -53,33 +65,10 @@ Here is an [architecture diagram](https://github.com/atomisthq/sdm-local/blob/ma
 
 To create your local SDM, you need to:
 
-- have an SDM. Start by cloning the [seed-sdm](https://github.com/atomist/seed-sdm). (TODO: create a command in this repo to do this)
-- provide configuration for local mode. 
-This is safe to commit, because it will not change the functionality in your SDM unless your environment sets ATOMIST_MODE=local or you start the SDM with --local.
+****
 
-```typescript
-import { ConfigureOptions } from "@atomist/sdm-core";
 
-const Options: ConfigureOptions = {
-    ...,
-    local: {
-        // defaults to your home directory
-        repositoryOwnerParentDirectory: process.env.SDM_PROJECTS_ROOT || "/Users/me/my-code",
-        mergeAutofixes: true,
-        preferLocalSeeds: true,
-    },
-}
-
-export const configuration = {
-    ...,
-postProcessors: [
-    configureSdm(createMachine, Options),//  <---- add this
-    ...
-],
-}
-```
-
-The SDM works on projects that must be `git` repositories.
+The SDM works only on `git` repositories.
 
 To find projects on your filesystem, the SDM looks in directories group by owner (on GitHub, the owner is an organization
 or user; on BitBucket, the owner is a user or a BitBucket Project), and it looks for each owner directory
@@ -88,7 +77,7 @@ or user; on BitBucket, the owner is a user or a BitBucket Project), and it looks
 The directory structure looks like this:
 
 ```
-$SDM_PROJECTS_ROOT
+$ATOMIST_ROOT
 ├── owner1
 │   ├── repo1
 │   └── repo2
@@ -97,6 +86,8 @@ $SDM_PROJECTS_ROOT
     └── repo4
 
 ```
+`ATOMIST_ROOT` defaults to `<user home/atomist>`. 
+
 3) Send commit events from your repositories to your SDM. See "Configure existing projects" below. TODO: test this. how does it know
  
 4) *TEMPORARY for Atomists*: currently sdm-local isn't published on npm, so you have to:
@@ -233,6 +224,10 @@ This project consists of three parts:
 
 ### Mapped Parameters and Secrets
 Environment variables
+
+- `ATOMIST_ROOT`: Default system-wide location for Atomist expanded directory tree. Defaults to `<user home>/atomist`
+- `ATOMIST_GITHOOK_VERBOSE`: Make Atomist git hooks synchronous (although they will never block a git action, and display output to the console
+
 
 - `SLACK_TEAM`
 - `SLACK_USER_NAME`
