@@ -24,8 +24,10 @@ import {
 import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
 import { invokeEventHandlerUsingHttp } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
 import { repoFieldsFromProject } from "./pushFromLastCommit";
+import { EventSender } from "../../../common/EventHandlerInvocation";
+import { LocalTeamContext } from "../../../common/LocalTeamContext";
 
-export async function sendRepoCreationEvent(cc: AutomationClientConnectionConfig, id: RepoId) {
+export async function sendRepoCreationEvent(cc: LocalTeamContext, id: RepoId, eventSender: EventSender) {
     const payload: OnRepoCreation.Subscription = {
         Repo: [{
             owner: id.owner,
@@ -33,13 +35,13 @@ export async function sendRepoCreationEvent(cc: AutomationClientConnectionConfig
             id: `${id.owner}/${id.repo}`,
         }],
     };
-    return invokeEventHandlerUsingHttp(cc, cc)({
+    return eventSender({
         name: "OnRepoCreation",
         payload,
     });
 }
 
-export async function sendChannelLinkEvent(cc: AutomationClientConnectionConfig, id: RepoId) {
+export async function sendChannelLinkEvent(cc: LocalTeamContext, id: RepoId, eventSender: EventSender) {
     const repo = repoFieldsFromProject(cc.atomistTeamId, id) as CoreRepoFieldsAndChannels.Fragment;
     const payload: OnChannelLink.Subscription = {
         ChannelLink: [{
@@ -47,19 +49,19 @@ export async function sendChannelLinkEvent(cc: AutomationClientConnectionConfig,
             channel: repo.channels[0],
         }],
     };
-    return invokeEventHandlerUsingHttp(cc, cc)({
+    return eventSender({
         name: "OnChannelLink",
         payload,
     });
 }
 
-export async function sendRepoOnboardingEvent(cc: AutomationClientConnectionConfig, id: RepoId) {
+export async function sendRepoOnboardingEvent(cc: LocalTeamContext, id: RepoId, eventSender: EventSender) {
     const payload: OnRepoOnboarded.Subscription = {
         RepoOnboarded: [{
             repo: repoFieldsFromProject(cc.atomistTeamId, id) as CoreRepoFieldsAndChannels.Fragment,
         }],
     };
-    return invokeEventHandlerUsingHttp(cc, cc)({
+    return eventSender({
         name: "OnRepoOnboarded",
         payload,
     });

@@ -40,6 +40,6 @@ export function argsToGitHookInvocation(argv: string[],
     const branch = args[2].replace("refs/heads/", "");
     const sha = args[3];
 
-    const teamId = teamContextResolver.atomistTeamId;
+    const teamId = teamContextResolver.teamContext.atomistTeamId;
     return { event, baseDir, branch, sha, teamId };
 }

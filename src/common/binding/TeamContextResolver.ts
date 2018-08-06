@@ -15,12 +15,13 @@
  */
 
 
+import { LocalTeamContext } from "../LocalTeamContext";
+
 /**
  * Resolve team context in a local environment
  */
+// TODO consider folding this in with LocalModeConfiguration
 export interface TeamContextResolver {
 
-    atomistTeamId: string;
-
-    atomistTeamName: string;
+    teamContext: LocalTeamContext;
 }

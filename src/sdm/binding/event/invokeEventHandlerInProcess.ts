@@ -35,8 +35,8 @@ export function invokeEventHandlerInProcess(correlationId?: string,
             throw new Error("This function must be invoked inside an automation client locally");
         }
 
-        const team_id = teamContextResolver.atomistTeamId;
-        const team_name = teamContextResolver.atomistTeamName;
+        const team_id = teamContextResolver.teamContext.atomistTeamId;
+        const team_name = teamContextResolver.teamContext.atomistTeamName;
 
         const data = {
             extensions: {

@@ -49,7 +49,7 @@ export async function triggerGitEvents(clients: AutomationClientInfo[], event: s
 async function triggerGitEventsOn(ai: AutomationClientInfo, event: string, depth: number,
                                   teamContextResolver: TeamContextResolver) {
     const currentDir = determineCwd();
-    const teamId = teamContextResolver.atomistTeamId;
+    const teamId = teamContextResolver.teamContext.atomistTeamId;
     if (withinExpandedTree(ai.localConfig.repositoryOwnerParentDirectory, currentDir)) {
         const p = GitCommandGitProject.fromBaseDir(FileSystemRemoteRepoRef.fromDirectory({
                 repositoryOwnerParentDirectory: ai.localConfig.repositoryOwnerParentDirectory,

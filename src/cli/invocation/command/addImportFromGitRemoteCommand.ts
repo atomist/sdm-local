@@ -22,6 +22,7 @@ import { sendChannelLinkEvent, sendRepoOnboardingEvent } from "../../../sdm/bind
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { addGitHooks } from "../../setup/addGitHooks";
 import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
+import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
 
 export function addImportFromGitRemoteCommand(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({
@@ -49,6 +50,7 @@ async function importFromGitRemote(ai: AutomationClientInfo,
     await promisify(exec)(`git clone ${remoteBase}/${owner}/${repo}`,
         { cwd: orgDir });
     await addGitHooks(`${orgDir}/${repo}`);
-    await sendRepoOnboardingEvent(ai.connectionConfig, { owner, repo});
-    await sendChannelLinkEvent(ai.connectionConfig, { owner, repo});
+    const eventSender = invokeEventHandlerUsingHttp(ai.connectionConfig, ai.connectionConfig);
+    await sendRepoOnboardingEvent(ai.connectionConfig, { owner, repo}, eventSender);
+    await sendChannelLinkEvent(ai.connectionConfig, { owner, repo}, eventSender);
 }

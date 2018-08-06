@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-export interface InvocationTarget {
+import { LocalTeamContext } from "./LocalTeamContext";
 
-    atomistTeamId: string;
-    atomistTeamName: string;
+export interface InvocationTarget extends LocalTeamContext {
+
     correlationId?: string;
 }

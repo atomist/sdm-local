@@ -32,6 +32,10 @@ import { runAndLog } from "../../util/runAndLog";
 import { invokeEventHandlerInProcess } from "../event/invokeEventHandlerInProcess";
 import { sendChannelLinkEvent, sendRepoCreationEvent, sendRepoOnboardingEvent } from "../event/repoOnboardingEvents";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
+import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
+import { EventSender } from "../../../common/EventHandlerInvocation";
+import { LocalTeamContext } from "../../../common/LocalTeamContext";
+import { invokeEventHandlerUsingHttp } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
 
 /**
  * Persist the project to the given local directory given expanded directory
@@ -62,8 +66,10 @@ export function fileSystemProjectPersister(cc: AutomationClientConnectionConfig,
         await runAndLog("git add .", { cwd: baseDir });
         await runAndLog(`git commit -a -m "Initial commit from Atomist"`, { cwd: baseDir });
         await addGitHooksToProject(createdProject);
+        const eventSender = invokeEventHandlerUsingHttp(cc, cc);
 
-        await emitEventsForNewProject(cc, lc, createdProject, id);
+        await emitEventsForNewProject(cc, lc, createdProject, id,
+            eventSender);
         return successOn(createdProject);
     };
 }
@@ -76,11 +82,12 @@ export function fileSystemProjectPersister(cc: AutomationClientConnectionConfig,
  * @param {RepoRef} id
  * @return {Promise<void>}
  */
-async function emitEventsForNewProject(cc: AutomationClientConnectionConfig,
+async function emitEventsForNewProject(cc: LocalTeamContext,
                                        lc: LocalModeConfiguration,
                                        createdProject: LocalProject,
-                                       id: RepoRef) {
-    await sendRepoCreationEvent(cc, id);
+                                       id: RepoRef,
+                                       eventSender: EventSender) {
+    await sendRepoCreationEvent(cc, id, eventSender);
 
     const sha = await lastSha(createdProject as GitProject);
     const branch = "master";
@@ -98,6 +105,6 @@ async function emitEventsForNewProject(cc: AutomationClientConnectionConfig,
         branch,
     }, "SetGoalsOnPush");
 
-    await sendRepoOnboardingEvent(cc, id);
-    await sendChannelLinkEvent(cc, id);
+    await sendRepoOnboardingEvent(cc, id, eventSender);
+    await sendChannelLinkEvent(cc, id, eventSender);
 }

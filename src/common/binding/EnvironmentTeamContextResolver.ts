@@ -17,6 +17,7 @@
 import { TeamContextResolver } from "./TeamContextResolver";
 import { warningMessage } from "../../cli/invocation/command/support/consoleOutput";
 import * as os from "os";
+import { LocalTeamContext } from "../LocalTeamContext";
 
 const DefaultTeamId = "T123";
 
@@ -25,17 +26,19 @@ const DefaultTeamId = "T123";
  */
 export class EnvironmentTeamContextResolver implements TeamContextResolver {
 
-    public get atomistTeamId(): string {
+    public get teamContext(): LocalTeamContext {
+        let atomistTeamId: string;
         const teams = process.env.ATOMIST_TEAMS;
         if (!!teams) {
-            return teams.split(",")[0];
+            atomistTeamId = teams.split(",")[0];
+        } else {
+            warningMessage("ATOMIST_TEAMS environment variable not set: Using default of %s", DefaultTeamId);
+            atomistTeamId = DefaultTeamId;
         }
-        warningMessage("ATOMIST_TEAMS environment variable not set: Using default of %s", DefaultTeamId);
-        return DefaultTeamId;
-    }
-
-    public get atomistTeamName(): string {
-        return os.hostname();
+        return {
+            atomistTeamId,
+            atomistTeamName: os.hostname(),
+        }
     }
 
 }
