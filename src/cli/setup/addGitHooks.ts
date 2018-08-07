@@ -43,7 +43,7 @@ export async function addGitHooks(projectBaseDir: string) {
 }
 
 export async function addGitHooksToProject(p: LocalProject) {
-    const atomistHookScriptPath = path.join(__dirname, "../../../../", AtomistHookScriptName);
+    const atomistHookScriptPath = determineAtomistHookScriptPath();
     const gitHookScript = path.join(__dirname, "../../", AtomistJsName);
 
     for (const event of Object.values(HookEvent)) {
@@ -196,4 +196,15 @@ function markAsAtomistContent(toAppend: string) {
     return `\n${AtomistStartComment}\n${toAppend}\n${AtomistEndComment}\n`;
 }
 
+/**
+ * Determine the path to the Atomist hook script.
+ * We expect to have been started by the Atomist CLI,
+ * so the path will be relative to that.
+ * @return {string}
+ */
+function determineAtomistHookScriptPath() {
+    const base = __dirname;
+    infoMessage("Invoked in %s", base);
+    return path.join(base, "../../../../", AtomistHookScriptName);
+}
 

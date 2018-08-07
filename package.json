@@ -8,10 +8,6 @@
     "type": "git",
     "url": "https://github.com/atomist/slalom.git"
   },
-  "bin": {
-    "slalom": "./build/src/cli/entry/slalom.js",
-    "@atomist": "./build/src/cli/entry/slalom.js"
-  },
   "main": "build/src/index.js",
   "typings": "build/src/index.d.ts",
   "keywords": [
