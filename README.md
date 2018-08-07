@@ -30,6 +30,10 @@ Install the atomist CLI (**TODO doesn't yet work**)
 npm i -g @atomist/cli
 ```
 
+```
+npm i -g @atomist/cli@branch-master
+```
+
 Use the following commands (TODO `@atomist` will be replaced by Atomist)
 
 ```

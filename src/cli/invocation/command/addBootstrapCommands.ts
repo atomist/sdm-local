@@ -35,6 +35,11 @@ const sdmGenerator: GeneratorRegistration<NodeProjectCreationParameters> = {
     ],
 };
 
+/**
+ * Add bootstrap commands to generate a new SDM
+ * and add local capability to an existing SDM
+ * @param {yargs.Argv} yargs
+ */
 export function addBootstrapCommands(yargs: Argv) {
     addSdmGenerator(yargs);
 }
@@ -45,8 +50,11 @@ function addSdmGenerator(yargs: Argv) {
         cliDescription: "Create an SDM",
         registration: sdmGenerator,
         configure: configureBootstrapMachine,
-        thenDo: async () => {
-            infoMessage("Type 'atomist deliver' to start CD for your new SDM");
+        beforeAction: async () => {
+            infoMessage("Please follow the prompts to create a new SDM\n\n");
+        },
+        afterAction: async () => {
+            infoMessage("Type 'atomist deliver' to start CD for your new SDM\n");
         },
     });
 }

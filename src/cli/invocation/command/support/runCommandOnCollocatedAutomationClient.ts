@@ -34,6 +34,21 @@ import { portToListenOnFor } from "../../portAllocation";
 import { warningMessage } from "./consoleOutput";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
 
+export interface BeforeAndAfterActions {
+
+    /**
+     * Action to perform after running the command
+     * @return {Promise<any>}
+     */
+    beforeAction?: (chm: CommandHandlerMetadata) => Promise<any>;
+
+    /**
+     * Action to perform after running the command
+     * @return {Promise<any>}
+     */
+    afterAction?: (h: HandlerResult) => Promise<any>;
+}
+
 /**
  * All invocations from the CLI to local SDMs go through this function.
  * Validate command line arguments and prompt for missing or invalid arguments.
@@ -45,8 +60,11 @@ export async function runCommandOnCollocatedAutomationClient(connectionConfig: A
                                                              target: InvocationTarget,
                                                              hm: CommandHandlerMetadata,
                                                              command: object,
-                                                             thenDo?: (h: HandlerResult) => Promise<any>): Promise<any> {
+                                                             actions: BeforeAndAfterActions = {}): Promise<any> {
     await suggestStartingAllMessagesListener();
+    if (!!actions.beforeAction) {
+        await actions.beforeAction(hm);
+    }
     const listener = new HttpMessageListener(await portToListenOnFor(process.pid), true).start();
     const extraArgs = Object.getOwnPropertyNames(command)
         .map(name => ({ name: convertToUsable(name), value: command[name] }))
@@ -76,8 +94,8 @@ export async function runCommandOnCollocatedAutomationClient(connectionConfig: A
     logger.debug("Sending invocation %j\n", invocation);
     // Use repo channel if we're in a mapped repo channel
     const r = await invokeCommandHandlerUsingHttp(connectionConfig)(invocation);
-    if (!!thenDo) {
-        await thenDo(r);
+    if (!!actions.afterAction) {
+        await actions.afterAction(r);
     }
     if (listener.canTerminate) {
         process.exit(0);

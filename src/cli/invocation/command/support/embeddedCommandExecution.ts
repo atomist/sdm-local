@@ -22,12 +22,12 @@ import { Argv } from "yargs";
 import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "./consoleOutput";
-import { runCommandOnCollocatedAutomationClient } from "./runCommandOnCollocatedAutomationClient";
+import { runCommandOnCollocatedAutomationClient, BeforeAndAfterActions } from "./runCommandOnCollocatedAutomationClient";
 
 /**
  * Spec for running an embedded command on an ephemeral SDM
  */
-export interface EmbeddedCommandSpec {
+export interface EmbeddedCommandSpec extends BeforeAndAfterActions {
 
     cliCommand: string;
 
@@ -40,11 +40,6 @@ export interface EmbeddedCommandSpec {
      */
     configure: ConfigureMachine;
 
-    /**
-     * Action to perform after running the command
-     * @return {Promise<any>}
-     */
-    thenDo?: (h: HandlerResult) => Promise<any>;
 }
 
 /**
@@ -90,7 +85,7 @@ export function addEmbeddedCommand(yargs: Argv,
                     spec.configure,
                     spec.registration.name,
                     argv,
-                    spec.thenDo);
+                    spec);
                 infoMessage("Execution of command %s complete", spec.registration.name);
             }, true);
         },
@@ -101,7 +96,7 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
                                            configure: ConfigureMachine,
                                            name: string,
                                            params: object,
-                                           thenDo: (h: HandlerResult) => Promise<any>) {
+                                           sandwich: BeforeAndAfterActions) {
     const aca = await startEmbeddedMachine({
         repositoryOwnerParentDirectory,
         configure,
@@ -126,5 +121,5 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
             atomistTeamId: "T0",
         },
         hm,
-        params, thenDo);
+        params, sandwich);
 }
