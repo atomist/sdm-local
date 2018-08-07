@@ -58,7 +58,7 @@
     "@atomist/sdm-core": "*"
   },
   "devDependencies": {
-    "@atomist/automation-client": "^0.19.5-nortissej.report-editing-errors.20180803213716",
+    "@atomist/automation-client": "^0.19.5-20180807011450",
     "@atomist/sdm": "0.3.2-20180801121109",
     "@atomist/sdm-core": "https://r.atomist.com/2271969078",
     "@types/lodash": "^4.14.116",
