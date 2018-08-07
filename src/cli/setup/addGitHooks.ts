@@ -37,7 +37,7 @@ export async function addGitHooks(projectBaseDir: string) {
         return addGitHooksToProject(p);
     } else {
         infoMessage(
-            chalk.gray(sprintf("addGitHooks: Ignoring directory at %s as it is not a git project\n"),
+            chalk.gray(sprintf("Ignoring directory at %s as it is not a git project\n"),
                 projectBaseDir));
     }
 }
@@ -54,7 +54,8 @@ export async function addGitHooksToProject(p: LocalProject) {
         await reatomizeScript(p, `.git/hooks/${event}`, markAsAtomistContent(atomistContent));
         await p.makeExecutable(`.git/hooks/${event}`);
         infoMessage(chalk.gray(sprintf(
-            `addGitHooks: Adding git ${event} script to project at %s\n`,
+            `Adding git %s script to project at %s\n`,
+            event,
             p.baseDir)));
     }
 }
@@ -67,7 +68,7 @@ export async function removeGitHooks(baseDir: string) {
         }
     } else {
         infoMessage(chalk.gray(sprintf(
-            "removeGitHooks: Ignoring directory at %s as it is not a git project",
+            "Ignoring directory at %s as it is not a git project",
             baseDir)));
     }
 }
@@ -82,7 +83,7 @@ async function reatomizeScript(p: LocalProject, scriptPath: string, newContent: 
     const scriptFile = await p.getFile(scriptPath);
     if (!scriptFile) {
         process.stdout.write(chalk.gray(sprintf(
-            "addGitHooks: No git hook %s in project at %s: Adding one\n",
+            "No git hook %s in project at %s: Adding one\n",
             scriptPath,
             p.baseDir)));
         return p.addFile(scriptPath, newContent);
@@ -95,7 +96,7 @@ async function reatomizeScript(p: LocalProject, scriptPath: string, newContent: 
 
         const end = content.indexOf(AtomistEndComment);
         if (start < 0 || end < 0) {
-            warningMessage("addGitHooks: No Atomist content found in git hook %s in project at %s: Saw\n%s\n",
+            infoMessage("No Atomist content found in git hook %s in project at %s\n",
                 scriptPath,
                 p.baseDir,
                 chalk.gray(content));
@@ -103,7 +104,7 @@ async function reatomizeScript(p: LocalProject, scriptPath: string, newContent: 
         const updatedAtomist = content.slice(0, start) + newContent + content.substr(end + AtomistEndComment.length);
         await scriptFile.setContent(updatedAtomist);
         infoMessage(chalk.gray(sprintf(
-            "addGitHooks: Added Atomist content to git hook %s in project at %s: Leaving \n%s",
+            "Added Atomist content to git hook %s in project at %s\n",
             scriptPath,
             p.baseDir,
             updatedAtomist)));
@@ -120,7 +121,7 @@ async function deatomizeScript(p: LocalProject, scriptPath: string) {
     const script = await p.getFile(scriptPath);
     if (!script) {
         process.stdout.write(chalk.gray(sprintf(
-            "removeGitHooks: No git hook %s in project at %s\n",
+            "No git hook %s in project at %s\n",
             scriptPath,
             p.baseDir)));
     } else {
@@ -128,7 +129,7 @@ async function deatomizeScript(p: LocalProject, scriptPath: string) {
         const start = content.indexOf(AtomistStartComment);
         const end = content.indexOf(AtomistEndComment);
         if (start < 0 || end < 0) {
-            warningMessage("removeGitHooks: No Atomist content found in git hook %s in project at %s: Saw\n%s\n",
+            warningMessage("remove-git-hooks: No Atomist content found in git hook %s in project at %s\n",
                 scriptPath,
                 p.baseDir,
                 chalk.gray(content));
@@ -137,14 +138,14 @@ async function deatomizeScript(p: LocalProject, scriptPath: string) {
         if (nonAtomist.trim().length > 0) {
             await script.setContent(nonAtomist);
             infoMessage(chalk.gray(sprintf(
-                "removeGitHooks: Removing Atomist content from git hook %s in project at %s: Leaving \n%s",
+                "Removing Atomist content from git hook %s in project at %s\n",
                 scriptPath,
                 p.baseDir,
                 nonAtomist)));
         } else {
             await p.deleteFile(scriptPath);
             infoMessage(chalk.gray(sprintf(
-                "removeGitHooks: Removing Atomist git hook %s in project at %s\n",
+                "Removing Atomist git hook %s in project at %s\n",
                 scriptPath,
                 p.baseDir)));
         }
@@ -206,7 +207,7 @@ interface ScriptPaths {
  */
 function determineScriptPaths(): ScriptPaths  {
     const base = __dirname;
-    infoMessage("Invoked in %s", base);
+    // infoMessage("Invoked in %s", base);
     return {
         atomistHookScriptPath: path.join(base, "../../scripts", AtomistHookScriptName),
         gitHookScriptPath: path.join(base, "../entry", AtomistJsName),
