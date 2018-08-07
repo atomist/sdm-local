@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/sdm/compare/0.1.2...HEAD
+[Unreleased]: https://github.com/atomist/sdm/compare/0.1.3...HEAD
+
+## [0.1.3][] - 2018-08-07
+
+[0.1.3]: https://github.com/atomist/sdm/compare/0.1.2...0.1.3
 
 ## [0.1.2][] - 2018-08-06
 
