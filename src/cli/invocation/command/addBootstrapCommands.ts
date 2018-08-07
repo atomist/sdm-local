@@ -35,6 +35,11 @@ const sdmGenerator: GeneratorRegistration<NodeProjectCreationParameters> = {
     ],
 };
 
+/**
+ * Creates a new repo based on the content of an existing repo
+ * without making any changes
+ * @type {{name: string; startingPoint: (params) => GitHubRepoRef; parameters: {owner: {pattern: RegExp; validInput: string; description: string}; repo: {pattern: RegExp; validInput: string; description: string}}; transform: (p) => Promise<Project>}}
+ */
 const superforkGenerator: GeneratorRegistration<{owner: string, repo: string}> = {
     name: "superfork",
     startingPoint: params => new GitHubRepoRef(params.owner, params.repo),

@@ -31,7 +31,7 @@ export const UpdatePackageJsonIdentification: CodeTransform<NodeProjectCreationP
         const author = params.screenName;
         return doWithJson(project, "package.json", pkg => {
             const repoUrl = params.target.repoRef.url;
-            pkg.name = params.appName;
+            pkg.name = params.target.repoRef.repo;
             pkg.description = params.target.description;
             pkg.version = params.version;
             pkg.author = author;
