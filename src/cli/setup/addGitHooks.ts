@@ -23,7 +23,7 @@ import { sprintf } from "sprintf-js";
 import { errorMessage, infoMessage, warningMessage } from "../ui/consoleOutput";
 import { HookEvent } from "../invocation/git/handleGitHookEvent";
 
-const AtomistHookScriptName = "script/atomist-hook.sh";
+const AtomistHookScriptName = "atomist-hook.sh";
 const AtomistJsName = "cli/entry/onGitHook.js";
 
 /**
@@ -205,6 +205,6 @@ function markAsAtomistContent(toAppend: string) {
 function determineAtomistHookScriptPath() {
     const base = __dirname;
     infoMessage("Invoked in %s", base);
-    return path.join(base, "node_modules/@atomist/sdm-local/src", AtomistHookScriptName);
+    return path.join(base, "../../scripts", AtomistHookScriptName);
 }
 

@@ -98,7 +98,7 @@
     "lint:fix": "npm-run-all lint:ts:fix",
     "lint:ts:fix": "npm run lint:ts -- --fix",
     "package:copy": "copyfiles \"package.json\" build/src",
-    "package:scripts": "copyfiles \"src/scripts/*\" build",
+    "package:scripts": "copyfiles \"src/scripts/*.sh\" build",
     "test": "mocha --exit --require ts-node/register --require source-map-support/register \"test/**/*.ts\"",
     "typedoc": "typedoc --mode modules --excludeExternals --out build/typedoc src"
   },
