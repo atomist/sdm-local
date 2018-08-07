@@ -18,13 +18,9 @@ import { AutomationClientInfo } from "../../../AutomationClientInfo";
 import { AutomationClientFinder } from "../AutomationClientFinder";
 
 import * as _ from "lodash";
-import { infoMessage } from "../../../..";
 import { AutomationClientConnectionRequest } from "../AutomationClientConnectionConfig";
 import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
-
-import chalk from "chalk";
 import { defaultHostUrlAliaser } from "../../../../common/util/http/defaultLocalHostUrlAliaser";
-import { renderClientInfo, renderClientsInfo } from "../../../ui/renderClientInfo";
 
 export interface PortRangeOptions {
 
@@ -56,12 +52,8 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
                 .map(port => ({
                     baseEndpoint: `http://${defaultHostUrlAliaser().alias()}:${port}`,
                 }));
-        const found = await new FixedAutomationClientFinder(...requests).findAutomationClients();
-       // if (found.length > 0) {
-            infoMessage(renderClientsInfo(found));
-        //}
-        return found;
-    }
+        return new FixedAutomationClientFinder(...requests).findAutomationClients();
+       }
 
     constructor(opts: Partial<PortRangeOptions> = {}) {
         this.options = {

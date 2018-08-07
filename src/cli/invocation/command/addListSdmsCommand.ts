@@ -17,15 +17,16 @@
 import { Argv } from "yargs";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
+import { renderClientsInfo } from "../../ui/renderClientInfo";
+import { infoMessage } from "../../..";
 
 export function addListSdmsCommand(clients: AutomationClientInfo[], yargs: Argv) {
     yargs.command({
         command: "list sdms",
         describe: "List connected sdms",
-        handler: argv => {
+        handler: () => {
             return logExceptionsToConsole(async () => {
-                // The connection request will have displayed it
-                return;
+                infoMessage(renderClientsInfo(clients));
             }, true);
         },
     });
