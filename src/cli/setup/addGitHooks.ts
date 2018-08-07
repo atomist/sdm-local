@@ -44,7 +44,7 @@ export async function addGitHooks(projectBaseDir: string) {
 
 export async function addGitHooksToProject(p: LocalProject) {
     const atomistHookScriptPath = determineAtomistHookScriptPath();
-    const gitHookScript = path.join(__dirname, "../../", AtomistJsName);
+    const gitHookScript = path.join(__dirname, AtomistJsName);
 
     for (const event of Object.values(HookEvent)) {
         const atomistContent = scriptFragments(atomistHookScriptPath, gitHookScript)[event];
