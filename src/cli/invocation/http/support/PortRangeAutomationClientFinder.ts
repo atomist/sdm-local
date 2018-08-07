@@ -24,7 +24,7 @@ import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
 
 import chalk from "chalk";
 import { defaultHostUrlAliaser } from "../../../../common/util/http/defaultLocalHostUrlAliaser";
-import { renderClientInfo } from "../../../ui/renderClientInfo";
+import { renderClientInfo, renderClientsInfo } from "../../../ui/renderClientInfo";
 
 export interface PortRangeOptions {
 
@@ -57,10 +57,9 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
                     baseEndpoint: `http://${defaultHostUrlAliaser().alias()}:${port}`,
                 }));
         const found = await new FixedAutomationClientFinder(...requests).findAutomationClients();
-        if (found.length > 0) {
-            infoMessage(`Connected to ${chalk.bold(found.length.toString())} automation clients \n\t%s\n\n`,
-                found.map(renderClientInfo).join("\n\t"));
-        }
+       // if (found.length > 0) {
+            infoMessage(renderClientsInfo(found));
+        //}
         return found;
     }
 

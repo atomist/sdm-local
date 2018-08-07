@@ -17,6 +17,7 @@
 import chalk from "chalk";
 import { sprintf } from "sprintf-js";
 import { AutomationClientInfo } from "../AutomationClientInfo";
+import { infoMessage } from "../../index";
 
 /**
  * Format information about this automation for the console
@@ -33,4 +34,21 @@ export function renderEventDispatch(aci: AutomationClientInfo, what: any) {
     return sprintf("Sending event %s to machine %s\n",
         chalk.yellow(JSON.stringify(what)),
         chalk.underline(aci.client.name));
+}
+
+export function renderClientsInfo(clients: AutomationClientInfo[]): string {
+    let s = "";
+    switch (clients.length) {
+        case 0:
+            s += sprintf("There are no connected SDMs\n", clients.length);
+            break;
+        case 1:
+            s += sprintf("There is one connected SDM\n", clients.length);
+            break;
+        default:
+            s += sprintf("There are %d connected SDMs\n", clients.length);
+            break;
+    }
+    s += sprintf(`\t%s\n\n`, clients.map(renderClientInfo).join("\n\t"));
+    return s;
 }

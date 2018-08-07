@@ -30,9 +30,12 @@ import { infoMessage } from "../ui/consoleOutput";
 import { AutomationClientFinder } from "./http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "./http/support/defaultAutomationClientFinder";
 import { suggestStartingAllMessagesListener } from "./command/support/suggestStartingAllMessagesListener";
+import { addListSdmsCommand } from "./command/addListSdmsCommand";
 
 /**
- * Start up the CLI
+ * Given a yargs instance, add commands based on local SDMs we can connect to
+ * @param yargs instance to customize
+ * @param finder strategy for finding running automation client instances
  * @return {yargs.Arguments}
  */
 export async function addLocalSdmCommands(yargs: Argv,
@@ -51,7 +54,9 @@ export async function addLocalSdmCommands(yargs: Argv,
 
     const clients = await finder.findAutomationClients();
 
-    // TODO filter on directories
+    addListSdmsCommand(clients, yargs);
+
+    // TODO filter on working directories
     for (const client of clients) {
         await addCommandsToConnectTo(client, yargs);
     }
