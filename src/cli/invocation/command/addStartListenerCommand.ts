@@ -17,7 +17,7 @@
 import { Argv } from "yargs";
 import { HttpMessageListener } from "../../../sdm/ui/HttpMessageListener";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
-import { logExceptionsToConsole } from "./support/consoleOutput";
+import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
 
 export const AllMessagesPort = 6660;
 
@@ -30,8 +30,10 @@ export function addStartListenerCommand(yargs: Argv) {
         command: "listen",
         describe: "Start listener daemon to display messages",
         handler: () => {
-            return logExceptionsToConsole(async () =>
-                    new HttpMessageListener(AllMessagesPort),
+            return logExceptionsToConsole(async () => {
+                    await new HttpMessageListener(AllMessagesPort).start();
+                    infoMessage("Lifecycle messages from all local SDM activity will appear here\n");
+                },
                 true);
         },
     });

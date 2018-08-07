@@ -21,6 +21,7 @@ import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
 
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
 import { renderClientInfo } from "../../ui/renderClientInfo";
+import chalk from "chalk";
 
 export const DefaultSdmCdPort = 2901;
 
@@ -48,8 +49,12 @@ export function addStartSdmDeliveryMachine(yargs: Argv) {
         handler: argv => {
             return logExceptionsToConsole(async () => {
                 const client = await startSdmMachine(argv.port, argv.base);
-                infoMessage("Started local SDM delivery machine %s\n",
+                infoMessage("Started local SDM delivery machine \n\t%s\n",
                     renderClientInfo(client));
+                infoMessage("The next push to any SDM under %s will trigger deployment\n",
+                    chalk.yellow(client.localConfig.repositoryOwnerParentDirectory));
+                infoMessage("Alternatively, go to the relevant directory and type %s to trigger deployment\n",
+                    chalk.yellow("atomist trigger post-commit"));
             }, true);
         },
     });

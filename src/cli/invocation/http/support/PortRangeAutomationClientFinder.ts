@@ -23,7 +23,6 @@ import { AutomationClientConnectionRequest } from "../AutomationClientConnection
 import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
 
 import chalk from "chalk";
-import * as os from "os";
 import { defaultHostUrlAliaser } from "../../../../common/util/http/defaultLocalHostUrlAliaser";
 import { renderClientInfo } from "../../../ui/renderClientInfo";
 
