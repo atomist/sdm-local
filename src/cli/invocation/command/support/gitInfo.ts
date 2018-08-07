@@ -16,7 +16,7 @@
 
 import { obtainGitInfo } from "@atomist/automation-client/internal/env/gitInfo";
 import * as fs from "fs-extra";
-import { infoMessage } from "./consoleOutput";
+import { infoMessage } from "../../../ui/consoleOutput";
 
 export function cliGitInfo(path: string): Promise<number> {
     const gitInfoName = "git-info.json";

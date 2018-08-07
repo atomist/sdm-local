@@ -16,7 +16,7 @@
 
 import chalk from "chalk";
 import { isListenerRunning } from "../../../../sdm/ui/HttpMessageListener";
-import { infoMessage } from "./consoleOutput";
+import { adviceMessage } from "../../../ui/consoleOutput";
 
 /**
  * Display a message to the console suggesting starting the listener
@@ -25,7 +25,7 @@ import { infoMessage } from "./consoleOutput";
 export async function suggestStartingAllMessagesListener() {
     const running = await isListenerRunning();
     if (!running) {
-        infoMessage(`################### To see a complete message stream from across all commands and events, ` +
-            `please start the Local SDM listener by typing\n\t${chalk.yellow("@atomist listen")}\n###################\n\n`);
+        adviceMessage(`To see a complete message stream from across all commands and events, ` +
+            `start local lifecycle by typing\n\t${chalk.yellow("@atomist listen")}\n\n`);
     }
 }

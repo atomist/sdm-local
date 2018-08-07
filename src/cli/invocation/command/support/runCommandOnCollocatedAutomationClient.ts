@@ -31,8 +31,7 @@ import { AutomationClientConnectionRequest } from "../../http/AutomationClientCo
 import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUsingHttp";
 import { newCliCorrelationId } from "../../newCorrelationId";
 import { portToListenOnFor } from "../../portAllocation";
-import { warningMessage } from "./consoleOutput";
-import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
+import { warningMessage } from "../../../ui/consoleOutput";
 
 export interface BeforeAndAfterActions {
 
@@ -61,7 +60,6 @@ export async function runCommandOnCollocatedAutomationClient(connectionConfig: A
                                                              hm: CommandHandlerMetadata,
                                                              command: object,
                                                              actions: BeforeAndAfterActions = {}): Promise<any> {
-    await suggestStartingAllMessagesListener();
     if (!!actions.beforeAction) {
         await actions.beforeAction(hm);
     }

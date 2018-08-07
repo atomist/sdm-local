@@ -19,7 +19,7 @@ import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as http from "http";
 import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
-import { errorMessage, infoMessage } from "../../cli/invocation/command/support/consoleOutput";
+import { errorMessage, infoMessage } from "../../cli/ui/consoleOutput";
 import { CommandCompletionDestination } from "../../common/CommandCompletionDestination";
 import { MessageRoute } from "../../common/httpMessaging";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";

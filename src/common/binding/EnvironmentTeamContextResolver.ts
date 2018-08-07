@@ -15,7 +15,7 @@
  */
 
 import * as os from "os";
-import { warningMessage } from "../../cli/invocation/command/support/consoleOutput";
+import { warningMessage } from "../../cli/ui/consoleOutput";
 import { LocalTeamContext } from "../LocalTeamContext";
 import { TeamContextResolver } from "./TeamContextResolver";
 

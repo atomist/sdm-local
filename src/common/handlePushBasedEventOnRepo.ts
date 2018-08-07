@@ -18,7 +18,7 @@ import { GitCommandGitProject } from "@atomist/automation-client/project/git/Git
 import { GitProject } from "@atomist/automation-client/project/git/GitProject";
 import { OnPushToAnyBranch } from "@atomist/sdm";
 import { LocalModeConfiguration } from "@atomist/sdm-core";
-import { errorMessage } from "../cli/invocation/command/support/consoleOutput";
+import { errorMessage } from "../cli/ui/consoleOutput";
 import { pushFromLastCommit } from "../sdm/binding/event/pushFromLastCommit";
 import { isAtomistTemporaryBranch } from "../sdm/binding/project/FileSystemProjectLoader";
 import { FileSystemRemoteRepoRef } from "../sdm/binding/project/FileSystemRemoteRepoRef";

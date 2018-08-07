@@ -28,7 +28,7 @@ import { renderEventDispatch } from "../../ui/renderClientInfo";
 import {
     errorMessage,
     infoMessage,
-} from "../command/support/consoleOutput";
+} from "../../ui/consoleOutput";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { PortRangeAutomationClientFinder } from "../http/support/PortRangeAutomationClientFinder";
 import { handleGitHookEvent } from "./handleGitHookEvent";

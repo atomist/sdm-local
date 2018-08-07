@@ -26,9 +26,10 @@ import { addStartListenerCommand } from "./command/addStartListenerCommand";
 import { addStartSdmDeliveryMachine } from "./command/addStartSdmDeliveryMachine";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addShowSkillsCommand } from "./command/showSkillsCommand";
-import { infoMessage } from "./command/support/consoleOutput";
+import { infoMessage } from "../ui/consoleOutput";
 import { AutomationClientFinder } from "./http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "./http/support/defaultAutomationClientFinder";
+import { suggestStartingAllMessagesListener } from "./command/support/suggestStartingAllMessagesListener";
 
 /**
  * Start up the CLI
@@ -37,6 +38,8 @@ import { defaultAutomationClientFinder } from "./http/support/defaultAutomationC
 export async function addLocalSdmCommands(yargs: Argv,
                                           finder: AutomationClientFinder = defaultAutomationClientFinder()) {
     const teamContextResolver: TeamContextResolver = DefaultTeamContextResolver;
+
+    await suggestStartingAllMessagesListener();
 
     addBootstrapCommands(yargs);
     addStartSdmDeliveryMachine(yargs);

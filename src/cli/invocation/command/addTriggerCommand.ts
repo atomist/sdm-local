@@ -19,7 +19,7 @@ import { TeamContextResolver } from "../../../common/binding/TeamContextResolver
 import { HookEvent } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
-import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
+import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 
 /**
  * Add a command to triggerGitEvents execution following a git event

@@ -17,7 +17,7 @@
 import chalk from "chalk";
 import { Argv } from "yargs";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { logExceptionsToConsole } from "./support/consoleOutput";
+import { logExceptionsToConsole } from "../../ui/consoleOutput";
 
 export function addShowSkillsCommand(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({

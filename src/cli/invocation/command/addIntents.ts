@@ -20,7 +20,7 @@ import * as _ from "lodash";
 import { Argv } from "yargs";
 import { PathElement, toPaths } from "../../../sdm/util/PathElement";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { logExceptionsToConsole } from "./support/consoleOutput";
+import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { convertToDisplayable, runCommandOnCollocatedAutomationClient } from "./support/runCommandOnCollocatedAutomationClient";
 
 /**

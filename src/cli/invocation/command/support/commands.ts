@@ -25,7 +25,7 @@ import * as stringify from "json-stringify-safe";
 import * as path from "path";
 
 import { cliAtomistConfig } from "./config";
-import { errorMessage, infoMessage, warningMessage } from "./consoleOutput";
+import { errorMessage, infoMessage, warningMessage } from "../../../ui/consoleOutput";
 import { cliGitInfo } from "./gitInfo";
 import { cliAtomistKube } from "./kube";
 

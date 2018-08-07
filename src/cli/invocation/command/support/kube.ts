@@ -24,7 +24,7 @@ import {
     resolveTeamIds,
     resolveToken,
 } from "@atomist/automation-client/configuration";
-import { errorMessage } from "./consoleOutput";
+import { errorMessage } from "../../../ui/consoleOutput";
 
 function ghRawUrl(repo: string): string {
     return `https://raw.githubusercontent.com/atomist/${repo}/master`;

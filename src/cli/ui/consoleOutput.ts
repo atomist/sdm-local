@@ -44,6 +44,15 @@ export function warningMessage(msg: string, ...args: any[]) {
     process.stdout.write(chalk.yellowBright(sprintf("⚠︎ " + msg, ...args)));
 }
 
+/**
+ * Get the user's attention without implying there's a problem
+ * @param {string} msg
+ * @param args
+ */
+export function adviceMessage(msg: string, ...args: any[]) {
+    process.stdout.write(chalk.cyan(sprintf("⚠︎ " + msg, ...args)));
+}
+
 export function infoMessage(msg: string, ...args: any[]) {
     process.stdout.write(chalk.cyan(sprintf(msg, ...args)));
 }

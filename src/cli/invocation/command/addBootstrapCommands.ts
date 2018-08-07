@@ -20,7 +20,7 @@ import { Argv } from "yargs";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
 import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
-import { infoMessage } from "./support/consoleOutput";
+import { infoMessage } from "../../ui/consoleOutput";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 
 /**

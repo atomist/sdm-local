@@ -23,7 +23,7 @@ import {
     kube,
     start,
 } from "./support/commands";
-import { errorMessage } from "./support/consoleOutput";
+import { errorMessage } from "../../ui/consoleOutput";
 
 const Package = "atomist";
 

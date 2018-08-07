@@ -19,7 +19,7 @@ import { expandedTreeRepoFinder } from "../../../sdm/binding/project/expandedTre
 import { determineCwd } from "../../../sdm/binding/project/expandedTreeUtils";
 import { isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { addGitHooks, removeGitHooks } from "../../setup/addGitHooks";
-import { logExceptionsToConsole } from "./support/consoleOutput";
+import { logExceptionsToConsole } from "../../ui/consoleOutput";
 
 /**
  * Command to add git hooks to current directory or all projects

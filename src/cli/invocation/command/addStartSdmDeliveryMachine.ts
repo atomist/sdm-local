@@ -17,7 +17,7 @@
 import { Argv } from "yargs";
 import { sdmCd } from "../../../pack/sdm-cd/support/SdmCd";
 import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
-import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
+import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
 import { renderClientInfo } from "../../ui/renderClientInfo";

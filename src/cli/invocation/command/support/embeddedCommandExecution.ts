@@ -21,7 +21,7 @@ import { CommandRegistration } from "@atomist/sdm/api/registration/CommandRegist
 import { Argv } from "yargs";
 import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
-import { errorMessage, infoMessage, logExceptionsToConsole } from "./consoleOutput";
+import { errorMessage, infoMessage, logExceptionsToConsole } from "../../../ui/consoleOutput";
 import { runCommandOnCollocatedAutomationClient, BeforeAndAfterActions } from "./runCommandOnCollocatedAutomationClient";
 
 /**

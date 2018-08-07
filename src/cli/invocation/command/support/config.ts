@@ -24,7 +24,7 @@ import * as inquirer from "inquirer";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as os from "os";
-import { errorMessage, infoMessage } from "./consoleOutput";
+import { errorMessage, infoMessage } from "../../../ui/consoleOutput";
 
 const github = new GitHubApi();
 

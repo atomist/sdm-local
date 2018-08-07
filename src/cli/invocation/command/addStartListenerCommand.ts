@@ -17,7 +17,7 @@
 import { Argv } from "yargs";
 import { HttpMessageListener } from "../../../sdm/ui/HttpMessageListener";
 import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
-import { infoMessage, logExceptionsToConsole } from "./support/consoleOutput";
+import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 
 export const AllMessagesPort = 6660;
 
