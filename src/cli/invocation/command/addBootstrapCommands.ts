@@ -17,11 +17,11 @@
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import { GeneratorRegistration, SoftwareDeliveryMachine } from "@atomist/sdm";
 import { Argv } from "yargs";
-import { AutomationClientConnectionConfig } from "../http/AutomationClientConnectionConfig";
 import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
 import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
 import { infoMessage } from "../../ui/consoleOutput";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
+import { GitHubNameRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
 
 /**
  * Generator that can create a new SDM
@@ -35,6 +35,16 @@ const sdmGenerator: GeneratorRegistration<NodeProjectCreationParameters> = {
     ],
 };
 
+const superforkGenerator: GeneratorRegistration<{owner: string, repo: string}> = {
+    name: "superfork",
+    startingPoint: params => new GitHubRepoRef(params.owner, params.repo),
+    parameters: {
+        owner: { ...GitHubNameRegExp, description: "GitHub owner"},
+        repo: { ...GitHubNameRegExp, description: "GitHub repo"},
+    },
+    transform: async p => p,
+};
+
 /**
  * Add bootstrap commands to generate a new SDM
  * and add local capability to an existing SDM
@@ -42,6 +52,7 @@ const sdmGenerator: GeneratorRegistration<NodeProjectCreationParameters> = {
  */
 export function addBootstrapCommands(yargs: Argv) {
     addSdmGenerator(yargs);
+    addSuperforkGenerator(yargs);
 }
 
 function addSdmGenerator(yargs: Argv) {
@@ -49,7 +60,7 @@ function addSdmGenerator(yargs: Argv) {
         cliCommand: "new sdm",
         cliDescription: "Create an SDM",
         registration: sdmGenerator,
-        configure: configureBootstrapMachine,
+        configure: sdm => sdm.addGeneratorCommand(sdmGenerator),
         beforeAction: async () => {
             infoMessage("Please follow the prompts to create a new SDM\n\n");
         },
@@ -59,10 +70,17 @@ function addSdmGenerator(yargs: Argv) {
     });
 }
 
-/**
- * Add bootstrap commands
- * @param {SoftwareDeliveryMachine} sdm
- */
-function configureBootstrapMachine(sdm: SoftwareDeliveryMachine) {
-    sdm.addGeneratorCommand(sdmGenerator);
+function addSuperforkGenerator(yargs: Argv) {
+    addEmbeddedCommand(yargs, {
+        cliCommand: "superfork",
+        cliDescription: "Superfork a repo",
+        registration: superforkGenerator,
+        configure: sdm => sdm.addGeneratorCommand(superforkGenerator),
+        beforeAction: async () => {
+            infoMessage("Please follow the prompts to create a new repo based on a GitHub repo\n\n");
+        },
+        afterAction: async () => {
+            infoMessage("Superfork complete\n");
+        },
+    });
 }
