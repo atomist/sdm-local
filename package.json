@@ -27,7 +27,6 @@
     "@atomist/slack-messages": "^0.12.1",
     "@octokit/rest": "^15.9.5",
     "@types/body-parser": "^1.17.0",
-    "@types/chalk": "^2.2.0",
     "@types/inquirer": "0.0.42",
     "@types/marked": "^0.4.0",
     "@types/node-notifier": "0.0.28",
@@ -59,8 +58,8 @@
   },
   "devDependencies": {
     "@atomist/automation-client": "^0.19.5-20180807011450",
-    "@atomist/sdm": "0.3.2-20180801121109",
-    "@atomist/sdm-core": "https://r.atomist.com/2271969078",
+    "@atomist/sdm": "^0.4.0-20180807022858",
+    "@atomist/sdm-core": "https://registry.npmjs.org/@atomist/sdm-core/-/@atomist/sdm-core-0.4.0-20180807030718.tgz",
     "@types/lodash": "^4.14.116",
     "@types/mocha": "^2.2.48",
     "@types/node": "^8.10.17",
