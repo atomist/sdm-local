@@ -103,7 +103,7 @@ $ATOMIST_ROOT
     └── repo4
 
 ```
-`ATOMIST_ROOT` defaults to `<user home/atomist>`. 
+`ATOMIST_ROOT` defaults to `<user home>/atomist`. 
 
 3) Send commit events from your repositories to your SDM. See "Configure existing projects" below. TODO: test this. how does it know
  
