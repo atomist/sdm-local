@@ -94,7 +94,7 @@ class DeliveryManager {
             await goalInvocation.addressChannels(`No previous process found for SDM at ${baseDir}`);
         }
 
-        const spawnCommand = asSpawnCommand("slalom start --install=false --local=true --compile=false");
+        const spawnCommand = asSpawnCommand("atomist start --install=false --local=true --compile=false");
         childProcess = spawn(
             spawnCommand.command,
             spawnCommand.args,

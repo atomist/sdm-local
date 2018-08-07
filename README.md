@@ -24,34 +24,37 @@ connect to the Atomist service, as the `SoftwareDeliveryMachine` API is identica
 
 ## Quick Start
 
-Install the atomist CLI (**TODO doesn't yet work**)
+### Prerequisites
+
+- Node (version??)
+
+### Steps
+
+Install the atomist CLI with the following command.
 
 ```
 npm i -g @atomist/cli
 ```
 
-```
-npm i -g @atomist/cli@branch-master
-```
-
-Use the following commands (TODO `@atomist` will be replaced by Atomist)
+Use the following command to create a new SDM:
 
 ```
-@atomist new sdm
+atomist new sdm
 ```
+
+This will create a new SDM instance in a git repository on your local drive, by default under `<user home>/atomist/<org>`.
 
 In order to see what's happening across all your automation clients, start a local lifecycle listener. This plays the same role as Atomist lifecycle in Slack, showing activity on your repositories. The console will display messages:
 
 ```
-@atomist listen
+atomist listen
 ``` 
 
-You will certainly want CD for your own SDMs! However, this requires special support as an SDM would need to shut itself down to deliver itself. Thus there is a command to run a dedicated SDM to deliver other SDMs. Start it as follows:
+*Optional*: You likely want CD for your own SDMs. (Otherwise, you can start and stop them yourselves, for example in your IDE.) SDM CD requires special support as an SDM would need to shut itself down to deliver itself. Thus there is a command to run a dedicated SDM to deliver other SDMs. Start it as follows:
 
 ```
-@atomist deliver
+atomist deliver
 ```
-
 
 ## Usage
 
