@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import axios from "axios";
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as http from "http";
@@ -25,6 +24,7 @@ import { MessageRoute } from "../../common/httpMessaging";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 import { isFailureMessage } from "../configuration/support/NotifyOnCompletionAutomationEventListener";
 import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
+import { canConnectTo } from "../../common/util/http/canConnectTo";
 
 /**
  * Start process to listen to HTTP messages from HttpClientMessageClient
@@ -98,10 +98,5 @@ export function messageListenerRoot(demonPort: number): string {
 }
 
 export async function isListenerRunning(demonPort: number = AllMessagesPort): Promise<boolean> {
-    try {
-        await axios.get(messageListenerRoot(demonPort));
-        return true;
-    } catch (err) {
-        return false;
-    }
+    return canConnectTo(messageListenerRoot(demonPort));
 }

@@ -19,7 +19,6 @@ import { asSpawnCommand } from "@atomist/automation-client/util/spawned";
 import { ExecuteGoal, GenericGoal, GoalInvocation } from "@atomist/sdm";
 import { DelimitedWriteProgressLogDecorator } from "@atomist/sdm/api-helper/log/DelimitedWriteProgressLogDecorator";
 import { ChildProcess, spawn } from "child_process";
-import * as os from "os";
 import { AutomationClientInfo } from "../../../cli/AutomationClientInfo";
 import { fetchMetadataFromAutomationClient } from "../../../cli/invocation/http/fetchMetadataFromAutomationClient";
 import { renderClientInfo } from "../../../cli/ui/renderClientInfo";
@@ -48,7 +47,9 @@ export function executeLocalSdmDelivery(options: SdmDeliveryOptions): ExecuteGoa
         try {
             await goalInvocation.addressChannels(`Beginning SDM delivery for SDM at ${id.fileSystemLocation}`);
             const client = await deliveryManager.deliver(id.fileSystemLocation, options, goalInvocation);
-            await goalInvocation.addressChannels(`SDM updated: ${renderClientInfo(client)}: pid=${client.pid}`);
+            if (!!client.client) {
+                await goalInvocation.addressChannels(`SDM updated: ${renderClientInfo(client)}: pid=${client.pid}`);
+            }
             return { code: 0 };
         } catch (err) {
             logger.error(err);
@@ -72,12 +73,24 @@ class DeliveryManager {
     public async deliver(baseDir: string,
                          options: SdmDeliveryOptions,
                          goalInvocation: GoalInvocation): Promise<AutomationClientInfo & { pid: number }> {
+        const baseEndpoint = `http://${defaultHostUrlAliaser().alias()}:${options.port}`;
         let childProcess = this.childProcesses[baseDir];
 
-        await killPrevious(baseDir);
         if (!!childProcess) {
+            // We started a process for this
+            await killPrevious(baseDir);
             await goalInvocation.addressChannels(`Terminating process with pid \`${childProcess.pid}\` for SDM at ${baseDir}`);
         } else {
+            // We didn't start it. If it's connected, leave it be
+            const existing = await fetchMetadataFromAutomationClient({ baseEndpoint });
+            if (!!existing.client) {
+                // It's running but we didn't start it
+                await goalInvocation.addressChannels(`Externally managed SDM already running at ${baseDir}: Doing nothing`);
+                return {
+                    ...existing,
+                    pid: undefined,
+                };
+            }
             await goalInvocation.addressChannels(`No previous process found for SDM at ${baseDir}`);
         }
 
@@ -102,7 +115,7 @@ class DeliveryManager {
                 }
                 if (successPatterns.some(successPattern => successPattern.test(stdout))) {
                     const ccr = {
-                        baseEndpoint: `http://${defaultHostUrlAliaser().alias()}:${options.port}`,
+                        baseEndpoint
                     };
                     await fetchMetadataFromAutomationClient(ccr)
                         .then(aca => resolve({
