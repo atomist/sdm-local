@@ -205,6 +205,6 @@ function markAsAtomistContent(toAppend: string) {
 function determineAtomistHookScriptPath() {
     const base = __dirname;
     infoMessage("Invoked in %s", base);
-    return path.join(base, "../../../../", AtomistHookScriptName);
+    return path.join(base, "node_modules/@atomist/sdm-local/src", AtomistHookScriptName);
 }
 
