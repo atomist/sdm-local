@@ -7,7 +7,6 @@
     "jsx": "React",
     "declaration": true,
     "sourceMap": true,
-    "outDir": "build",
     "rootDir": ".",
     "lib": [
       "DOM",
@@ -25,11 +24,10 @@
     "emitDecoratorMetadata": true
   },
   "exclude": [
-    "build",
     "node_modules"
   ],
   "compileOnSave": true,
-  "buildOnSave": false,
+  "buildOnSave": true,
   "atom": {
     "rewriteTsconfig": false
   }

@@ -16,9 +16,8 @@
 
 import { Argv } from "yargs";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { logExceptionsToConsole } from "../../ui/consoleOutput";
+import { logExceptionsToConsole, infoMessage } from "../../ui/consoleOutput";
 import { renderClientsInfo } from "../../ui/renderClientInfo";
-import { infoMessage } from "../../..";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
 
 export function addListSdmsCommand(clients: AutomationClientInfo[], yargs: Argv) {
