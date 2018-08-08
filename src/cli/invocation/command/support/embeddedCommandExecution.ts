@@ -40,6 +40,8 @@ export interface EmbeddedCommandSpec extends BeforeAndAfterActions {
 
     parameters?: ParametersDefinition;
 
+    build?: (argv: Argv) => void;
+
     /**
      * Configure the sdm.machine to run the command
      */
@@ -79,6 +81,9 @@ export function addEmbeddedCommand(yargs: Argv,
                         required: false,
                     });
                 }
+            }
+            if (!!spec.build) {
+                spec.build(ra);
             }
             return ra;
         },

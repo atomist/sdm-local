@@ -70,6 +70,15 @@ function addSdmGenerator(yargs: Argv) {
         name,
         cliCommand: "new sdm",
         cliDescription: "Create an SDM",
+        build: argv => {
+            argv.option("type", {
+                required: true,
+                description: "sdm type",
+                // TODO why does this not work
+                //default: "spring",
+                choices: ["spring", "blank"],
+            });
+        },
         parameters: sdmGenerator(name, undefined).parameters,
         configurer: () => sdm => sdm.addGeneratorCommand(sdmGenerator(name,
             new GitHubRepoRef("atomist", "sample-sdm"))),
