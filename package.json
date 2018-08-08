@@ -82,7 +82,7 @@
   "scripts": {
     "autostart": "npm-run-all --print-label --parallel watch:compile watch",
     "autotest": "supervisor --watch src,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
-    "build": "npm-run-all compile",
+    "build": "npm-run-all compile test",
     "clean": "npm-run-all clean:js clean:build",
     "clean:build": "rimraf *-v8.log profile.txt coverage typedoc",
     "clean:dist": "npm-run-all clean clean:npm",
@@ -98,7 +98,7 @@
     "lint:ts": "tslint --format verbose --project . --exclude \"{node_modules}/**\" \"**/*.ts\"",
     "lint:fix": "npm-run-all lint:ts:fix",
     "lint:ts:fix": "npm run lint:ts -- --fix",
-    "test": "mocha --exit --require ts-node/register --require source-map-support/register \"test/**/*.ts\"",
+    "test": "mocha --exit --require ts-node/register --require source-map-support/register \"test/**/*est.ts\"",
     "typedoc": "typedoc --mode modules --excludeExternals --out typedoc ."
   },
   "engines": {
