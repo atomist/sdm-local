@@ -96,9 +96,8 @@ function addSdmGenerator(yargs: Argv) {
                             "spring"));
                     };
                 case "blank":
-                    // TODO should be a basic seed
                     return sdm => sdm.addGeneratorCommand(sdmGenerator(name,
-                        new GitHubRepoRef("atomist", "sample-sdm"),
+                        new GitHubRepoRef("atomist", "seed-sdm"),
                         "blank"));
                 default:
                     throw new Error("Unknown SDM type " + answers.type);
