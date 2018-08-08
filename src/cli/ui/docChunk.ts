@@ -19,6 +19,7 @@ import * as TerminalRenderer from "marked-terminal";
 import * as fs from "fs-extra";
 
 import * as path from "path";
+import { logger } from "@atomist/automation-client";
 
 marked.setOptions({
     // Define custom renderer
@@ -30,12 +31,16 @@ marked.setOptions({
  * @param {string} relativePath
  * @return {string}
  */
-export function renderProjectDocChunk(relativePath: string): string {
+export function renderProjectDocChunk(relativePath: string): string | undefined {
     const location = path.join(__dirname, "../../..", relativePath);
     return renderDocChunk(location);
 }
 
-export function renderDocChunk(location: string): string {
-    const chunk = fs.readFileSync(location).toString();
-    return marked(chunk);
+export function renderDocChunk(location: string): string | undefined {
+    try {
+        const chunk = fs.readFileSync(location).toString();
+        return marked(chunk);
+    } catch (e) {
+        logger.warn("Error reading doc file at %s : %s", location, e.message);
+    }
 }
