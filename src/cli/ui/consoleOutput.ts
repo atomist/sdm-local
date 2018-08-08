@@ -59,8 +59,12 @@ export function infoMessage(msg: string, ...args: any[]) {
     process.stdout.write(chalk.cyan(sprintf(msg, ...args)));
 }
 
-export function adviceDoc(relativePath: string) {
-    const docChunk = renderProjectDocChunk(relativePath);
+/**
+ * Dynamically build an advice block from one or more documentation chunks
+ * @param {string} relativePaths
+ */
+export function adviceDoc(...relativePaths: string[]) {
+    const docChunk = relativePaths.map(renderProjectDocChunk).join("\n\n");
     if (docChunk) {
         process.stdout.write("\n" + boxen(docChunk, { padding: 1 }) + "\n\n");
     }

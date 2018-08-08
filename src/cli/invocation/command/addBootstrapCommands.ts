@@ -22,30 +22,34 @@ import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
 import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
 import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
+import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 
 /**
  * Generator that can create a new SDM
  */
-const sdmGenerator: GeneratorRegistration<NodeProjectCreationParameters> = {
-    name: "createSdm",
-    startingPoint: new GitHubRepoRef("atomist", "sample-sdm"),
-    parameters: NodeProjectCreationParametersDefinition,
-    transform: [
-        UpdatePackageJsonIdentification,
-    ],
-};
+function sdmGenerator(name: string,
+                      startingPoint: RemoteRepoRef): GeneratorRegistration<NodeProjectCreationParameters> {
+    return {
+        name,
+        startingPoint,
+        parameters: NodeProjectCreationParametersDefinition,
+        transform: [
+            UpdatePackageJsonIdentification,
+        ],
+    };
+}
+
 
 /**
  * Creates a new repo based on the content of an existing repo
  * without making any changes
- * @type {{name: string; startingPoint: (params) => GitHubRepoRef; parameters: {owner: {pattern: RegExp; validInput: string; description: string}; repo: {pattern: RegExp; validInput: string; description: string}}; transform: (p) => Promise<Project>}}
  */
-const superforkGenerator: GeneratorRegistration<{owner: string, repo: string}> = {
+const superforkGenerator: GeneratorRegistration<{ owner: string, repo: string }> = {
     name: "superfork",
     startingPoint: params => new GitHubRepoRef(params.owner, params.repo),
     parameters: {
-        owner: { ...GitHubNameRegExp, description: "GitHub owner"},
-        repo: { ...GitHubNameRegExp, description: "GitHub repo"},
+        owner: { ...GitHubNameRegExp, description: "GitHub owner" },
+        repo: { ...GitHubNameRegExp, description: "GitHub repo" },
     },
     transform: async p => p,
 };
@@ -61,11 +65,14 @@ export function addBootstrapCommands(yargs: Argv) {
 }
 
 function addSdmGenerator(yargs: Argv) {
+    const name = "newSdm";
     addEmbeddedCommand(yargs, {
+        name,
         cliCommand: "new sdm",
         cliDescription: "Create an SDM",
-        registration: sdmGenerator,
-        configure: sdm => sdm.addGeneratorCommand(sdmGenerator),
+        parameters: sdmGenerator(name, undefined).parameters,
+        configurer: () => sdm => sdm.addGeneratorCommand(sdmGenerator(name,
+            new GitHubRepoRef("atomist", "sample-sdm"))),
         beforeAction: async () => {
             infoMessage("Please follow the prompts to create a new SDM\n\n");
         },
@@ -77,11 +84,13 @@ function addSdmGenerator(yargs: Argv) {
 }
 
 function addSuperforkGenerator(yargs: Argv) {
+    const name = "superfork";
     addEmbeddedCommand(yargs, {
+        name,
         cliCommand: "superfork",
         cliDescription: "Superfork a repo",
-        registration: superforkGenerator,
-        configure: sdm => sdm.addGeneratorCommand(superforkGenerator),
+        parameters: superforkGenerator.parameters,
+        configurer: () => sdm => sdm.addGeneratorCommand(superforkGenerator),
         beforeAction: async () => {
             infoMessage("Please follow the prompts to create a new repo based on a GitHub repo\n\n");
         },

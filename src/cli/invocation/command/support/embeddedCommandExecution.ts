@@ -15,7 +15,7 @@
  */
 
 import { HandlerResult } from "@atomist/automation-client";
-import { ConfigureMachine } from "@atomist/sdm";
+import { ConfigureMachine, ParametersDefinition } from "@atomist/sdm";
 import { toParametersListing } from "@atomist/sdm/api-helper/machine/handlerRegistrations";
 import { CommandRegistration } from "@atomist/sdm/api/registration/CommandRegistration";
 import { Argv } from "yargs";
@@ -29,16 +29,21 @@ import { BeforeAndAfterActions, runCommandOnCollocatedAutomationClient } from ".
  */
 export interface EmbeddedCommandSpec extends BeforeAndAfterActions {
 
+    /**
+     * Command name
+     */
+    name: string;
+
     cliCommand: string;
 
     cliDescription: string;
 
-    registration: CommandRegistration<any>;
+    parameters?: ParametersDefinition;
 
     /**
      * Configure the sdm.machine to run the command
      */
-    configure: ConfigureMachine;
+    configurer: (argv: Argv) => ConfigureMachine;
 
 }
 
@@ -66,8 +71,8 @@ export function addEmbeddedCommand(yargs: Argv,
             });
 
             // Expose optional parameters for the command's parameters if there are any
-            if (!!spec.registration.parameters) {
-                const pl = toParametersListing(spec.registration.parameters);
+            if (!!spec.parameters) {
+                const pl = toParametersListing(spec.parameters);
                 for (const param of pl.parameters) {
                     ra.option(param.name, {
                         description: param.description,
@@ -82,11 +87,11 @@ export function addEmbeddedCommand(yargs: Argv,
                 // infoMessage("repositoryOwnerParentDirectory=%s", argv.repositoryOwnerParentDirectory);
                 await runCommandOnEmbeddedMachine(
                     argv.repositoryOwnerParentDirectory,
-                    spec.configure,
-                    spec.registration.name,
+                    spec.configurer(argv),
+                    spec.name,
                     argv,
                     spec);
-                infoMessage("Execution of command %s complete", spec.registration.name);
+                infoMessage("Execution of command %s complete", spec.name);
             }, true);
         },
     });
