@@ -49,8 +49,8 @@ class InMemoryActionStore {
         logger.info("Storing actions for message: %s", (sm as any).key);
         _.flatMap(sm.attachments, a => a.actions)
             .forEach((action, i) => {
-            this.actionByKey[actionKey(sm, i)] = action;
-        });
+                this.actionByKey[actionKeyFor(sm, i)] = action;
+            });
         return;
     }
 
@@ -60,7 +60,7 @@ class InMemoryActionStore {
     }
 }
 
-export function actionKey(message: SlackMessage, index: number): ActionKey {
+export function actionKeyFor(message: SlackMessage, index: number): ActionKey {
     const messageKey = (message as any).key || (message as any).ts || computeShortSha(message);
     logger.info("Message key computed: %s", messageKey);
     return `${messageKey}-${index}`;
