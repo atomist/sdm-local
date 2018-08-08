@@ -26,6 +26,8 @@ import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "../http/support/defaultAutomationClientFinder";
 import { GitHookInvocation, handleGitHookEvent } from "./handleGitHookEvent";
 
+const verbose = process.env.ATOMIST_GITHOOK_VERBOSE === "true";
+
 /**
  * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
  */
@@ -41,7 +43,7 @@ export async function runOnGitHook(argv: string[],
 
     await suggestStartingAllMessagesListener();
     const clients = await clientFinder.findAutomationClients();
-    if (clients.length === 0) {
+    if (clients.length === 0 && verbose) {
         infoMessage("No Atomist connected clients found");
         process.exit(0);
     }
@@ -55,12 +57,14 @@ export async function runOnGitHook(argv: string[],
  * @return {Promise<void>}
  */
 async function sendTo(automationClientInfo: AutomationClientInfo, invocation: GitHookInvocation) {
-    if (!automationClientInfo.localConfig) {
+    if (!automationClientInfo.localConfig && verbose) {
         infoMessage("Not a local machine; not delivering push event.\n");
         // process.exit(0); // This is a lot faster than just returning. I don't want to make your commit slow.
     } else {
         logger.debug("Executing git hook against project %j", invocation);
-        infoMessage(renderEventDispatch(automationClientInfo, invocation));
+        if (verbose) {
+            infoMessage(renderEventDispatch(automationClientInfo, invocation));
+        }
         return logExceptionsToConsole(() =>
                 handleGitHookEvent(
                     automationClientInfo.connectionConfig,
