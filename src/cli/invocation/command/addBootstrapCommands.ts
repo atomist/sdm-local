@@ -27,7 +27,8 @@ import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonId
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 
 /**
- * Generator that can create a new SDM
+ * Generator that can create a new SDM. Parameterized
+ * by name, starting point and tags.
  */
 function sdmGenerator(name: string,
                       startingPoint: RemoteRepoRef,
@@ -76,6 +77,7 @@ function addSdmGenerator(yargs: Argv) {
         cliDescription: "Create an SDM",
         parameters: sdmGenerator(name, undefined).parameters,
         configurer: async () => {
+            adviceDoc("docs/newSdm.md");
             const questions: Question[] = [{
                 name: "type",
                 message: "Type of SDM to create",

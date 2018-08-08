@@ -67,5 +67,7 @@ export function adviceDoc(...relativePaths: string[]) {
     const docChunk = relativePaths.map(renderProjectDocChunk).join("\n\n");
     if (docChunk) {
         process.stdout.write("\n" + boxen(docChunk, { padding: 1 }) + "\n\n");
+    } else {
+        warningMessage("Internal error: Document at '%s' not found");
     }
 }

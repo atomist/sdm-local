@@ -31,7 +31,8 @@ import {
 } from "./FileSystemRemoteRepoRef";
 
 /**
- * Project loader that modifies push behavior before acting on project,
+ * Local project loader backed by expanded directory tree.
+ * Modifies push behavior before acting on project,
  * and prefers local directories if found on disk
  */
 export class FileSystemProjectLoader implements ProjectLoader {
