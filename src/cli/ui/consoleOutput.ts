@@ -17,6 +17,8 @@
 import { logger } from "@atomist/automation-client";
 import chalk from "chalk";
 import { sprintf } from "sprintf-js";
+import { renderProjectDocChunk } from "./docChunk";
+import * as boxen from "boxen";
 
 /**
  * Perform the given action, logging exceptions to the console
@@ -55,4 +57,8 @@ export function adviceMessage(msg: string, ...args: any[]) {
 
 export function infoMessage(msg: string, ...args: any[]) {
     process.stdout.write(chalk.cyan(sprintf(msg, ...args)));
+}
+
+export function adviceDoc(relativePath: string) {
+    process.stdout.write("\n" + boxen(renderProjectDocChunk(relativePath), { padding: 1 }) + "\n\n");
 }

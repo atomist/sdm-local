@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import chalk from "chalk";
 import { isListenerRunning } from "../../../../sdm/ui/HttpMessageListener";
-import { adviceMessage } from "../../../ui/consoleOutput";
+import { adviceDoc } from "../../../ui/consoleOutput";
 
 /**
  * Display a message to the console suggesting starting the listener
@@ -25,7 +24,6 @@ import { adviceMessage } from "../../../ui/consoleOutput";
 export async function suggestStartingAllMessagesListener() {
     const running = await isListenerRunning();
     if (!running) {
-        adviceMessage(`To see a complete message stream from across all commands and events, ` +
-            `start local lifecycle by typing\n\t${chalk.yellow("@atomist listen")}\n\n`);
+        adviceDoc("docs/startListener.md");
     }
 }

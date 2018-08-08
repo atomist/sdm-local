@@ -32,7 +32,7 @@ import * as _ from "lodash";
 import * as marked from "marked";
 import { MarkedOptions } from "marked";
 import * as TerminalRenderer from "marked-terminal";
-import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
+import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
 import { actionDescription, actionKey, ActionRoute } from "../binding/message/ActionStore";
 import { isSdmGoalStoreOrUpdate } from "../binding/message/GoalEventForwardingMessageClient";
 
