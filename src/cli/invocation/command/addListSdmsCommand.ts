@@ -19,6 +19,7 @@ import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { renderClientsInfo } from "../../ui/renderClientInfo";
 import { infoMessage } from "../../..";
+import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
 
 export function addListSdmsCommand(clients: AutomationClientInfo[], yargs: Argv) {
     yargs.command({
@@ -26,6 +27,7 @@ export function addListSdmsCommand(clients: AutomationClientInfo[], yargs: Argv)
         describe: "List connected sdms",
         handler: () => {
             return logExceptionsToConsole(async () => {
+                await suggestStartingAllMessagesListener();
                 infoMessage(renderClientsInfo(clients));
             }, true);
         },

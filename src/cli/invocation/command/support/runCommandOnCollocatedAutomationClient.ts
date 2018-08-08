@@ -32,6 +32,7 @@ import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUs
 import { newCliCorrelationId } from "../../newCorrelationId";
 import { portToListenOnFor } from "../../portAllocation";
 import { warningMessage } from "../../../ui/consoleOutput";
+import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
 
 export interface BeforeAndAfterActions {
 
@@ -95,6 +96,8 @@ export async function runCommandOnCollocatedAutomationClient(connectionConfig: A
     if (!!actions.afterAction) {
         await actions.afterAction(r);
     }
+    await suggestStartingAllMessagesListener();
+
     if (listener.canTerminate) {
         process.exit(0);
     }

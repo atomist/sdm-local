@@ -20,6 +20,7 @@ import { HookEvent } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
+import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
 
 /**
  * Add a command to triggerGitEvents execution following a git event
@@ -43,7 +44,8 @@ export function addTriggerCommand(yargs: Argv,
             return logExceptionsToConsole(async () => {
                     const clients = await automationClientFinder.findAutomationClients();
                     infoMessage("Dispatching git event '%s' to %d clients (not all may process it)...\n", ya.event, clients.length);
-                    return triggerGitEvents(clients, ya.event, ya.depth, teamContextResolver);
+                    await triggerGitEvents(clients, ya.event, ya.depth, teamContextResolver);
+                    return suggestStartingAllMessagesListener();
                 },
                 true);
         },
