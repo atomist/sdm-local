@@ -15,11 +15,11 @@
  */
 
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
-import { GeneratorRegistration, SoftwareDeliveryMachine } from "@atomist/sdm";
+import { GeneratorRegistration } from "@atomist/sdm";
 import { Argv } from "yargs";
 import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
 import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
-import { infoMessage } from "../../ui/consoleOutput";
+import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 import { GitHubNameRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
 
@@ -70,6 +70,7 @@ function addSdmGenerator(yargs: Argv) {
             infoMessage("Please follow the prompts to create a new SDM\n\n");
         },
         afterAction: async () => {
+            adviceDoc("docs/springSdm.md");
             infoMessage("Type 'atomist deliver' to start CD for your new SDM\n");
         },
     });
