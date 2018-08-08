@@ -95,7 +95,7 @@
     "fmt:ts": "tsfmt --replace",
     "git:info": "atomist git",
     "lint": "npm-run-all lint:ts",
-    "lint:ts": "tslint --format verbose --project . --exclude \"{node_modules}/**\" \"**/*.ts\"",
+    "lint:ts": "tslint --format verbose --project .",
     "lint:fix": "npm-run-all lint:ts:fix",
     "lint:ts:fix": "npm run lint:ts -- --fix",
     "test": "mocha --exit --require ts-node/register --require source-map-support/register \"test/**/*est.ts\"",
