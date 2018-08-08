@@ -18,13 +18,9 @@ import { LocalProject } from "@atomist/automation-client/project/local/LocalProj
 import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
 import chalk from "chalk";
 import * as fs from "fs";
-import * as path from "path";
 import { sprintf } from "sprintf-js";
 import { HookEvent } from "../invocation/git/handleGitHookEvent";
 import { errorMessage, infoMessage, warningMessage } from "../ui/consoleOutput";
-
-const AtomistHookScriptName = "atomist-hook.sh";
-const AtomistJsName = "onGitHook.js";
 
 /**
  * Add Git hooks to the given repo
@@ -43,10 +39,8 @@ export async function addGitHooks(projectBaseDir: string) {
 }
 
 export async function addGitHooksToProject(p: LocalProject) {
-    const scriptPaths = determineScriptPaths();
-
     for (const event of Object.values(HookEvent)) {
-        const atomistContent = scriptFragments(scriptPaths)[event];
+        const atomistContent = scriptFragments()[event];
         if (!atomistContent) {
             errorMessage("Unable to create git script content for event '%s'", event);
             process.exit(1);
@@ -158,7 +152,7 @@ async function deatomizeScript(p: LocalProject, scriptPath: string) {
  * Indexed templates fragments for use in git hooks
  * @return {{"pre-receive": string}}
  */
-function scriptFragments(scriptPaths: ScriptPaths) {
+function scriptFragments() {
 
     // TODO why does the hook need be verbose?
     return {
@@ -166,17 +160,17 @@ function scriptFragments(scriptPaths: ScriptPaths) {
 export ATOMIST_GITHOOK_VERBOSE="true"
 
 read oldrev newrev refname
-${scriptPaths.atomistHookScriptPath} ${scriptPaths.gitHookScriptPath} pre-receive \${PWD} $refname $newrev
+atomist-githook pre-receive \${PWD} $refname $newrev
 `,
         "post-commit": `
 sha=$(git rev-parse HEAD)
 branch=$(git rev-parse --abbrev-ref HEAD)
-${scriptPaths.atomistHookScriptPath} ${scriptPaths.gitHookScriptPath} post-commit \${PWD} $branch $sha
+atomist-githook post-commit \${PWD} $branch $sha
 `,
         "post-merge": `
 sha=$(git rev-parse HEAD)
 branch=$(git rev-parse --abbrev-ref HEAD)
-${scriptPaths.atomistHookScriptPath} ${scriptPaths.gitHookScriptPath} post-merge \${PWD} $branch $sha
+atomist-githook post-merge \${PWD} $branch $sha
 `,
     };
 }
@@ -193,23 +187,4 @@ function markAsAtomistContent(toAppend: string) {
     return `\n${AtomistStartComment}\n${toAppend}\n${AtomistEndComment}\n`;
 }
 
-interface ScriptPaths {
-    atomistHookScriptPath: string;
-    gitHookScriptPath: string;
-}
-
-/**
- * Determine the path to the Atomist hook scripts.
- * We expect to have been started by the Atomist CLI,
- * so the path will be relative to this file within that.
- * @return {string}
- */
-function determineScriptPaths(): ScriptPaths  {
-    const base = __dirname;
-    // infoMessage("Invoked in %s", base);
-    return {
-        atomistHookScriptPath: path.join(base, "../../scripts", AtomistHookScriptName),
-        gitHookScriptPath: path.join(base, "../entry", AtomistJsName),
-    };
-}
 
