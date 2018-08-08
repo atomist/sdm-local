@@ -1,6 +1,6 @@
 {
   "name": "@atomist/sdm-local",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Atomist Local Software Delivery Machine",
   "author": "Atomist, Inc.",
   "license": "Apache-2.0",
@@ -80,9 +80,8 @@
     "test": "test"
   },
   "scripts": {
-    "autostart": "npm-run-all --print-label --parallel watch:compile watch",
-    "autotest": "supervisor --watch src,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
-    "build": "npm-run-all compile test",
+    "autotest": "supervisor --watch index.ts,src,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
+    "build": "npm-run-all compile test lint doc",
     "clean": "npm-run-all clean:js clean:build",
     "clean:build": "rimraf *-v8.log profile.txt coverage typedoc",
     "clean:dist": "npm-run-all clean clean:npm",
@@ -91,6 +90,7 @@
     "compile": "npm-run-all git:info compile:ts",
     "compile:ts": "tsc --project .",
     "debug": "node $NODE_DEBUG_OPTION node_modules/@atomist/automation-client/start.client.js",
+    "doc": "typedoc --mode modules --exclude \"**/*.d.ts\" --out doc index.ts src",
     "fmt": "npm-run-all fmt:ts",
     "fmt:ts": "tsfmt --replace",
     "git:info": "atomist git",
@@ -99,10 +99,10 @@
     "lint:fix": "npm-run-all lint:ts:fix",
     "lint:ts:fix": "npm run lint:ts -- --fix",
     "test": "mocha --exit --require ts-node/register --require source-map-support/register \"test/**/*est.ts\"",
-    "typedoc": "typedoc --mode modules --excludeExternals --out typedoc ."
+    "typedoc": "npm run doc"
   },
   "engines": {
-    "node": ">=9.2",
-    "npm": "5.x.x"
+    "node": ">=9.2.0",
+    "npm": ">=5.0.0"
   }
 }

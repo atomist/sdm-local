@@ -29,7 +29,7 @@ export class LocalGraphClient implements GraphClient {
 
     public endpoint: string;
 
-    public executeMutation<T, Q>(mutation: string, variables?: Q, options?: any): Promise<any> {
+    public executeMutation<T, Q>(mutation: string, variables?: Q, options?: any): Promise<T> {
         throw new Error();
     }
 
