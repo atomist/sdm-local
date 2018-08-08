@@ -30,7 +30,8 @@ import { Inquirer, Question } from "inquirer";
  * Generator that can create a new SDM
  */
 function sdmGenerator(name: string,
-                      startingPoint: RemoteRepoRef): GeneratorRegistration<NodeProjectCreationParameters> {
+                      startingPoint: RemoteRepoRef,
+                      ...tags: string[]): GeneratorRegistration<NodeProjectCreationParameters> {
     return {
         name,
         startingPoint,
@@ -38,6 +39,7 @@ function sdmGenerator(name: string,
         transform: [
             UpdatePackageJsonIdentification,
         ],
+        tags,
     };
 }
 
@@ -88,12 +90,16 @@ function addSdmGenerator(yargs: Argv) {
             const answers = await inquirer.prompt(questions);
             switch (answers.type) {
                 case "spring":
-                    return sdm => sdm.addGeneratorCommand(sdmGenerator(name,
-                        new GitHubRepoRef("atomist", "sample-sdm")));
+                    return sdm => {
+                        sdm.addGeneratorCommand(sdmGenerator(name,
+                            new GitHubRepoRef("atomist", "sample-sdm"),
+                            "spring"));
+                    };
                 case "blank":
                     // TODO should be a basic seed
                     return sdm => sdm.addGeneratorCommand(sdmGenerator(name,
-                        new GitHubRepoRef("atomist", "sample-sdm")));
+                        new GitHubRepoRef("atomist", "sample-sdm"),
+                        "blank"));
                 default:
                     throw new Error("Unknown SDM type " + answers.type);
             }
@@ -102,10 +108,9 @@ function addSdmGenerator(yargs: Argv) {
             infoMessage("Please follow the prompts to create a new SDM\n\n");
         },
         afterAction: async (hr, chm) => {
-            switch (chm.name) {
-                case "springSdm":
-                    adviceDoc("docs/springSdm.md");
-                    break;
+            // TODO tags seem to be getting set wrongly somewhere, or type definition is wrong
+            if (chm.tags.includes("spring" as any)) {
+                adviceDoc("docs/springSdm.md");
             }
             infoMessage("Type 'atomist deliver' to start CD for your new SDM\n");
         },
