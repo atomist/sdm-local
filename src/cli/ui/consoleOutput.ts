@@ -60,5 +60,8 @@ export function infoMessage(msg: string, ...args: any[]) {
 }
 
 export function adviceDoc(relativePath: string) {
-    process.stdout.write("\n" + boxen(renderProjectDocChunk(relativePath), { padding: 1 }) + "\n\n");
+    const docChunk = renderProjectDocChunk(relativePath);
+    if (docChunk) {
+        process.stdout.write("\n" + boxen(docChunk, { padding: 1 }) + "\n\n");
+    }
 }

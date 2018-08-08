@@ -242,7 +242,7 @@ This project consists of three parts:
 
 ## Troubleshooting
 
-- *I can't see my command in the CLI*: Check that the relevant SDM is running in local mode. The list of commands (beyond the built-in commands) is built dynamically on every invocation, so if the relevant SDM isn't running the SDM will not respond to those commands.
+- *My command isn't accepted by the CLI, nor shown in the usage message of `atomist --help`*: Check that the relevant SDM is running in local mode. The list of commands (beyond the built-in commands) is built dynamically on every invocation, so if the relevant SDM isn't running the SDM will not respond to those commands.
 
 
 ## Advanced Setup
