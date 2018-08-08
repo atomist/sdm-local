@@ -35,7 +35,9 @@ export function invokeEventHandlerInProcess(correlationId?: string,
             throw new Error("This function must be invoked inside an automation client locally");
         }
 
+        // tslint:disable-next-line:variable-name
         const team_id = teamContextResolver.teamContext.atomistTeamId;
+        // tslint:disable-next-line:variable-name
         const team_name = teamContextResolver.teamContext.atomistTeamName;
 
         const data = {

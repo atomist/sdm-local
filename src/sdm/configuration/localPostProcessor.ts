@@ -32,10 +32,10 @@ import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCom
 
 import * as assert from "assert";
 import { CommandHandlerInvocation } from "../../common/CommandHandlerInvocation";
-import { parseChannel, parsePort } from "../../common/parseCorrelationId";
-import { invokeCommandHandlerInProcess } from "../binding/command/invokeCommandHandlerInProcess";
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
+import { parseChannel, parsePort } from "../../common/parseCorrelationId";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
+import { invokeCommandHandlerInProcess } from "../binding/command/invokeCommandHandlerInProcess";
 
 /**
  * Configures an automation client in local mode
@@ -106,7 +106,7 @@ function configureWebEndpoints(configuration: Configuration, localModeConfigurat
                     atomistTeamId: cc.atomistTeamId,
                 };
                 const r = await invokeCommandHandlerInProcess()(invocation)
-                    .then(r => res.json(decircle(r)),
+                    .then(resp => res.json(decircle(resp)),
                         boo => res.status(500).send(boo.message));
                 return res.json(r);
             });

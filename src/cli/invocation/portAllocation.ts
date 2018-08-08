@@ -16,7 +16,7 @@
 
 const LowerPort = 10000;
 
-const portfinder = require("portfinder");
+import * as portfinder from "portfinder";
 
 // Keep track of ports we've used
 const pidToPort: { [index: number]: number } = [];

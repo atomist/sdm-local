@@ -32,7 +32,9 @@ export function invokeCommandHandlerInProcess(): CommandHandlerInvoker {
             secrets: (invocation.secrets || []).concat([
                 { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },
             ]),
+            // tslint:disable-next-line:variable-name
             correlation_id: invocation.correlationId || await newCliCorrelationId(),
+            // tslint:disable-next-line:variable-name
             api_version: "1",
             team: {
                 id: invocation.atomistTeamId,

@@ -90,7 +90,4 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
         // Ignore
     }
 
-    public constructor() {
-    }
-
 }

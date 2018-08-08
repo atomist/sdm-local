@@ -104,8 +104,8 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
     }
 
     private async renderAction(channel: string,
-        action: slack.Action,
-        actionKey: string) {
+                               action: slack.Action,
+                               actionKey: string) {
         if (action.type === "button") {
             const url = `${this.connectionConfig.baseEndpoint}${ActionRoute}/${actionDescription(action)}?key=${actionKey}`;
             await this.writeToChannel(channel, `${action.text} - ${url}`);
@@ -136,9 +136,9 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
      * @param {marked.MarkedOptions} markedOptions
      */
     constructor(private readonly linkedChannel: string,
-        private readonly sender: Sender,
-        private readonly connectionConfig: AutomationClientConnectionRequest,
-        public readonly markedOptions: MarkedOptions = {
+                private readonly sender: Sender,
+                private readonly connectionConfig: AutomationClientConnectionRequest,
+                public readonly markedOptions: MarkedOptions = {
             breaks: false,
         }) {
     }

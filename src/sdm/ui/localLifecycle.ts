@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ExtensionPack, OnPushToAnyBranch, SdmGoalState, SoftwareDeliveryMachine, } from "@atomist/sdm";
+import { ExtensionPack, OnPushToAnyBranch, SdmGoalState, SoftwareDeliveryMachine } from "@atomist/sdm";
 import { isInLocalMode } from "@atomist/sdm-core";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
 import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";

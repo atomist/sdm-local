@@ -16,15 +16,15 @@
 
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import { GitHubNameRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
+import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { GeneratorRegistration } from "@atomist/sdm";
+import { Question } from "inquirer";
+import * as inquirer from "inquirer";
 import { Argv } from "yargs";
 import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
 import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
 import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
-import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
-import * as inquirer from "inquirer";
-import { Question } from "inquirer";
 
 /**
  * Generator that can create a new SDM
@@ -42,7 +42,6 @@ function sdmGenerator(name: string,
         tags,
     };
 }
-
 
 /**
  * Creates a new repo based on the content of an existing repo

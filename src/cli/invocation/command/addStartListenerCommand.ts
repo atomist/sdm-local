@@ -34,7 +34,7 @@ export function addStartListenerCommand(yargs: Argv) {
                     if (alreadyRunning) {
                         infoMessage("Lifecycle listener is already running\n");
                     } else {
-                        await new HttpMessageListener(AllMessagesPort).start();
+                        new HttpMessageListener(AllMessagesPort).start();
                         infoMessage("Lifecycle messages from all local SDM activity will appear here\n");
                     }
                 },
