@@ -63,8 +63,7 @@ export class HttpMessageListener {
                 this.seenCompletion = true;
                 res.send({ terminating: true });
                 // This can be slow, so we terminate the process elsewhere
-                this.server.close();
-                return;
+                return this.server.close();
             }
             const messageClient = new ConsoleMessageClient("general", ProcessStdoutSender, req.body.machineAddress);
             return messageClient.send(req.body.message, req.body.destinations)

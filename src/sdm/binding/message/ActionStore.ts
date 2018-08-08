@@ -15,7 +15,6 @@
  */
 
 import { logger } from "@atomist/automation-client";
-import { computeShaOf } from "@atomist/sdm/api-helper/misc/sha";
 import { Action, SlackMessage } from "@atomist/slack-messages";
 import * as jsSHA from "jssha";
 import * as _ from "lodash";

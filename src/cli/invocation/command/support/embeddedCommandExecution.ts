@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import { HandlerResult } from "@atomist/automation-client";
 import { ConfigureMachine, ParametersDefinition } from "@atomist/sdm";
 import { toParametersListing } from "@atomist/sdm/api-helper/machine/handlerRegistrations";
-import { CommandRegistration } from "@atomist/sdm/api/registration/CommandRegistration";
 import { Argv } from "yargs";
 import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "../../../ui/consoleOutput";

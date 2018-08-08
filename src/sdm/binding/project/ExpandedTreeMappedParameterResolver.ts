@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { MappedParameters } from "@atomist/automation-client";
+import { MappedParameters, logger } from "@atomist/automation-client";
 import { MappedParameterDeclaration } from "@atomist/automation-client/metadata/automationMetadata";
 import { GitHubDotComBase } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import * as os from "os";
@@ -43,9 +43,12 @@ export class ExpandedTreeMappedParameterResolver implements MappedParameterResol
                 return "http://not.a.real.url";
             case MappedParameters.GitHubApiUrl :
                 return GitHubDotComBase;
-        }
-        if (!md.required) {
-            return undefined;
+            default:
+                logger.warn("Mapped parameter %s not resolvable", md.uri);
+                if (!md.required) {
+                    return undefined;
+                }
+                throw new Error(`Mapped parameter ${md.uri} not resolvable`);
         }
     }
 

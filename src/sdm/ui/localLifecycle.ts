@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-import {
-    BuildStatus,
-    ExtensionPack,
-    OnPushToAnyBranch,
-    SdmGoalState,
-    SoftwareDeliveryMachine,
-} from "@atomist/sdm";
+import { ExtensionPack, OnPushToAnyBranch, SdmGoalState, SoftwareDeliveryMachine, } from "@atomist/sdm";
 import { isInLocalMode } from "@atomist/sdm-core";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
 import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
@@ -96,15 +90,4 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
     // sdm.addDeploymentListener(async li => {
     //     return li.addressChannels(`Successful deployment at ${li.status.targetUrl} of ${}`);
     // });
-}
-
-function buildStatusEmoji(status: BuildStatus): string {
-    switch (status) {
-        case BuildStatus.passed :
-            return ":tada:";
-        case BuildStatus.started:
-            return "";
-        default:
-            return "";
-    }
 }

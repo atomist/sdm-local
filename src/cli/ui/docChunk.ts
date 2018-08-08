@@ -42,5 +42,6 @@ export function renderDocChunk(location: string): string | undefined {
         return marked(chunk);
     } catch (e) {
         logger.warn("Error reading doc file at %s : %s", location, e.message);
+        return "Failed to resolve doc chunk at " + location;
     }
 }

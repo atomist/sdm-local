@@ -16,8 +16,8 @@
       "esnext.asynciterable"
     ],
     "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": false,
-    "noUnusedLocals": false,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
     "strict": false,
     "strictNullChecks": false,
     "experimentalDecorators": true,

@@ -38,7 +38,7 @@ export async function runOnGitHook(argv: string[],
     if (isAtomistTemporaryBranch(invocation.branch)) {
         logger.info("Ignoring Atomist temporary branch in '%j': Atomist will eventually surface these changes to let hook react",
             invocation);
-        return;
+        return undefined;
     }
 
     await suggestStartingAllMessagesListener();

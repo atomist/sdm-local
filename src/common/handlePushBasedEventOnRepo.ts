@@ -66,9 +66,6 @@ export function isValidSHA1(s: string): boolean {
 
 /**
  * Perform push-based event handling on this repo
- * @param {EventOnRepo} payload
- * @param {string} eventHandlerName
- * @return {Promise<HandlerResult>}
  */
 export async function handlePushBasedEventOnRepo(atomistTeamId: string,
                                                  sender: EventSender,
@@ -86,7 +83,7 @@ export async function handlePushBasedEventOnRepo(atomistTeamId: string,
     delete process.env.GIT_WORK_TREE;
 
     if (!validateEventOnRepo(payload)) {
-        return;
+        return undefined;
     }
 
     const push = await createPush(atomistTeamId, lc.repositoryOwnerParentDirectory, payload);

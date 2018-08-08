@@ -17,20 +17,12 @@
 import { logger } from "@atomist/automation-client";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
-import {
-    determineCwd,
-    withinExpandedTree,
-} from "../../../sdm/binding/project/expandedTreeUtils";
+import { determineCwd, withinExpandedTree, } from "../../../sdm/binding/project/expandedTreeUtils";
 import { FileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { shaHistory } from "../../../sdm/util/git";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import {
-    errorMessage,
-    infoMessage,
-} from "../../ui/consoleOutput";
+import { errorMessage, infoMessage, } from "../../ui/consoleOutput";
 import { renderEventDispatch } from "../../ui/renderClientInfo";
-import { AutomationClientFinder } from "../http/AutomationClientFinder";
-import { PortRangeAutomationClientFinder } from "../http/support/PortRangeAutomationClientFinder";
 import { handleGitHookEvent } from "./handleGitHookEvent";
 
 /**

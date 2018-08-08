@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { HandlerResult, logger, Secrets, Success } from "@atomist/automation-client";
+import { logger, Secrets, Success } from "@atomist/automation-client";
 import { replacer } from "@atomist/automation-client/internal/transport/AbstractRequestProcessor";
 import * as stringify from "json-stringify-safe";
 import { EventSender } from "../../../common/EventHandlerInvocation";
 import { InvocationTarget } from "../../../common/InvocationTarget";
 import { newCliCorrelationId } from "../newCorrelationId";
-import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
+import { AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
 
 import * as assert from "assert";

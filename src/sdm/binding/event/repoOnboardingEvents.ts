@@ -16,13 +16,7 @@
 
 import { RepoId } from "@atomist/automation-client/operations/common/RepoId";
 import { OnRepoCreation } from "@atomist/sdm";
-import {
-    CoreRepoFieldsAndChannels,
-    OnChannelLink,
-    OnRepoOnboarded,
-} from "@atomist/sdm-core/typings/types";
-import { AutomationClientConnectionConfig } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
-import { invokeEventHandlerUsingHttp } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
+import { CoreRepoFieldsAndChannels, OnChannelLink, OnRepoOnboarded, } from "@atomist/sdm-core/typings/types";
 import { EventSender } from "../../../common/EventHandlerInvocation";
 import { LocalTeamContext } from "../../../common/LocalTeamContext";
 import { repoFieldsFromProject } from "./pushFromLastCommit";

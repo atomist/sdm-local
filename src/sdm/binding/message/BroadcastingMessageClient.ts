@@ -38,6 +38,7 @@ export class BroadcastingMessageClient implements MessageClient, SlackMessageCli
                     return d.addressChannels(msg, channels, options);
                 } catch {
                     // Ignore and continue
+                    return undefined;
                 }
             }));
     }
@@ -50,6 +51,7 @@ export class BroadcastingMessageClient implements MessageClient, SlackMessageCli
                     return d.addressUsers(msg, users, options);
                 } catch {
                     // Ignore and continue
+                    return undefined;
                 }
             }));
     }
@@ -62,6 +64,7 @@ export class BroadcastingMessageClient implements MessageClient, SlackMessageCli
                     return d.respond(msg, options);
                 } catch {
                     // Ignore and continue
+                    return undefined;
                 }
             }));
     }
@@ -74,6 +77,7 @@ export class BroadcastingMessageClient implements MessageClient, SlackMessageCli
                     return d.send(msg, destinations, options);
                 } catch {
                     // Ignore and continue
+                    return undefined;
                 }
             }));
     }

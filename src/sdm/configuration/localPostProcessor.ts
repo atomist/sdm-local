@@ -15,8 +15,7 @@
  */
 
 import { Configuration, HandlerResult, logger } from "@atomist/automation-client";
-import { isInLocalMode } from "@atomist/sdm-core";
-import { LocalModeConfiguration } from "@atomist/sdm-core";
+import { isInLocalMode, LocalModeConfiguration } from "@atomist/sdm-core";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import { DefaultAutomationClientConnectionConfig } from "../../cli/entry/resolveConnectionConfig";
@@ -35,8 +34,6 @@ import * as assert from "assert";
 import { CommandHandlerInvocation } from "../../common/CommandHandlerInvocation";
 import { parseChannel, parsePort } from "../../common/parseCorrelationId";
 import { invokeCommandHandlerInProcess } from "../binding/command/invokeCommandHandlerInProcess";
-
-import * as os from "os";
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 

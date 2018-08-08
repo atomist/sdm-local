@@ -75,7 +75,7 @@ export class SystemNotificationMessageClient implements MessageClient, SlackMess
                 if (!!msg.text) {
                     return this.writeToChannel(channel, msg.text);
                 }
-                msg.attachments.forEach(async att => {
+                return msg.attachments.forEach(async att => {
                     await this.writeToChannel(channel, att.text);
                     att.actions.forEach(async action => {
                         await this.renderAction(channel, action);
@@ -99,7 +99,7 @@ export class SystemNotificationMessageClient implements MessageClient, SlackMess
         process.stdout.write(`#${users} ${msg}\n`);
     }
 
-    private renderAction(channel: string, action: slack.Action) {
+    private async renderAction(channel: string, action: slack.Action): Promise<any> {
         if (action.type === "button") {
             // TODO fix hardcoding (use config), and need to update to call local client
             const a = action as any;

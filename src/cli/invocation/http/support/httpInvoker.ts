@@ -17,7 +17,7 @@
 import { HandlerResult, logger } from "@atomist/automation-client";
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import * as _ from "lodash";
-import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "../AutomationClientConnectionConfig";
+import { AutomationClientConnectionRequest } from "../AutomationClientConnectionConfig";
 
 /**
  * Make a post to the SDM

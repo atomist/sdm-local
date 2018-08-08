@@ -17,7 +17,7 @@
 import { LocalModeConfiguration } from "@atomist/sdm-core";
 import axios from "axios";
 import { AutomationClientInfo, ConnectedClient } from "../../AutomationClientInfo";
-import { AutomationClientConnectionConfig, AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
+import { AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 
 /**
  * Call into an automation client at the given location and retrieve metadata

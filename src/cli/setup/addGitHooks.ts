@@ -69,11 +69,8 @@ export async function removeGitHooks(baseDir: string) {
 
 /**
  * Update the Atomist script element if found
- * @param {LocalProject} p
- * @param {string} scriptPath
- * @return {Promise<void>}
  */
-async function reatomizeScript(p: LocalProject, scriptPath: string, newContent: string) {
+async function reatomizeScript(p: LocalProject, scriptPath: string, newContent: string): Promise<any> {
     const scriptFile = await p.getFile(scriptPath);
     if (!scriptFile) {
         process.stdout.write(chalk.gray(sprintf(

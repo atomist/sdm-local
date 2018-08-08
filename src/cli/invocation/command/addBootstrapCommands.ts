@@ -24,7 +24,7 @@ import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonId
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import * as inquirer from "inquirer";
-import { Inquirer, Question } from "inquirer";
+import { Question } from "inquirer";
 
 /**
  * Generator that can create a new SDM
