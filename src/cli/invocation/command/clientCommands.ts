@@ -15,6 +15,7 @@
  */
 
 import * as yargs from "yargs";
+import { errorMessage } from "../../ui/consoleOutput";
 import {
     config,
     gitInfo,
@@ -23,7 +24,6 @@ import {
     kube,
     start,
 } from "./support/commands";
-import { errorMessage } from "../../ui/consoleOutput";
 
 const Package = "atomist";
 

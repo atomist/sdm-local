@@ -18,9 +18,9 @@ import { AutomationClientInfo } from "../../../AutomationClientInfo";
 import { AutomationClientFinder } from "../AutomationClientFinder";
 
 import * as _ from "lodash";
+import { defaultHostUrlAliaser } from "../../../../common/util/http/defaultLocalHostUrlAliaser";
 import { AutomationClientConnectionRequest } from "../AutomationClientConnectionConfig";
 import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
-import { defaultHostUrlAliaser } from "../../../../common/util/http/defaultLocalHostUrlAliaser";
 
 export interface PortRangeOptions {
 

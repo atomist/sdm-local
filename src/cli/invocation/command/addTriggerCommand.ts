@@ -16,10 +16,10 @@
 
 import { Argv } from "yargs";
 import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
+import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { HookEvent } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
-import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
 
 /**

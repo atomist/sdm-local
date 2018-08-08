@@ -19,8 +19,8 @@ import { DefaultTeamContextResolver } from "../../../common/binding/defaultTeamC
 import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSystemProjectLoader";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { argsToGitHookInvocation } from "../../entry/argsToGitHookInvocation";
-import { renderEventDispatch } from "../../ui/renderClientInfo";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
+import { renderEventDispatch } from "../../ui/renderClientInfo";
 import { suggestStartingAllMessagesListener } from "../command/support/suggestStartingAllMessagesListener";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "../http/support/defaultAutomationClientFinder";

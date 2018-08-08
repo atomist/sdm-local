@@ -20,8 +20,8 @@ import chalk from "chalk";
 import * as fs from "fs";
 import * as path from "path";
 import { sprintf } from "sprintf-js";
-import { errorMessage, infoMessage, warningMessage } from "../ui/consoleOutput";
 import { HookEvent } from "../invocation/git/handleGitHookEvent";
+import { errorMessage, infoMessage, warningMessage } from "../ui/consoleOutput";
 
 const AtomistHookScriptName = "atomist-hook.sh";
 const AtomistJsName = "onGitHook.js";

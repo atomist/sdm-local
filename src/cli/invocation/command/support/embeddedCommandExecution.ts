@@ -20,9 +20,9 @@ import { toParametersListing } from "@atomist/sdm/api-helper/machine/handlerRegi
 import { CommandRegistration } from "@atomist/sdm/api/registration/CommandRegistration";
 import { Argv } from "yargs";
 import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
-import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "../../../ui/consoleOutput";
-import { runCommandOnCollocatedAutomationClient, BeforeAndAfterActions } from "./runCommandOnCollocatedAutomationClient";
+import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
+import { BeforeAndAfterActions, runCommandOnCollocatedAutomationClient } from "./runCommandOnCollocatedAutomationClient";
 
 /**
  * Spec for running an embedded command on an ephemeral SDM

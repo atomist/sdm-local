@@ -33,7 +33,7 @@ import * as marked from "marked";
 import { MarkedOptions } from "marked";
 import * as TerminalRenderer from "marked-terminal";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
-import { actionDescription, actionKey, ActionRoute } from "../binding/message/ActionStore";
+import { actionDescription, actionKeyFor, ActionRoute } from "../binding/message/ActionStore";
 import { isSdmGoalStoreOrUpdate } from "../binding/message/GoalEventForwardingMessageClient";
 
 marked.setOptions({
@@ -82,7 +82,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
                         await this.writeToChannel(channel, att.text);
                     }
                     (att.actions || []).forEach(async (action, index) => {
-                        await this.renderAction(channel, action, actionKey(msg, index));
+                        await this.renderAction(channel, action, actionKeyFor(msg, index));
                     });
                 });
             } else if (typeof msg === "string") {
@@ -103,7 +103,9 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
         return this.sender(`#${users} ${this.dateString()} ${msg}\n`);
     }
 
-    private async renderAction(channel: string, action: slack.Action, actionKey: string) {
+    private async renderAction(channel: string,
+        action: slack.Action,
+        actionKey: string) {
         if (action.type === "button") {
             const url = `${this.connectionConfig.baseEndpoint}${ActionRoute}/${actionDescription(action)}?key=${actionKey}`;
             await this.writeToChannel(channel, `${action.text} - ${url}`);
@@ -134,11 +136,11 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
      * @param {marked.MarkedOptions} markedOptions
      */
     constructor(private readonly linkedChannel: string,
-                private readonly sender: Sender,
-                private readonly connectionConfig: AutomationClientConnectionRequest,
-                public readonly markedOptions: MarkedOptions = {
-                    breaks: false,
-                }) {
+        private readonly sender: Sender,
+        private readonly connectionConfig: AutomationClientConnectionRequest,
+        public readonly markedOptions: MarkedOptions = {
+            breaks: false,
+        }) {
     }
 
 }

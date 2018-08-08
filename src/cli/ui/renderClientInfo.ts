@@ -17,7 +17,6 @@
 import chalk from "chalk";
 import { sprintf } from "sprintf-js";
 import { AutomationClientInfo } from "../AutomationClientInfo";
-import { infoMessage } from "../../index";
 
 /**
  * Format information about this automation for the console

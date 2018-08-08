@@ -15,13 +15,13 @@
  */
 
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
+import { GitHubNameRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
 import { GeneratorRegistration } from "@atomist/sdm";
 import { Argv } from "yargs";
+import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
 import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
 import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
-import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
-import { GitHubNameRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
 
 /**
  * Generator that can create a new SDM

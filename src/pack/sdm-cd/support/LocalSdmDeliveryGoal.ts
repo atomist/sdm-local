@@ -115,7 +115,7 @@ class DeliveryManager {
                 }
                 if (successPatterns.some(successPattern => successPattern.test(stdout))) {
                     const ccr = {
-                        baseEndpoint
+                        baseEndpoint,
                     };
                     await fetchMetadataFromAutomationClient(ccr)
                         .then(aca => resolve({

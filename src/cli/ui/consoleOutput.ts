@@ -15,10 +15,10 @@
  */
 
 import { logger } from "@atomist/automation-client";
+import * as boxen from "boxen";
 import chalk from "chalk";
 import { sprintf } from "sprintf-js";
 import { renderProjectDocChunk } from "./docChunk";
-import * as boxen from "boxen";
 
 /**
  * Perform the given action, logging exceptions to the console

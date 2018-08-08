@@ -21,10 +21,10 @@ import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCo
 import { errorMessage, infoMessage } from "../../cli/ui/consoleOutput";
 import { CommandCompletionDestination } from "../../common/CommandCompletionDestination";
 import { MessageRoute } from "../../common/httpMessaging";
+import { canConnectTo } from "../../common/util/http/canConnectTo";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 import { isFailureMessage } from "../configuration/support/NotifyOnCompletionAutomationEventListener";
 import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
-import { canConnectTo } from "../../common/util/http/canConnectTo";
 
 /**
  * Start process to listen to HTTP messages from HttpClientMessageClient
