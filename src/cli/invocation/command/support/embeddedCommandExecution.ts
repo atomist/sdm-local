@@ -45,7 +45,7 @@ export interface EmbeddedCommandSpec extends BeforeAndAfterActions {
     /**
      * Configure the sdm.machine to run the command
      */
-    configurer: (argv: Argv) => ConfigureMachine;
+    configurer: (argv: Argv) => Promise<ConfigureMachine>;
 
 }
 
@@ -87,12 +87,12 @@ export function addEmbeddedCommand(yargs: Argv,
             }
             return ra;
         },
-        handler: argv => {
+        handler: async argv => {
             return logExceptionsToConsole(async () => {
                 // infoMessage("repositoryOwnerParentDirectory=%s", argv.repositoryOwnerParentDirectory);
                 await runCommandOnEmbeddedMachine(
                     argv.repositoryOwnerParentDirectory,
-                    spec.configurer(argv),
+                    await spec.configurer(argv),
                     spec.name,
                     argv,
                     spec);

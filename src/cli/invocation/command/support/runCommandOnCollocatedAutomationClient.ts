@@ -46,7 +46,7 @@ export interface BeforeAndAfterActions {
      * Action to perform after running the command
      * @return {Promise<any>}
      */
-    afterAction?: (h: HandlerResult) => Promise<any>;
+    afterAction?: (h: HandlerResult, chm: CommandHandlerMetadata) => Promise<any>;
 }
 
 /**
@@ -94,7 +94,7 @@ export async function runCommandOnCollocatedAutomationClient(connectionConfig: A
     // Use repo channel if we're in a mapped repo channel
     const r = await invokeCommandHandlerUsingHttp(connectionConfig)(invocation);
     if (!!actions.afterAction) {
-        await actions.afterAction(r);
+        await actions.afterAction(r, hm);
     }
     await suggestStartingAllMessagesListener();
 

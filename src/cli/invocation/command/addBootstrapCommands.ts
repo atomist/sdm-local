@@ -23,6 +23,8 @@ import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition 
 import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
+import * as inquirer from "inquirer";
+import { Inquirer, Question } from "inquirer";
 
 /**
  * Generator that can create a new SDM
@@ -65,28 +67,46 @@ export function addBootstrapCommands(yargs: Argv) {
 }
 
 function addSdmGenerator(yargs: Argv) {
+    const choices = ["spring", "blank"];
     const name = "newSdm";
     addEmbeddedCommand(yargs, {
         name,
         cliCommand: "new sdm",
         cliDescription: "Create an SDM",
-        build: argv => {
-            argv.option("type", {
-                required: true,
-                description: "sdm type",
-                // TODO why does this not work
-                //default: "spring",
-                choices: ["spring", "blank"],
-            });
-        },
         parameters: sdmGenerator(name, undefined).parameters,
-        configurer: () => sdm => sdm.addGeneratorCommand(sdmGenerator(name,
-            new GitHubRepoRef("atomist", "sample-sdm"))),
+        configurer: async () => {
+            const questions: Question[] = [{
+                name: "type",
+                message: "Type of SDM to create",
+                choices,
+                default: "spring",
+                validate: input =>
+                    choices.includes(input) ?
+                        true :
+                        `Please enter one of following values: ${choices}`,
+            }];
+            const answers = await inquirer.prompt(questions);
+            switch (answers.type) {
+                case "spring":
+                    return sdm => sdm.addGeneratorCommand(sdmGenerator(name,
+                        new GitHubRepoRef("atomist", "sample-sdm")));
+                case "blank":
+                    // TODO should be a basic seed
+                    return sdm => sdm.addGeneratorCommand(sdmGenerator(name,
+                        new GitHubRepoRef("atomist", "sample-sdm")));
+                default:
+                    throw new Error("Unknown SDM type " + answers.type);
+            }
+        },
         beforeAction: async () => {
             infoMessage("Please follow the prompts to create a new SDM\n\n");
         },
-        afterAction: async () => {
-            adviceDoc("docs/springSdm.md");
+        afterAction: async (hr, chm) => {
+            switch (chm.name) {
+                case "springSdm":
+                    adviceDoc("docs/springSdm.md");
+                    break;
+            }
             infoMessage("Type 'atomist deliver' to start CD for your new SDM\n");
         },
     });
@@ -99,7 +119,7 @@ function addSuperforkGenerator(yargs: Argv) {
         cliCommand: "superfork",
         cliDescription: "Superfork a repo",
         parameters: superforkGenerator.parameters,
-        configurer: () => sdm => sdm.addGeneratorCommand(superforkGenerator),
+        configurer: async () => sdm => sdm.addGeneratorCommand(superforkGenerator),
         beforeAction: async () => {
             infoMessage("Please follow the prompts to create a new repo based on a GitHub repo\n\n");
         },
