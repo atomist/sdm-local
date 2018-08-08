@@ -173,6 +173,14 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
                 return {
                     name: nameToUse,
                     message: `(mapped parameter) ${nameToUse}`,
+                    validate: value => {
+                        // We don't really know how to validate this,
+                        // but make the user input something
+                        if (!!value) {
+                            return true;
+                        }
+                        return `Please enter a valid value`;
+                    },
                 };
             });
     const fromPrompt = await inquirer.prompt(questions);
