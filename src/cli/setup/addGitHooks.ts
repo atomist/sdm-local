@@ -173,7 +173,6 @@ sha=$(git rev-parse HEAD)
 branch=$(git rev-parse --abbrev-ref HEAD)
 ${scriptPaths.atomistHookScriptPath} ${scriptPaths.gitHookScriptPath} post-commit \${PWD} $branch $sha
 `,
-
         "post-merge": `
 sha=$(git rev-parse HEAD)
 branch=$(git rev-parse --abbrev-ref HEAD)
