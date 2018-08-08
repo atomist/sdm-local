@@ -21,8 +21,8 @@ import { Argv } from "yargs";
 import { sendChannelLinkEvent, sendRepoOnboardingEvent } from "../../../sdm/binding/event/repoOnboardingEvents";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { addGitHooks } from "../../setup/addGitHooks";
-import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
+import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
 
 export function addImportFromGitRemoteCommand(ai: AutomationClientInfo, yargs: Argv) {
     yargs.command({

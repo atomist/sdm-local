@@ -16,7 +16,7 @@
 
 import { Argv } from "yargs";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { logExceptionsToConsole, infoMessage } from "../../ui/consoleOutput";
+import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { renderClientsInfo } from "../../ui/renderClientInfo";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
 

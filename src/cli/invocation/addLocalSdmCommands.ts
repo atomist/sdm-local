@@ -18,18 +18,18 @@ import { Argv } from "yargs";
 import { DefaultTeamContextResolver } from "../../common/binding/defaultTeamContextResolver";
 import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
 import { AutomationClientInfo } from "../AutomationClientInfo";
+import { infoMessage } from "../ui/consoleOutput";
 import { addBootstrapCommands } from "./command/addBootstrapCommands";
 import { addAddGitHooksCommand, addRemoveGitHooksCommand } from "./command/addGitHooksCommands";
 import { addImportFromGitRemoteCommand } from "./command/addImportFromGitRemoteCommand";
 import { addCommandsByName, addIntents } from "./command/addIntents";
+import { addListSdmsCommand } from "./command/addListSdmsCommand";
 import { addStartListenerCommand } from "./command/addStartListenerCommand";
 import { addStartSdmDeliveryMachine } from "./command/addStartSdmDeliveryMachine";
 import { addTriggerCommand } from "./command/addTriggerCommand";
 import { addShowSkillsCommand } from "./command/showSkillsCommand";
-import { infoMessage } from "../ui/consoleOutput";
 import { AutomationClientFinder } from "./http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "./http/support/defaultAutomationClientFinder";
-import { addListSdmsCommand } from "./command/addListSdmsCommand";
 
 /**
  * Given a yargs instance, add commands based on local SDMs we can connect to

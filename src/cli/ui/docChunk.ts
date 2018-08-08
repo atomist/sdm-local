@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+import * as fs from "fs-extra";
 import * as marked from "marked";
 import * as TerminalRenderer from "marked-terminal";
-import * as fs from "fs-extra";
 
-import * as path from "path";
 import { logger } from "@atomist/automation-client";
+import * as path from "path";
 
 marked.setOptions({
     // Define custom renderer

@@ -24,11 +24,11 @@ import {
 import { FileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { shaHistory } from "../../../sdm/util/git";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { renderEventDispatch } from "../../ui/renderClientInfo";
 import {
     errorMessage,
     infoMessage,
 } from "../../ui/consoleOutput";
+import { renderEventDispatch } from "../../ui/renderClientInfo";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { PortRangeAutomationClientFinder } from "../http/support/PortRangeAutomationClientFinder";
 import { handleGitHookEvent } from "./handleGitHookEvent";

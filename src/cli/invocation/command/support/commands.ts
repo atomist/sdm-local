@@ -24,8 +24,8 @@ import * as glob from "glob-promise";
 import * as stringify from "json-stringify-safe";
 import * as path from "path";
 
-import { cliAtomistConfig } from "./config";
 import { errorMessage, infoMessage, warningMessage } from "../../../ui/consoleOutput";
+import { cliAtomistConfig } from "./config";
 import { cliGitInfo } from "./gitInfo";
 import { cliAtomistKube } from "./kube";
 
