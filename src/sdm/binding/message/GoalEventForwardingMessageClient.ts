@@ -45,9 +45,8 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
     }
 
     public async send(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
-        logger.debug("MessageClient.send: Raw mesg=\n%j\n", msg);
         if (isSdmGoalStoreOrUpdate(msg)) {
-            logger.info("Storing SDM goal or ingester payload %j", msg);
+            logger.debug("Storing SDM goal or ingester payload %j", msg);
             if (isValidSHA1((msg.branch))) {
                 throw new Error("Branch/sha confusion in " + JSON.stringify(msg));
             }

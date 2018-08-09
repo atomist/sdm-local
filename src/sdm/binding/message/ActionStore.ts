@@ -45,7 +45,7 @@ class InMemoryActionStore {
     private readonly actionByKey: { [key: string]: Action } = {};
 
     public async storeActions(sm: SlackMessage) {
-        logger.info("Storing actions for message: %s", (sm as any).key);
+        logger.debug("Storing actions for message: %s", (sm as any).key);
         _.flatMap(sm.attachments, a => a.actions)
             .forEach((action, i) => {
                 this.actionByKey[actionKeyFor(sm, i)] = action;
