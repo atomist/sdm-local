@@ -20,12 +20,12 @@ import { Argv } from "yargs";
 import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "../../../ui/consoleOutput";
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
-import { BeforeAndAfterActions, runCommandOnCollocatedAutomationClient } from "./runCommandOnCollocatedAutomationClient";
+import { CommandInvocationListener, runCommandOnCollocatedAutomationClient } from "./runCommandOnCollocatedAutomationClient";
 
 /**
  * Spec for running an embedded command on an ephemeral SDM
  */
-export interface EmbeddedCommandSpec extends BeforeAndAfterActions {
+export interface EmbeddedCommandSpec {
 
     /**
      * Command name
@@ -39,6 +39,11 @@ export interface EmbeddedCommandSpec extends BeforeAndAfterActions {
     parameters?: ParametersDefinition;
 
     build?: (argv: Argv) => void;
+
+    /**
+     * Listeners to command invocation
+     */
+    listeners?: CommandInvocationListener[];
 
     /**
      * Configure the sdm.machine to run the command
@@ -93,7 +98,7 @@ export function addEmbeddedCommand(yargs: Argv,
                     await spec.configurer(argv),
                     spec.name,
                     argv,
-                    spec);
+                    spec.listeners);
                 infoMessage("Execution of command %s complete", spec.name);
             }, true);
         },
@@ -104,7 +109,7 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
                                            configure: ConfigureMachine,
                                            name: string,
                                            params: object,
-                                           sandwich: BeforeAndAfterActions) {
+                                           listeners: CommandInvocationListener[] = []) {
     const aca = await startEmbeddedMachine({
         repositoryOwnerParentDirectory,
         configure,
@@ -129,5 +134,5 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
             atomistTeamId: "T0",
         },
         hm,
-        params, sandwich);
+        params, listeners);
 }

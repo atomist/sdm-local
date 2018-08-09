@@ -104,16 +104,18 @@ function addSdmGenerator(yargs: Argv) {
                     throw new Error("Unknown SDM type " + answers.type);
             }
         },
-        beforeAction: async () => {
-            infoMessage("Please follow the prompts to create a new SDM\n\n");
-        },
-        afterAction: async (hr, chm) => {
-            // TODO tags seem to be getting set wrongly somewhere, or type definition is wrong
-            if (chm.tags.includes("spring" as any)) {
-                adviceDoc("docs/springSdm.md");
+        listeners: [{
+            before: async () => {
+                infoMessage("Please follow the prompts to create a new SDM\n\n");
+            },
+            after: async (hr, chm) => {
+                // TODO tags seem to be getting set wrongly somewhere, or type definition is wrong
+                if (chm.tags.includes("spring" as any)) {
+                    adviceDoc("docs/springSdm.md");
+                }
+                infoMessage("Type 'atomist deliver' to start CD for your new SDM\n");
             }
-            infoMessage("Type 'atomist deliver' to start CD for your new SDM\n");
-        },
+        }],
     });
 }
 
@@ -125,11 +127,13 @@ function addSuperforkGenerator(yargs: Argv) {
         cliDescription: "Superfork a repo",
         parameters: superforkGenerator.parameters,
         configurer: async () => sdm => sdm.addGeneratorCommand(superforkGenerator),
-        beforeAction: async () => {
-            infoMessage("Please follow the prompts to create a new repo based on a GitHub repo\n\n");
-        },
-        afterAction: async () => {
-            infoMessage("Superfork complete\n");
-        },
+        listeners: [{
+            before: async () => {
+                infoMessage("Please follow the prompts to create a new repo based on a GitHub repo\n\n");
+            },
+            after: async () => {
+                infoMessage("Superfork complete\n");
+            }
+        }],
     });
 }

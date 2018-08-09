@@ -34,19 +34,22 @@ import { newCliCorrelationId } from "../../newCorrelationId";
 import { portToListenOnFor } from "../../portAllocation";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
 
-export interface BeforeAndAfterActions {
+/**
+ * Listeners to command execution
+ */
+export interface CommandInvocationListener {
 
     /**
      * Action to perform after running the command
      * @return {Promise<any>}
      */
-    beforeAction?: (chm: CommandHandlerMetadata) => Promise<any>;
+    before?: (chm: CommandHandlerMetadata) => Promise<any>;
 
     /**
      * Action to perform after running the command
      * @return {Promise<any>}
      */
-    afterAction?: (h: HandlerResult, chm: CommandHandlerMetadata) => Promise<any>;
+    after?: (h: HandlerResult, chm: CommandHandlerMetadata) => Promise<any>;
 }
 
 /**
@@ -60,9 +63,11 @@ export async function runCommandOnCollocatedAutomationClient(connectionConfig: A
                                                              target: InvocationTarget,
                                                              hm: CommandHandlerMetadata,
                                                              command: object,
-                                                             actions: BeforeAndAfterActions = {}): Promise<any> {
-    if (!!actions.beforeAction) {
-        await actions.beforeAction(hm);
+                                                             listeners: CommandInvocationListener[]): Promise<any> {
+    for (const l of listeners) {
+        if (!!l.before) {
+            await l.before(hm);
+        }
     }
     const listener = new HttpMessageListener(await portToListenOnFor(process.pid), true).start();
     const extraArgs = Object.getOwnPropertyNames(command)
@@ -93,8 +98,10 @@ export async function runCommandOnCollocatedAutomationClient(connectionConfig: A
     logger.debug("Sending invocation %j\n", invocation);
     // Use repo channel if we're in a mapped repo channel
     const r = await invokeCommandHandlerUsingHttp(connectionConfig)(invocation);
-    if (!!actions.afterAction) {
-        await actions.afterAction(r, hm);
+    for (const l of listeners) {
+        if (!!l.after) {
+            await l.after(r, hm);
+        }
     }
     await suggestStartingAllMessagesListener();
 

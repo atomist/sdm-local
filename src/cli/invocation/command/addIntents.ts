@@ -153,7 +153,7 @@ async function runByIntent(ai: AutomationClientInfo,
             atomistTeamName: ai.connectionConfig.atomistTeamId,
             atomistTeamId: ai.connectionConfig.atomistTeamName,
         },
-        hm, command);
+        hm, command, []);
 }
 
 async function runByCommandName(ai: AutomationClientInfo,
@@ -172,5 +172,5 @@ async function runByCommandName(ai: AutomationClientInfo,
             atomistTeamName: ai.connectionConfig.atomistTeamName,
             atomistTeamId: ai.connectionConfig.atomistTeamId,
         },
-        hm, command);
+        hm, command, []);
 }
