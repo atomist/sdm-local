@@ -17,9 +17,10 @@
 import { DefaultSdmCdPort } from "../../command/addStartSdmDeliveryMachine";
 import { AutomationClientFinder } from "../AutomationClientFinder";
 import { PortRangeAutomationClientFinder } from "./PortRangeAutomationClientFinder";
+import { DefaultBootstrapPort } from "../../../embedded/embeddedMachine";
 
 export function defaultAutomationClientFinder(): AutomationClientFinder {
     return new PortRangeAutomationClientFinder({
-        additionalPorts: [DefaultSdmCdPort],
+        additionalPorts: [DefaultSdmCdPort, DefaultBootstrapPort],
     });
 }

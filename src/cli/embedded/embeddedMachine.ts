@@ -29,12 +29,13 @@ import { LocalLifecycle } from "../../sdm/ui/localLifecycle";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { fetchMetadataFromAutomationClient } from "../invocation/http/fetchMetadataFromAutomationClient";
 
-const DefaultBootstrapPort = 2900;
+export const DefaultBootstrapPort = 2900;
 
 /**
  * Options for starting an embedded machine.
  */
 export interface EmbeddedMachineOptions {
+    name?: string;
     repositoryOwnerParentDirectory?: string;
     configure: ConfigureMachine;
     port?: number;
@@ -53,7 +54,7 @@ const createMachine = (configure: ConfigureMachine) => (config: SoftwareDelivery
 
 function configurationFor(options: EmbeddedMachineOptions): Configuration {
     const cfg = defaultConfiguration();
-    cfg.name = "@atomist/bootstrap";
+    cfg.name = options.name || "bootstrap";
     cfg.teamIds = ["local"];
     cfg.http.port = options.port;
 
