@@ -74,9 +74,9 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
             //     return gci.addressChannels(chalk.red(`✖︎︎ ${gci.goalEvent.description}\n`));
             // waiting_for_approval = "waiting_for_approval",
             // planned = "planned",
-            case SdmGoalState.in_process:
-                return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
-\t${chalk.yellow(`⚙︎ ${gci.goalEvent.description}`)}`);
+//             case SdmGoalState.in_process:
+//                 return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
+// \t${chalk.yellow(`⚙︎ ${gci.goalEvent.description}`)}`);
             case SdmGoalState.skipped:
                 return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
 \t${chalk.yellow(`?︎ ${gci.goalEvent.description}`)}`);
