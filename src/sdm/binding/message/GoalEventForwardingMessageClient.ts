@@ -35,7 +35,7 @@ export function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
  * a MessageClient, this enables a local SDM to react to goals that
  * it has set. This implementation ignores other messages and forwards
  * goals only.
- * Will dispatch goal events to the appropriate event handler
+ * Will onDispatch goal events to the appropriate event handler
  * within the SDM at the known address.
  */
 export class GoalEventForwardingMessageClient implements MessageClient, SlackMessageClient {

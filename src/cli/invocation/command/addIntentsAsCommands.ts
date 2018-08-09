@@ -20,7 +20,7 @@ import { Argv } from "yargs";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { PathElement, toPaths } from "../../util/PathElement";
-import { ShowDescriptionListener } from "./support/commandInvocationListeners";
+import { PostToAtomistListenerListener, ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { exposeParameters } from "./support/exposeParameters";
 import { runCommandOnCollocatedAutomationClient } from "./support/runCommandOnCollocatedAutomationClient";
 
@@ -113,5 +113,5 @@ async function runByIntent(ai: AutomationClientInfo,
             atomistTeamName: ai.connectionConfig.atomistTeamId,
             atomistTeamId: ai.connectionConfig.atomistTeamName,
         },
-        hm, command, [ShowDescriptionListener]);
+        hm, command, [ShowDescriptionListener, PostToAtomistListenerListener]);
 }

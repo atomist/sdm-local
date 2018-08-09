@@ -25,8 +25,12 @@ export const MessageRoute = "/message";
  * (HttpMessageListener/HttpMessageClient)
  */
 export interface StreamedMessage {
+
     message: string | SlackMessage;
+
     destinations: Destination[];
+
     options: MessageOptions;
+
     machineAddress: AutomationClientConnectionRequest;
 }

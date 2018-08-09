@@ -27,7 +27,7 @@ import { handleGitHookEvent } from "./handleGitHookEvent";
 
 /**
  * Trigger git events to the given depth in the current project repo
- * @param clients clients to dispatch to
+ * @param clients clients to onDispatch to
  * @param {string} event
  * @param {number} depth
  * @return {Promise<void>}

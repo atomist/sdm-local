@@ -45,6 +45,8 @@ export interface CommandInvocationListener {
      */
     before?: (chm: CommandHandlerMetadata) => Promise<any>;
 
+    onDispatch?: (chm: CommandHandlerMetadata, inv: CommandHandlerInvocation) => Promise<any>;
+
     /**
      * Action to perform after running the command
      * @return {Promise<any>}
@@ -96,6 +98,11 @@ export async function runCommandOnCollocatedAutomationClient(connectionConfig: A
         correlationId,
     };
     logger.debug("Sending invocation %j\n", invocation);
+    for (const l of listeners) {
+        if (!!l.onDispatch) {
+            await l.onDispatch(hm, invocation);
+        }
+    }
     // Use repo channel if we're in a mapped repo channel
     const r = await invokeCommandHandlerUsingHttp(connectionConfig)(invocation);
     for (const l of listeners) {

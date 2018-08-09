@@ -27,7 +27,10 @@ import { isFailureMessage } from "../configuration/support/NotifyOnCompletionAut
 import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
 
 /**
- * Start process to listen to HTTP messages from HttpClientMessageClient
+ * Start process to listen to HTTP POSTS from HttpClientMessageClient
+ * and display them to the console.
+ * The /message endpoint takes StreamedMessage
+ * The /write endpoint takes a simple { message }
  */
 export class HttpMessageListener {
 
@@ -41,6 +44,7 @@ export class HttpMessageListener {
 
     /**
      * Start process to listen to HTTP messages from HttpClientMessageClient
+     * and display them to the console
      * @param {number} port
      * @param transient is this short-lived, for one command?
      */
@@ -52,7 +56,7 @@ export class HttpMessageListener {
         const app = express();
         app.use(bodyParser.json());
 
-        app.get("/", (req, res) => res.send("Atomist Listener Demon\n"));
+        app.get("/", (req, res) => res.send("Atomist Listener Daemon\n"));
 
         app.post(MessageRoute, (req, res, next) => {
             // Shut down the listener
@@ -69,6 +73,12 @@ export class HttpMessageListener {
             return messageClient.send(req.body.message, req.body.destinations)
                 .then(() => res.send("Read message " + JSON.stringify(req.body) + "\n"))
                 .catch(next);
+        });
+
+        // Raw message point
+        app.post("/write", (req, res) => {
+            infoMessage(req.body.message);
+            res.send({ received: true });
         });
 
         this.server = app.listen(this.port,
