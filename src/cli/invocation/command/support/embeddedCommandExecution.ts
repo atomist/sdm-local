@@ -20,7 +20,7 @@ import { Argv } from "yargs";
 import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "../../../ui/consoleOutput";
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
-import { CommandInvocationListener, runCommandOnCollocatedAutomationClient } from "./runCommandOnCollocatedAutomationClient";
+import { CommandInvocationListener, runCommandOnColocatedAutomationClient } from "./runCommandOnColocatedAutomationClient";
 
 /**
  * Spec for running an embedded command on an ephemeral SDM
@@ -61,7 +61,7 @@ export interface EmbeddedCommandSpec {
  * @param {yargs.Argv} yargs
  */
 export function addEmbeddedCommand(yargs: Argv,
-                                   spec: EmbeddedCommandSpec) {
+    spec: EmbeddedCommandSpec) {
     yargs.command({
         command: spec.cliCommand,
         describe: spec.cliDescription,
@@ -105,10 +105,10 @@ export function addEmbeddedCommand(yargs: Argv,
 }
 
 async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: string,
-                                           configure: ConfigureMachine,
-                                           name: string,
-                                           params: object,
-                                           listeners: CommandInvocationListener[] = []) {
+    configure: ConfigureMachine,
+    name: string,
+    params: object,
+    listeners: CommandInvocationListener[] = []) {
     const aca = await startEmbeddedMachine({
         repositoryOwnerParentDirectory,
         configure,
@@ -126,7 +126,7 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
         errorMessage("No command named '%s'\n", name);
         process.exit(1);
     }
-    return runCommandOnCollocatedAutomationClient(
+    return runCommandOnColocatedAutomationClient(
         aca.connectionConfig,
         aca.localConfig.repositoryOwnerParentDirectory,
         {

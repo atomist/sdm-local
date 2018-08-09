@@ -17,7 +17,7 @@
 import chalk from "chalk";
 import { postToListener } from "../../../../common/ui/httpMessaging";
 import { infoMessage } from "../../../ui/consoleOutput";
-import { CommandInvocationListener } from "./runCommandOnCollocatedAutomationClient";
+import { CommandInvocationListener } from "./runCommandOnColocatedAutomationClient";
 
 /**
  * Display the description of a command before invoking it

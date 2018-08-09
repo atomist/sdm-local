@@ -16,7 +16,7 @@
 
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { Argv } from "yargs";
-import { convertToDisplayable } from "./runCommandOnCollocatedAutomationClient";
+import { convertToDisplayable } from "./runCommandOnColocatedAutomationClient";
 
 /**
  * Expose the parameters for this command

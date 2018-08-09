@@ -22,7 +22,7 @@ import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { PathElement, toPaths } from "../../util/PathElement";
 import { PostToAtomistListenerListener, ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { exposeParameters } from "./support/exposeParameters";
-import { runCommandOnCollocatedAutomationClient } from "./support/runCommandOnCollocatedAutomationClient";
+import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
 
 /**
  * Add commands for all intents
@@ -30,7 +30,7 @@ import { runCommandOnCollocatedAutomationClient } from "./support/runCommandOnCo
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function addIntentsAsCommands(ai: AutomationClientInfo,
-                                     yargs: Argv, allowUserInput: boolean = true) {
+    yargs: Argv, allowUserInput: boolean = true) {
     const handlers = ai.client.commands
         .filter(hm => !!hm.intent && hm.intent.length > 0);
 
@@ -51,10 +51,10 @@ export function addIntentsAsCommands(ai: AutomationClientInfo,
  * @param {boolean} allowUserInput
  */
 function exposeAsCommands(ai: AutomationClientInfo,
-                          pe: PathElement,
-                          nested: Argv,
-                          previous: string[],
-                          allowUserInput: boolean) {
+    pe: PathElement,
+    nested: Argv,
+    previous: string[],
+    allowUserInput: boolean) {
     const intent = previous.concat([pe.name]).join(" ");
     const commandForCompletedIntent = ai.client.commands.find(hm => hm.intent.includes(intent));
 
@@ -98,8 +98,8 @@ function exposeAsCommands(ai: AutomationClientInfo,
 }
 
 async function runByIntent(ai: AutomationClientInfo,
-                           intent: string,
-                           command: any): Promise<any> {
+    intent: string,
+    command: any): Promise<any> {
     // writeToConsole({ message: `Recognized intent "${intent}"...`, color: "cyan" });
     const hm = ai.client.commands.find(h => !!h.intent && h.intent.includes(intent));
     if (!hm) {
@@ -107,7 +107,7 @@ async function runByIntent(ai: AutomationClientInfo,
             .map(m => "\t" + m.intent).sort().join("\n")}`);
         process.exit(1);
     }
-    return runCommandOnCollocatedAutomationClient(ai.connectionConfig,
+    return runCommandOnColocatedAutomationClient(ai.connectionConfig,
         ai.localConfig.repositoryOwnerParentDirectory,
         {
             atomistTeamName: ai.connectionConfig.atomistTeamId,
