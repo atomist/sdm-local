@@ -43,7 +43,7 @@ export interface EmbeddedMachineOptions {
 const createMachine = (configure: ConfigureMachine) => (config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine => {
     const sdm: SoftwareDeliveryMachine = createSoftwareDeliveryMachine(
         {
-            name: "Local bootstrap sdm.machine",
+            name: "Local bootstrap SDM",
             configuration: config,
         });
     sdm.addExtensionPacks(LocalLifecycle);
@@ -53,7 +53,7 @@ const createMachine = (configure: ConfigureMachine) => (config: SoftwareDelivery
 
 function configurationFor(options: EmbeddedMachineOptions): Configuration {
     const cfg = defaultConfiguration();
-    cfg.name = "@atomist/local-sdm-bootstrap";
+    cfg.name = "@atomist/bootstrap";
     cfg.teamIds = ["local"];
     cfg.http.port = options.port;
 
@@ -97,6 +97,9 @@ export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Pro
     };
     const config = await invokePostProcessors(
         configurationFor(optsToUse));
+
+    process.env.ATOMIST_DISABLE_LOGGING="false";
+
     const client = automationClient(config);
     await client.run();
     const coords = {

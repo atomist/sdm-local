@@ -20,3 +20,4 @@ export { configureLocal } from "./src/sdm/configuration/localPostProcessor";
 export { LocalLifecycle } from "./src/sdm/ui/localLifecycle";
 export { infoMessage } from "./src/cli/ui/consoleOutput";
 export { sdmCd } from "./src/pack/sdm-cd/support/SdmCd";
+export { LocalSdmConfig } from "./src/sdm/configuration/localSdmConfig";
