@@ -14,5 +14,7 @@
  * limitations under the License.
  */
 
-declare module "boxen";
+declare module "json-stringify-safe";
+declare module "jssha";
 declare module "marked-terminal";
+declare module "boxen";
