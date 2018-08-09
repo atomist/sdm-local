@@ -21,6 +21,7 @@ import { Argv } from "yargs";
 import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
 import { sdmGenerator, superforkGenerator } from "./generator/bootstrapGenerators";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
+import { AddLocalMode } from "./transform/addLocalModeTransform";
 
 /**
  * Add bootstrap commands to generate a new SDM
@@ -30,6 +31,7 @@ import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 export function addBootstrapCommands(yargs: Argv) {
     addSdmGenerator(yargs);
     addSuperforkGenerator(yargs);
+    addEnableLocalSupport(yargs);
 }
 
 function addSdmGenerator(yargs: Argv) {
@@ -97,6 +99,28 @@ function addSuperforkGenerator(yargs: Argv) {
             },
             after: async () => {
                 infoMessage("Superfork complete\n");
+            },
+        }],
+    });
+}
+
+/**
+ * Add local support to this project
+ * @param {yargs.Argv} yargs
+ */
+function addEnableLocalSupport(yargs: Argv) {
+    addEmbeddedCommand(yargs, {
+        name: "addLocalMode",
+        cliCommand: "enable local",
+        cliDescription: "Add local mode support to a repo",
+        parameters: superforkGenerator.parameters,
+        configurer: async () => sdm => sdm.addCodeTransformCommand(AddLocalMode),
+        listeners: [{
+            before: async () => {
+                infoMessage("Will add local mode support to a GitHub repo\n\n");
+            },
+            after: async () => {
+                adviceDoc("docs/runLocally.md");
             },
         }],
     });
