@@ -56,7 +56,7 @@ export class HttpMessageListener {
 
         app.post(MessageRoute, (req, res, next) => {
             // Shut down the listener
-            if (this.transient && req.body.destinations.some(d => d.rootType === CommandCompletionDestination.rootType)) {
+            if (this.transient && req.body.destinations.some((d: any) => d.rootType === CommandCompletionDestination.rootType)) {
                 if (isFailureMessage(req.body.message)) {
                     errorMessage("Command failure\n%j\n", req.body.message);
                 }

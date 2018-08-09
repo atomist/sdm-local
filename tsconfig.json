@@ -15,19 +15,25 @@
       "ScriptHost",
       "esnext.asynciterable"
     ],
+    "strict": true,
+    "strictNullChecks": false,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "strict": false,
-    "strictNullChecks": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
   "exclude": [
-    "node_modules"
+    "assets",
+    "build",
+    "doc",
+    "legal",
+    "log",
+    "node_modules",
+    ".#*"
   ],
   "compileOnSave": true,
-  "buildOnSave": true,
+  "buildOnSave": false,
   "atom": {
     "rewriteTsconfig": false
   }

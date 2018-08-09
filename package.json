@@ -92,7 +92,7 @@
     "compile": "npm-run-all git:info compile:ts",
     "compile:ts": "tsc --project .",
     "debug": "node $NODE_DEBUG_OPTION node_modules/@atomist/automation-client/start.client.js",
-    "doc": "typedoc --mode modules --exclude \"**/*.d.ts\" --out doc index.ts src",
+    "doc": "typedoc --mode modules --ignoreCompilerErrors --exclude \"**/*.d.ts\" --out doc index.ts src",
     "fmt": "npm-run-all fmt:ts",
     "fmt:ts": "tsfmt --replace",
     "git:info": "atomist git",

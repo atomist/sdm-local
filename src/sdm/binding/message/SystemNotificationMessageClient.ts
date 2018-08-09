@@ -127,7 +127,7 @@ export class SystemNotificationMessageClient implements MessageClient, SlackMess
             message: markdown,
             wait: true,
         });
-        notifier.on("click", (notifierObject, options) => {
+        notifier.on("click", (notifierObject: any, options: any) => {
             // Triggers if `wait: true` and user clicks notification
             open("http://127.0.0.1:2866/log/messages");
         });
@@ -135,8 +135,8 @@ export class SystemNotificationMessageClient implements MessageClient, SlackMess
 
     constructor(private readonly linkedChannel: string,
                 public readonly markedOptions: MarkedOptions = {
-                    breaks: false,
-                }) {
+            breaks: false,
+        }) {
     }
 
 }

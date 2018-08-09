@@ -61,7 +61,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
         }
         const dests: SlackDestination[] =
             (Array.isArray(destinations) ? destinations : [destinations] as any)
-                .filter(a => a.userAgent !== "ingester");
+                .filter((a: any) => a.userAgent !== "ingester");
         return this.addressChannels(
             msg,
             _.flatten(dests.map(d => d.channels)),

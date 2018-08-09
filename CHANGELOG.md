@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm/compare/0.1.4...HEAD)
 
+### Changed
+
+-   Enable TypeScript compiler strict mode [#82](https://github.com/atomist/sdm-local/issues/82)
+
 ## [0.1.4](https://github.com/atomist/sdm/compare/0.1.2...0.1.3) - 2018-08-08
 
 ### Changed
