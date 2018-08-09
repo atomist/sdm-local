@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+import { asSpawnCommand } from "@atomist/automation-client/util/spawned";
 import { CodeTransformRegistration } from "@atomist/sdm";
 import { localCommandsCodeTransform } from "@atomist/sdm/api-helper/command/transform/localCommandsCodeTransform";
-import { asSpawnCommand } from "@atomist/automation-client/util/spawned";
 
 export interface ModuleId {
     name?: string;
