@@ -61,11 +61,11 @@ export interface CommandInvocationListener {
  * @return {Promise<any>}
  */
 export async function runCommandOnColocatedAutomationClient(connectionConfig: AutomationClientConnectionRequest,
-    repositoryOwnerParentDirectory: string,
-    target: InvocationTarget,
-    hm: CommandHandlerMetadata,
-    command: any,
-    listeners: CommandInvocationListener[]): Promise<any> {
+                                                            repositoryOwnerParentDirectory: string,
+                                                            target: InvocationTarget,
+                                                            hm: CommandHandlerMetadata,
+                                                            command: any,
+                                                            listeners: CommandInvocationListener[]): Promise<any> {
     for (const l of listeners) {
         if (!!l.before) {
             await l.before(hm);
