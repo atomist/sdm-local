@@ -15,22 +15,22 @@
  */
 
 import { Argv } from "yargs";
-import { DefaultTeamContextResolver } from "../../common/binding/defaultTeamContextResolver";
-import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
-import { AutomationClientInfo } from "../AutomationClientInfo";
-import { infoMessage } from "../ui/consoleOutput";
-import { addBootstrapCommands } from "./command/addBootstrapCommands";
-import { addCommandsByName } from "./command/addCommandsByName";
-import { addAddGitHooksCommand, addRemoveGitHooksCommand } from "./command/addGitHooksCommands";
-import { addImportFromGitRemoteCommand } from "./command/addImportFromGitRemoteCommand";
-import { addIntents } from "./command/addIntents";
-import { addListSdmsCommand } from "./command/addListSdmsCommand";
-import { addStartListenerCommand } from "./command/addStartListenerCommand";
-import { addStartSdmDeliveryMachine } from "./command/addStartSdmDeliveryMachine";
-import { addTriggerCommand } from "./command/addTriggerCommand";
-import { addShowSkillsCommand } from "./command/showSkillsCommand";
-import { AutomationClientFinder } from "./http/AutomationClientFinder";
-import { defaultAutomationClientFinder } from "./http/support/defaultAutomationClientFinder";
+import { DefaultTeamContextResolver } from "../../../common/binding/defaultTeamContextResolver";
+import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
+import { AutomationClientInfo } from "../../AutomationClientInfo";
+import { infoMessage } from "../../ui/consoleOutput";
+import { addBootstrapCommands } from "./addBootstrapCommands";
+import { addCommandsByName } from "./addCommandsByName";
+import { addAddGitHooksCommand, addRemoveGitHooksCommand } from "./addGitHooksCommands";
+import { addImportFromGitRemoteCommand } from "./addImportFromGitRemoteCommand";
+import { addIntentsAsCommands } from "./addIntentsAsCommands";
+import { addListSdmsCommand } from "./addListSdmsCommand";
+import { addStartListenerCommand } from "./addStartListenerCommand";
+import { addStartSdmDeliveryMachine } from "./addStartSdmDeliveryMachine";
+import { addTriggerCommand } from "./addTriggerCommand";
+import { addShowSkillsCommand } from "./showSkillsCommand";
+import { AutomationClientFinder } from "../http/AutomationClientFinder";
+import { defaultAutomationClientFinder } from "../http/support/defaultAutomationClientFinder";
 
 /**
  * Given a yargs instance, add commands based on local SDMs we can connect to
@@ -75,7 +75,7 @@ async function addCommandsToConnectTo(client: AutomationClientInfo, yargs: Argv)
     // If we were able to connect to an SDM...
     if (!!client.client) {
         addCommandsByName(client, yargs);
-        addIntents(client, yargs);
+        addIntentsAsCommands(client, yargs);
         addShowSkillsCommand(client, yargs);
     }
 }

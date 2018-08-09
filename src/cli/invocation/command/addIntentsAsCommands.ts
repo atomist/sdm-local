@@ -29,8 +29,8 @@ import { runCommandOnCollocatedAutomationClient } from "./support/runCommandOnCo
  * @param {yargs.Argv} yargs
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
-export function addIntents(ai: AutomationClientInfo,
-                           yargs: Argv, allowUserInput: boolean = true) {
+export function addIntentsAsCommands(ai: AutomationClientInfo,
+                                     yargs: Argv, allowUserInput: boolean = true) {
     const handlers = ai.client.commands
         .filter(hm => !!hm.intent && hm.intent.length > 0);
 

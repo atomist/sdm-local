@@ -29,7 +29,8 @@ import { GitHookInvocation, handleGitHookEvent } from "./handleGitHookEvent";
 const verbose = process.env.ATOMIST_GITHOOK_VERBOSE === "true";
 
 /**
- * Usage gitHookTrigger <git hook name> <directory> <branch> <sha>
+ * Main entry point for processing git hooks
+ * Usage command <git hook name> <directory> <branch> <sha>
  */
 export async function runOnGitHook(argv: string[],
                                    clientFinder: AutomationClientFinder = defaultAutomationClientFinder(),
