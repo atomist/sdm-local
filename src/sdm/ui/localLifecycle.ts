@@ -29,6 +29,7 @@ import Push = OnPushToAnyBranch.Push;
  */
 export const LocalLifecycle: ExtensionPack = {
     ...metadata(),
+    name: "LocalLifecycle",
     configure: sdm => {
         if (isInLocalMode()) {
             addLocalLifecycle(sdm);

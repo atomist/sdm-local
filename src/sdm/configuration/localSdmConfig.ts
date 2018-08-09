@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ExtensionPack, SoftwareDeliveryMachine } from "@atomist/sdm";
+import { ExtensionPack, onAnyPush, SoftwareDeliveryMachine } from "@atomist/sdm";
 import { isInLocalMode } from "@atomist/sdm-core";
 import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
 
@@ -24,6 +24,7 @@ import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
  */
 export const LocalSdmConfig: ExtensionPack = {
     ...metadata(),
+    name: "LocalSdmConfig",
     configure: sdm => {
         if (isInLocalMode()) {
             registerNoOpListeners(sdm);
@@ -44,4 +45,6 @@ function registerNoOpListeners(sdm: SoftwareDeliveryMachine) {
         .addRepoOnboardingListener(NoOp)
         .addBuildListener(NoOp)
         .addChannelLinkListener(NoOp);
+    // Ensure there's a push mapping, even if it doesn't return anything
+    sdm.addGoalContributions(onAnyPush().setGoals([]));
 }

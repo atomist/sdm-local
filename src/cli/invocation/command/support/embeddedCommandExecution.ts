@@ -92,7 +92,6 @@ export function addEmbeddedCommand(yargs: Argv,
         },
         handler: async argv => {
             return logExceptionsToConsole(async () => {
-                // infoMessage("repositoryOwnerParentDirectory=%s", argv.repositoryOwnerParentDirectory);
                 await runCommandOnEmbeddedMachine(
                     argv.repositoryOwnerParentDirectory,
                     await spec.configurer(argv),
@@ -127,8 +126,9 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
         errorMessage("No command named '%s'\n", name);
         process.exit(1);
     }
-    return runCommandOnCollocatedAutomationClient(aca.connectionConfig,
-        repositoryOwnerParentDirectory,
+    return runCommandOnCollocatedAutomationClient(
+        aca.connectionConfig,
+        aca.localConfig.repositoryOwnerParentDirectory,
         {
             atomistTeamName: "embedded",
             atomistTeamId: "T0",

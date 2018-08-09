@@ -15,7 +15,7 @@
  */
 
 import { asSpawnCommand } from "@atomist/automation-client/util/spawned";
-import { CodeTransformRegistration } from "@atomist/sdm";
+import { CodeTransformRegistration, ProgressLog } from "@atomist/sdm";
 import { localCommandsCodeTransform } from "@atomist/sdm/api-helper/command/transform/localCommandsCodeTransform";
 
 export interface ModuleId {
@@ -25,12 +25,16 @@ export interface ModuleId {
 
 /**
  * Transform to add a module to a project. Uses npm install.
+ * @param name name of the dependency to add. If not supplied it will be a required parameter
  */
-export function addDependencyTransform(name?: string): Partial<CodeTransformRegistration<ModuleId>> {
+export function addDependencyTransform(opts: {
+    name?: string,
+    progressLog?: ProgressLog
+}): Partial<CodeTransformRegistration<ModuleId>> {
     return {
         parameters: {
             name: {
-                required: !name,
+                required: !opts.name,
                 description: "module name",
             },
             version: {
@@ -40,8 +44,8 @@ export function addDependencyTransform(name?: string): Partial<CodeTransformRegi
             },
         },
         transform: async (p, cli) => {
-            const command = asSpawnCommand(`npm i ${cli.parameters.name || name}${cli.parameters.version}`);
-            return localCommandsCodeTransform([command])(p, cli);
+            const command = asSpawnCommand(`npm i ${cli.parameters.name || opts.name}${cli.parameters.version}`);
+            return localCommandsCodeTransform([command], opts.progressLog)(p, cli);
         },
     };
 }

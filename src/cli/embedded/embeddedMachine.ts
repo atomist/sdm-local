@@ -28,6 +28,7 @@ import { configureLocal } from "../../sdm/configuration/localPostProcessor";
 import { LocalLifecycle } from "../../sdm/ui/localLifecycle";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { fetchMetadataFromAutomationClient } from "../invocation/http/fetchMetadataFromAutomationClient";
+import { LocalSdmConfig } from "../../sdm/configuration/localSdmConfig";
 
 export const DefaultBootstrapPort = 2900;
 
@@ -47,7 +48,7 @@ const createMachine = (configure: ConfigureMachine) => (config: SoftwareDelivery
             name: "Local bootstrap SDM",
             configuration: config,
         });
-    sdm.addExtensionPacks(LocalLifecycle);
+    sdm.addExtensionPacks(LocalLifecycle, LocalSdmConfig);
     configure(sdm);
     return sdm;
 };
@@ -96,10 +97,11 @@ export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Pro
         ...options,
         repositoryOwnerParentDirectory: options.repositoryOwnerParentDirectory || determineDefaultRepositoryOwnerParentDirectory(),
     };
-    const config = await invokePostProcessors(
-        configurationFor(optsToUse));
 
     process.env.ATOMIST_DISABLE_LOGGING = "false";
+    process.env.ATOMIST_MODE = "local";
+    const config = await invokePostProcessors(
+        configurationFor(optsToUse));
 
     const client = automationClient(config);
     await client.run();
