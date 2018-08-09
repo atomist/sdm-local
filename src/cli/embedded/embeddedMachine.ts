@@ -99,7 +99,7 @@ export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Pro
     const config = await invokePostProcessors(
         configurationFor(optsToUse));
 
-    process.env.ATOMIST_DISABLE_LOGGING="false";
+    process.env.ATOMIST_DISABLE_LOGGING = "false";
 
     const client = automationClient(config);
     await client.run();
