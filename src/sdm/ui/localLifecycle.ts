@@ -84,10 +84,4 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
                 break;
         }
     });
-    // sdm.addBuildListener(async bu => {
-    //     return bu.addressChannels(`${buildStatusEmoji(bu.build.status)} Build status is \`${bu.build.status}\` ${onWhat(bu.build.push)}`);
-    // });
-    // sdm.addDeploymentListener(async li => {
-    //     return li.addressChannels(`Successful deployment at ${li.status.targetUrl} of ${}`);
-    // });
 }
