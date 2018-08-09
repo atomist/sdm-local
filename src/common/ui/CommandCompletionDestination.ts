@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-import { Destination, MessageOptions } from "@atomist/automation-client/spi/message/MessageClient";
-import { SlackMessage } from "@atomist/slack-messages";
-import { AutomationClientConnectionRequest } from "../cli/invocation/http/AutomationClientConnectionConfig";
-
-export const MessageRoute = "/message";
+import { CustomEventDestination } from "@atomist/automation-client/spi/message/MessageClient";
 
 /**
- * Payload data structure used by HTTP message communication
+ * Well-known destination for messages on command completion.
+ * Used to shut down transient listeners.
+ * @type {CustomEventDestination}
  */
-export interface StreamedMessage {
-    message: string | SlackMessage;
-    destinations: Destination[];
-    options: MessageOptions;
-    machineAddress: AutomationClientConnectionRequest;
-}
+export const CommandCompletionDestination = new CustomEventDestination("completion");

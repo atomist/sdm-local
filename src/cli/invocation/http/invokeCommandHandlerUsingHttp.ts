@@ -16,8 +16,8 @@
 
 import { logger } from "@atomist/automation-client";
 import * as assert from "power-assert";
-import { CommandHandlerInvoker } from "../../../common/CommandHandlerInvocation";
-import { propertiesToArgs } from "../../../common/propertiesToArgs";
+import { CommandHandlerInvoker } from "../../../common/invocation/CommandHandlerInvocation";
+import { propertiesToArgs } from "../../../common/util/propertiesToArgs";
 import { newCliCorrelationId } from "../newCorrelationId";
 import { AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";

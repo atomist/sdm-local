@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import { CustomEventDestination } from "@atomist/automation-client/spi/message/MessageClient";
+import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 
-/**
- * Well-known destination for messages on command completion
- * @type {CustomEventDestination}
- */
-export const CommandCompletionDestination = new CustomEventDestination("completion");
+export function propertiesToArgs(o: any): Arg[] {
+    if (Array.isArray(o)) {
+        return o;
+    }
+    const args = Object.keys(o).map(k => ({ name: k, value: o[k] }));
+    return args;
+}

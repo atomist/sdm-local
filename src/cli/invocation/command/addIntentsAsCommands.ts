@@ -17,9 +17,9 @@
 import { logger } from "@atomist/automation-client";
 import * as _ from "lodash";
 import { Argv } from "yargs";
-import { PathElement, toPaths } from "../../../sdm/util/PathElement";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
+import { PathElement, toPaths } from "../../util/PathElement";
 import { ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { exposeParameters } from "./support/exposeParameters";
 import { runCommandOnCollocatedAutomationClient } from "./support/runCommandOnCollocatedAutomationClient";

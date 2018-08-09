@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-export const ClientType = "atomist-cli";
+import { Destination, MessageOptions } from "@atomist/automation-client/spi/message/MessageClient";
+import { SlackMessage } from "@atomist/slack-messages";
+import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
+
+export const MessageRoute = "/message";
 
 /**
- * Return the port to respond to this on
- * @param {string} correlationId
- * @return {number | undefined}
+ * Payload data structure used by HTTP message communication
+ * (HttpMessageListener/HttpMessageClient)
  */
-export function parsePort(correlationId: string): number | undefined {
-    const pattern = new RegExp(`^${ClientType}\-([^\-]+)\-`);
-    const id = correlationId.match(pattern)[1];
-    return !!id ? parseInt(id, 10) : undefined;
-}
-
-export function parseChannel(correlationId: string): string {
-    const pattern = new RegExp(`^${ClientType}\-[^\-]+\-([^\-]+)`);
-    const channel = correlationId.match(pattern)[1];
-    return channel;
+export interface StreamedMessage {
+    message: string | SlackMessage;
+    destinations: Destination[];
+    options: MessageOptions;
+    machineAddress: AutomationClientConnectionRequest;
 }

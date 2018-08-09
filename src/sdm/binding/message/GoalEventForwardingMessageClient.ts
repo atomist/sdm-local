@@ -18,8 +18,8 @@ import { logger } from "@atomist/automation-client";
 import { Destination, MessageClient, MessageOptions, SlackMessageClient } from "@atomist/automation-client/spi/message/MessageClient";
 import { OnAnyRequestedSdmGoal, SdmGoalKey, SdmGoalState } from "@atomist/sdm";
 import { SlackMessage } from "@atomist/slack-messages";
-import { isValidSHA1 } from "../../../common/handlePushBasedEventOnRepo";
-import { invokeEventHandlerInProcess } from "../event/invokeEventHandlerInProcess";
+import { isValidSHA1 } from "../../../common/git/handlePushBasedEventOnRepo";
+import { invokeEventHandlerInProcess } from "../../invocation/invokeEventHandlerInProcess";
 
 export function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
     state: SdmGoalState;

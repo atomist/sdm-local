@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { LocalTeamContext } from "../LocalTeamContext";
+import { LocalTeamContext } from "../invocation/LocalTeamContext";
 
 /**
  * Resolve team context in a local environment

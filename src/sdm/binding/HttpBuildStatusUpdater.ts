@@ -22,7 +22,7 @@ import {
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
 import { AutomationClientConnectionConfig } from "../../cli/invocation/http/AutomationClientConnectionConfig";
 import { invokeEventHandlerUsingHttp } from "../../cli/invocation/http/invokeEventHandlerUsingHttp";
-import { InvocationTarget } from "../../common/InvocationTarget";
+import { InvocationTarget } from "../../common/invocation/InvocationTarget";
 
 /**
  * Update build status by posting to an automation client

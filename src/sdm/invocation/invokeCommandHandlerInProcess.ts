@@ -16,9 +16,9 @@
 
 import { automationClientInstance, logger } from "@atomist/automation-client";
 import { CommandIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
-import { newCliCorrelationId } from "../../../cli/invocation/newCorrelationId";
-import { CommandHandlerInvoker } from "../../../common/CommandHandlerInvocation";
-import { propertiesToArgs } from "../../../common/propertiesToArgs";
+import { newCliCorrelationId } from "../../cli/invocation/newCorrelationId";
+import { CommandHandlerInvoker } from "../../common/invocation/CommandHandlerInvocation";
+import { propertiesToArgs } from "../../common/util/propertiesToArgs";
 
 export function invokeCommandHandlerInProcess(): CommandHandlerInvoker {
     return async invocation => {

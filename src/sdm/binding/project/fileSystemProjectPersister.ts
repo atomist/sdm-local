@@ -27,11 +27,11 @@ import { promisify } from "util";
 import { AutomationClientFinder } from "../../../cli/invocation/http/AutomationClientFinder";
 import { invokeEventHandlerUsingHttpOnAll } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
 import { addGitHooksToProject } from "../../../cli/setup/addGitHooks";
-import { handlePushBasedEventOnRepo } from "../../../common/handlePushBasedEventOnRepo";
-import { LocalTeamContext } from "../../../common/LocalTeamContext";
+import { handlePushBasedEventOnRepo } from "../../../common/git/handlePushBasedEventOnRepo";
+import { LocalTeamContext } from "../../../common/invocation/LocalTeamContext";
+import { invokeEventHandlerInProcess } from "../../invocation/invokeEventHandlerInProcess";
 import { lastSha } from "../../util/git";
 import { runAndLog } from "../../util/runAndLog";
-import { invokeEventHandlerInProcess } from "../event/invokeEventHandlerInProcess";
 import { sendChannelLinkEvent, sendRepoCreationEvent, sendRepoOnboardingEvent } from "../event/repoOnboardingEvents";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 

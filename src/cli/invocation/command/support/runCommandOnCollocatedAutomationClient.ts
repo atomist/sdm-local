@@ -20,8 +20,8 @@ import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/me
 import chalk from "chalk";
 import * as inquirer from "inquirer";
 import * as _ from "lodash";
-import { CommandHandlerInvocation } from "../../../../common/CommandHandlerInvocation";
-import { InvocationTarget } from "../../../../common/InvocationTarget";
+import { CommandHandlerInvocation } from "../../../../common/invocation/CommandHandlerInvocation";
+import { InvocationTarget } from "../../../../common/invocation/InvocationTarget";
 import { FromAnyMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/FromAnyMappedParameterResolver";
 import { MappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/MappedParameterResolver";
 import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/project/ExpandedTreeMappedParameterResolver";

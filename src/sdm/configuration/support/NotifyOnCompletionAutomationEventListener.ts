@@ -20,7 +20,7 @@ import {
 } from "@atomist/automation-client";
 import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
 import { AutomationEventListenerSupport } from "@atomist/automation-client/server/AutomationEventListener";
-import { CommandCompletionDestination } from "../../../common/CommandCompletionDestination";
+import { CommandCompletionDestination } from "../../../common/ui/CommandCompletionDestination";
 
 /**
  * Event listener that sends an event on command termination

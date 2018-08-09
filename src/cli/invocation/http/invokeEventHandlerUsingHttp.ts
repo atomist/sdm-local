@@ -17,8 +17,8 @@
 import { logger, Secrets, Success } from "@atomist/automation-client";
 import { replacer } from "@atomist/automation-client/internal/transport/AbstractRequestProcessor";
 import * as stringify from "json-stringify-safe";
-import { EventSender } from "../../../common/EventHandlerInvocation";
-import { InvocationTarget } from "../../../common/InvocationTarget";
+import { EventSender } from "../../../common/invocation/EventHandlerInvocation";
+import { InvocationTarget } from "../../../common/invocation/InvocationTarget";
 import { newCliCorrelationId } from "../newCorrelationId";
 import { AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";

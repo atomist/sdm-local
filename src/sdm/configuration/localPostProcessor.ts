@@ -31,11 +31,11 @@ import { createSdmOptions } from "./createSdmOptions";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 
 import * as assert from "assert";
-import { CommandHandlerInvocation } from "../../common/CommandHandlerInvocation";
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
-import { parseChannel, parsePort } from "../../common/parseCorrelationId";
+import { CommandHandlerInvocation } from "../../common/invocation/CommandHandlerInvocation";
+import { parseChannel, parsePort } from "../../common/invocation/parseCorrelationId";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
-import { invokeCommandHandlerInProcess } from "../binding/command/invokeCommandHandlerInProcess";
+import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandlerInProcess";
 
 /**
  * Configures an automation client in local mode

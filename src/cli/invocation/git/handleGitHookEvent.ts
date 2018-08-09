@@ -15,8 +15,8 @@
  */
 
 import { LocalModeConfiguration } from "@atomist/sdm-core";
-import { EventOnRepo, handlePushBasedEventOnRepo } from "../../../common/handlePushBasedEventOnRepo";
-import { InvocationTarget } from "../../../common/InvocationTarget";
+import { EventOnRepo, handlePushBasedEventOnRepo } from "../../../common/git/handlePushBasedEventOnRepo";
+import { InvocationTarget } from "../../../common/invocation/InvocationTarget";
 import { errorMessage } from "../../ui/consoleOutput";
 import { AutomationClientConnectionRequest } from "../http/AutomationClientConnectionConfig";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";

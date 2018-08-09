@@ -17,9 +17,9 @@
 import { RepoId } from "@atomist/automation-client/operations/common/RepoId";
 import { OnRepoCreation } from "@atomist/sdm";
 import { CoreRepoFieldsAndChannels, OnChannelLink, OnRepoOnboarded } from "@atomist/sdm-core/typings/types";
-import { EventSender } from "../../../common/EventHandlerInvocation";
-import { LocalTeamContext } from "../../../common/LocalTeamContext";
-import { repoFieldsFromProject } from "./pushFromLastCommit";
+import { repoFieldsFromProject } from "../../../common/git/pushFromLastCommit";
+import { EventSender } from "../../../common/invocation/EventHandlerInvocation";
+import { LocalTeamContext } from "../../../common/invocation/LocalTeamContext";
 
 export async function sendRepoCreationEvent(cc: LocalTeamContext, id: RepoId, eventSender: EventSender) {
     const payload: OnRepoCreation.Subscription = {

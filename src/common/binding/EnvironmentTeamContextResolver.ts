@@ -16,7 +16,7 @@
 
 import * as os from "os";
 import { warningMessage } from "../../cli/ui/consoleOutput";
-import { LocalTeamContext } from "../LocalTeamContext";
+import { LocalTeamContext } from "../invocation/LocalTeamContext";
 import { TeamContextResolver } from "./TeamContextResolver";
 
 const DefaultTeamId = "T123";

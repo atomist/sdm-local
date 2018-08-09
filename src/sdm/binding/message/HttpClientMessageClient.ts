@@ -26,7 +26,7 @@ import {
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import { AutomationClientConnectionRequest } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
-import { StreamedMessage } from "../../../common/httpMessaging";
+import { StreamedMessage } from "../../../common/ui/httpMessaging";
 import { messageListenerEndpoint } from "../../ui/HttpMessageListener";
 import { ActionStore } from "./ActionStore";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";

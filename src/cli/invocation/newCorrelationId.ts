@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ClientType } from "../../common/parseCorrelationId";
+import { ClientType } from "../../common/invocation/parseCorrelationId";
 import { portToListenOnFor } from "./portAllocation";
 
 /**
