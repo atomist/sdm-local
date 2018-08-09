@@ -15,38 +15,14 @@
  */
 
 import { logger } from "@atomist/automation-client";
-import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import * as _ from "lodash";
 import { Argv } from "yargs";
 import { PathElement, toPaths } from "../../../sdm/util/PathElement";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
-import { convertToDisplayable, runCommandOnCollocatedAutomationClient } from "./support/runCommandOnCollocatedAutomationClient";
 import { ShowDescriptionListener } from "./support/commandInvocationListeners";
-
-/**
- * Add commands by name from the given client
- * @param {yargs.Argv} yargs
- * @param {boolean} allowUserInput whether to make all parameters optional, allowing user input to supply them
- */
-export function addCommandsByName(ai: AutomationClientInfo,
-                                  yargs: Argv,
-                                  allowUserInput: boolean = true) {
-    yargs.command("run", "Run a command",
-        args => {
-            ai.client.commands.forEach(hi => {
-                args.command({
-                    command: hi.name,
-                    handler: async argv => {
-                        return logExceptionsToConsole(
-                            () => runByCommandName(ai, hi.name, argv), ai.connectionConfig.showErrorStacks);
-                    },
-                    builder: argv => exposeParameters(hi, argv, allowUserInput),
-                });
-            });
-            return args;
-        });
-}
+import { exposeParameters } from "./support/exposeParameters";
+import { runCommandOnCollocatedAutomationClient } from "./support/runCommandOnCollocatedAutomationClient";
 
 /**
  * Add commands for all intents
@@ -121,23 +97,6 @@ function exposeAsCommands(ai: AutomationClientInfo,
     }
 }
 
-/**
- * Expose the parameters for this command
- * @param {CommandHandlerMetadata} hi
- * @param {yargs.Argv} args
- * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
- */
-function exposeParameters(hi: CommandHandlerMetadata, args: Argv, allowUserInput: boolean) {
-    hi.parameters
-        .forEach(p => {
-            const nameToUse = convertToDisplayable(p.name);
-            args.option(nameToUse, {
-                required: !allowUserInput && p.required && !p.default_value,
-            });
-        });
-    return args;
-}
-
 async function runByIntent(ai: AutomationClientInfo,
                            intent: string,
                            command: any): Promise<any> {
@@ -153,25 +112,6 @@ async function runByIntent(ai: AutomationClientInfo,
         {
             atomistTeamName: ai.connectionConfig.atomistTeamId,
             atomistTeamId: ai.connectionConfig.atomistTeamName,
-        },
-        hm, command, [ShowDescriptionListener]);
-}
-
-async function runByCommandName(ai: AutomationClientInfo,
-                                name: string,
-                                command: any): Promise<any> {
-    const hm = ai.client.commands.find(h => h.name === name);
-    if (!hm) {
-        process.stdout.write(`No command with name [${name}]: Known command names are \n${ai.client.commands
-            .map(m => "\t" + m.name).sort().join("\n")}`);
-        process.exit(1);
-    }
-    return runCommandOnCollocatedAutomationClient(
-        ai.connectionConfig,
-        ai.localConfig.repositoryOwnerParentDirectory,
-        {
-            atomistTeamName: ai.connectionConfig.atomistTeamName,
-            atomistTeamId: ai.connectionConfig.atomistTeamId,
         },
         hm, command, [ShowDescriptionListener]);
 }
