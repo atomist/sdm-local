@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+import { sprintf } from "sprintf-js";
 import { Argv } from "yargs";
 import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
+import { postToListener } from "../../../common/ui/httpMessaging";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { HookEvent } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
@@ -43,7 +45,9 @@ export function addTriggerCommand(yargs: Argv,
         handler: ya => {
             return logExceptionsToConsole(async () => {
                     const clients = await automationClientFinder.findAutomationClients();
-                    infoMessage("Dispatching git event '%s' to %d clients (not all may process it)...\n", ya.event, clients.length);
+                    const msg = sprintf("Dispatching git event '%s' to %d clients...\n", ya.event, clients.length);
+                    infoMessage(msg);
+                    await postToListener(msg);
                     await triggerGitEvents(clients, ya.event, ya.depth, teamContextResolver);
                     return suggestStartingAllMessagesListener();
                 },

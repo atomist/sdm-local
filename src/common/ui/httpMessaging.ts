@@ -16,7 +16,12 @@
 
 import { Destination, MessageOptions } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
+import axios from "axios";
+import * as boxen from "boxen";
+import chalk from "chalk";
+import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
+import { defaultHostUrlAliaser } from "../util/http/defaultLocalHostUrlAliaser";
 
 export const MessageRoute = "/message";
 
@@ -33,4 +38,19 @@ export interface StreamedMessage {
     options: MessageOptions;
 
     machineAddress: AutomationClientConnectionRequest;
+}
+
+/**
+ * Write a raw message to the listener
+ * @param {string} message
+ * @return {Promise<void>}
+ */
+export async function postToListener(message: string) {
+    const url = `http://${defaultHostUrlAliaser().alias()}:${AllMessagesPort}/write`;
+    const boxed = boxen(message, { padding: 1 }) + "\n";
+    try {
+        await axios.post(url, { message: boxed });
+    } catch (err) {
+        // Ignore any error
+    }
 }

@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import axios from "axios";
-import * as boxen from "boxen";
-import { defaultHostUrlAliaser } from "../../../../common/util/http/defaultLocalHostUrlAliaser";
+import chalk from "chalk";
+import { postToListener } from "../../../../common/ui/httpMessaging";
 import { infoMessage } from "../../../ui/consoleOutput";
-import { AllMessagesPort } from "../addStartListenerCommand";
 import { CommandInvocationListener } from "./runCommandOnCollocatedAutomationClient";
 
 /**
@@ -39,12 +37,7 @@ export const ShowDescriptionListener: CommandInvocationListener = {
  */
 export const PostToAtomistListenerListener: CommandInvocationListener = {
     onDispatch: async chm => {
-        const url = `http://${defaultHostUrlAliaser().alias()}:${AllMessagesPort}/write`;
-        const message = boxen(`Starting execution of command ${chm.name}`, { padding: 1}) + "\n";
-        try {
-            await axios.post(url, { message });
-        } catch (err) {
-            // Ignore any error
-        }
+        const message = `Starting execution of command ${chalk.bold(chm.name)}`;
+        return postToListener(message);
     },
 };
