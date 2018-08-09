@@ -34,10 +34,10 @@ import { EnvironmentTeamContextResolver } from "../../common/binding/Environment
 import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
 import { CommandHandlerInvocation } from "../../common/invocation/CommandHandlerInvocation";
+import { LocalTeamContext } from "../../common/invocation/LocalTeamContext";
 import { parseChannel, parsePort } from "../../common/invocation/parseCorrelationId";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandlerInProcess";
-import { LocalTeamContext } from "../../common/invocation/LocalTeamContext";
 
 /**
  * Configures an automation client in local mode
