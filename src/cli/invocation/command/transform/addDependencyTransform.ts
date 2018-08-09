@@ -29,7 +29,7 @@ export interface ModuleId {
  */
 export function addDependencyTransform(opts: {
     name?: string,
-    progressLog?: ProgressLog
+    progressLog?: ProgressLog,
 }): Partial<CodeTransformRegistration<ModuleId>> {
     return {
         parameters: {

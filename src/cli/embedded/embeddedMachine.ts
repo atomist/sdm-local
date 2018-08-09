@@ -25,10 +25,10 @@ import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/S
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../common/configuration/defaultLocalModeConfiguration";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 import { configureLocal } from "../../sdm/configuration/localPostProcessor";
+import { LocalSdmConfig } from "../../sdm/configuration/localSdmConfig";
 import { LocalLifecycle } from "../../sdm/ui/localLifecycle";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { fetchMetadataFromAutomationClient } from "../invocation/http/fetchMetadataFromAutomationClient";
-import { LocalSdmConfig } from "../../sdm/configuration/localSdmConfig";
 
 export const DefaultBootstrapPort = 2900;
 

@@ -15,8 +15,8 @@
  */
 
 import { CodeTransformRegistration } from "@atomist/sdm";
-import { addDependencyTransform } from "./addDependencyTransform";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
+import { addDependencyTransform } from "./addDependencyTransform";
 
 /**
  * Transform to add local mode into a project
@@ -24,7 +24,7 @@ import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressL
 export const AddLocalMode: CodeTransformRegistration<{ version: string }> = {
     ...addDependencyTransform({
         name: "@atomist/sdm-local",
-        progressLog: new LoggingProgressLog("info")
+        progressLog: new LoggingProgressLog("info"),
     }) as any,
     name: "addLocalMode",
     intent: "add local mode",
