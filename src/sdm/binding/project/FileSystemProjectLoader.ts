@@ -45,7 +45,7 @@ export class FileSystemProjectLoader implements ProjectLoader {
             params.id = FileSystemRemoteRepoRef.implied(this.config.repositoryOwnerParentDirectory,
                 params.id.owner, params.id.repo);
         }
-        const decoratedAction = async p => {
+        const decoratedAction: (p: GitProject) => Promise<T> = async p => {
             const p2 = await this.preprocess(p);
             return action(p2);
         };
