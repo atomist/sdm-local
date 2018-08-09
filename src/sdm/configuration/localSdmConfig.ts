@@ -15,8 +15,8 @@
  */
 
 import { ExtensionPack, SoftwareDeliveryMachine } from "@atomist/sdm";
-import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
 import { isInLocalMode } from "@atomist/sdm-core";
+import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
 
 /**
  * Extension pack that configures SDM for local
