@@ -69,8 +69,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
             options,
             machineAddress: this.options.machineAddress,
             destinations: [{
-                // TODO hard coding
-                team: "T1234",
+                team: this.options.atomistTeamId,
                 channels,
             } as SlackDestination],
         });
@@ -90,7 +89,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
             if (!this.dead) {
                 logger.debug(`Write to url ${this.url}: ${JSON.stringify(sm)}`);
                 await axios.post(this.url, sm);
-                logger.info(`Wrote to url ${this.url}: ${JSON.stringify(sm)}`);
+                logger.debug(`Wrote to url ${this.url}: ${JSON.stringify(sm)}`);
             }
         } catch (err) {
             if (this.options.transient) {
@@ -102,6 +101,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
     }
 
     constructor(public readonly options: {
+        atomistTeamId: string,
         channel: string,
         port: number,
         transient: boolean,

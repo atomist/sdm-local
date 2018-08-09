@@ -37,6 +37,7 @@ import { CommandHandlerInvocation } from "../../common/invocation/CommandHandler
 import { parseChannel, parsePort } from "../../common/invocation/parseCorrelationId";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandlerInProcess";
+import { LocalTeamContext } from "../../common/invocation/LocalTeamContext";
 
 /**
  * Configures an automation client in local mode
@@ -46,6 +47,8 @@ import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandle
 export function configureLocal(
     localModeConf: LocalModeConfiguration & { forceLocal?: boolean }): (configuration: Configuration) => Promise<Configuration> {
     return async configuration => {
+
+        const teamResolver: TeamContextResolver = new EnvironmentTeamContextResolver();
 
         // Don't mess with a non local SDM
         if (!(localModeConf.forceLocal || isInLocalMode())) {
@@ -63,9 +66,9 @@ export function configureLocal(
 
         const globalActionStore = freshActionStore();
 
-        configureWebEndpoints(configuration, localModeConfiguration, globalActionStore);
+        configureWebEndpoints(configuration, localModeConfiguration, teamResolver.teamContext, globalActionStore);
 
-        setMessageClient(configuration, localModeConfiguration, globalActionStore);
+        setMessageClient(configuration, localModeConfiguration, teamResolver.teamContext, globalActionStore);
         setGraphClient(configuration);
 
         addListeners(configuration);
@@ -81,11 +84,12 @@ export function configureLocal(
     };
 }
 
-function configureWebEndpoints(configuration: Configuration, localModeConfiguration: LocalModeConfiguration, actionStore: ActionStore) {
+function configureWebEndpoints(configuration: Configuration, localModeConfiguration: LocalModeConfiguration,
+                               teamContext: LocalTeamContext,
+                               actionStore: ActionStore) {
     // Disable auth as we're only expecting local clients
     // TODO what if not basic
     _.set(configuration, "http.auth.basic.enabled", false);
-    const teamResolver: TeamContextResolver = new EnvironmentTeamContextResolver();
 
     configuration.http.customizers = [
         exp => {
@@ -101,8 +105,8 @@ function configureWebEndpoints(configuration: Configuration, localModeConfigurat
                     name: req.params.name,
                     parameters: payload,
                     mappedParameters: [],
-                    atomistTeamName: teamResolver.teamContext.atomistTeamName,
-                    atomistTeamId: teamResolver.teamContext.atomistTeamId,
+                    atomistTeamName: teamContext.atomistTeamName,
+                    atomistTeamId: teamContext.atomistTeamId,
                 };
                 const r = await invokeCommandHandlerInProcess()(invocation)
                     .then(resp => res.json(decircle(resp)),
@@ -123,8 +127,8 @@ function configureWebEndpoints(configuration: Configuration, localModeConfigurat
                 }
 
                 const command = (storedAction as any).command;
-                command.atomistTeamName = teamResolver.teamContext.atomistTeamName;
-                command.atomistTeamId = teamResolver.teamContext.atomistTeamName;
+                command.atomistTeamName = teamContext.atomistTeamName;
+                command.atomistTeamId = teamContext.atomistTeamName;
                 logger.debug("The parameters are: %j", command.parameters);
                 if (!command) {
                     logger.error("No command stored on action object: %j", storedAction);
@@ -164,6 +168,7 @@ function decircle(result: HandlerResult) {
  */
 function setMessageClient(configuration: Configuration,
                           localMachineConfig: LocalModeConfiguration,
+                          teamContext: LocalTeamContext,
                           actionStore: ActionStore) {
     configuration.http.messageClientFactory =
         aca => {
@@ -177,6 +182,7 @@ function setMessageClient(configuration: Configuration,
             const port = parsePort(aca.context.correlationId);
             return new BroadcastingMessageClient(
                 new HttpClientMessageClient({
+                    atomistTeamId: teamContext.atomistTeamId,
                     channel,
                     port: AllMessagesPort, machineAddress,
                     actionStore,
@@ -185,6 +191,7 @@ function setMessageClient(configuration: Configuration,
                 new GoalEventForwardingMessageClient(),
                 // Communicate back to client if possible
                 !!port ? new HttpClientMessageClient({
+                    atomistTeamId: teamContext.atomistTeamId,
                     channel, port, machineAddress, actionStore,
                     transient: true,
                 }) : undefined,
