@@ -69,7 +69,7 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
         return this.fromDirectory({ repositoryOwnerParentDirectory, baseDir});
     }
 
-    public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
+    public createRemote(creds: ProjectOperationCredentials, description: string, visibility: any): Promise<ActionResult<this>> {
         throw new Error();
     }
 

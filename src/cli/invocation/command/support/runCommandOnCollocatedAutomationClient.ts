@@ -62,7 +62,7 @@ export async function runCommandOnCollocatedAutomationClient(connectionConfig: A
                                                              repositoryOwnerParentDirectory: string,
                                                              target: InvocationTarget,
                                                              hm: CommandHandlerMetadata,
-                                                             command: object,
+                                                             command: any,
                                                              listeners: CommandInvocationListener[]): Promise<any> {
     for (const l of listeners) {
         if (!!l.before) {
@@ -154,7 +154,7 @@ async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[
                 name: nameToUse,
                 default: p.default_value,
                 message: p.description,
-                validate: value => {
+                validate: (value: any) => {
                     if (valid(p, value)) {
                         return true;
                     }
@@ -162,12 +162,15 @@ async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[
                 },
             };
         });
-    const fromPrompt = await inquirer.prompt(questions);
+    const fromPrompt = await inquirer.prompt(questions) as any;
     Object.getOwnPropertyNames(fromPrompt)
         .forEach(enteredName => {
             // Replace any existing argument with this name that yargs has
             _.remove(args, arg => arg.name === enteredName);
-            args.push({ name: convertToUsable(enteredName), value: fromPrompt[enteredName] });
+            args.push({
+                name: convertToUsable(enteredName),
+                value: fromPrompt[enteredName]
+            });
         });
 }
 
@@ -180,7 +183,7 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
                 return {
                     name: nameToUse,
                     message: `(mapped parameter) ${nameToUse}`,
-                    validate: value => {
+                    validate: (value: any) => {
                         // We don't really know how to validate this,
                         // but make the user input something
                         if (!!value) {
@@ -190,7 +193,7 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
                     },
                 };
             });
-    const fromPrompt = await inquirer.prompt(questions);
+    const fromPrompt = await inquirer.prompt(questions) as any;
     Object.getOwnPropertyNames(fromPrompt)
         .forEach(enteredName => {
             // Replace any existing argument with this name that yargs has

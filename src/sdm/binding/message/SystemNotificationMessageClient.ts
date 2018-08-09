@@ -58,8 +58,8 @@ export class SystemNotificationMessageClient implements MessageClient, SlackMess
             return;
         }
         const dests: SlackDestination[] =
-            (Array.isArray(destinations) ? destinations : [destinations] as any)
-                .filter(a => a.userAgent !== "ingester");
+            (Array.isArray((destinations) ? destinations : [destinations]) as any)
+                .filter((a: any) => a.userAgent !== "ingester");
         return this.addressChannels(
             msg,
             _.flatten(dests.map(d => d.channels)),

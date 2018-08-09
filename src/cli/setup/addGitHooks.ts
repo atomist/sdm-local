@@ -149,9 +149,9 @@ async function deatomizeScript(p: LocalProject, scriptPath: string) {
  * Indexed templates fragments for use in git hooks
  * @return {{"pre-receive": string}}
  */
-function scriptFragments() {
+function scriptFragments(): { [key: string]: string } {
 
-    // TODO why does the hook need be verbose?
+    // TODO why does the hook need to be verbose?
     return {
         "pre-receive": `
 export ATOMIST_GITHOOK_VERBOSE="true"

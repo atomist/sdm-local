@@ -24,6 +24,8 @@
     "@octokit/rest": "^15.9.5",
     "@types/body-parser": "^1.17.0",
     "@types/inquirer": "0.0.42",
+    "@types/json-stringify-safe": "^5.0.0",
+    "@types/jssha": "0.0.29",
     "@types/marked": "^0.4.0",
     "@types/node-notifier": "0.0.28",
     "@types/sprintf-js": "^1.1.0",
