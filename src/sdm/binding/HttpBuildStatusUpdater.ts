@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-import {
-    BuildStatus,
-    OnBuildComplete,
-    SdmGoalEvent,
-} from "@atomist/sdm";
+import { BuildStatus, OnBuildComplete, SdmGoalEvent, } from "@atomist/sdm";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
-import { AutomationClientConnectionConfig } from "../../cli/invocation/http/AutomationClientConnectionConfig";
-import { invokeEventHandlerUsingHttp } from "../../cli/invocation/http/invokeEventHandlerUsingHttp";
-import { InvocationTarget } from "../../common/invocation/InvocationTarget";
+import { HandlerContext } from "@atomist/automation-client";
+import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
+import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInProcess";
 
 /**
  * Update build status by posting to an automation client
  */
 export class HttpBuildStatusUpdater implements BuildStatusUpdater {
 
-    public async updateBuildStatus(rb, status, branch, buildNo, ctx) {
-        const goal: SdmGoalEvent = (ctx).trigger.data.SdmGoal[0];
+    public async updateBuildStatus(runningBuild: {
+        repoRef: RemoteRepoRef;
+        url: string;
+        team: string;
+    }, status: "started" | "failed" | "error" | "passed" | "canceled", branch: string, buildNo: string, ctx: HandlerContext) {
+        const goal: SdmGoalEvent = (ctx as any).trigger.data.SdmGoal[0];
         const payload: OnBuildComplete.Subscription = {
             Build: [{
                 buildId: buildNo,
@@ -55,18 +55,11 @@ export class HttpBuildStatusUpdater implements BuildStatusUpdater {
             }],
         };
         const handlerNames = ["InvokeListenersOnBuildComplete"];
-        const target: InvocationTarget = {
-            atomistTeamName: this.acc.atomistTeamId,
-            atomistTeamId: this.acc.atomistTeamId,
-            correlationId: ctx.correlation_id,
-        };
         return Promise.all(handlerNames.map(name =>
-            invokeEventHandlerUsingHttp(this.acc, target)({
+            invokeEventHandlerInProcess()({
                 name,
                 payload,
             })));
     }
 
-    constructor(private readonly acc: AutomationClientConnectionConfig) {
-    }
 }

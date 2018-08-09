@@ -18,7 +18,6 @@ import { Configuration, HandlerResult, logger } from "@atomist/automation-client
 import { isInLocalMode, LocalModeConfiguration } from "@atomist/sdm-core";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
-import { DefaultAutomationClientConnectionConfig } from "../../cli/entry/resolveConnectionConfig";
 import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
 import { LocalGraphClient } from "../binding/graph/LocalGraphClient";
@@ -36,6 +35,8 @@ import { CommandHandlerInvocation } from "../../common/invocation/CommandHandler
 import { parseChannel, parsePort } from "../../common/invocation/parseCorrelationId";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandlerInProcess";
+import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
+import { EnvironmentTeamContextResolver } from "../../common/binding/EnvironmentTeamContextResolver";
 
 /**
  * Configures an automation client in local mode
@@ -84,9 +85,7 @@ function configureWebEndpoints(configuration: Configuration, localModeConfigurat
     // Disable auth as we're only expecting local clients
     // TODO what if not basic
     _.set(configuration, "http.auth.basic.enabled", false);
-
-    // TODO shouldn't be necessary
-    const cc = DefaultAutomationClientConnectionConfig;
+    const teamResolver: TeamContextResolver = new EnvironmentTeamContextResolver();
 
     configuration.http.customizers = [
         exp => {
@@ -102,8 +101,8 @@ function configureWebEndpoints(configuration: Configuration, localModeConfigurat
                     name: req.params.name,
                     parameters: payload,
                     mappedParameters: [],
-                    atomistTeamName: cc.atomistTeamName,
-                    atomistTeamId: cc.atomistTeamId,
+                    atomistTeamName: teamResolver.teamContext.atomistTeamName,
+                    atomistTeamId: teamResolver.teamContext.atomistTeamId,
                 };
                 const r = await invokeCommandHandlerInProcess()(invocation)
                     .then(resp => res.json(decircle(resp)),
@@ -124,8 +123,8 @@ function configureWebEndpoints(configuration: Configuration, localModeConfigurat
                 }
 
                 const command = (storedAction as any).command;
-                command.atomistTeamName = cc.atomistTeamName;
-                command.atomistTeamId = cc.atomistTeamId;
+                command.atomistTeamName = teamResolver.teamContext.atomistTeamName;
+                command.atomistTeamId = teamResolver.teamContext.atomistTeamName;
                 logger.debug("The parameters are: %j", command.parameters);
                 if (!command) {
                     logger.error("No command stored on action object: %j", storedAction);
