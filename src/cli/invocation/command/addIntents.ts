@@ -22,9 +22,10 @@ import { PathElement, toPaths } from "../../../sdm/util/PathElement";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { convertToDisplayable, runCommandOnCollocatedAutomationClient } from "./support/runCommandOnCollocatedAutomationClient";
+import { ShowDescriptionListener } from "./support/commandInvocationListeners";
 
 /**
- * Add commands by name
+ * Add commands by name from the given client
  * @param {yargs.Argv} yargs
  * @param {boolean} allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
@@ -153,7 +154,7 @@ async function runByIntent(ai: AutomationClientInfo,
             atomistTeamName: ai.connectionConfig.atomistTeamId,
             atomistTeamId: ai.connectionConfig.atomistTeamName,
         },
-        hm, command, []);
+        hm, command, [ShowDescriptionListener]);
 }
 
 async function runByCommandName(ai: AutomationClientInfo,
@@ -172,5 +173,5 @@ async function runByCommandName(ai: AutomationClientInfo,
             atomistTeamName: ai.connectionConfig.atomistTeamName,
             atomistTeamId: ai.connectionConfig.atomistTeamId,
         },
-        hm, command, []);
+        hm, command, [ShowDescriptionListener]);
 }
