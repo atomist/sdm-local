@@ -15,48 +15,12 @@
  */
 
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
-import { GitHubNameRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
-import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
-import { GeneratorRegistration } from "@atomist/sdm";
-import { Question } from "inquirer";
 import * as inquirer from "inquirer";
+import { Question } from "inquirer";
 import { Argv } from "yargs";
 import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
-import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
-import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
-
-/**
- * Generator that can create a new SDM. Parameterized
- * by name, starting point and tags.
- */
-function sdmGenerator(name: string,
-                      startingPoint: RemoteRepoRef,
-                      ...tags: string[]): GeneratorRegistration<NodeProjectCreationParameters> {
-    return {
-        name,
-        startingPoint,
-        parameters: NodeProjectCreationParametersDefinition,
-        transform: [
-            UpdatePackageJsonIdentification,
-        ],
-        tags,
-    };
-}
-
-/**
- * Creates a new repo based on the content of an existing repo
- * without making any changes
- */
-const superforkGenerator: GeneratorRegistration<{ owner: string, repo: string }> = {
-    name: "superfork",
-    startingPoint: params => new GitHubRepoRef(params.owner, params.repo),
-    parameters: {
-        owner: { ...GitHubNameRegExp, description: "GitHub owner" },
-        repo: { ...GitHubNameRegExp, description: "GitHub repo" },
-    },
-    transform: async p => p,
-};
+import { sdmGenerator, superforkGenerator } from "./generator/bootstrapGenerators";
 
 /**
  * Add bootstrap commands to generate a new SDM
