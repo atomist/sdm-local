@@ -30,8 +30,8 @@ import { HttpMessageListener } from "../../../../sdm/ui/HttpMessageListener";
 import { warningMessage } from "../../../ui/consoleOutput";
 import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionConfig";
 import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUsingHttp";
-import { newCliCorrelationId } from "../../newCorrelationId";
-import { portToListenOnFor } from "../../portAllocation";
+import { newCliCorrelationId } from "../../http/support/newCorrelationId";
+import { portToListenOnFor } from "../../http/support/portAllocation";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
 
 /**

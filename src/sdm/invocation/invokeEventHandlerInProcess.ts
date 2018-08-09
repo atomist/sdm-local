@@ -19,7 +19,7 @@ import { replacer } from "@atomist/automation-client/internal/transport/Abstract
 import { EventIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import * as stringify from "json-stringify-safe";
 import * as assert from "power-assert";
-import { newCliCorrelationId } from "../../cli/invocation/newCorrelationId";
+import { newCliCorrelationId } from "../../cli/invocation/http/support/newCorrelationId";
 import { DefaultTeamContextResolver } from "../../common/binding/defaultTeamContextResolver";
 import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
 import { EventSender } from "../../common/invocation/EventHandlerInvocation";

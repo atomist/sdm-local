@@ -18,9 +18,9 @@ import { logger } from "@atomist/automation-client";
 import * as assert from "power-assert";
 import { CommandHandlerInvoker } from "../../../common/invocation/CommandHandlerInvocation";
 import { propertiesToArgs } from "../../../common/util/propertiesToArgs";
-import { newCliCorrelationId } from "../newCorrelationId";
 import { AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 import { postToSdm } from "./support/httpInvoker";
+import { newCliCorrelationId } from "./support/newCorrelationId";
 
 export function invokeCommandHandlerUsingHttp(config: AutomationClientConnectionRequest): CommandHandlerInvoker {
     return async invocation => {

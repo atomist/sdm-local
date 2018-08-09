@@ -16,7 +16,6 @@
 
 import { automationClientInstance, logger } from "@atomist/automation-client";
 import { CommandIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
-import { newCliCorrelationId } from "../../cli/invocation/newCorrelationId";
 import { CommandHandlerInvoker } from "../../common/invocation/CommandHandlerInvocation";
 import { propertiesToArgs } from "../../common/util/propertiesToArgs";
 
@@ -33,7 +32,7 @@ export function invokeCommandHandlerInProcess(): CommandHandlerInvoker {
                 { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },
             ]),
             // tslint:disable-next-line:variable-name
-            correlation_id: invocation.correlationId || await newCliCorrelationId(),
+            correlation_id: invocation.correlationId,
             // tslint:disable-next-line:variable-name
             api_version: "1",
             team: {
