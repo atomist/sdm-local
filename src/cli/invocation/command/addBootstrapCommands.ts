@@ -114,7 +114,7 @@ function addSdmGenerator(yargs: Argv) {
                     adviceDoc("docs/springSdm.md");
                 }
                 infoMessage("Type 'atomist deliver' to start CD for your new SDM\n");
-            }
+            },
         }],
     });
 }
@@ -133,7 +133,7 @@ function addSuperforkGenerator(yargs: Argv) {
             },
             after: async () => {
                 infoMessage("Superfork complete\n");
-            }
+            },
         }],
     });
 }
