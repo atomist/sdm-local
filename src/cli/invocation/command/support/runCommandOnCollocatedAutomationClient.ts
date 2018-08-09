@@ -169,7 +169,7 @@ async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[
             _.remove(args, arg => arg.name === enteredName);
             args.push({
                 name: convertToUsable(enteredName),
-                value: fromPrompt[enteredName]
+                value: fromPrompt[enteredName],
             });
         });
 }
