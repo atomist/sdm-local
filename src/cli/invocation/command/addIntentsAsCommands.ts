@@ -22,7 +22,7 @@ import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { PathElement, toPaths } from "../../util/PathElement";
 import { PostToAtomistListenerListener, ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { exposeParameters } from "./support/exposeParameters";
-import { runCommandOnCollocatedAutomationClient } from "./support/runCommandOnCollocatedAutomationClient";
+import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
 
 /**
  * Add commands for all intents
@@ -107,7 +107,7 @@ async function runByIntent(ai: AutomationClientInfo,
             .map(m => "\t" + m.intent).sort().join("\n")}`);
         process.exit(1);
     }
-    return runCommandOnCollocatedAutomationClient(ai.connectionConfig,
+    return runCommandOnColocatedAutomationClient(ai.connectionConfig,
         ai.localConfig.repositoryOwnerParentDirectory,
         {
             atomistTeamName: ai.connectionConfig.atomistTeamId,

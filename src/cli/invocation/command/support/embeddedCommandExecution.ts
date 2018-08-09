@@ -20,7 +20,7 @@ import { Argv } from "yargs";
 import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "../../../ui/consoleOutput";
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
-import { CommandInvocationListener, runCommandOnCollocatedAutomationClient } from "./runCommandOnCollocatedAutomationClient";
+import { CommandInvocationListener, runCommandOnColocatedAutomationClient } from "./runCommandOnColocatedAutomationClient";
 
 /**
  * Spec for running an embedded command on an ephemeral SDM
@@ -126,7 +126,7 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
         errorMessage("No command named '%s'\n", name);
         process.exit(1);
     }
-    return runCommandOnCollocatedAutomationClient(
+    return runCommandOnColocatedAutomationClient(
         aca.connectionConfig,
         aca.localConfig.repositoryOwnerParentDirectory,
         {

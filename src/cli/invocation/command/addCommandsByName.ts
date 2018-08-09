@@ -19,7 +19,7 @@ import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { exposeParameters } from "./support/exposeParameters";
-import { runCommandOnCollocatedAutomationClient } from "./support/runCommandOnCollocatedAutomationClient";
+import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
 
 /**
  * Add commands by name from the given client
@@ -54,7 +54,7 @@ async function runByCommandName(ai: AutomationClientInfo,
             .map(m => "\t" + m.name).sort().join("\n")}`);
         process.exit(1);
     }
-    return runCommandOnCollocatedAutomationClient(
+    return runCommandOnColocatedAutomationClient(
         ai.connectionConfig,
         ai.localConfig.repositoryOwnerParentDirectory,
         {

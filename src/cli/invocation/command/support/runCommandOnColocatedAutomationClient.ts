@@ -60,12 +60,12 @@ export interface CommandInvocationListener {
  * @param command command populated by yargs
  * @return {Promise<any>}
  */
-export async function runCommandOnCollocatedAutomationClient(connectionConfig: AutomationClientConnectionRequest,
-                                                             repositoryOwnerParentDirectory: string,
-                                                             target: InvocationTarget,
-                                                             hm: CommandHandlerMetadata,
-                                                             command: any,
-                                                             listeners: CommandInvocationListener[]): Promise<any> {
+export async function runCommandOnColocatedAutomationClient(connectionConfig: AutomationClientConnectionRequest,
+                                                            repositoryOwnerParentDirectory: string,
+                                                            target: InvocationTarget,
+                                                            hm: CommandHandlerMetadata,
+                                                            command: any,
+                                                            listeners: CommandInvocationListener[]): Promise<any> {
     for (const l of listeners) {
         if (!!l.before) {
             await l.before(hm);
