@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { BuildStatus, OnBuildComplete, SdmGoalEvent, } from "@atomist/sdm";
-import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
 import { HandlerContext } from "@atomist/automation-client";
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
+import { BuildStatus, OnBuildComplete, SdmGoalEvent } from "@atomist/sdm";
+import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
 import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInProcess";
 
 /**
@@ -26,10 +26,12 @@ import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInP
 export class HttpBuildStatusUpdater implements BuildStatusUpdater {
 
     public async updateBuildStatus(runningBuild: {
-        repoRef: RemoteRepoRef;
-        url: string;
-        team: string;
-    }, status: "started" | "failed" | "error" | "passed" | "canceled", branch: string, buildNo: string, ctx: HandlerContext) {
+                                       repoRef: RemoteRepoRef;
+                                       url: string;
+                                       team: string;
+                                   },
+                                   status: "started" | "failed" | "error" | "passed" | "canceled",
+                                   branch: string, buildNo: string, ctx: HandlerContext) {
         const goal: SdmGoalEvent = (ctx as any).trigger.data.SdmGoal[0];
         const payload: OnBuildComplete.Subscription = {
             Build: [{

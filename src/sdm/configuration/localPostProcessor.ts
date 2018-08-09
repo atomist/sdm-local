@@ -30,13 +30,13 @@ import { createSdmOptions } from "./createSdmOptions";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 
 import * as assert from "assert";
+import { EnvironmentTeamContextResolver } from "../../common/binding/EnvironmentTeamContextResolver";
+import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
 import { CommandHandlerInvocation } from "../../common/invocation/CommandHandlerInvocation";
 import { parseChannel, parsePort } from "../../common/invocation/parseCorrelationId";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandlerInProcess";
-import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
-import { EnvironmentTeamContextResolver } from "../../common/binding/EnvironmentTeamContextResolver";
 
 /**
  * Configures an automation client in local mode

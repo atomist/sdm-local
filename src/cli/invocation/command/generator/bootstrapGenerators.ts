@@ -1,8 +1,8 @@
-import { GeneratorRegistration } from "@atomist/sdm";
-import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
-import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition } from "./NodeProjectCreationParameters";
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import { GitHubNameRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
+import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
+import { GeneratorRegistration } from "@atomist/sdm";
+import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition } from "./NodeProjectCreationParameters";
 import { UpdatePackageJsonIdentification } from "./updatePackageJsonIdentification";
 
 /**
@@ -10,8 +10,8 @@ import { UpdatePackageJsonIdentification } from "./updatePackageJsonIdentificati
  * by name, starting point and tags.
  */
 export function sdmGenerator(name: string,
-                      startingPoint: RemoteRepoRef,
-                      ...tags: string[]): GeneratorRegistration<NodeProjectCreationParameters> {
+                             startingPoint: RemoteRepoRef,
+                             ...tags: string[]): GeneratorRegistration<NodeProjectCreationParameters> {
     return {
         name,
         startingPoint,

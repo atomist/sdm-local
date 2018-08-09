@@ -19,8 +19,8 @@ import * as inquirer from "inquirer";
 import { Question } from "inquirer";
 import { Argv } from "yargs";
 import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
-import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 import { sdmGenerator, superforkGenerator } from "./generator/bootstrapGenerators";
+import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 
 /**
  * Add bootstrap commands to generate a new SDM
