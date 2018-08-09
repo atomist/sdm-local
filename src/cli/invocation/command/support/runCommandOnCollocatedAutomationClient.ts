@@ -194,7 +194,7 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
                         // We don't really know how to validate this,
                         // but make the user input something
                         const mpdef = hi.mapped_parameters.find(mp => mp.name === p.name);
-                        if (!!value || (mpdef && !mpdef.required)) {
+                        if (!!value || (mpdef && (!mpdef.required))) {
                             return true;
                         }
                         return `Please enter a valid value`;
