@@ -1,6 +1,7 @@
 import * as yargs from "yargs";
 import * as _ from "lodash";
 import { parseCommandLine, CommandLine, dropFirstWord, commandLineAlias } from "./yargSaver/commandLine";
+import * as stringify from "json-stringify-safe";
 
 export function freshYargSaver(): YargSaver {
     return new YargSaverTopLevel();
@@ -9,7 +10,7 @@ export function freshYargSaver(): YargSaver {
 export function validateOrThrow(yargSaver: YargSaver) {
     const result = yargSaver.validate();
     if (result.length > 0) {
-        throw new Error("The collected commands are invalid: " + result.join("\n"));
+        throw new Error("The collected commands are invalid: " + result.map(errorToString).join("\n"));
     }
 }
 
@@ -34,6 +35,12 @@ interface ValidationError {
     contexts: string[];
 }
 
+function errorToString(ve: ValidationError): string {
+    const prefix = ve.contexts.length > 0 ?
+        ve.contexts.join(" ") + ": " : ""
+    return prefix + ve.complaint;
+}
+
 
 
 export function multilevelCommand(params: YargSaverCommandSpec): YargSaverCommandWord {
@@ -41,14 +48,16 @@ export function multilevelCommand(params: YargSaverCommandSpec): YargSaverComman
     if (commandLine.words.length === 1) {
         return buildYargSaverCommand(params);
     } else {
+        const nextWord = commandLine.firstWord;
+        const rest = dropFirstWord(commandLine);
         const inner = multilevelCommand({
             ...params,
-            commandLine: dropFirstWord(commandLine),
+            commandLine: rest,
         });
 
         return buildYargSaverCommand({
-            commandLine,
-            description: "part of " + params.description,
+            commandLine: parseCommandLine(nextWord),
+            description: `${nextWord} -> ${rest}`,
             handleInstructions: DoNothing,
             opts: {
                 configureInner: ys => ys.withSubcommand(inner)
@@ -178,7 +187,7 @@ abstract class YargSaverContainer implements YargSaver {
         const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName)
         const duplicateNames = Object.entries(commandsByNames).filter(([k, v]) => v.length > 1);
         const duplicateNameErrors = duplicateNames.map((([k, v]) =>
-            `Duplicate command ${k}. Descriptions: ${v.map(vv => vv.description)}`))
+            `Duplicate command ${k}. Descriptions: ${v.map(vv => vv.description).join("; ")}`))
         return duplicateNameErrors.map(complaint => ({ complaint, contexts: [] }));
     }
 }
@@ -276,7 +285,9 @@ class YargSaverCommandWord extends YargSaverContainer {
 function handleFunctionFromInstructions(instr: HandleInstructions):
     (argObject: any) => Promise<any> | undefined {
     if (instr === DoNothing) {
-        return undefined;
+        return async (args) => {
+            process.stdout.write("I was told to do nothing. Args: " + stringify(args))
+        };
     }
     return instr.fn;
 }
