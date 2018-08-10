@@ -64,7 +64,7 @@ export interface YargSaver {
         aliases?: string,
         builder?: (ys: YargSaver) => (YargSaver | void),
         handler?: (argObject: any) => Promise<any>,
-    }): void;
+    }): YargSaver;
 
     save(yarg: yargs.Argv): yargs.Argv;
 
@@ -265,6 +265,7 @@ abstract class YargSaverContainer implements YargSaver {
             const extraInner = new YargSaverPositionalCommand(alternateSpec);
             this.withSubcommand(extraInner);
         });
+        return this;
     }
 
     public save(yarg: yargs.Argv): yargs.Argv {

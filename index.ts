@@ -26,5 +26,7 @@ export {
     freshYargSaver,
     yargCommandFromSentence,
     yargCommandWithPositionalArguments,
-    optimizeOrThrow
+    optimizeOrThrow,
+    ParameterOptions,
+    CommandLineParameter,
 } from "./src/cli/invocation/command/support/YargSaver";
