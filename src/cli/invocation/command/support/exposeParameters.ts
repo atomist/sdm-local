@@ -47,6 +47,6 @@ export function commandLineParametersFromCommandHandlerMetadata(hi: CommandHandl
             parameterName: nameToUse,
             required: false, // we might be able to populate these, even when required
         };
-    })
+    });
     return [...p1, ...p2];
 }

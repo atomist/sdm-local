@@ -30,8 +30,8 @@ import { YargSaver } from "./support/YargSaver";
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function addIntentsAsCommands(ai: AutomationClientInfo,
-    yargSaver: YargSaver,
-    allowUserInput: boolean = true) {
+                                     yargSaver: YargSaver,
+                                     allowUserInput: boolean = true) {
     const handlers = ai.client.commands
         .filter(hm => !!hm.intent && hm.intent.length > 0);
 
@@ -52,10 +52,10 @@ export function addIntentsAsCommands(ai: AutomationClientInfo,
  * @param {boolean} allowUserInput
  */
 function exposeAsCommands(ai: AutomationClientInfo,
-    pe: PathElement,
-    nested: YargSaver,
-    previous: string[],
-    allowUserInput: boolean) {
+                          pe: PathElement,
+                          nested: YargSaver,
+                          previous: string[],
+                          allowUserInput: boolean) {
     const intent = previous.concat([pe.name]).join(" ");
     const commandForCompletedIntent = ai.client.commands.find(hm => hm.intent.includes(intent));
 
@@ -100,8 +100,8 @@ function exposeAsCommands(ai: AutomationClientInfo,
 }
 
 async function runByIntent(ai: AutomationClientInfo,
-    intent: string,
-    command: any): Promise<any> {
+                           intent: string,
+                           command: any): Promise<any> {
     // writeToConsole({ message: `Recognized intent "${intent}"...`, color: "cyan" });
     const hm = ai.client.commands.find(h => !!h.intent && h.intent.includes(intent));
     if (!hm) {

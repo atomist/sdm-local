@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import * as yargs from "yargs";
-import * as _ from "lodash";
-import { parseCommandLine, CommandLine, dropFirstWord, commandLineAlias } from "./yargSaver/commandLine";
 import * as stringify from "json-stringify-safe";
+import * as _ from "lodash";
+import * as yargs from "yargs";
+import { CommandLine, commandLineAlias, dropFirstWord, parseCommandLine } from "./yargSaver/commandLine";
 
 export function freshYargSaver(): YargSaver {
     return new YargSaverTopLevel();
@@ -54,11 +54,9 @@ interface ValidationError {
 
 function errorToString(ve: ValidationError): string {
     const prefix = ve.contexts.length > 0 ?
-        ve.contexts.join(" -> ") + ": " : ""
+        ve.contexts.join(" -> ") + ": " : "";
     return prefix + ve.complaint;
 }
-
-
 
 export function multilevelCommand(params: YargSaverCommandSpec): YargSaverCommandWord {
     const { commandLine } = params;
@@ -77,7 +75,7 @@ export function multilevelCommand(params: YargSaverCommandSpec): YargSaverComman
             description: `...`,
             handleInstructions: DoNothing,
             nestedCommands: [inner],
-        })
+        });
 
     }
 }
@@ -87,15 +85,15 @@ export function yargCommandFromSentence(
         command: string,
         describe: string,
         handler: (argObject: any) => Promise<any>,
-        parameters: CommandLineParameter[]
-    }
+        parameters: CommandLineParameter[],
+    },
 ): YargSaverCommand {
     return multilevelCommand({
         commandLine: parseCommandLine(params.command),
         description: params.describe,
         handleInstructions: { fn: params.handler },
         parameters: params.parameters,
-    })
+    });
 }
 
 export interface YargSaver {
@@ -105,7 +103,7 @@ export interface YargSaver {
 
     // compatibility with Yargs
     option(parameterName: string,
-        params: { required: boolean }): void;
+           params: { required: boolean }): void;
     demandCommand(): void;
 
     command(params: {
@@ -128,11 +126,11 @@ export interface YargSaver {
 
 interface YargSaverCommandSpec {
     commandLine: CommandLine;
-    description: string,
-    handleInstructions: HandleInstructions,
-    nestedCommands?: YargSaverCommand[],
-    parameters?: CommandLineParameter[],
-    configureInner?: (y: YargSaver) => (YargSaver | void),
+    description: string;
+    handleInstructions: HandleInstructions;
+    nestedCommands?: YargSaverCommand[];
+    parameters?: CommandLineParameter[];
+    configureInner?: (y: YargSaver) => (YargSaver | void);
 }
 
 function buildYargSaverCommand(params: YargSaverCommandSpec) {
@@ -178,18 +176,18 @@ abstract class YargSaverContainer implements YargSaver {
 
     public validate(): ValidationError[] {
 
-        const nestedErrors = _.flatMap(this.nestedCommands, nc => nc.validate())
+        const nestedErrors = _.flatMap(this.nestedCommands, nc => nc.validate());
 
         const duplicateNameErrors = this.validateCanCombineChildren();
 
         const allErrors = [...nestedErrors, ...duplicateNameErrors]
-            .map(putInContext(this.commandName))
+            .map(putInContext(this.commandName));
 
         return allErrors;
     }
 
     public validateCanCombineChildren(): ValidationError[] {
-        const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName)
+        const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName);
         const duplicateNameProblems: ValidationError[] = _.flatten(Object.entries(commandsByNames)
             .filter(([k, v]) => v.length > 1)
             .map(([k, v]) => whyNotCombine(v).map(putInContext(k))));
@@ -198,7 +196,7 @@ abstract class YargSaverContainer implements YargSaver {
 
     public optimized(): this {
         // assumptions are made: validate has already been called
-        const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName)
+        const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName);
         const newNestedCommands = Object.entries(commandsByNames).map(([k, v]) =>
             combine(v).optimized());
         this.nestedCommands = newNestedCommands;
@@ -206,7 +204,7 @@ abstract class YargSaverContainer implements YargSaver {
     }
 
     public option(parameterName: string,
-        params: { required: boolean }) {
+                  params: { required: boolean }) {
         this.parameters.push({
             parameterName,
             required: params.required,
@@ -244,15 +242,15 @@ abstract class YargSaverContainer implements YargSaver {
         }
         this.withSubcommand(inner);
 
-        const allAliases = oneOrMany(aliases)
+        const allAliases = oneOrMany(aliases);
         allAliases.forEach(a => {
             const alternateSpec = {
                 ...spec,
                 commandLine: commandLineAlias(spec.commandLine, a),
-            }
+            };
             const extraInner = new YargSaverPositionalCommand(alternateSpec);
             this.withSubcommand(extraInner);
-        })
+        });
     }
 
     public save(yarg: yargs.Argv): yargs.Argv {
@@ -302,7 +300,7 @@ class YargSaverPositionalCommand extends YargSaverContainer implements YargSaver
     constructor(spec: YargSaverCommandSpec) {
         super();
         verifyOneWord(spec.commandLine);
-        verifyEmpty(spec.nestedCommands, "You cannot have both subcommands and positional arguments")
+        verifyEmpty(spec.nestedCommands, "You cannot have both subcommands and positional arguments");
         this.commandName = spec.commandLine.firstWord;
         this.commandLine = spec.commandLine;
         this.description = spec.description;
@@ -337,9 +335,9 @@ class YargSaverCommandWord extends YargSaverContainer implements YargSaverComman
     }
 
     constructor(public readonly commandLine: CommandLine,
-        public readonly description: string,
-        public handleInstructions: HandleInstructions,
-        public readonly opts: {
+                public readonly description: string,
+                public handleInstructions: HandleInstructions,
+                public readonly opts: {
             nestedCommands?: YargSaverCommand[],
             parameters?: CommandLineParameter[],
         } = {}) {
@@ -350,11 +348,11 @@ class YargSaverCommandWord extends YargSaverContainer implements YargSaverComman
         verifyOneWord(commandLine);
     }
 
-    /** 
+    /**
      * have they typed enough?
      */
     public get isRunnable(): boolean {
-        return doesSomething(this.handleInstructions) && !this.commandDemanded
+        return doesSomething(this.handleInstructions) && !this.commandDemanded;
     }
 
     public save(yarg: yargs.Argv): yargs.Argv {
@@ -368,21 +366,21 @@ class YargSaverCommandWord extends YargSaverContainer implements YargSaverComman
     }
 
     public validate(): ValidationError[] {
-        return [...super.validate(), ...this.validateRunningness()]
+        return [...super.validate(), ...this.validateRunningness()];
     }
 
     private validateRunningness(): ValidationError[] {
         if (doesSomething(this.handleInstructions) && !this.commandDemanded) {
-            return [] // ok. does something
+            return []; // ok. does something
         }
         if (!doesSomething(this.handleInstructions) && this.commandDemanded && this.parameters.length === 0) {
-            return [] // ok. does nothing
+            return []; // ok. does nothing
         }
         return [{
             complaint: `Does it want to do something or not? Handler says ${
                 doesSomething(this.handleInstructions)}; demandCommand says ${
-                !this.commandDemanded}; parameters says ${this.parameters.length > 0}`, contexts: []
-        }]
+                !this.commandDemanded}; parameters says ${this.parameters.length > 0}`, contexts: [],
+        }];
     }
 
 }
@@ -391,14 +389,14 @@ function putInContext(additionalContext: string) {
     return (ve: ValidationError) => ({
         complaint: ve.complaint,
         contexts: [additionalContext, ...ve.contexts],
-    })
+    });
 }
 
 function handleFunctionFromInstructions(instr: HandleInstructions):
     (argObject: any) => Promise<any> | undefined {
     if (instr === DoNothing) {
-        return async (args) => {
-            process.stdout.write("I was told to do nothing. Args: " + stringify(args))
+        return async args => {
+            process.stdout.write("I was told to do nothing. Args: " + stringify(args));
         };
     }
     return instr.fn;
@@ -419,7 +417,7 @@ function whyNotCombine(yss: YargSaverCommand[]): ValidationError[] {
     if (completeCommands.length > 1) {
         reasons.push({
             complaint: "There are two complete commands. Descriptions: " + completeCommands.map(c => c.description).join("; "),
-            contexts: [commonName]
+            contexts: [commonName],
         });
     }
     const meaningfulInstructions = yscws.filter(ys => ys.isRunnable);
@@ -427,7 +425,7 @@ function whyNotCombine(yss: YargSaverCommand[]): ValidationError[] {
         reasons.push({
             complaint: "There are two functions to respond to",
             contexts: [commonName],
-        })
+        });
     }
 
     return reasons;
@@ -435,7 +433,7 @@ function whyNotCombine(yss: YargSaverCommand[]): ValidationError[] {
 
 function combine(yss: YargSaverCommand[]) {
     // assumption: whyNotCombine has been called, so several things are guaranteed
-    const yswcs = yss as Array<YargSaverCommandWord>;
+    const yswcs = yss as YargSaverCommandWord[];
     const one = yswcs[0];
 
     const realCommand = yswcs.find(ys => ys.isRunnable) || {
@@ -449,7 +447,7 @@ function combine(yss: YargSaverCommand[]) {
         {
             nestedCommands: _.flatMap(yswcs.map(ys => ys.nestedCommands)),
             parameters: realCommand.parameters,
-        }
-    )
+        },
+    );
 
 }

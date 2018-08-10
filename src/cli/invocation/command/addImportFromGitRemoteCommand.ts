@@ -39,9 +39,9 @@ export function addImportFromGitRemoteCommand(ai: AutomationClientInfo, yargs: Y
 }
 
 async function importFromGitRemote(ai: AutomationClientInfo,
-    owner: string,
-    repo: string,
-    remoteBase: string): Promise<any> {
+                                   owner: string,
+                                   repo: string,
+                                   remoteBase: string): Promise<any> {
     infoMessage(`Importing Git remote project ${remoteBase}/${owner}/${repo}\n`);
     const orgDir = `${ai.localConfig.repositoryOwnerParentDirectory}/${owner}`;
     if (!fs.existsSync(orgDir)) {

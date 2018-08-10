@@ -19,7 +19,7 @@ import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
-import { YargSaver, yargCommandFromSentence } from "./support/YargSaver";
+import { yargCommandFromSentence, YargSaver } from "./support/YargSaver";
 
 /**
  * Add commands by name from the given client
@@ -27,8 +27,8 @@ import { YargSaver, yargCommandFromSentence } from "./support/YargSaver";
  * @param {boolean} allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function addCommandsByName(ai: AutomationClientInfo,
-    yargs: YargSaver,
-    allowUserInput: boolean = true) {
+                                  yargs: YargSaver,
+                                  allowUserInput: boolean = true) {
     yargs.command({
         command: "run", describe: "Run a command",
         builder: args => {
@@ -40,18 +40,18 @@ export function addCommandsByName(ai: AutomationClientInfo,
                         return logExceptionsToConsole(
                             () => runByCommandName(ai, hi.name, argv), ai.connectionConfig.showErrorStacks);
                     },
-                    parameters: commandLineParametersFromCommandHandlerMetadata(hi, allowUserInput)
-                }))
+                    parameters: commandLineParametersFromCommandHandlerMetadata(hi, allowUserInput),
+                }));
             });
             args.demandCommand();
             return args;
-        }
+        },
     });
 }
 
 async function runByCommandName(ai: AutomationClientInfo,
-    name: string,
-    command: any): Promise<any> {
+                                name: string,
+                                command: any): Promise<any> {
     const hm = ai.client.commands.find(h => h.name === name);
     if (!hm) {
         process.stdout.write(`No command with name [${name}]: Known command names are \n${ai.client.commands

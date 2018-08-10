@@ -22,6 +22,7 @@ import * as inquirer from "inquirer";
 import * as _ from "lodash";
 import { CommandHandlerInvocation } from "../../../../common/invocation/CommandHandlerInvocation";
 import { InvocationTarget } from "../../../../common/invocation/InvocationTarget";
+import { ExtraParametersMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/CommandLineMappedParameterResolver";
 import { FromAnyMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/FromAnyMappedParameterResolver";
 import { MappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/MappedParameterResolver";
 import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/project/ExpandedTreeMappedParameterResolver";
@@ -33,7 +34,6 @@ import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUs
 import { newCliCorrelationId } from "../../http/support/newCorrelationId";
 import { portToListenOnFor } from "../../http/support/portAllocation";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
-import { ExtraParametersMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/CommandLineMappedParameterResolver";
 
 /**
  * Listeners to command execution
@@ -62,11 +62,11 @@ export interface CommandInvocationListener {
  * @return {Promise<any>}
  */
 export async function runCommandOnColocatedAutomationClient(connectionConfig: AutomationClientConnectionRequest,
-    repositoryOwnerParentDirectory: string,
-    target: InvocationTarget,
-    hm: CommandHandlerMetadata,
-    command: any,
-    listeners: CommandInvocationListener[]): Promise<any> {
+                                                            repositoryOwnerParentDirectory: string,
+                                                            target: InvocationTarget,
+                                                            hm: CommandHandlerMetadata,
+                                                            command: any,
+                                                            listeners: CommandInvocationListener[]): Promise<any> {
     for (const l of listeners) {
         if (!!l.before) {
             await l.before(hm);
