@@ -20,8 +20,8 @@ import { Question } from "inquirer";
 import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
 import { sdmGenerator, superforkGenerator } from "./generator/bootstrapGenerators";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
-import { AddLocalMode } from "./transform/addLocalModeTransform";
 import { YargSaver } from "./support/YargSaver";
+import { AddLocalMode } from "./transform/addLocalModeTransform";
 
 /**
  * Add bootstrap commands to generate a new SDM

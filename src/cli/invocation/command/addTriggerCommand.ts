@@ -22,27 +22,27 @@ import { HookEvent } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
-import { YargSaver, yargCommandWithPositionalArguments } from "./support/YargSaver";
+import { yargCommandWithPositionalArguments, YargSaver } from "./support/YargSaver";
 
 /**
  * Add a command to triggerGitEvents execution following a git event
  * @param {YargSaver} yargs
  */
 export function addTriggerCommand(yargs: YargSaver,
-    automationClientFinder: AutomationClientFinder,
-    teamContextResolver: WorkspaceContextResolver) {
+                                  automationClientFinder: AutomationClientFinder,
+                                  teamContextResolver: WorkspaceContextResolver) {
     yargs.withSubcommand(yargCommandWithPositionalArguments({
         command: "trigger <event> [depth]",
         describe: "Trigger commit action on the current repository",
         positional: [{
             key: "event", opts: {
                 choices: Object.values(HookEvent),
-            }
+            },
         }, {
             key: "depth", opts: {
                 type: "number",
                 default: 1,
-            }
+            },
         }],
         handler: ya => {
             return logExceptionsToConsole(async () => {

@@ -15,13 +15,13 @@
  */
 
 import { logger } from "@atomist/automation-client";
+import { CommandHandlerMetadata } from "../../../../node_modules/@atomist/automation-client/metadata/automationMetadata";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { PostToAtomistListenerListener, ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
-import { YargSaver, yargCommandFromSentence } from "./support/YargSaver";
-import { CommandHandlerMetadata } from "../../../../node_modules/@atomist/automation-client/metadata/automationMetadata";
+import { yargCommandFromSentence, YargSaver } from "./support/YargSaver";
 
 /**
  * Add commands for all intents
@@ -29,8 +29,8 @@ import { CommandHandlerMetadata } from "../../../../node_modules/@atomist/automa
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function addIntentsAsCommands(ai: AutomationClientInfo,
-    yargSaver: YargSaver,
-    allowUserInput: boolean = true) {
+                                     yargSaver: YargSaver,
+                                     allowUserInput: boolean = true) {
     const handlers = ai.client.commands
         .filter(hm => !!hm.intent && hm.intent.length > 0);
 
@@ -45,13 +45,13 @@ export function addIntentsAsCommands(ai: AutomationClientInfo,
                         () => runByIntent(ai, h, argv),
                         ai.connectionConfig.showErrorStacks);
                 },
-                parameters: commandLineParametersFromCommandHandlerMetadata(h, allowUserInput)
+                parameters: commandLineParametersFromCommandHandlerMetadata(h, allowUserInput),
             }))));
 }
 
 async function runByIntent(ai: AutomationClientInfo,
-    hm: CommandHandlerMetadata,
-    command: any): Promise<any> {
+                           hm: CommandHandlerMetadata,
+                           command: any): Promise<any> {
     return runCommandOnColocatedAutomationClient(ai.connectionConfig,
         ai.localConfig.repositoryOwnerParentDirectory,
         {

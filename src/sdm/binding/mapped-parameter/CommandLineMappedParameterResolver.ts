@@ -24,7 +24,7 @@ import { MappedParameterResolver } from "./MappedParameterResolver";
  */
 export class ExtraParametersMappedParameterResolver implements MappedParameterResolver {
 
-    private args: Array<{ name: string, value: string }>;
+    private readonly args: Array<{ name: string, value: string }>;
 
     public resolve(md: MappedParameterDeclaration): string | undefined {
         const found = this.args.find(n => n.name === md.name);

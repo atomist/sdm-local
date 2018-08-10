@@ -1,11 +1,10 @@
 import * as assert from "assert";
 
 export interface CommandLine {
-    words: string[],
-    positionalArguments: string[],
-    firstWord: string,
+    words: string[];
+    positionalArguments: string[];
+    firstWord: string;
 }
-
 
 export function parseCommandLine(s: string): CommandLine {
     const allWords = s.split(" ");
@@ -14,9 +13,9 @@ export function parseCommandLine(s: string): CommandLine {
         return new CommandLineImpl(allWords, []);
     }
     const result = new CommandLineImpl(allWords.splice(0, firstPositionalArgument),
-        allWords.splice(firstPositionalArgument - 1))
+        allWords.splice(firstPositionalArgument - 1));
     // could verify that all positionalArguments are positional arguments
-    assert(s === result.toString(), `Command line parsed incorrectly: ${s} parsed to ${result}`)
+    assert(s === result.toString(), `Command line parsed incorrectly: ${s} parsed to ${result}`);
     return result;
 }
 
@@ -30,12 +29,12 @@ export function commandLineAlias(commandLine: CommandLine, alias: string): Comma
 }
 
 function isPositionalArgument(w: string) {
-    return /^<.*>$/.test(w) || /^\[.*\]/.test(w)
+    return /^<.*>$/.test(w) || /^\[.*\]/.test(w);
 }
 
 class CommandLineImpl implements CommandLine {
     constructor(public readonly words: string[],
-        public readonly positionalArguments: string[]) { }
+                public readonly positionalArguments: string[]) { }
 
     public get firstWord() {
         return this.words[0];
