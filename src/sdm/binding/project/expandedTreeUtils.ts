@@ -1,3 +1,4 @@
+import * as path from "path";
 /**
  * Return the directory in our expanded structure for the given directory
  * @param {string} repositoryOwnerParentDirectory
@@ -9,9 +10,9 @@ export function dirFor(repositoryOwnerParentDirectory: string, owner: string, re
     return `${repositoryOwnerParentDirectory}/${owner}/${repo}`;
 }
 
-const OwnerAndRepoPattern = /^\/([^\/]+)\/([^\/]+)$/;
+const OwnerAndRepoPattern = path.join("^", "([^\/]+)", "([^\/]+)$");
 
-const OwnerOnlyPattern = /^\/([^\/]+)$/;
+const OwnerOnlyPattern = path.join("^", "([^\/]+)$");
 
 function trimTrailingSlash(dir: string): string {
     return dir.replace(/\/$/, "");
