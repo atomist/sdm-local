@@ -23,7 +23,7 @@ const DoNothing: DoNothing = "do nothing";
 interface RunFunction {
     fn: (argObject: object) => Promise<any>;
 }
-interface CommandLineParameter {
+export interface CommandLineParameter {
     parameterName: string;
     required: boolean;
 }
@@ -69,6 +69,7 @@ export function multilevelCommand(params: YargSaverCommandSpec): YargSaverComman
 export interface YargSaver {
 
     withSubcommand(command: YargSaverCommandWord): YargSaver;
+    withParameter(p: CommandLineParameter): YargSaver;
 
     // compatibility with Yargs
     option(parameterName: string,
@@ -133,6 +134,11 @@ abstract class YargSaverContainer implements YargSaver {
 
     public withSubcommand(c: YargSaverCommand): this {
         this.nestedCommands.push(c);
+        return this;
+    }
+
+    public withParameter(p: CommandLineParameter) {
+        this.parameters.push(p);
         return this;
     }
 

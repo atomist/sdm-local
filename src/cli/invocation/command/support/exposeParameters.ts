@@ -28,7 +28,8 @@ export function exposeParameters(hi: CommandHandlerMetadata, args: YargSaver, al
     hi.parameters
         .forEach(p => {
             const nameToUse = convertToDisplayable(p.name);
-            args.option(nameToUse, {
+            args.withParameter({
+                parameterName: nameToUse,
                 required: !allowUserInput && p.required && !p.default_value,
             });
         });

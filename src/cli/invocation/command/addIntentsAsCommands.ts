@@ -30,7 +30,8 @@ import { YargSaver } from "./support/YargSaver";
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function addIntentsAsCommands(ai: AutomationClientInfo,
-    yargSaver: YargSaver, allowUserInput: boolean = true) {
+    yargSaver: YargSaver,
+    allowUserInput: boolean = true) {
     const handlers = ai.client.commands
         .filter(hm => !!hm.intent && hm.intent.length > 0);
 
