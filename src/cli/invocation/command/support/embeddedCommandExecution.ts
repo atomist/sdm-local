@@ -130,8 +130,8 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
         aca.connectionConfig,
         aca.localConfig.repositoryOwnerParentDirectory,
         {
-            atomistTeamName: "embedded",
-            atomistTeamId: "T0",
+            workspaceName: "embedded",
+            workspaceId: "T0",
         },
         hm,
         params, listeners);

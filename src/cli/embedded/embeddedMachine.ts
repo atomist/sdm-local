@@ -21,6 +21,7 @@ import { SoftwareDeliveryMachine } from "@atomist/sdm";
 import { configureSdm, createSoftwareDeliveryMachine } from "@atomist/sdm-core";
 import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
+import { DefaultWorkspaceId } from "../../common/binding/EnvironmentWorkspaceContextResolver";
 
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../common/configuration/defaultLocalModeConfiguration";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
@@ -56,7 +57,8 @@ const createMachine = (configure: ConfigureMachine) => (config: SoftwareDelivery
 function configurationFor(options: EmbeddedMachineOptions): Configuration {
     const cfg = defaultConfiguration();
     cfg.name = options.name || "bootstrap";
-    cfg.teamIds = ["local"];
+    cfg.teamIds = [DefaultWorkspaceId];
+    cfg.workspaceIds = [DefaultWorkspaceId];
     cfg.http.port = options.port;
 
     cfg.logging.level = "info";

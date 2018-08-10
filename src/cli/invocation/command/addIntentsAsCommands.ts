@@ -110,8 +110,8 @@ async function runByIntent(ai: AutomationClientInfo,
     return runCommandOnColocatedAutomationClient(ai.connectionConfig,
         ai.localConfig.repositoryOwnerParentDirectory,
         {
-            atomistTeamName: ai.connectionConfig.atomistTeamId,
-            atomistTeamId: ai.connectionConfig.atomistTeamName,
+            workspaceName: ai.connectionConfig.workspaceName,
+            workspaceId: ai.connectionConfig.workspaceId,
         },
         hm, command, [ShowDescriptionListener, PostToAtomistListenerListener]);
 }

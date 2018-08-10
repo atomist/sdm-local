@@ -33,10 +33,10 @@ export interface AutomationClientConnectionRequest {
 export interface AutomationClientConnectionConfig extends AutomationClientConnectionRequest {
 
     /** @deprecated replace when we don't use HTTP invocation from within service */
-    atomistTeamId: string;
+    workspaceId: string;
 
     /** @deprecated replace when we don't use HTTP invocation from within service */
-    atomistTeamName: string;
+    workspaceName: string;
 
     /**
      * Whether to display error stacks to console

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { LocalTeamContext } from "./LocalTeamContext";
+import { LocalWorkspaceContext } from "./LocalWorkspaceContext";
 
-export interface InvocationTarget extends LocalTeamContext {
+export interface InvocationTarget extends LocalWorkspaceContext {
 
     correlationId?: string;
 }

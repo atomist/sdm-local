@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-import { LocalTeamContext } from "../invocation/LocalTeamContext";
+import { EnvironmentWorkspaceContextResolver } from "./EnvironmentWorkspaceContextResolver";
 
-/**
- * Resolve team context in a local environment
- */
-export interface TeamContextResolver {
-
-    teamContext: LocalTeamContext;
-}
+export const DefaultWorkspaceContextResolver = new EnvironmentWorkspaceContextResolver();

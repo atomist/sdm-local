@@ -55,8 +55,8 @@ export function invokeEventHandlerUsingHttp(config: AutomationClientConnectionRe
             extensions: {
                 operationName: invocation.name,
                 query_id: "q-" + Date.now(),
-                team_id: target.atomistTeamId,
-                team_name: target.atomistTeamName,
+                team_id: target.workspaceId,
+                team_name: target.workspaceName,
                 correlation_id: target.correlationId || await newCliCorrelationId(),
             },
             secrets: (invocation.secrets || []).concat([

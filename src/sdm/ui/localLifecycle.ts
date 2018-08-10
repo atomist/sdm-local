@@ -28,8 +28,7 @@ import Push = OnPushToAnyBranch.Push;
  * Messages will be formatted for console output.
  */
 export const LocalLifecycle: ExtensionPack = {
-    ...metadata(),
-    name: "LocalLifecycle",
+    ...metadata("local-lifecycle"),
     configure: sdm => {
         if (isInLocalMode()) {
             addLocalLifecycle(sdm);

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-export interface LocalTeamContext {
+export interface LocalWorkspaceContext {
 
-    atomistTeamId: string;
-    atomistTeamName: string;
+    workspaceId: string;
+    workspaceName: string;
 }

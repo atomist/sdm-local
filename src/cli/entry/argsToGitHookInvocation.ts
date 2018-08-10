@@ -15,7 +15,7 @@
  */
 
 import { logger } from "@atomist/automation-client";
-import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
+import { WorkspaceContextResolver } from "../../common/binding/WorkspaceContextResolver";
 import { GitHookInvocation } from "../invocation/git/handleGitHookEvent";
 
 /**
@@ -26,7 +26,7 @@ import { GitHookInvocation } from "../invocation/git/handleGitHookEvent";
  * @return {GitHookInvocation}
  */
 export function argsToGitHookInvocation(argv: string[],
-                                        teamContextResolver: TeamContextResolver): GitHookInvocation {
+                                        teamContextResolver: WorkspaceContextResolver): GitHookInvocation {
     if (argv.length < 6) {
         logger.info("Not enough args to run Git hook: All args to git hook invocation are %j", argv);
         process.exit(0);
@@ -40,6 +40,6 @@ export function argsToGitHookInvocation(argv: string[],
     const branch = args[2].replace("refs/heads/", "");
     const sha = args[3];
 
-    const teamId = teamContextResolver.teamContext.atomistTeamId;
-    return { event, baseDir, branch, sha, teamId };
+    const workspaceId = teamContextResolver.workspaceContext.workspaceId;
+    return { event, baseDir, branch, sha, workspaceId };
 }
