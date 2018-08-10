@@ -58,7 +58,7 @@ export function multilevelCommand(params: YargSaverCommandSpec): YargSaverComman
 
         return buildYargSaverCommand({
             commandLine: parseCommandLine(nextWord),
-            description: `${nextWord} -> ${rest}`,
+            description: `...`,
             handleInstructions: DoNothing,
             nestedCommands: [inner],
         })
@@ -219,8 +219,9 @@ abstract class YargSaverContainer implements YargSaver {
         this.parameters.forEach(p => yarg.option(p.parameterName, p));
         this.nestedCommands.forEach(c => c.save(yarg));
         if (this.commandDemanded) {
-            yarg.demandCommand().recommendCommands().showHelpOnFail(true);
+            yarg.demandCommand().recommendCommands();
         }
+        yarg.showHelpOnFail(true);
         return yarg;
     }
 
@@ -403,7 +404,7 @@ function combine(yss: YargSaverCommand[]) {
     };
 
     return new YargSaverCommandWord(one.commandLine,
-        yswcs.map(y => y.description).join("; or, "),
+        _.uniq(yswcs.map(y => y.description)).join("; or, "),
         realCommand.handleInstructions,
         {
             nestedCommands: _.flatMap(yswcs.map(ys => ys.nestedCommands)),

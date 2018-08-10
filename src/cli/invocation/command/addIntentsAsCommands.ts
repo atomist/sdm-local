@@ -64,7 +64,7 @@ function exposeAsCommands(ai: AutomationClientInfo,
         names.forEach(name =>
             nested.command({
                 command: name,
-                describe: `${name} -> ${pe.kids.map(k => k.name).join("/")}`,
+                describe: `...`,
                 builder: yargs => {
                     pe.kids.forEach(kid =>
                         exposeAsCommands(ai, kid, yargs, previous.concat(pe.name), allowUserInput));
