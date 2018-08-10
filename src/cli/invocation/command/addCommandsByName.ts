@@ -34,6 +34,7 @@ export function addCommandsByName(ai: AutomationClientInfo,
             ai.client.commands.forEach(hi => {
                 args.command({
                     command: hi.name,
+                    describe: hi.description,
                     handler: async argv => {
                         return logExceptionsToConsole(
                             () => runByCommandName(ai, hi.name, argv), ai.connectionConfig.showErrorStacks);
