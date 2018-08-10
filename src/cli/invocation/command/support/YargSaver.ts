@@ -1,5 +1,6 @@
 import * as yargs from "yargs";
 import * as _ from "lodash";
+import { parseCommandLine, CommandLine, dropFirstWord } from "./yargSaver/commandLine";
 
 export function freshYargSaver(): YargSaver {
     return new YargSaverTopLevel();
@@ -33,21 +34,23 @@ interface ValidationError {
     contexts: string[];
 }
 
-export function multilevelCommand(params: YargSaverCommandSpec): YargSaverCommand {
-    const words = params.commandName.split(" ");
-    if (words.length === 1) {
+
+
+export function multilevelCommand(params: YargSaverCommandSpec): YargSaverCommandWord {
+    const { commandLine } = params;
+    if (commandLine.words.length === 1) {
         return buildYargSaverCommand(params);
     } else {
         if (params.opts.aliases) {
-            throw new Error("Aliases are not gonna work for a command with spaces in it: " + params.commandName)
+            throw new Error("Aliases are not gonna work for a command with spaces in it: " + params.commandLine)
         }
         const inner = multilevelCommand({
             ...params,
-            commandName: words.slice(1).join(" ")
+            commandLine: dropFirstWord(commandLine),
         });
 
         return buildYargSaverCommand({
-            commandName: params.commandName,
+            commandLine,
             description: "part of " + params.description,
             handleInstructions: DoNothing,
             opts: {
@@ -61,7 +64,7 @@ export function multilevelCommand(params: YargSaverCommandSpec): YargSaverComman
 
 export interface YargSaver {
 
-    withSubcommand(command: YargSaverCommand): YargSaver;
+    withSubcommand(command: YargSaverCommandWord): YargSaver;
 
     // compatibility with Yargs
     option(parameterName: string,
@@ -82,7 +85,7 @@ export interface YargSaver {
 }
 
 interface YargSaverCommandSpec {
-    commandName: string;
+    commandLine: CommandLine;
     description: string,
     handleInstructions: HandleInstructions,
     opts: {
@@ -92,16 +95,22 @@ interface YargSaverCommandSpec {
 }
 
 function buildYargSaverCommand(params: YargSaverCommandSpec) {
-    const { commandName, description, handleInstructions, opts: { aliases, configureInner } } = params;
-    const inner = new YargSaverCommand(commandName, description, handleInstructions, { aliases });
+    const { commandLine, description, handleInstructions, opts: { aliases, configureInner } } = params;
+    const inner = new YargSaverCommandWord(commandLine, description, handleInstructions, { aliases });
     if (configureInner) {
         configureInner(inner);
     }
     return inner;
 }
+
+interface YargSaverCommand extends YargSaver {
+    commandName: string;
+    description: string;
+}
 abstract class YargSaverContainer implements YargSaver {
     public commandDemanded: boolean = false;
 
+    // TODO: this might also be a positional-arg command
     public nestedCommands: YargSaverCommand[] = [];
 
     public parameters: CommandLineParameter[] = [];
@@ -129,20 +138,25 @@ abstract class YargSaverContainer implements YargSaver {
         builder?: (ys: YargSaver) => YargSaver,
         handler?: (argObject: any) => Promise<any>,
     }) {
-        const commandName = params.command;
+        const commandLine = parseCommandLine(params.command);
         const description = params.describe;
         const configureInner = params.builder;
         const handlerFunction = params.handler;
         const { aliases } = params;
-
         const handleInstructions = handlerFunction ? { fn: handlerFunction } : DoNothing;
-
-        const inner = multilevelCommand({
-            commandName,
+        const spec = {
+            commandLine,
             description,
             handleInstructions,
             opts: { configureInner, aliases }
-        });
+        };
+
+        let inner: YargSaverCommand;
+        if (commandLine.positionalArguments.length > 0) {
+            inner = new YargSaverPositionalCommand(spec);
+        } else {
+            inner = multilevelCommand(spec);
+        }
         this.withSubcommand(inner);
     }
 
@@ -158,28 +172,68 @@ abstract class YargSaverContainer implements YargSaver {
     public validate(): ValidationError[] {
         const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName)
         const duplicateNames = Object.entries(commandsByNames).filter(([k, v]) => v.length > 1);
-        const duplicateNameErrors = duplicateNames.map((([k, v]) => `Duplicate command ${k}. Descriptions: ${v.map(vv => vv.description)}`))
+        const duplicateNameErrors = duplicateNames.map((([k, v]) =>
+            `Duplicate command ${k}. Descriptions: ${v.map(vv => vv.description)}`))
         return duplicateNameErrors.map(complaint => ({ complaint, contexts: [] }));
     }
 }
 
-function validateName(name: string) {
-    if (name.includes(" ")) {
-        throw new Error("Commands must be broken into one word at a time. This is not OK: `" + name + "`");
+class YargSaverTopLevel extends YargSaverContainer {
+    public commandName: string;
+}
+
+function verifyOneWord(commandLine: CommandLine) {
+    if (commandLine.words.length > 1) {
+        throw new Error("You can only have one word if there are positional arguments");
     }
 }
 
-class YargSaverTopLevel extends YargSaverContainer {
+// TODO: check in .command() and call this one if it fits
+class YargSaverPositionalCommand extends YargSaverContainer implements YargSaverCommand {
 
+    public readonly commandName: string;
+    public readonly description: string;
+    public handleInstructions: HandleInstructions;
+    public readonly opts: { aliases?: string };
+    public readonly commandLine: CommandLine;
+
+    public withSubcommand(): never {
+        throw new Error("You cannot have both subcommands and positional arguments");
+    }
+    constructor(spec: YargSaverCommandSpec) {
+        super();
+        verifyOneWord(spec.commandLine);
+        this.commandName = spec.commandLine.firstWord;
+        this.commandLine = spec.commandLine;
+        this.description = spec.description;
+        this.handleInstructions = spec.handleInstructions;
+    }
+
+    public save(yarg: yargs.Argv): yargs.Argv {
+        // TODO: I need to use commandLine for the name of the command
+        // how does that work?
+        this.parameters.forEach(p => yarg.option(p.parameterName, p));
+        this.nestedCommands.forEach(c => c.save(yarg));
+        if (this.commandDemanded) {
+            yarg.demandCommand();
+        }
+        return yarg;
+    }
 }
 
-class YargSaverCommand extends YargSaverContainer {
 
-    constructor(public readonly commandName: string,
+class YargSaverCommandWord extends YargSaverContainer {
+
+    public get commandName() {
+        return this.commandLine.firstWord;
+    }
+
+    constructor(public readonly commandLine: CommandLine,
         public readonly description: string,
         public handleInstructions: HandleInstructions,
         public readonly opts: { aliases?: string } = {}) {
         super();
+        verifyOneWord(commandLine);
     }
 
     public save(yarg: yargs.Argv): yargs.Argv {
