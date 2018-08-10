@@ -15,13 +15,16 @@
  */
 
 import { SoftwareDeliveryMachineOptions } from "@atomist/sdm";
-import { EphemeralLocalArtifactStore, LocalModeConfiguration } from "@atomist/sdm-core";
+import {
+    EphemeralLocalArtifactStore,
+    LocalModeConfiguration,
+} from "@atomist/sdm-core";
 import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
 import { defaultAutomationClientFinder } from "../../cli/invocation/http/support/defaultAutomationClientFinder";
-import { DefaultTeamContextResolver } from "../../common/binding/defaultTeamContextResolver";
-import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
+import { DefaultWorkspaceContextResolver } from "../../common/binding/defaultWorkspaceContextResolver";
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
+import { LocalWorkspaceContext } from "../../common/invocation/LocalWorkspaceContext";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
 import { expandedTreeRepoFinder } from "../binding/project/expandedTreeRepoFinder";
 import { ExpandedTreeRepoRefResolver } from "../binding/project/ExpandedTreeRepoRefResolver";
@@ -33,8 +36,9 @@ import { LocalRepoTargets } from "../binding/project/LocalRepoTargets";
  * Merge user-supplied configuration with defaults
  * to provide configuration for a local-mode SDM
  */
-export function createSdmOptions(localModeConfig: LocalModeConfiguration,
-                                 teamContextResolver: TeamContextResolver = DefaultTeamContextResolver): SoftwareDeliveryMachineOptions {
+export function createSdmOptions(
+    localModeConfig: LocalModeConfiguration,
+    workspaceContext: LocalWorkspaceContext = DefaultWorkspaceContextResolver.workspaceContext): SoftwareDeliveryMachineOptions {
     const automationClientFinder = defaultAutomationClientFinder();
 
     const configToUse: LocalModeConfiguration = {
@@ -49,10 +53,10 @@ export function createSdmOptions(localModeConfig: LocalModeConfiguration,
             new CachingProjectLoader(),
             configToUse),
         logFactory: async (context, goal) => new LoggingProgressLog(goal.name, "info"),
-        credentialsResolver: EnvironmentTokenCredentialsResolver,
+        credentialsResolver: new EnvironmentTokenCredentialsResolver(),
         repoRefResolver,
         repoFinder: expandedTreeRepoFinder(configToUse.repositoryOwnerParentDirectory),
-        projectPersister: fileSystemProjectPersister(teamContextResolver.teamContext, configToUse, automationClientFinder),
+        projectPersister: fileSystemProjectPersister(workspaceContext, configToUse, automationClientFinder),
         targets: () => new LocalRepoTargets(configToUse.repositoryOwnerParentDirectory),
     };
 }

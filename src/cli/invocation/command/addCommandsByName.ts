@@ -62,8 +62,8 @@ async function runByCommandName(ai: AutomationClientInfo,
         ai.connectionConfig,
         ai.localConfig.repositoryOwnerParentDirectory,
         {
-            atomistTeamName: ai.connectionConfig.atomistTeamName,
-            atomistTeamId: ai.connectionConfig.atomistTeamId,
+            workspaceName: ai.connectionConfig.workspaceName,
+            workspaceId: ai.connectionConfig.workspaceId,
         },
         hm, command, [ShowDescriptionListener]);
 }

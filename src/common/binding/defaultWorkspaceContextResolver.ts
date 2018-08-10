@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-export interface LocalTeamContext {
+import {
+    DefaultLocalWorkspaceId,
+    EnvConfigWorkspaceContextResolver,
+} from "./EnvConfigWorkspaceContextResolver";
 
-    atomistTeamId: string;
-    atomistTeamName: string;
-}
+export const DefaultWorkspaceId = DefaultLocalWorkspaceId;
+export const DefaultWorkspaceContextResolver = new EnvConfigWorkspaceContextResolver();

@@ -29,7 +29,7 @@ export function invokeCommandHandlerUsingHttp(config: AutomationClientConnection
             command: invocation.name,
             parameters,
             mapped_parameters: propertiesToArgs(invocation.mappedParameters || {}).concat([
-                { name: "slackTeam", value: invocation.atomistTeamId },
+                { name: "slackTeam", value: invocation.workspaceId },
             ]).concat(parameters), // mapped parameters can also be passed in
             secrets: (invocation.secrets || []).concat([
                 { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },
@@ -37,8 +37,8 @@ export function invokeCommandHandlerUsingHttp(config: AutomationClientConnection
             correlation_id: invocation.correlationId || await newCliCorrelationId(),
             api_version: "1",
             team: {
-                id: invocation.atomistTeamId,
-                name: invocation.atomistTeamName,
+                id: invocation.workspaceId,
+                name: invocation.workspaceName,
             },
         };
 

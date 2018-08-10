@@ -18,24 +18,30 @@ import { logger } from "@atomist/automation-client";
 import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
 import { CredentialsResolver } from "@atomist/sdm";
 
-export const EnvironmentTokenCredentialsResolver: CredentialsResolver = {
+export class EnvironmentTokenCredentialsResolver implements CredentialsResolver {
 
-    eventHandlerCredentials() {
-        return credentialsFromEnvironment();
-    },
+    private readonly credentials: ProjectOperationCredentials;
 
-    commandHandlerCredentials() {
-        return credentialsFromEnvironment();
-    },
+    public eventHandlerCredentials() {
+        return this.credentials;
+    }
 
-};
+    public commandHandlerCredentials() {
+        return this.credentials;
+    }
+
+    constructor() {
+        this.credentials = credentialsFromEnvironment();
+    }
+
+}
 
 const DefaultGitHubToken = "not.a.real.token";
 
 function credentialsFromEnvironment(): ProjectOperationCredentials {
     const token = process.env.GITHUB_TOKEN;
     if (!token) {
-        logger.warn("GITHUB_TOKEN not set in environment: Defaulting to '%s'", DefaultGitHubToken);
+        logger.info("GITHUB_TOKEN not set in environment: Defaulting to '%s'", DefaultGitHubToken);
     }
     return { token };
 }

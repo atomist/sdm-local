@@ -20,8 +20,8 @@ import { EventIncoming } from "@atomist/automation-client/internal/transport/Req
 import * as stringify from "json-stringify-safe";
 import * as assert from "power-assert";
 import { newCliCorrelationId } from "../../cli/invocation/http/support/newCorrelationId";
-import { DefaultTeamContextResolver } from "../../common/binding/defaultTeamContextResolver";
-import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
+import { DefaultWorkspaceContextResolver } from "../../common/binding/defaultWorkspaceContextResolver";
+import { WorkspaceContextResolver } from "../../common/binding/WorkspaceContextResolver";
 import { EventSender } from "../../common/invocation/EventHandlerInvocation";
 
 /**
@@ -29,16 +29,16 @@ import { EventSender } from "../../common/invocation/EventHandlerInvocation";
  * @return {Promise<HandlerResult>}
  */
 export function invokeEventHandlerInProcess(correlationId?: string,
-                                            teamContextResolver: TeamContextResolver = DefaultTeamContextResolver): EventSender {
+                                            teamContextResolver: WorkspaceContextResolver = DefaultWorkspaceContextResolver): EventSender {
     return async invocation => {
         if (!automationClientInstance()) {
             throw new Error("This function must be invoked inside an automation client locally");
         }
 
         // tslint:disable-next-line:variable-name
-        const team_id = teamContextResolver.teamContext.atomistTeamId;
+        const team_id = teamContextResolver.workspaceContext.workspaceId;
         // tslint:disable-next-line:variable-name
-        const team_name = teamContextResolver.teamContext.atomistTeamName;
+        const team_name = teamContextResolver.workspaceContext.workspaceName;
 
         const data = {
             extensions: {

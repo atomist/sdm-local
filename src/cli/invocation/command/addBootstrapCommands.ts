@@ -47,6 +47,7 @@ function addSdmGenerator(yargs: Argv) {
             const questions: Question[] = [{
                 name: "type",
                 message: "Type of SDM to create",
+                type: "list",
                 choices,
                 default: "spring",
                 validate: input =>

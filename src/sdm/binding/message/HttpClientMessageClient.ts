@@ -69,7 +69,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
             options,
             machineAddress: this.options.machineAddress,
             destinations: [{
-                team: this.options.atomistTeamId,
+                team: this.options.workspaceId,
                 channels,
             } as SlackDestination],
         });
@@ -101,7 +101,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
     }
 
     constructor(public readonly options: {
-        atomistTeamId: string,
+        workspaceId: string,
         channel: string,
         port: number,
         transient: boolean,
