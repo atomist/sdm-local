@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
-import { EnvironmentWorkspaceContextResolver } from "./EnvironmentWorkspaceContextResolver";
+import {
+    DefaultLocalWorkspaceId,
+    EnvConfigWorkspaceContextResolver,
+} from "./EnvConfigWorkspaceContextResolver";
 
-export const DefaultWorkspaceContextResolver = new EnvironmentWorkspaceContextResolver();
+export const DefaultWorkspaceId = DefaultLocalWorkspaceId;
+export const DefaultWorkspaceContextResolver = new EnvConfigWorkspaceContextResolver();

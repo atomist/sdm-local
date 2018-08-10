@@ -15,38 +15,43 @@
  */
 
 import {
-    Configuration,
     getUserConfig,
     resolveWorkspaceIds,
+    UserConfig,
 } from "@atomist/automation-client";
 import * as _ from "lodash";
 import * as os from "os";
+
+import { warningMessage } from "../../cli/ui/consoleOutput";
 import { LocalWorkspaceContext } from "../invocation/LocalWorkspaceContext";
 import { WorkspaceContextResolver } from "./WorkspaceContextResolver";
 
-export const DefaultWorkspaceId = "local";
+export const DefaultLocalWorkspaceId = "local";
 
 /**
  * Resolve team from the environment, within CLI
  */
-export class EnvironmentWorkspaceContextResolver implements WorkspaceContextResolver {
+export class EnvConfigWorkspaceContextResolver implements WorkspaceContextResolver {
 
     public get workspaceContext(): LocalWorkspaceContext {
-        const configuration: Configuration = getUserConfig() || {};
-
-        // This resolves workspaceIds from env variables or user configuration.
-        resolveWorkspaceIds(configuration);
-
-        if (!_.isEmpty(configuration.workspaceIds)) {
-            return {
-                workspaceId: configuration.workspaceIds[0],
-                workspaceName: os.hostname(),
-            };
-        } else {
-            return {
-                workspaceId: DefaultWorkspaceId,
-                workspaceName: os.hostname(),
-            };
+        let userConfig: UserConfig;
+        try {
+            userConfig = getUserConfig() || {};
+        } catch (e) {
+            warningMessage(`Failed to load user configuration, ignoring: ${e.message}`);
+            userConfig = {};
         }
+        // This resolves workspaceIds from env variables or user configuration.
+        resolveWorkspaceIds(userConfig);
+
+        const workspaceId = (!_.isEmpty(userConfig.workspaceIds)) ?
+            userConfig.workspaceIds[0] : DefaultLocalWorkspaceId;
+        const workspaceName = os.hostname();
+
+        return {
+            workspaceId,
+            workspaceName,
+        };
     }
+
 }

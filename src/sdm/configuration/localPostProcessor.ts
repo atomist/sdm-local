@@ -29,7 +29,7 @@ import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
-import { EnvironmentWorkspaceContextResolver } from "../../common/binding/EnvironmentWorkspaceContextResolver";
+import { EnvConfigWorkspaceContextResolver } from "../../common/binding/EnvConfigWorkspaceContextResolver";
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
 import { CommandHandlerInvocation } from "../../common/invocation/CommandHandlerInvocation";
 import { LocalWorkspaceContext } from "../../common/invocation/LocalWorkspaceContext";
@@ -61,7 +61,7 @@ export function configureLocal(
     localModeConf: LocalModeConfiguration & { forceLocal?: boolean }): (configuration: Configuration) => Promise<Configuration> {
     return async configuration => {
 
-        const workspaceContext: LocalWorkspaceContext = new EnvironmentWorkspaceContextResolver().workspaceContext;
+        const workspaceContext: LocalWorkspaceContext = new EnvConfigWorkspaceContextResolver().workspaceContext;
 
         // Don't mess with a non local SDM
         if (!(localModeConf.forceLocal || isInLocalMode())) {
