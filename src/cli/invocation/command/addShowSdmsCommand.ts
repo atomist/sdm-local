@@ -20,10 +20,10 @@ import { renderClientsInfo } from "../../ui/renderClientInfo";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
 import { YargSaver } from "./support/YargSaver";
 
-export function addListSdmsCommand(clients: AutomationClientInfo[], yargSaver: YargSaver) {
+export function addShowSdmsCommand(clients: AutomationClientInfo[], yargSaver: YargSaver) {
     yargSaver.command({
-        command: "list sdms",
-        describe: "List connected sdms",
+        command: "show sdms",
+        describe: "Show connected sdms",
         handler: () => {
             return logExceptionsToConsole(async () => {
                 await suggestStartingAllMessagesListener();

@@ -17,17 +17,24 @@
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as http from "http";
-import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
 import { errorMessage, infoMessage } from "../../cli/ui/consoleOutput";
 import { CommandCompletionDestination } from "../../common/ui/CommandCompletionDestination";
-import { MessageRoute } from "../../common/ui/httpMessaging";
+import { AllMessagesPort, MessageRoute } from "../../common/ui/httpMessaging";
 import { canConnectTo } from "../../common/util/http/canConnectTo";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 import { isFailureMessage } from "../configuration/support/NotifyOnCompletionAutomationEventListener";
 import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
+import { toStringArray } from "@atomist/automation-client/internal/util/string";
+import { SlackDestination } from "@atomist/automation-client";
+
+export class HttpMessageListenerParameters {
+    readonly port: number;
+    readonly transient: boolean;
+    readonly channels?: string[] | string;
+}
 
 /**
- * Start process to listen to HTTP POSTS from HttpClientMessageClient
+ * Start process to listen to HTTP POSTs from HttpClientMessageClient
  * and display them to the console.
  * The /message endpoint takes StreamedMessage
  * The /write endpoint takes a simple { message }
@@ -38,18 +45,10 @@ export class HttpMessageListener {
 
     private server: http.Server;
 
-    get canTerminate() {
-        return this.transient && this.seenCompletion;
-    }
+    private readonly channels: string[];
 
-    /**
-     * Start process to listen to HTTP messages from HttpClientMessageClient
-     * and display them to the console
-     * @param {number} port
-     * @param transient is this short-lived, for one command?
-     */
-    constructor(public readonly port: number = AllMessagesPort,
-                public readonly transient: boolean = false) {
+    get canTerminate() {
+        return this.parameters.transient && this.seenCompletion;
     }
 
     public start(): this {
@@ -59,8 +58,9 @@ export class HttpMessageListener {
         app.get("/", (req, res) => res.send("Atomist Listener Daemon\n"));
 
         app.post(MessageRoute, (req, res, next) => {
+            const destinations: SlackDestination[] = req.body.destinations;
             // Shut down the listener
-            if (this.transient && req.body.destinations.some((d: any) => d.rootType === CommandCompletionDestination.rootType)) {
+            if (this.parameters.transient && destinations.some((d: any) => d.rootType === CommandCompletionDestination.rootType)) {
                 if (isFailureMessage(req.body.message)) {
                     errorMessage("Command failure\n%j\n", req.body.message);
                 }
@@ -69,6 +69,14 @@ export class HttpMessageListener {
                 // This can be slow, so we terminate the process elsewhere
                 return this.server.close();
             }
+
+            if (this.channels.length > 0) {
+                // Filter
+                if (!this.channels.some(c => destinations.some(d => !!d.channels && d.channels.includes(c)))) {
+                    return res.send({ignored: true});
+                }
+            }
+
             const messageClient = new ConsoleMessageClient("general", ProcessStdoutSender, req.body.machineAddress);
             return messageClient.send(req.body.message, req.body.destinations)
                 .then(() => res.send("Read message " + JSON.stringify(req.body) + "\n"))
@@ -81,15 +89,23 @@ export class HttpMessageListener {
             res.send({ received: true });
         });
 
-        this.server = app.listen(this.port,
+        this.server = app.listen(this.parameters.port,
             () => {
-                if (!this.transient) {
+                if (!this.parameters.transient) {
                     // It's not a transient destination
-                    infoMessage(`Atomist Local SDM: Listening on port ${this.port}...\n`);
+                    infoMessage(`Atomist Local SDM: Listening on port ${this.parameters.port}...\n`);
                 }
             },
         );
         return this;
+    }
+
+    /**
+     * Start process to listen to HTTP messages from HttpClientMessageClient
+     * and display them to the console
+     */
+    constructor(public readonly parameters: HttpMessageListenerParameters) {
+        this.channels = toStringArray(parameters.channels || []);
     }
 }
 

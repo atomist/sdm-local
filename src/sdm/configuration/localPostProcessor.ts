@@ -27,7 +27,6 @@ import {
 import * as assert from "assert";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
-import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
 import { EnvConfigWorkspaceContextResolver } from "../../common/binding/EnvConfigWorkspaceContextResolver";
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
@@ -51,6 +50,7 @@ import { SystemNotificationMessageClient } from "../binding/message/SystemNotifi
 import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandlerInProcess";
 import { createSdmOptions } from "./createSdmOptions";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
+import { AllMessagesPort } from "../../common/ui/httpMessaging";
 
 /**
  * Configures an automation client in local mode
@@ -206,7 +206,8 @@ function setMessageClient(configuration: Configuration,
                 new HttpClientMessageClient({
                     workspaceId: teamContext.workspaceId,
                     channel,
-                    port: AllMessagesPort, machineAddress,
+                    port: AllMessagesPort,
+                    machineAddress,
                     actionStore,
                     transient: false,
                 }),
@@ -214,7 +215,9 @@ function setMessageClient(configuration: Configuration,
                 // Communicate back to client if possible
                 !!port ? new HttpClientMessageClient({
                     workspaceId: teamContext.workspaceId,
-                    channel, port, machineAddress, actionStore,
+                    channel, port,
+                    machineAddress,
+                    actionStore,
                     transient: true,
                 }) : undefined,
                 localMachineConfig.useSystemNotifications ? new SystemNotificationMessageClient(channel) : undefined,

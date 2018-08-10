@@ -41,7 +41,7 @@ function addSdmGenerator(yargs: YargSaver) {
     const name = "newSdm";
     addEmbeddedCommand(yargs, {
         name,
-        cliCommand: "new sdm",
+        cliCommand: "create sdm",
         cliDescription: "Create an SDM",
         parameters: sdmGenerator(name, undefined).parameters,
         build: argv => {

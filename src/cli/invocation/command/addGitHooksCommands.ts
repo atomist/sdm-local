@@ -27,8 +27,8 @@ import { YargSaver } from "./support/YargSaver";
  */
 export function addAddGitHooksCommand(yargs: YargSaver) {
     yargs.command({
-        command: "add-git-hooks",
-        describe: `Install git hooks for current project, or if 'base' parameter is suppied, under that base`,
+        command: "add git hooks",
+        describe: `Install git hooks to current project, or if 'base' parameter is supplied, under that base`,
         builder: args => {
             return args.option("base", {
                 required: false,
@@ -43,8 +43,8 @@ export function addAddGitHooksCommand(yargs: YargSaver) {
 
 export function addRemoveGitHooksCommand(yargs: YargSaver) {
     yargs.command({
-        command: "remove-git-hooks",
-        describe: `Remove git hooks for projects managed by this SDM, or in current directory if not connected to an SDM`,
+        command: "remove git hooks",
+        describe: `Remove git hooks from all projects, or in current directory if not connected to an SDM`,
         builder: args => {
             return args.option("base", {
                 required: false,

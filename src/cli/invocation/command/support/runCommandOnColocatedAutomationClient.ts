@@ -72,7 +72,10 @@ export async function runCommandOnColocatedAutomationClient(connectionConfig: Au
             await l.before(hm);
         }
     }
-    const listener = new HttpMessageListener(await portToListenOnFor(process.pid), true).start();
+    const listener = new HttpMessageListener({
+        port: await portToListenOnFor(process.pid),
+        transient: true,
+    }).start();
     const extraArgs = Object.getOwnPropertyNames(command)
         .map(name => ({ name: convertToUsable(name), value: command[name] }))
         .filter(keep => !!keep.value);

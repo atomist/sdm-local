@@ -18,11 +18,12 @@ import { Destination, MessageOptions } from "@atomist/automation-client/spi/mess
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import * as boxen from "boxen";
-import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
 import { defaultHostUrlAliaser } from "../util/http/defaultLocalHostUrlAliaser";
 
 export const MessageRoute = "/message";
+
+export const AllMessagesPort = 6660;
 
 /**
  * Payload data structure used by HTTP message communication

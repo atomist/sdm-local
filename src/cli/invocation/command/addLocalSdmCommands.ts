@@ -24,12 +24,12 @@ import { defaultAutomationClientFinder } from "../http/support/defaultAutomation
 import { addBootstrapCommands } from "./addBootstrapCommands";
 import { addCommandsByName } from "./addCommandsByName";
 import { addAddGitHooksCommand, addRemoveGitHooksCommand } from "./addGitHooksCommands";
-import { addImportFromGitRemoteCommand } from "./addImportFromGitRemoteCommand";
+import { addCloneCommand } from "./addCloneCommand";
 import { addIntentsAsCommands } from "./addIntentsAsCommands";
-import { addListSdmsCommand } from "./addListSdmsCommand";
-import { addStartListenerCommand } from "./addStartListenerCommand";
+import { addShowSdmsCommand } from "./addShowSdmsCommand";
+import { addFeedCommand } from "./addFeedCommand";
 import { addStartSdmDeliveryMachine } from "./addStartSdmDeliveryMachine";
-import { addTriggerCommand } from "./addTriggerCommand";
+import { addReplayCommand } from "./addReplayCommand";
 import { addShowSkillsCommand } from "./showSkillsCommand";
 import { freshYargSaver, isYargSaver, optimizeOrThrow, YargSaver } from "./support/YargSaver";
 
@@ -46,15 +46,15 @@ export async function addLocalSdmCommands(yargs: Argv | YargSaver,
     const yargSaver = isYargSaver(yargs) ? yargs : freshYargSaver();
     addBootstrapCommands(yargSaver);
     addStartSdmDeliveryMachine(yargSaver);
-    addStartListenerCommand(yargSaver);
+    addFeedCommand(yargSaver);
     addAddGitHooksCommand(yargSaver);
     addRemoveGitHooksCommand(yargSaver);
 
-    addTriggerCommand(yargSaver, finder, teamContextResolver);
+    addReplayCommand(yargSaver, finder, teamContextResolver);
 
     const clients = await finder.findAutomationClients();
 
-    addListSdmsCommand(clients, yargSaver);
+    addShowSdmsCommand(clients, yargSaver);
 
     // TODO filter on working directories
     for (const client of clients) {
@@ -75,7 +75,7 @@ async function addCommandsToConnectTo(client: AutomationClientInfo, yargSaver: Y
     verifyLocalSdm(client);
 
     if (!!client.localConfig) {
-        addImportFromGitRemoteCommand(client, yargSaver);
+        addCloneCommand(client, yargSaver);
     }
 
     // If we were able to connect to an SDM...

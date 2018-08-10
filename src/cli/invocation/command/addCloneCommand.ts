@@ -24,10 +24,9 @@ import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
 import { YargSaver } from "./support/YargSaver";
 
-export function addImportFromGitRemoteCommand(ai: AutomationClientInfo, yargs: YargSaver) {
+export function addCloneCommand(ai: AutomationClientInfo, yargs: YargSaver) {
     yargs.command({
-        command: "import <owner> <repo> [remoteBase]",
-        aliases: "i",
+        command: "clone <owner> <repo> [remoteBase]",
         describe: "Import from Git remote. Remote base defaults to https://github.com",
         handler: argv => {
             return logExceptionsToConsole(async () => {

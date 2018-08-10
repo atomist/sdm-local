@@ -6,5 +6,12 @@ console window.
 Please type the following command:
 
 ```bash
-atomist listen
+atomist feed
+```
+
+To narrow your feed down to specific channels, use the optional
+`channel` argument as follows:
+
+```bash
+atomist feed --channel=AccountService --channel=BillingService
 ```
