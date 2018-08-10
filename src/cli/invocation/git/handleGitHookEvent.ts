@@ -25,7 +25,7 @@ export interface GitHookInvocation extends EventOnRepo {
 
     event: string;
 
-    teamId: string;
+    workspaceId: string;
 }
 
 /**
@@ -60,12 +60,12 @@ export async function handleGitHookEvent(cc: AutomationClientConnectionRequest,
     }
 
     const target: InvocationTarget = {
-        atomistTeamId: payload.teamId,
+        workspaceId: payload.workspaceId,
         // TODO fix
-        atomistTeamName: payload.teamId,
+        workspaceName: payload.workspaceId,
     };
 
-    return handlePushBasedEventOnRepo(payload.teamId,
+    return handlePushBasedEventOnRepo(payload.workspaceId,
         invokeEventHandlerUsingHttp(cc, target),
         lc, payload, "SetGoalsOnPush");
 }

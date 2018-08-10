@@ -35,7 +35,7 @@ import Author = PushForSdmGoal.Author;
 import Before = PushForSdmGoal.Before;
 import Committer = PushForSdmGoal.Committer;
 
-export function repoFieldsFromProject(teamId: string, id: RepoRef): CoreRepoFieldsAndChannels.Fragment {
+export function repoFieldsFromProject(workspaceId: string, id: RepoRef): CoreRepoFieldsAndChannels.Fragment {
     return {
         owner: id.owner,
         name: id.repo,
@@ -53,7 +53,7 @@ export function repoFieldsFromProject(teamId: string, id: RepoRef): CoreRepoFiel
             {
                 name: id.repo,
                 id: id.repo,
-                team: { id: teamId },
+                team: { id: workspaceId },
             },
         ],
         /**
@@ -110,13 +110,13 @@ async function buildCommitFromSha(sha: string, project: GitProject): Promise<Pus
 
 /**
  * Make a push to send to the Atomist event endpoint from the last commit to this local git project.
- * @param teamId id of current team
+ * @param workspaceId id of current team
  * @param {GitProject} project
  * @return {OnPushToAnyBranch.Push}
  */
-export async function pushFromLastCommit(teamId: string, project: GitProject): Promise<OnPushToAnyBranch.Push> {
+export async function pushFromLastCommit(workspaceId: string, project: GitProject): Promise<OnPushToAnyBranch.Push> {
     const status = await project.gitStatus();
-    const repo = repoFieldsFromProject(teamId, project.id);
+    const repo = repoFieldsFromProject(workspaceId, project.id);
     const lastCommit = await buildCommitFromSha(status.sha, project);
     const lastShas = await shaHistory(project);
     const penultimateCommit = (!!lastShas && lastShas.length >= 2) ?

@@ -29,11 +29,10 @@ import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
-import { EnvironmentTeamContextResolver } from "../../common/binding/EnvironmentTeamContextResolver";
-import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
+import { EnvConfigWorkspaceContextResolver } from "../../common/binding/EnvConfigWorkspaceContextResolver";
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
 import { CommandHandlerInvocation } from "../../common/invocation/CommandHandlerInvocation";
-import { LocalTeamContext } from "../../common/invocation/LocalTeamContext";
+import { LocalWorkspaceContext } from "../../common/invocation/LocalWorkspaceContext";
 import {
     parseChannel,
     parsePort,
@@ -62,7 +61,7 @@ export function configureLocal(
     localModeConf: LocalModeConfiguration & { forceLocal?: boolean }): (configuration: Configuration) => Promise<Configuration> {
     return async configuration => {
 
-        const teamResolver: TeamContextResolver = new EnvironmentTeamContextResolver();
+        const workspaceContext: LocalWorkspaceContext = new EnvConfigWorkspaceContextResolver().workspaceContext;
 
         // Don't mess with a non local SDM
         if (!(localModeConf.forceLocal || isInLocalMode())) {
@@ -77,7 +76,7 @@ export function configureLocal(
 
         // Set up workspaceIds and apiKey
         if (_.isEmpty(configuration.workspaceIds) && _.isEmpty(configuration.teamIds)) {
-            configuration.workspaceIds = ["local"];
+            configuration.workspaceIds = [workspaceContext.workspaceId];
         }
         if (_.isEmpty(configuration.apiKey)) {
             configuration.apiKey = guid();
@@ -88,9 +87,9 @@ export function configureLocal(
 
         const globalActionStore = freshActionStore();
 
-        configureWebEndpoints(configuration, localModeConfiguration, teamResolver.teamContext, globalActionStore);
+        configureWebEndpoints(configuration, localModeConfiguration, workspaceContext, globalActionStore);
 
-        setMessageClient(configuration, localModeConfiguration, teamResolver.teamContext, globalActionStore);
+        setMessageClient(configuration, localModeConfiguration, workspaceContext, globalActionStore);
         setGraphClient(configuration);
 
         addListeners(configuration);
@@ -107,7 +106,7 @@ export function configureLocal(
 }
 
 function configureWebEndpoints(configuration: Configuration, localModeConfiguration: LocalModeConfiguration,
-                               teamContext: LocalTeamContext,
+                               teamContext: LocalWorkspaceContext,
                                actionStore: ActionStore) {
     // Disable auth as we're only expecting local clients
     // TODO what if not basic
@@ -127,8 +126,8 @@ function configureWebEndpoints(configuration: Configuration, localModeConfigurat
                     name: req.params.name,
                     parameters: payload,
                     mappedParameters: [],
-                    atomistTeamName: teamContext.atomistTeamName,
-                    atomistTeamId: teamContext.atomistTeamId,
+                    workspaceName: teamContext.workspaceName,
+                    workspaceId: teamContext.workspaceId,
                 };
                 const r = await invokeCommandHandlerInProcess()(invocation)
                     .then(resp => res.json(decircle(resp)),
@@ -149,8 +148,8 @@ function configureWebEndpoints(configuration: Configuration, localModeConfigurat
                 }
 
                 const command = (storedAction as any).command;
-                command.atomistTeamName = teamContext.atomistTeamName;
-                command.atomistTeamId = teamContext.atomistTeamName;
+                command.workspaceName = teamContext.workspaceName;
+                command.workspaceId = teamContext.workspaceName;
                 logger.debug("The parameters are: %j", command.parameters);
                 if (!command) {
                     logger.error("No command stored on action object: %j", storedAction);
@@ -191,7 +190,7 @@ function decircle(result: HandlerResult) {
  */
 function setMessageClient(configuration: Configuration,
                           localMachineConfig: LocalModeConfiguration,
-                          teamContext: LocalTeamContext,
+                          teamContext: LocalWorkspaceContext,
                           actionStore: ActionStore) {
     configuration.http.messageClientFactory =
         aca => {
@@ -205,7 +204,7 @@ function setMessageClient(configuration: Configuration,
             const port = parsePort(aca.context.correlationId);
             return new BroadcastingMessageClient(
                 new HttpClientMessageClient({
-                    atomistTeamId: teamContext.atomistTeamId,
+                    workspaceId: teamContext.workspaceId,
                     channel,
                     port: AllMessagesPort, machineAddress,
                     actionStore,
@@ -214,7 +213,7 @@ function setMessageClient(configuration: Configuration,
                 new GoalEventForwardingMessageClient(),
                 // Communicate back to client if possible
                 !!port ? new HttpClientMessageClient({
-                    atomistTeamId: teamContext.atomistTeamId,
+                    workspaceId: teamContext.workspaceId,
                     channel, port, machineAddress, actionStore,
                     transient: true,
                 }) : undefined,

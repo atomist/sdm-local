@@ -67,7 +67,7 @@ export function isValidSHA1(s: string): boolean {
 /**
  * Perform push-based event handling on this repo
  */
-export async function handlePushBasedEventOnRepo(atomistTeamId: string,
+export async function handlePushBasedEventOnRepo(workspaceId: string,
                                                  sender: EventSender,
                                                  lc: LocalModeConfiguration,
                                                  payload: EventOnRepo,
@@ -86,18 +86,18 @@ export async function handlePushBasedEventOnRepo(atomistTeamId: string,
         return undefined;
     }
 
-    const push = await createPush(atomistTeamId, lc.repositoryOwnerParentDirectory, payload);
+    const push = await createPush(workspaceId, lc.repositoryOwnerParentDirectory, payload);
     return sender({
         name: eventHandlerName,
         payload: pushToPayload(push),
     });
 }
 
-async function createPush(teamId: string, repositoryOwnerParentDirectory: string, payload: EventOnRepo): Promise<OnPushToAnyBranch.Push> {
+async function createPush(workspaceId: string, repositoryOwnerParentDirectory: string, payload: EventOnRepo): Promise<OnPushToAnyBranch.Push> {
     const { baseDir, branch, sha } = payload;
     return doWithProjectUnderExpandedDirectoryTree(baseDir, branch, sha, repositoryOwnerParentDirectory,
         async p => {
-            return pushFromLastCommit(teamId, p);
+            return pushFromLastCommit(workspaceId, p);
         });
 }
 

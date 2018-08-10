@@ -16,7 +16,11 @@
 
 import { LocalModeConfiguration } from "@atomist/sdm-core";
 import axios from "axios";
-import { AutomationClientInfo, ConnectedClient } from "../../AutomationClientInfo";
+import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";
+import {
+    AutomationClientInfo,
+    ConnectedClient,
+} from "../../AutomationClientInfo";
 import { AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 
 /**
@@ -36,15 +40,14 @@ export async function fetchMetadataFromAutomationClient(connectionConfig: Automa
             // Do nothing. The automation client we're talking to is not in local mode
         }
         const client: ConnectedClient = resp.data;
+        const workspaceContext = DefaultWorkspaceContextResolver.workspaceContext;
         return {
             client,
             localConfig,
             connectionConfig: {
                 ...connectionConfig,
-                // TODO fix this; we need to read the client.config.json as fallback
-                atomistTeamId: client.team_ids ? client.team_ids[0] : "local",
-                // TODO fix this
-                atomistTeamName: "local",
+                workspaceId: client.team_ids ? client.team_ids[0] : workspaceContext.workspaceId,
+                workspaceName: workspaceContext.workspaceName,
             },
         };
     } catch (e) {
@@ -55,9 +58,8 @@ export async function fetchMetadataFromAutomationClient(connectionConfig: Automa
             localConfig: undefined,
             connectionConfig: {
                 ...connectionConfig,
-                atomistTeamId: undefined,
-                // TODO fix this
-                atomistTeamName: undefined,
+                workspaceId: undefined,
+                workspaceName: undefined,
             },
         };
     }

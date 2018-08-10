@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { LocalTeamContext } from "../invocation/LocalTeamContext";
+import { LocalWorkspaceContext } from "../invocation/LocalWorkspaceContext";
 
 /**
- * Resolve team context in a local environment
+ * Resolve workspace context in a local environment
  */
-export interface TeamContextResolver {
+export interface WorkspaceContextResolver {
 
-    teamContext: LocalTeamContext;
+    workspaceContext: LocalWorkspaceContext;
 }

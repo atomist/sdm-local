@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
-import { EnvironmentTeamContextResolver } from "./EnvironmentTeamContextResolver";
+export interface LocalWorkspaceContext {
 
-export const DefaultTeamContextResolver = new EnvironmentTeamContextResolver();
+    workspaceId: string;
+    workspaceName: string;
+}

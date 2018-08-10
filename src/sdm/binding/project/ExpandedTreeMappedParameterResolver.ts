@@ -18,6 +18,7 @@ import { logger, MappedParameters } from "@atomist/automation-client";
 import { MappedParameterDeclaration } from "@atomist/automation-client/metadata/automationMetadata";
 import { GitHubDotComBase } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import * as os from "os";
+import { DefaultWorkspaceId } from "../../../common/binding/defaultWorkspaceContextResolver";
 import { MappedParameterResolver } from "../mapped-parameter/MappedParameterResolver";
 import { parseOwnerAndRepo } from "./expandedTreeUtils";
 
@@ -29,19 +30,20 @@ export class ExpandedTreeMappedParameterResolver implements MappedParameterResol
 
     public resolve(md: MappedParameterDeclaration): string | undefined {
         switch (md.uri) {
-            case MappedParameters.GitHubRepository :
+            case MappedParameters.GitHubRepository:
                 const { repo } = parseOwnerAndRepo(this.repositoryOwnerParentDirectory);
                 return repo;
-            case MappedParameters.GitHubOwner :
+            case MappedParameters.GitHubOwner:
                 const { owner } = parseOwnerAndRepo(this.repositoryOwnerParentDirectory);
                 return owner;
-            case MappedParameters.SlackTeam :
-                return this.atomistTeamId;
-            case MappedParameters.SlackUserName :
+            case MappedParameters.SlackTeam:
+                // TODO fix this; the SlackTeam mapped parameters is !== atomist workspace id
+                return this.workspaceId;
+            case MappedParameters.SlackUserName:
                 return process.env.SLACK_USER_NAME || os.userInfo().username;
-            case MappedParameters.GitHubWebHookUrl :
+            case MappedParameters.GitHubWebHookUrl:
                 return "http://not.a.real.url";
-            case MappedParameters.GitHubApiUrl :
+            case MappedParameters.GitHubApiUrl:
                 return GitHubDotComBase;
             default:
                 logger.warn("Mapped parameter %s not resolvable", md.uri);
@@ -53,6 +55,6 @@ export class ExpandedTreeMappedParameterResolver implements MappedParameterResol
     }
 
     constructor(private readonly repositoryOwnerParentDirectory: string,
-                private readonly atomistTeamId: string = "T123") {
+                private readonly workspaceId: string = DefaultWorkspaceId) {
     }
 }

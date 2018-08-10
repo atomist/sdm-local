@@ -16,7 +16,7 @@
 
 import { logger } from "@atomist/automation-client";
 import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
-import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
+import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { determineCwd, withinExpandedTree } from "../../../sdm/binding/project/expandedTreeUtils";
 import { FileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { shaHistory } from "../../../sdm/util/git";
@@ -35,7 +35,7 @@ import { handleGitHookEvent } from "./handleGitHookEvent";
 export async function triggerGitEvents(clients: AutomationClientInfo[],
                                        event: string,
                                        depth: number,
-                                       teamContextResolver: TeamContextResolver) {
+                                       teamContextResolver: WorkspaceContextResolver) {
     const relevantClients = clients.filter(client => !!client.localConfig && withinExpandedTree(client.localConfig.repositoryOwnerParentDirectory));
     await Promise.all(relevantClients.map(client => triggerGitEventsOn(client, event, depth, teamContextResolver)));
 }
@@ -43,9 +43,9 @@ export async function triggerGitEvents(clients: AutomationClientInfo[],
 async function triggerGitEventsOn(ai: AutomationClientInfo,
                                   event: string,
                                   depth: number,
-                                  teamContextResolver: TeamContextResolver) {
+                                  teamContextResolver: WorkspaceContextResolver) {
     const currentDir = determineCwd();
-    const teamId = teamContextResolver.teamContext.atomistTeamId;
+    const workspaceId = teamContextResolver.workspaceContext.workspaceId;
     if (withinExpandedTree(ai.localConfig.repositoryOwnerParentDirectory, currentDir)) {
         const p = GitCommandGitProject.fromBaseDir(FileSystemRemoteRepoRef.fromDirectory({
                 repositoryOwnerParentDirectory: ai.localConfig.repositoryOwnerParentDirectory,
@@ -62,7 +62,7 @@ async function triggerGitEventsOn(ai: AutomationClientInfo,
             if (depth > 1) {
                 infoMessage("Sha [%s]\n", sha);
             }
-            const invocation = { event, baseDir: currentDir, branch, sha, teamId };
+            const invocation = { event, baseDir: currentDir, branch, sha, workspaceId };
             logger.debug("Trigger %j", invocation);
             infoMessage(renderEventDispatch(ai, invocation));
             await handleGitHookEvent(ai.connectionConfig, ai.localConfig, invocation);
