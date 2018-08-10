@@ -7,11 +7,12 @@ export function freshYargSaver(): YargSaver {
     return new YargSaverTopLevel();
 }
 
-export function validateOrThrow(yargSaver: YargSaver) {
-    const result = yargSaver.validate();
-    if (result.length > 0) {
+export function optimizeOrThrow(yargSaver: YargSaver): YargSaver {
+    const result = yargSaver.optimized();
+    if (Array.isArray(result)) {
         throw new Error("The collected commands are invalid: " + result.map(errorToString).join("\n"));
     }
+    return result;
 }
 
 type HandleInstructions = RunFunction | DoNothing;
@@ -59,7 +60,7 @@ export function multilevelCommand(params: YargSaverCommandSpec): YargSaverComman
             commandLine: parseCommandLine(nextWord),
             description: `${nextWord} -> ${rest}`,
             handleInstructions: DoNothing,
-            opts: {
+            opts: { // todo: specify subcommand directly instead of a configure function
                 configureInner: ys => ys.withSubcommand(inner)
             }
         })
@@ -85,6 +86,11 @@ export interface YargSaver {
     }): void;
 
     save(yarg: yargs.Argv): yargs.Argv;
+
+    /**
+     * Construct a YargSaver with duplicate commands combined etc.
+     */
+    optimized(): YargSaver | ValidationError[];
 
     validate(): ValidationError[];
 }
@@ -189,6 +195,10 @@ abstract class YargSaverContainer implements YargSaver {
         const duplicateNameErrors = duplicateNames.map((([k, v]) =>
             `Duplicate command ${k}. Descriptions: ${v.map(vv => vv.description).join("; ")}`))
         return duplicateNameErrors.map(complaint => ({ complaint, contexts: [] }));
+    }
+
+    public optimized(): YargSaver | ValidationError[] {
+        return this.validate();
     }
 }
 

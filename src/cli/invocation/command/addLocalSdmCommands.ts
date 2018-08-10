@@ -31,7 +31,7 @@ import { addStartListenerCommand } from "./addStartListenerCommand";
 import { addStartSdmDeliveryMachine } from "./addStartSdmDeliveryMachine";
 import { addTriggerCommand } from "./addTriggerCommand";
 import { addShowSkillsCommand } from "./showSkillsCommand";
-import { YargSaver, freshYargSaver, validateOrThrow } from "./support/YargSaver";
+import { YargSaver, freshYargSaver, validateOrThrow, optimizeOrThrow } from "./support/YargSaver";
 
 /**
  * Given a yargs instance, add commands based on local SDMs we can connect to
@@ -60,8 +60,7 @@ export async function addLocalSdmCommands(yargs: Argv,
     for (const client of clients) {
         await addCommandsToConnectTo(client, yargSaver);
     }
-    validateOrThrow(yargSaver);
-    yargSaver.save(yargs);
+    optimizeOrThrow(yargSaver).save(yargs);
 }
 
 /**
