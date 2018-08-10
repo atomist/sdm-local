@@ -31,7 +31,7 @@ import { addStartListenerCommand } from "./addStartListenerCommand";
 import { addStartSdmDeliveryMachine } from "./addStartSdmDeliveryMachine";
 import { addTriggerCommand } from "./addTriggerCommand";
 import { addShowSkillsCommand } from "./showSkillsCommand";
-import { YargSaver, freshYargSaver, validateOrThrow, optimizeOrThrow } from "./support/YargSaver";
+import { YargSaver, freshYargSaver, optimizeOrThrow } from "./support/YargSaver";
 
 /**
  * Given a yargs instance, add commands based on local SDMs we can connect to

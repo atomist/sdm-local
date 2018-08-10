@@ -117,6 +117,7 @@ interface YargSaverCommand extends YargSaver {
     commandName: string;
     description: string;
 }
+
 abstract class YargSaverContainer implements YargSaver {
     public commandDemanded: boolean = false;
 
@@ -198,6 +199,7 @@ abstract class YargSaverContainer implements YargSaver {
     }
 
     public optimized(): YargSaver | ValidationError[] {
+        const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName)
         return this.validate();
     }
 }
@@ -247,8 +249,6 @@ class YargSaverPositionalCommand extends YargSaverContainer implements YargSaver
         return yarg;
     }
 }
-
-
 class YargSaverCommandWord extends YargSaverContainer {
 
     public get commandName() {
@@ -300,4 +300,31 @@ function handleFunctionFromInstructions(instr: HandleInstructions):
         };
     }
     return instr.fn;
+}
+
+function hasPositionalArguments(ys: YargSaverCommand): ys is YargSaverPositionalCommand {
+    return (ys as any).commandLine.positionalArguments.length > 0;
+}
+
+function whyNotCombine(yss: YargSaverCommand[]): ValidationError[] {
+    const commonName = yss[0].commandName;
+    const reasons: ValidationError[] = [];
+    if (yss.some(hasPositionalArguments)) {
+        reasons.push({ complaint: "Cannot combine commands with positional arguments", contexts: [commonName] });
+    }
+    const yscws = yss as Array<YargSaverCommandWord | YargSaverPositionalCommand>;
+    const completeCommands = yscws.filter(ys => !ys.demandCommand);
+    if (completeCommands.length > 1) {
+        reasons.push({
+            complaint: "There are two complete commands. Descriptions: " + completeCommands.map(c => c.description).join("; "),
+            contexts: [commonName]
+        });
+    }
+    return reasons;
+}
+
+function combine(yss: YargSaverCommand[]) {
+    // we can only combine the words. No positional args allowed
+    const yswcs = yss as Array<YargSaverCommandWord>;
+
 }
