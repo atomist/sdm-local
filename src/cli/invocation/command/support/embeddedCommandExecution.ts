@@ -53,7 +53,7 @@ export interface EmbeddedCommandSpec {
 }
 
 /**
- * Add a command, asking for repositoryOwnerParentDirectory, and spawn a sdm.machine
+ * Add a command, asking for repositoryOwnerParentDirectory, and spawn an SDM
  * to execute it. Shut the sdm.machine down afterwards.
  * Once the client connects, it will prompt for parameters required by the command.
  * These parameters can also be passed through using the initial yargs request,

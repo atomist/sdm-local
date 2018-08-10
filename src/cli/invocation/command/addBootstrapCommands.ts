@@ -37,17 +37,28 @@ export function addBootstrapCommands(yargs: Argv) {
 
 function addSdmGenerator(yargs: Argv) {
     const choices = ["spring", "blank"];
+    const typeDescription = "Type of SDM to create";
     const name = "newSdm";
     addEmbeddedCommand(yargs, {
         name,
         cliCommand: "new sdm",
         cliDescription: "Create an SDM",
         parameters: sdmGenerator(name, undefined).parameters,
+        build: argv => {
+            // Expose type parameter
+            argv.option("type", {
+                required: false,
+                description: typeDescription,
+                choices,
+            });
+            return argv;
+        },
         configurer: async () => {
             adviceDoc("docs/newSdm.md");
+            // Gather type parameter
             const questions: Question[] = [{
                 name: "type",
-                message: "Type of SDM to create",
+                message: typeDescription,
                 type: "list",
                 choices,
                 default: "spring",
