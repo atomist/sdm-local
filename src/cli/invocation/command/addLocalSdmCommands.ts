@@ -15,8 +15,8 @@
  */
 
 import { Argv } from "yargs";
-import { DefaultTeamContextResolver } from "../../../common/binding/defaultTeamContextResolver";
-import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
+import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";
+import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { infoMessage } from "../../ui/consoleOutput";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
@@ -40,7 +40,7 @@ import { addShowSkillsCommand } from "./showSkillsCommand";
  */
 export async function addLocalSdmCommands(yargs: Argv,
                                           finder: AutomationClientFinder = defaultAutomationClientFinder()) {
-    const teamContextResolver: TeamContextResolver = DefaultTeamContextResolver;
+    const teamContextResolver: WorkspaceContextResolver = DefaultWorkspaceContextResolver;
 
     addBootstrapCommands(yargs);
     addStartSdmDeliveryMachine(yargs);

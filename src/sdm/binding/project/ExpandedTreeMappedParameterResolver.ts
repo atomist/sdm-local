@@ -18,6 +18,7 @@ import { logger, MappedParameters } from "@atomist/automation-client";
 import { MappedParameterDeclaration } from "@atomist/automation-client/metadata/automationMetadata";
 import { GitHubDotComBase } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import * as os from "os";
+import { DefaultWorkspaceId } from "../../../common/binding/EnvironmentWorkspaceContextResolver";
 import { MappedParameterResolver } from "../mapped-parameter/MappedParameterResolver";
 import { parseOwnerAndRepo } from "./expandedTreeUtils";
 
@@ -35,8 +36,9 @@ export class ExpandedTreeMappedParameterResolver implements MappedParameterResol
             case MappedParameters.GitHubOwner :
                 const { owner } = parseOwnerAndRepo(this.repositoryOwnerParentDirectory);
                 return owner;
-            case MappedParameters.SlackTeam :
-                return this.atomistTeamId;
+            case MappedParameters.SlackTeam:
+                // TODO fix this; the SlackTeam mapped parameters is !== atomist workspace id
+                return this.workspaceId;
             case MappedParameters.SlackUserName :
                 return process.env.SLACK_USER_NAME || os.userInfo().username;
             case MappedParameters.GitHubWebHookUrl :
@@ -53,6 +55,6 @@ export class ExpandedTreeMappedParameterResolver implements MappedParameterResol
     }
 
     constructor(private readonly repositoryOwnerParentDirectory: string,
-                private readonly atomistTeamId: string = "T123") {
+                private readonly workspaceId: string = DefaultWorkspaceId) {
     }
 }

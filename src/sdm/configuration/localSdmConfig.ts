@@ -23,8 +23,7 @@ import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
  * @type {{name: string; vendor: string; version: string; configure: (sdm) => void}}
  */
 export const LocalSdmConfig: ExtensionPack = {
-    ...metadata(),
-    name: "LocalSdmConfig",
+    ...metadata("local-config"),
     configure: sdm => {
         if (isInLocalMode()) {
             registerNoOpListeners(sdm);

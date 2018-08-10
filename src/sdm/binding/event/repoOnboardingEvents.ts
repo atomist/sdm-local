@@ -19,9 +19,9 @@ import { OnRepoCreation } from "@atomist/sdm";
 import { CoreRepoFieldsAndChannels, OnChannelLink, OnRepoOnboarded } from "@atomist/sdm-core/typings/types";
 import { repoFieldsFromProject } from "../../../common/git/pushFromLastCommit";
 import { EventSender } from "../../../common/invocation/EventHandlerInvocation";
-import { LocalTeamContext } from "../../../common/invocation/LocalTeamContext";
+import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 
-export async function sendRepoCreationEvent(cc: LocalTeamContext, id: RepoId, eventSender: EventSender) {
+export async function sendRepoCreationEvent(cc: LocalWorkspaceContext, id: RepoId, eventSender: EventSender) {
     const payload: OnRepoCreation.Subscription = {
         Repo: [{
             owner: id.owner,
@@ -35,8 +35,8 @@ export async function sendRepoCreationEvent(cc: LocalTeamContext, id: RepoId, ev
     });
 }
 
-export async function sendChannelLinkEvent(cc: LocalTeamContext, id: RepoId, eventSender: EventSender) {
-    const repo = repoFieldsFromProject(cc.atomistTeamId, id) as CoreRepoFieldsAndChannels.Fragment;
+export async function sendChannelLinkEvent(cc: LocalWorkspaceContext, id: RepoId, eventSender: EventSender) {
+    const repo = repoFieldsFromProject(cc.workspaceId, id) as CoreRepoFieldsAndChannels.Fragment;
     const payload: OnChannelLink.Subscription = {
         ChannelLink: [{
             repo,
@@ -49,10 +49,10 @@ export async function sendChannelLinkEvent(cc: LocalTeamContext, id: RepoId, eve
     });
 }
 
-export async function sendRepoOnboardingEvent(cc: LocalTeamContext, id: RepoId, eventSender: EventSender) {
+export async function sendRepoOnboardingEvent(cc: LocalWorkspaceContext, id: RepoId, eventSender: EventSender) {
     const payload: OnRepoOnboarded.Subscription = {
         RepoOnboarded: [{
-            repo: repoFieldsFromProject(cc.atomistTeamId, id) as CoreRepoFieldsAndChannels.Fragment,
+            repo: repoFieldsFromProject(cc.workspaceId, id) as CoreRepoFieldsAndChannels.Fragment,
         }],
     };
     return eventSender({

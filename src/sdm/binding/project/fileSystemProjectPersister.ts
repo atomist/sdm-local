@@ -28,7 +28,7 @@ import { AutomationClientFinder } from "../../../cli/invocation/http/AutomationC
 import { invokeEventHandlerUsingHttpOnAll } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
 import { addGitHooksToProject } from "../../../cli/setup/addGitHooks";
 import { handlePushBasedEventOnRepo } from "../../../common/git/handlePushBasedEventOnRepo";
-import { LocalTeamContext } from "../../../common/invocation/LocalTeamContext";
+import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 import { invokeEventHandlerInProcess } from "../../invocation/invokeEventHandlerInProcess";
 import { lastSha } from "../../util/git";
 import { runAndLog } from "../../util/runAndLog";
@@ -42,7 +42,7 @@ import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
  * all local automation clients.
  * @return {ProjectPersister}
  */
-export function fileSystemProjectPersister(teamContext: LocalTeamContext,
+export function fileSystemProjectPersister(teamContext: LocalWorkspaceContext,
                                            localModeCofiguration: LocalModeConfiguration,
                                            automationClientFinder: AutomationClientFinder): ProjectPersister {
     return async (p, _, id, params) => {
@@ -76,7 +76,7 @@ export function fileSystemProjectPersister(teamContext: LocalTeamContext,
 /**
  * Send events that should apply to a new project
  */
-async function emitEventsForNewProject(cc: LocalTeamContext,
+async function emitEventsForNewProject(cc: LocalWorkspaceContext,
                                        lc: LocalModeConfiguration,
                                        createdProject: LocalProject,
                                        id: RepoRef,
@@ -87,14 +87,14 @@ async function emitEventsForNewProject(cc: LocalTeamContext,
     const sha = await lastSha(createdProject as GitProject);
     const branch = "master";
 
-    await handlePushBasedEventOnRepo(cc.atomistTeamId, invokeEventHandlerInProcess(), lc, {
+    await handlePushBasedEventOnRepo(cc.workspaceId, invokeEventHandlerInProcess(), lc, {
         baseDir: createdProject.baseDir,
         sha,
         branch,
     }, "OnFirstPushToRepo");
 
     // This is the first push
-    await handlePushBasedEventOnRepo(cc.atomistTeamId, invokeEventHandlerInProcess(), lc, {
+    await handlePushBasedEventOnRepo(cc.workspaceId, invokeEventHandlerInProcess(), lc, {
         baseDir: createdProject.baseDir,
         sha,
         branch,

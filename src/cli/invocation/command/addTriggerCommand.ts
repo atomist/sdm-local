@@ -16,7 +16,7 @@
 
 import { sprintf } from "sprintf-js";
 import { Argv } from "yargs";
-import { TeamContextResolver } from "../../../common/binding/TeamContextResolver";
+import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { postToListener } from "../../../common/ui/httpMessaging";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { HookEvent } from "../git/handleGitHookEvent";
@@ -30,7 +30,7 @@ import { suggestStartingAllMessagesListener } from "./support/suggestStartingAll
  */
 export function addTriggerCommand(yargs: Argv,
                                   automationClientFinder: AutomationClientFinder,
-                                  teamContextResolver: TeamContextResolver) {
+                                  teamContextResolver: WorkspaceContextResolver) {
     yargs.command({
         command: "trigger <event> [depth]",
         describe: "Trigger commit action on the current repository",
