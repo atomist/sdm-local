@@ -219,7 +219,7 @@ abstract class YargSaverContainer implements YargSaver {
         this.parameters.forEach(p => yarg.option(p.parameterName, p));
         this.nestedCommands.forEach(c => c.save(yarg));
         if (this.commandDemanded) {
-            yarg.demandCommand();
+            yarg.demandCommand().recommendCommands().showHelpOnFail(true);
         }
         return yarg;
     }
