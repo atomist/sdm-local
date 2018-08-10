@@ -51,7 +51,7 @@ export interface YargSaver {
 
     // compatibility with Yargs
     option(parameterName: string,
-        params: { required: boolean }): void;
+        params: { required: boolean, description?: string }): void;
     demandCommand(): void;
 
     command(params: {
@@ -92,6 +92,7 @@ interface RunFunction {
 export interface CommandLineParameter {
     parameterName: string;
     required: boolean;
+    description?: string;
 }
 
 interface ValidationError {
@@ -215,10 +216,10 @@ abstract class YargSaverContainer implements YargSaver {
     }
 
     public option(parameterName: string,
-        params: { required: boolean }) {
+        params: { required: boolean, description?: string }) {
         this.parameters.push({
             parameterName,
-            required: params.required,
+            ...params
         });
     }
     public demandCommand() {

@@ -46,10 +46,10 @@ export async function addLocalSdmCommands(yargs: Argv,
     addBootstrapCommands(yargs);
     addStartSdmDeliveryMachine(yargs);
     addStartListenerCommand(yargs);
-    addAddGitHooksCommand(yargs);
-    addRemoveGitHooksCommand(yargs);
-
     const yargSaver = freshYargSaver();
+    addAddGitHooksCommand(yargSaver);
+    addRemoveGitHooksCommand(yargSaver);
+
     addTriggerCommand(yargSaver, finder, teamContextResolver);
 
     const clients = await finder.findAutomationClients();
