@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm/compare/0.1.6...HEAD)
 
+### Changed
+
+-   Cleanup team -> workspace. [#89](https://github.com/atomist/sdm-local/issues/89)
+
 ## [0.1.6](https://github.com/atomist/sdm/compare/0.1.5...0.1.6) - 2018-08-09
 
 ## [0.1.5](https://github.com/atomist/sdm/compare/0.1.4...0.1.5) - 2018-08-09
@@ -32,8 +36,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Can provide tag when publishing NPM package [#404](https://github.com/atomist/sdm/issues/404)
 
 ## [0.1.0](https://github.com/atomist/sdm/tree/0.1.0) - 2018-05-16
-
-Initial release
 
 ### Added
 
