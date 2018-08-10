@@ -24,6 +24,11 @@ export function dropFirstWord(commandLine: CommandLine): CommandLine {
     return new CommandLineImpl(commandLine.words.splice(1), commandLine.positionalArguments);
 }
 
+export function commandLineAlias(commandLine: CommandLine, alias: string): CommandLine {
+    assert(!alias.includes(" "), "multiword aliases not supported: " + alias);
+    return new CommandLineImpl([alias], commandLine.positionalArguments);
+}
+
 function isPositionalArgument(w: string) {
     return /^<.*>$/.test(w) || /^\[.*\]/.test(w)
 }

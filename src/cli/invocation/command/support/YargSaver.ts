@@ -1,6 +1,6 @@
 import * as yargs from "yargs";
 import * as _ from "lodash";
-import { parseCommandLine, CommandLine, dropFirstWord } from "./yargSaver/commandLine";
+import { parseCommandLine, CommandLine, dropFirstWord, commandLineAlias } from "./yargSaver/commandLine";
 
 export function freshYargSaver(): YargSaver {
     return new YargSaverTopLevel();
@@ -41,9 +41,6 @@ export function multilevelCommand(params: YargSaverCommandSpec): YargSaverComman
     if (commandLine.words.length === 1) {
         return buildYargSaverCommand(params);
     } else {
-        if (params.opts.aliases) {
-            throw new Error("Aliases are not gonna work for a command with spaces in it: " + params.commandLine)
-        }
         const inner = multilevelCommand({
             ...params,
             commandLine: dropFirstWord(commandLine),
@@ -54,7 +51,6 @@ export function multilevelCommand(params: YargSaverCommandSpec): YargSaverComman
             description: "part of " + params.description,
             handleInstructions: DoNothing,
             opts: {
-                aliases: undefined,
                 configureInner: ys => ys.withSubcommand(inner)
             }
         })
@@ -89,14 +85,13 @@ interface YargSaverCommandSpec {
     description: string,
     handleInstructions: HandleInstructions,
     opts: {
-        aliases: string,
         configureInner: (y: YargSaver) => (YargSaver | void)
     }
 }
 
 function buildYargSaverCommand(params: YargSaverCommandSpec) {
-    const { commandLine, description, handleInstructions, opts: { aliases, configureInner } } = params;
-    const inner = new YargSaverCommandWord(commandLine, description, handleInstructions, { aliases });
+    const { commandLine, description, handleInstructions, opts: { configureInner } } = params;
+    const inner = new YargSaverCommandWord(commandLine, description, handleInstructions, {});
     if (configureInner) {
         configureInner(inner);
     }
@@ -148,7 +143,7 @@ abstract class YargSaverContainer implements YargSaver {
             commandLine,
             description,
             handleInstructions,
-            opts: { configureInner, aliases }
+            opts: { configureInner }
         };
 
         let inner: YargSaverCommand;
@@ -158,6 +153,16 @@ abstract class YargSaverContainer implements YargSaver {
             inner = multilevelCommand(spec);
         }
         this.withSubcommand(inner);
+
+        const allAliases = oneOrMany(aliases)
+        allAliases.forEach(a => {
+            const alternateSpec = {
+                ...spec,
+                commandLine: commandLineAlias(spec.commandLine, a),
+            }
+            const extraInner = new YargSaverPositionalCommand(alternateSpec);
+            this.withSubcommand(extraInner);
+        })
     }
 
     public save(yarg: yargs.Argv): yargs.Argv {
@@ -178,6 +183,9 @@ abstract class YargSaverContainer implements YargSaver {
     }
 }
 
+function oneOrMany<T>(t: T | T[] | undefined): T[] {
+    return t === undefined ? [] : (Array.isArray(t) ? t : [t]);
+}
 class YargSaverTopLevel extends YargSaverContainer {
     public commandName: string;
 }
@@ -194,7 +202,7 @@ class YargSaverPositionalCommand extends YargSaverContainer implements YargSaver
     public readonly commandName: string;
     public readonly description: string;
     public handleInstructions: HandleInstructions;
-    public readonly opts: { aliases?: string };
+    public readonly opts: {};
     public readonly commandLine: CommandLine;
 
     public withSubcommand(): never {
@@ -231,7 +239,7 @@ class YargSaverCommandWord extends YargSaverContainer {
     constructor(public readonly commandLine: CommandLine,
         public readonly description: string,
         public handleInstructions: HandleInstructions,
-        public readonly opts: { aliases?: string } = {}) {
+        public readonly opts: {} = {}) {
         super();
         verifyOneWord(commandLine);
     }
