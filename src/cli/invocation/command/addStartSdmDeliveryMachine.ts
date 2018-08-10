@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { Argv } from "yargs";
 import { sdmCd } from "../../../pack/sdm-cd/support/SdmCd";
 import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
@@ -22,14 +21,15 @@ import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import chalk from "chalk";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
 import { renderClientInfo } from "../../ui/renderClientInfo";
+import { YargSaver } from "./support/YargSaver";
 
 export const DefaultSdmCdPort = 2901;
 
 /**
  * Start an SDM dedicated to SDM CD
- * @param {yargs.Argv} yargs
+ * @param {YargSaver} yargs
  */
-export function addStartSdmDeliveryMachine(yargs: Argv) {
+export function addStartSdmDeliveryMachine(yargs: YargSaver) {
     yargs.command({
         command: "deliver",
         describe: "Start SDM delivery machine",

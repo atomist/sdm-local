@@ -1,10 +1,10 @@
-import { PositionalOptions, Choices, PositionalOptionsType } from "yargs";
+import { PositionalOptions, Choices, PositionalOptionsType, Options as ParameterOptions } from "yargs";
 import * as yargs from "yargs";
 import * as _ from "lodash";
 import { parseCommandLine, CommandLine, dropFirstWord, commandLineAlias } from "./yargSaver/commandLine";
 import * as stringify from "json-stringify-safe";
 
-export { PositionalOptions, PositionalOptionsType, Choices };
+export { PositionalOptions, PositionalOptionsType, Choices, ParameterOptions };
 
 export function freshYargSaver(): YargSaver {
     return new YargSaverTopLevel();
@@ -51,7 +51,7 @@ export interface YargSaver {
 
     // compatibility with Yargs
     option(parameterName: string,
-        params: { required: boolean, description?: string }): void;
+        params: ParameterOptions): YargSaver;
     demandCommand(): void;
 
     command(params: {
@@ -89,10 +89,8 @@ const DoNothing: DoNothing = "do nothing";
 interface RunFunction {
     fn: (argObject: object) => Promise<any>;
 }
-export interface CommandLineParameter {
+export type CommandLineParameter = ParameterOptions & {
     parameterName: string;
-    required: boolean;
-    description?: string;
 }
 
 interface ValidationError {
@@ -216,11 +214,12 @@ abstract class YargSaverContainer implements YargSaver {
     }
 
     public option(parameterName: string,
-        params: { required: boolean, description?: string }) {
+        opts: ParameterOptions) {
         this.parameters.push({
             parameterName,
-            ...params
+            ...opts
         });
+        return this;
     }
     public demandCommand() {
         this.commandDemanded = true;
