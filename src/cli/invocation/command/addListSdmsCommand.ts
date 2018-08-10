@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { Argv } from "yargs";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { renderClientsInfo } from "../../ui/renderClientInfo";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
+import { YargSaver } from "./support/YargSaver";
 
-export function addListSdmsCommand(clients: AutomationClientInfo[], yargs: Argv) {
-    yargs.command({
+export function addListSdmsCommand(clients: AutomationClientInfo[], yargSaver: YargSaver) {
+    yargSaver.command({
         command: "list sdms",
         describe: "List connected sdms",
         handler: () => {

@@ -17,14 +17,14 @@
 import { exec } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";
-import { Argv } from "yargs";
 import { sendChannelLinkEvent, sendRepoOnboardingEvent } from "../../../sdm/binding/event/repoOnboardingEvents";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { addGitHooks } from "../../setup/addGitHooks";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
+import { YargSaver } from "./support/YargSaver";
 
-export function addImportFromGitRemoteCommand(ai: AutomationClientInfo, yargs: Argv) {
+export function addImportFromGitRemoteCommand(ai: AutomationClientInfo, yargs: YargSaver) {
     yargs.command({
         command: "import <owner> <repo> [remoteBase]",
         aliases: "i",
@@ -39,9 +39,9 @@ export function addImportFromGitRemoteCommand(ai: AutomationClientInfo, yargs: A
 }
 
 async function importFromGitRemote(ai: AutomationClientInfo,
-                                   owner: string,
-                                   repo: string,
-                                   remoteBase: string): Promise<any> {
+    owner: string,
+    repo: string,
+    remoteBase: string): Promise<any> {
     infoMessage(`Importing Git remote project ${remoteBase}/${owner}/${repo}\n`);
     const orgDir = `${ai.localConfig.repositoryOwnerParentDirectory}/${owner}`;
     if (!fs.existsSync(orgDir)) {
@@ -51,6 +51,6 @@ async function importFromGitRemote(ai: AutomationClientInfo,
         { cwd: orgDir });
     await addGitHooks(`${orgDir}/${repo}`);
     const eventSender = invokeEventHandlerUsingHttp(ai.connectionConfig, ai.connectionConfig);
-    await sendRepoOnboardingEvent(ai.connectionConfig, { owner, repo}, eventSender);
-    await sendChannelLinkEvent(ai.connectionConfig, { owner, repo}, eventSender);
+    await sendRepoOnboardingEvent(ai.connectionConfig, { owner, repo }, eventSender);
+    await sendChannelLinkEvent(ai.connectionConfig, { owner, repo }, eventSender);
 }

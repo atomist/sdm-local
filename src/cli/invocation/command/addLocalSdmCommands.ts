@@ -53,12 +53,14 @@ export async function addLocalSdmCommands(yargs: Argv,
 
     const clients = await finder.findAutomationClients();
 
-    addListSdmsCommand(clients, yargs);
+    const yargSaver = freshYargSaver();
+    addListSdmsCommand(clients, yargSaver);
 
     // TODO filter on working directories
     for (const client of clients) {
-        await addCommandsToConnectTo(client, yargs);
+        await addCommandsToConnectTo(client, yargSaver);
     }
+    yargSaver.save(yargs);
 }
 
 /**
@@ -66,20 +68,18 @@ export async function addLocalSdmCommands(yargs: Argv,
  * @param yargs
  * @return {Promise<void>}
  */
-async function addCommandsToConnectTo(client: AutomationClientInfo, yargs: Argv) {
+async function addCommandsToConnectTo(client: AutomationClientInfo, yargSaver: YargSaver) {
     verifyLocalSdm(client);
 
     if (!!client.localConfig) {
-        addImportFromGitRemoteCommand(client, yargs);
+        addImportFromGitRemoteCommand(client, yargSaver);
     }
 
     // If we were able to connect to an SDM...
     if (!!client.client) {
-        const yargSaver: YargSaver = freshYargSaver();
         addCommandsByName(client, yargSaver);
         addIntentsAsCommands(client, yargSaver);
-        yargSaver.save(yargs);
-        addShowSkillsCommand(client, yargs);
+        addShowSkillsCommand(client, yargSaver);
     }
 }
 

@@ -25,7 +25,8 @@ export interface YargSaver {
     command(params: {
         command: string,
         describe: string,
-        builder: (ys: YargSaver) => YargSaver,
+        aliases?: string,
+        builder?: (ys: YargSaver) => YargSaver,
         handler?: (argObject: any) => Promise<any>,
     }): void;
 
@@ -53,17 +54,21 @@ abstract class YargSaverContainer implements YargSaver {
     public command(params: {
         command: string,
         describe: string,
-        builder: (ys: YargSaver) => YargSaver,
+        aliases?: string,
+        builder?: (ys: YargSaver) => YargSaver,
         handler?: (argObject: any) => Promise<any>,
     }) {
         const name = params.command;
         const description = params.describe;
         const configureInner = params.builder;
         const handlerFunction = params.handler;
+        const { aliases } = params;
 
         const handleInstructions = handlerFunction ? { fn: handlerFunction } : DoNothing;
-        const inner = new YargSaverCommand(name, description, handleInstructions);
-        configureInner(inner);
+        const inner = new YargSaverCommand(name, description, handleInstructions, { aliases });
+        if (configureInner) {
+            configureInner(inner);
+        }
         this.nestedCommands.push(inner);
     }
 
@@ -85,12 +90,14 @@ class YargSaverCommand extends YargSaverContainer {
 
     constructor(public readonly commandName: string,
         public readonly description: string,
-        public handleInstructions: HandleInstructions) {
+        public handleInstructions: HandleInstructions,
+        public readonly opts: { aliases?: string } = {}) {
         super();
     }
 
     public save(yarg: yargs.Argv): yargs.Argv {
         yarg.command({
+            ...this.opts,
             command: this.commandName,
             describe: this.description,
             builder: y => super.save(y),
