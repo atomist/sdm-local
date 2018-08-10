@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Argv } from "yargs";
 import { HttpMessageListener, isListenerRunning } from "../../../sdm/ui/HttpMessageListener";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
+import { YargSaver } from "./support/YargSaver";
 
 export const AllMessagesPort = 6660;
 
@@ -24,20 +24,20 @@ export const AllMessagesPort = 6660;
  * @param {AutomationClientConnectionConfig} connectionConfig
  * @param {yargs.Argv} yargs
  */
-export function addStartListenerCommand(yargs: Argv) {
+export function addStartListenerCommand(yargs: YargSaver) {
     yargs.command({
         command: "listen",
         describe: "Start listener daemon to display messages",
         handler: () => {
             return logExceptionsToConsole(async () => {
-                    const alreadyRunning = await isListenerRunning();
-                    if (alreadyRunning) {
-                        infoMessage("Lifecycle listener is already running\n");
-                    } else {
-                        new HttpMessageListener(AllMessagesPort).start();
-                        infoMessage("Lifecycle messages from all local SDM activity will appear here\n");
-                    }
-                },
+                const alreadyRunning = await isListenerRunning();
+                if (alreadyRunning) {
+                    infoMessage("Lifecycle listener is already running\n");
+                } else {
+                    new HttpMessageListener(AllMessagesPort).start();
+                    infoMessage("Lifecycle messages from all local SDM activity will appear here\n");
+                }
+            },
                 true);
         },
     });

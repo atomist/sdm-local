@@ -45,8 +45,8 @@ export async function addLocalSdmCommands(yargs: Argv,
 
     addBootstrapCommands(yargs);
     addStartSdmDeliveryMachine(yargs);
-    addStartListenerCommand(yargs);
     const yargSaver = freshYargSaver();
+    addStartListenerCommand(yargSaver);
     addAddGitHooksCommand(yargSaver);
     addRemoveGitHooksCommand(yargSaver);
 
