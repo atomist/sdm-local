@@ -31,7 +31,7 @@ import { addStartListenerCommand } from "./addStartListenerCommand";
 import { addStartSdmDeliveryMachine } from "./addStartSdmDeliveryMachine";
 import { addTriggerCommand } from "./addTriggerCommand";
 import { addShowSkillsCommand } from "./showSkillsCommand";
-import { freshYargSaver, optimizeOrThrow, YargSaver, isYargSaver } from "./support/YargSaver";
+import { freshYargSaver, isYargSaver, optimizeOrThrow, YargSaver } from "./support/YargSaver";
 
 /**
  * Given a yargs instance, add commands based on local SDMs we can connect to
@@ -40,7 +40,7 @@ import { freshYargSaver, optimizeOrThrow, YargSaver, isYargSaver } from "./suppo
  * @return {yargs.Arguments}
  */
 export async function addLocalSdmCommands(yargs: Argv | YargSaver,
-    finder: AutomationClientFinder = defaultAutomationClientFinder()) {
+                                          finder: AutomationClientFinder = defaultAutomationClientFinder()) {
     const teamContextResolver: WorkspaceContextResolver = DefaultWorkspaceContextResolver;
 
     const yargSaver = isYargSaver(yargs) ? yargs : freshYargSaver();

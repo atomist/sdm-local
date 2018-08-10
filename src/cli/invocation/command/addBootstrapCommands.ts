@@ -20,8 +20,8 @@ import { Question } from "inquirer";
 import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
 import { sdmGenerator, superforkGenerator } from "./generator/bootstrapGenerators";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
-import { YargSaver } from "./support/YargSaver";
 import { verifyJDK, verifyMaven } from "./support/javaVerification";
+import { YargSaver } from "./support/YargSaver";
 import { AddLocalMode } from "./transform/addLocalModeTransform";
 
 /**

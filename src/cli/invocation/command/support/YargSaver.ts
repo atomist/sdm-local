@@ -71,7 +71,7 @@ export interface YargSaver {
 
     // compatibility with Yargs
     option(parameterName: string,
-        params: ParameterOptions): YargSaver;
+           params: ParameterOptions): YargSaver;
     demandCommand(): void;
 
     command(params: {
@@ -233,7 +233,7 @@ abstract class YargSaverContainer implements YargSaver {
     }
 
     public option(parameterName: string,
-        opts: ParameterOptions) {
+                  opts: ParameterOptions) {
         this.parameters.push({
             parameterName,
             ...opts,
@@ -374,9 +374,9 @@ class YargSaverCommandWord extends YargSaverContainer implements YargSaverComman
     }
 
     constructor(public readonly commandLine: CommandLine,
-        public readonly description: string,
-        public handleInstructions: HandleInstructions,
-        public readonly opts: {
+                public readonly description: string,
+                public handleInstructions: HandleInstructions,
+                public readonly opts: {
             nestedCommands?: YargSaverCommand[],
             parameters?: CommandLineParameter[],
         } = {}) {
