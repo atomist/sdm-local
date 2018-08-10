@@ -53,7 +53,7 @@ export function createSdmOptions(
             new CachingProjectLoader(),
             configToUse),
         logFactory: async (context, goal) => new LoggingProgressLog(goal.name, "info"),
-        credentialsResolver: EnvironmentTokenCredentialsResolver,
+        credentialsResolver: new EnvironmentTokenCredentialsResolver(),
         repoRefResolver,
         repoFinder: expandedTreeRepoFinder(configToUse.repositoryOwnerParentDirectory),
         projectPersister: fileSystemProjectPersister(workspaceContext, configToUse, automationClientFinder),
