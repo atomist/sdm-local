@@ -25,13 +25,20 @@ import { YargSaver } from "./YargSaver";
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function exposeParameters(hi: CommandHandlerMetadata, args: YargSaver, allowUserInput: boolean) {
-    hi.parameters
+    commandLineParametersFromCommandHandlerMetadata(hi, allowUserInput)
         .forEach(p => {
-            const nameToUse = convertToDisplayable(p.name);
-            args.withParameter({
-                parameterName: nameToUse,
-                required: !allowUserInput && p.required && !p.default_value,
-            });
+            args.withParameter(p);
         });
     return args;
+}
+
+export function commandLineParametersFromCommandHandlerMetadata(hi: CommandHandlerMetadata, allowUserInput: boolean) {
+    return hi.parameters
+        .map(p => {
+            const nameToUse = convertToDisplayable(p.name);
+            return {
+                parameterName: nameToUse,
+                required: !allowUserInput && p.required && !p.default_value,
+            };
+        });
 }

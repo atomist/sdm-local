@@ -66,9 +66,25 @@ export function multilevelCommand(params: YargSaverCommandSpec): YargSaverComman
     }
 }
 
+export function yargCommandFromSentence(
+    params: {
+        command: string,
+        describe: string,
+        handler: (argObject: any) => Promise<any>,
+        parameters: CommandLineParameter[]
+    }
+): YargSaverCommand {
+    return multilevelCommand({
+        commandLine: parseCommandLine(params.command),
+        description: params.describe,
+        handleInstructions: { fn: params.handler },
+        parameters: params.parameters,
+    })
+}
+
 export interface YargSaver {
 
-    withSubcommand(command: YargSaverCommandWord): YargSaver;
+    withSubcommand(command: YargSaverCommand): YargSaver;
     withParameter(p: CommandLineParameter): YargSaver;
 
     // compatibility with Yargs
@@ -99,12 +115,14 @@ interface YargSaverCommandSpec {
     description: string,
     handleInstructions: HandleInstructions,
     nestedCommands?: YargSaverCommand[],
+    parameters?: CommandLineParameter[],
     configureInner?: (y: YargSaver) => (YargSaver | void),
 }
 
 function buildYargSaverCommand(params: YargSaverCommandSpec) {
-    const { commandLine, description, handleInstructions, configureInner, nestedCommands } = params;
-    const inner = new YargSaverCommandWord(commandLine, description, handleInstructions, { nestedCommands });
+    const { commandLine, description, handleInstructions, configureInner, nestedCommands, parameters } = params;
+    const inner = new YargSaverCommandWord(commandLine, description, handleInstructions,
+        { nestedCommands, parameters });
     if (configureInner) {
         configureInner(inner);
     }
