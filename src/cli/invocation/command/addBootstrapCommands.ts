@@ -21,6 +21,7 @@ import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
 import { sdmGenerator, superforkGenerator } from "./generator/bootstrapGenerators";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 import { YargSaver } from "./support/YargSaver";
+import { verifyJDK, verifyMaven } from "./support/javaVerification";
 import { AddLocalMode } from "./transform/addLocalModeTransform";
 
 /**
@@ -36,17 +37,28 @@ export function addBootstrapCommands(yargs: YargSaver) {
 
 function addSdmGenerator(yargs: YargSaver) {
     const choices = ["spring", "blank"];
+    const typeDescription = "Type of SDM to create";
     const name = "newSdm";
     addEmbeddedCommand(yargs, {
         name,
         cliCommand: "new sdm",
         cliDescription: "Create an SDM",
         parameters: sdmGenerator(name, undefined).parameters,
+        build: argv => {
+            // Expose type parameter
+            argv.option("type", {
+                required: false,
+                description: typeDescription,
+                choices,
+            });
+            return argv;
+        },
         configurer: async () => {
             adviceDoc("docs/newSdm.md");
+            // Gather type parameter
             const questions: Question[] = [{
                 name: "type",
-                message: "Type of SDM to create",
+                message: typeDescription,
                 type: "list",
                 choices,
                 default: "spring",
@@ -78,12 +90,17 @@ function addSdmGenerator(yargs: YargSaver) {
             after: async (hr, chm) => {
                 // TODO tags seem to be getting set wrongly somewhere, or type definition is wrong
                 if (chm.tags.includes("spring" as any)) {
-                    adviceDoc("docs/springSdm.md");
+                    await doAfterSpringSdmCreation();
                 }
-                infoMessage("Type 'atomist deliver' to start CD for your new SDM\n");
             },
         }],
     });
+}
+
+async function doAfterSpringSdmCreation() {
+    adviceDoc("docs/springSdm.md");
+    await verifyJDK();
+    await verifyMaven();
 }
 
 function addSuperforkGenerator(yargs: YargSaver) {
