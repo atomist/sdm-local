@@ -49,11 +49,11 @@ export async function addLocalSdmCommands(yargs: Argv,
     addAddGitHooksCommand(yargs);
     addRemoveGitHooksCommand(yargs);
 
-    addTriggerCommand(yargs, finder, teamContextResolver);
+    const yargSaver = freshYargSaver();
+    addTriggerCommand(yargSaver, finder, teamContextResolver);
 
     const clients = await finder.findAutomationClients();
 
-    const yargSaver = freshYargSaver();
     addListSdmsCommand(clients, yargSaver);
 
     // TODO filter on working directories
