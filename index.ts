@@ -21,3 +21,10 @@ export { LocalLifecycle } from "./src/sdm/ui/localLifecycle";
 export { infoMessage } from "./src/cli/ui/consoleOutput";
 export { sdmCd } from "./src/pack/sdm-cd/support/SdmCd";
 export { LocalSdmConfig } from "./src/sdm/configuration/localSdmConfig";
+export {
+    YargSaver,
+    freshYargSaver,
+    yargCommandFromSentence,
+    yargCommandWithPositionalArguments,
+    optimizeOrThrow
+} from "./src/cli/invocation/command/support/YargSaver";

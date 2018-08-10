@@ -31,7 +31,7 @@ import { addStartListenerCommand } from "./addStartListenerCommand";
 import { addStartSdmDeliveryMachine } from "./addStartSdmDeliveryMachine";
 import { addTriggerCommand } from "./addTriggerCommand";
 import { addShowSkillsCommand } from "./showSkillsCommand";
-import { YargSaver, freshYargSaver, optimizeOrThrow } from "./support/YargSaver";
+import { freshYargSaver, optimizeOrThrow, YargSaver, isYargSaver } from "./support/YargSaver";
 
 /**
  * Given a yargs instance, add commands based on local SDMs we can connect to
@@ -39,11 +39,11 @@ import { YargSaver, freshYargSaver, optimizeOrThrow } from "./support/YargSaver"
  * @param finder strategy for finding running automation client instances
  * @return {yargs.Arguments}
  */
-export async function addLocalSdmCommands(yargs: Argv,
+export async function addLocalSdmCommands(yargs: Argv | YargSaver,
     finder: AutomationClientFinder = defaultAutomationClientFinder()) {
     const teamContextResolver: WorkspaceContextResolver = DefaultWorkspaceContextResolver;
 
-    const yargSaver = freshYargSaver();
+    const yargSaver = isYargSaver(yargs) ? yargs : freshYargSaver();
     addBootstrapCommands(yargSaver);
     addStartSdmDeliveryMachine(yargSaver);
     addStartListenerCommand(yargSaver);
@@ -60,7 +60,10 @@ export async function addLocalSdmCommands(yargs: Argv,
     for (const client of clients) {
         await addCommandsToConnectTo(client, yargSaver);
     }
-    optimizeOrThrow(yargSaver).save(yargs);
+    if (!isYargSaver(yargs)) {
+        // we constructed this, so use it
+        optimizeOrThrow(yargSaver).save(yargs);
+    }
 }
 
 /**
