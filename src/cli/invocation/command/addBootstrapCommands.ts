@@ -22,7 +22,6 @@ import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
 import { sdmGenerator, superforkGenerator } from "./generator/bootstrapGenerators";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 import { verifyJDK, verifyMaven } from "./support/javaVerification";
-import { verifyCommandResult } from "./support/verifyCommandResult";
 import { AddLocalMode } from "./transform/addLocalModeTransform";
 
 /**
