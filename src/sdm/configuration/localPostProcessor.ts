@@ -14,30 +14,44 @@
  * limitations under the License.
  */
 
-import { Configuration, HandlerResult, logger } from "@atomist/automation-client";
-import { isInLocalMode, LocalModeConfiguration } from "@atomist/sdm-core";
+import {
+    Configuration,
+    HandlerResult,
+    logger,
+} from "@atomist/automation-client";
+import { guid } from "@atomist/automation-client/internal/util/string";
+import {
+    isInLocalMode,
+    LocalModeConfiguration,
+} from "@atomist/sdm-core";
+import * as assert from "assert";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import { AllMessagesPort } from "../../cli/invocation/command/addStartListenerCommand";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionConfig";
-import { LocalGraphClient } from "../binding/graph/LocalGraphClient";
-import { ActionRoute, ActionStore, freshActionStore } from "../binding/message/ActionStore";
-import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessageClient";
-import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
-import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
-import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
-import { createSdmOptions } from "./createSdmOptions";
-import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
-
-import * as assert from "assert";
 import { EnvironmentTeamContextResolver } from "../../common/binding/EnvironmentTeamContextResolver";
 import { TeamContextResolver } from "../../common/binding/TeamContextResolver";
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
 import { CommandHandlerInvocation } from "../../common/invocation/CommandHandlerInvocation";
 import { LocalTeamContext } from "../../common/invocation/LocalTeamContext";
-import { parseChannel, parsePort } from "../../common/invocation/parseCorrelationId";
+import {
+    parseChannel,
+    parsePort,
+} from "../../common/invocation/parseCorrelationId";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
+import { LocalGraphClient } from "../binding/graph/LocalGraphClient";
+import {
+    ActionRoute,
+    ActionStore,
+    freshActionStore,
+} from "../binding/message/ActionStore";
+import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessageClient";
+import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
+import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
+import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
 import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandlerInProcess";
+import { createSdmOptions } from "./createSdmOptions";
+import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 
 /**
  * Configures an automation client in local mode
@@ -60,6 +74,14 @@ export function configureLocal(
             ...defaultLocalLocalModeConfiguration(),
             ...localModeConf,
         };
+
+        // Set up workspaceIds and apiKey
+        if (_.isEmpty(configuration.workspaceIds) && _.isEmpty(configuration.teamIds)) {
+            configuration.workspaceIds = ["local"];
+        }
+        if (_.isEmpty(configuration.apiKey)) {
+            configuration.apiKey = guid();
+        }
 
         logger.info("Disable web socket connection");
         configuration.ws.enabled = false;
@@ -149,6 +171,7 @@ function addListeners(configuration: Configuration) {
     configuration.listeners.push(new NotifyOnCompletionAutomationEventListener());
 }
 
+// TODO this looks out of place here
 function decircle(result: HandlerResult) {
     let noncircular = result;
     try {
