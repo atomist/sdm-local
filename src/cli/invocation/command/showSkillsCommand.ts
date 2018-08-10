@@ -15,11 +15,11 @@
  */
 
 import chalk from "chalk";
-import { Argv } from "yargs";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
+import { YargSaver } from "./support/YargSaver";
 
-export function addShowSkillsCommand(ai: AutomationClientInfo, yargs: Argv) {
+export function addShowSkillsCommand(ai: AutomationClientInfo, yargs: YargSaver) {
     yargs.command({
         command: "show skills",
         aliases: "s",

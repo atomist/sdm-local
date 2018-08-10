@@ -15,7 +15,6 @@
  */
 
 import { sprintf } from "sprintf-js";
-import { Argv } from "yargs";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { postToListener } from "../../../common/ui/httpMessaging";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
@@ -23,35 +22,38 @@ import { HookEvent } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
+import { yargCommandWithPositionalArguments, YargSaver } from "./support/YargSaver";
 
 /**
  * Add a command to triggerGitEvents execution following a git event
- * @param {yargs.Argv} yargs
+ * @param {YargSaver} yargs
  */
-export function addTriggerCommand(yargs: Argv,
+export function addTriggerCommand(yargs: YargSaver,
                                   automationClientFinder: AutomationClientFinder,
                                   teamContextResolver: WorkspaceContextResolver) {
-    yargs.command({
+    yargs.withSubcommand(yargCommandWithPositionalArguments({
         command: "trigger <event> [depth]",
         describe: "Trigger commit action on the current repository",
-        builder: ra => {
-            return ra.positional("event", {
+        positional: [{
+            key: "event", opts: {
                 choices: Object.values(HookEvent),
-            }).positional("depth", {
+            },
+        }, {
+            key: "depth", opts: {
                 type: "number",
                 default: 1,
-            });
-        },
+            },
+        }],
         handler: ya => {
             return logExceptionsToConsole(async () => {
-                    const clients = await automationClientFinder.findAutomationClients();
-                    const msg = sprintf("Dispatching git event '%s' to %d clients...\n", ya.event, clients.length);
-                    infoMessage(msg);
-                    await postToListener(msg);
-                    await triggerGitEvents(clients, ya.event, ya.depth, teamContextResolver);
-                    return suggestStartingAllMessagesListener();
-                },
+                const clients = await automationClientFinder.findAutomationClients();
+                const msg = sprintf("Dispatching git event '%s' to %d clients...\n", ya.event, clients.length);
+                infoMessage(msg);
+                await postToListener(msg);
+                await triggerGitEvents(clients, ya.event, ya.depth, teamContextResolver);
+                return suggestStartingAllMessagesListener();
+            },
                 true);
         },
-    });
+    }));
 }

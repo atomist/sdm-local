@@ -22,6 +22,7 @@ import * as inquirer from "inquirer";
 import * as _ from "lodash";
 import { CommandHandlerInvocation } from "../../../../common/invocation/CommandHandlerInvocation";
 import { InvocationTarget } from "../../../../common/invocation/InvocationTarget";
+import { ExtraParametersMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/CommandLineMappedParameterResolver";
 import { FromAnyMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/FromAnyMappedParameterResolver";
 import { MappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/MappedParameterResolver";
 import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/project/ExpandedTreeMappedParameterResolver";
@@ -81,7 +82,10 @@ export async function runCommandOnColocatedAutomationClient(connectionConfig: Au
         .concat(extraArgs);
     await promptForMissingParameters(hm, args);
     const mpr: MappedParameterResolver =
-        new FromAnyMappedParameterResolver(new ExpandedTreeMappedParameterResolver(repositoryOwnerParentDirectory));
+        new FromAnyMappedParameterResolver(
+            new ExpandedTreeMappedParameterResolver(repositoryOwnerParentDirectory),
+            new ExtraParametersMappedParameterResolver(extraArgs),
+        );
     const mappedParameters: Array<{ name: any; value: string | undefined }> = hm.mapped_parameters.map(mp => ({
         name: mp.name,
         value: mpr.resolve(mp),

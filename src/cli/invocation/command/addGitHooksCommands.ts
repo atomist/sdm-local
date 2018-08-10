@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import { Argv } from "yargs";
 import { expandedTreeRepoFinder } from "../../../sdm/binding/project/expandedTreeRepoFinder";
 import { determineCwd } from "../../../sdm/binding/project/expandedTreeUtils";
 import { isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { addGitHooks, removeGitHooks } from "../../setup/addGitHooks";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
+import { YargSaver } from "./support/YargSaver";
 
 /**
  * Command to add git hooks to current directory or all projects
  * @param {yargs.Argv} yargs
  */
-export function addAddGitHooksCommand(yargs: Argv) {
+export function addAddGitHooksCommand(yargs: YargSaver) {
     yargs.command({
         command: "add-git-hooks",
         describe: `Install git hooks for current project, or if 'base' parameter is suppied, under that base`,
@@ -41,7 +41,7 @@ export function addAddGitHooksCommand(yargs: Argv) {
     });
 }
 
-export function addRemoveGitHooksCommand(yargs: Argv) {
+export function addRemoveGitHooksCommand(yargs: YargSaver) {
     yargs.command({
         command: "remove-git-hooks",
         describe: `Remove git hooks for projects managed by this SDM, or in current directory if not connected to an SDM`,

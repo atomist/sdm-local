@@ -16,11 +16,11 @@
 
 import { ConfigureMachine, ParametersDefinition } from "@atomist/sdm";
 import { toParametersListing } from "@atomist/sdm/api-helper/machine/handlerRegistrations";
-import { Argv } from "yargs";
 import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "../../../ui/consoleOutput";
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
 import { CommandInvocationListener, runCommandOnColocatedAutomationClient } from "./runCommandOnColocatedAutomationClient";
+import { YargSaver } from "./YargSaver";
 
 /**
  * Spec for running an embedded command on an ephemeral SDM
@@ -38,7 +38,7 @@ export interface EmbeddedCommandSpec {
 
     parameters?: ParametersDefinition;
 
-    build?: (argv: Argv) => void;
+    build?: (argv: YargSaver) => void;
 
     /**
      * Listeners to command invocation
@@ -48,7 +48,7 @@ export interface EmbeddedCommandSpec {
     /**
      * Configure the sdm.machine to run the command
      */
-    configurer: (argv: Argv) => Promise<ConfigureMachine>;
+    configurer: (argv: YargSaver) => Promise<ConfigureMachine>;
 
 }
 
@@ -60,7 +60,7 @@ export interface EmbeddedCommandSpec {
  * being exposed as optional command parameters.
  * @param {yargs.Argv} yargs
  */
-export function addEmbeddedCommand(yargs: Argv,
+export function addEmbeddedCommand(yargs: YargSaver,
                                    spec: EmbeddedCommandSpec) {
     yargs.command({
         command: spec.cliCommand,

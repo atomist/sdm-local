@@ -31,6 +31,7 @@ import { addStartListenerCommand } from "./addStartListenerCommand";
 import { addStartSdmDeliveryMachine } from "./addStartSdmDeliveryMachine";
 import { addTriggerCommand } from "./addTriggerCommand";
 import { addShowSkillsCommand } from "./showSkillsCommand";
+import { freshYargSaver, isYargSaver, optimizeOrThrow, YargSaver } from "./support/YargSaver";
 
 /**
  * Given a yargs instance, add commands based on local SDMs we can connect to
@@ -38,25 +39,30 @@ import { addShowSkillsCommand } from "./showSkillsCommand";
  * @param finder strategy for finding running automation client instances
  * @return {yargs.Arguments}
  */
-export async function addLocalSdmCommands(yargs: Argv,
+export async function addLocalSdmCommands(yargs: Argv | YargSaver,
                                           finder: AutomationClientFinder = defaultAutomationClientFinder()) {
     const teamContextResolver: WorkspaceContextResolver = DefaultWorkspaceContextResolver;
 
-    addBootstrapCommands(yargs);
-    addStartSdmDeliveryMachine(yargs);
-    addStartListenerCommand(yargs);
-    addAddGitHooksCommand(yargs);
-    addRemoveGitHooksCommand(yargs);
+    const yargSaver = isYargSaver(yargs) ? yargs : freshYargSaver();
+    addBootstrapCommands(yargSaver);
+    addStartSdmDeliveryMachine(yargSaver);
+    addStartListenerCommand(yargSaver);
+    addAddGitHooksCommand(yargSaver);
+    addRemoveGitHooksCommand(yargSaver);
 
-    addTriggerCommand(yargs, finder, teamContextResolver);
+    addTriggerCommand(yargSaver, finder, teamContextResolver);
 
     const clients = await finder.findAutomationClients();
 
-    addListSdmsCommand(clients, yargs);
+    addListSdmsCommand(clients, yargSaver);
 
     // TODO filter on working directories
     for (const client of clients) {
-        await addCommandsToConnectTo(client, yargs);
+        await addCommandsToConnectTo(client, yargSaver);
+    }
+    if (!isYargSaver(yargs)) {
+        // we constructed this, so use it
+        optimizeOrThrow(yargSaver).save(yargs);
     }
 }
 
@@ -65,18 +71,18 @@ export async function addLocalSdmCommands(yargs: Argv,
  * @param yargs
  * @return {Promise<void>}
  */
-async function addCommandsToConnectTo(client: AutomationClientInfo, yargs: Argv) {
+async function addCommandsToConnectTo(client: AutomationClientInfo, yargSaver: YargSaver) {
     verifyLocalSdm(client);
 
     if (!!client.localConfig) {
-        addImportFromGitRemoteCommand(client, yargs);
+        addImportFromGitRemoteCommand(client, yargSaver);
     }
 
     // If we were able to connect to an SDM...
     if (!!client.client) {
-        addCommandsByName(client, yargs);
-        addIntentsAsCommands(client, yargs);
-        addShowSkillsCommand(client, yargs);
+        addCommandsByName(client, yargSaver);
+        addIntentsAsCommands(client, yargSaver);
+        addShowSkillsCommand(client, yargSaver);
     }
 }
 
