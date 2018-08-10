@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { verifyCommandResult } from "./verifyCommandResult";
 import { infoMessage } from "../../../ui/consoleOutput";
+import { verifyCommandResult } from "./verifyCommandResult";
 
 /**
  * Verify that the correct version of the JDK is present

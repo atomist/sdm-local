@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { promisify } from "util";
 import { exec, ExecOptions } from "child_process";
+import { promisify } from "util";
 
 export interface CommandVerificationOptions {
 

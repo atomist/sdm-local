@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { verifyJavaTest, verifyMavenTest } from "../../../../../src/cli/invocation/command/support/javaVerification";
 import * as assert from "assert";
+import { verifyJavaTest, verifyMavenTest } from "../../../../../src/cli/invocation/command/support/javaVerification";
 
 describe("javaVerification", () => {
 

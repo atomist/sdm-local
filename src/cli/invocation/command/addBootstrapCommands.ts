@@ -21,9 +21,9 @@ import { Argv } from "yargs";
 import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
 import { sdmGenerator, superforkGenerator } from "./generator/bootstrapGenerators";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
-import { AddLocalMode } from "./transform/addLocalModeTransform";
-import { verifyCommandResult } from "./support/verifyCommandResult";
 import { verifyJDK, verifyMaven } from "./support/javaVerification";
+import { verifyCommandResult } from "./support/verifyCommandResult";
+import { AddLocalMode } from "./transform/addLocalModeTransform";
 
 /**
  * Add bootstrap commands to generate a new SDM
