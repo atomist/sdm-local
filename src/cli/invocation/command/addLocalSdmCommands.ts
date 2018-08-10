@@ -43,8 +43,8 @@ export async function addLocalSdmCommands(yargs: Argv,
     finder: AutomationClientFinder = defaultAutomationClientFinder()) {
     const teamContextResolver: WorkspaceContextResolver = DefaultWorkspaceContextResolver;
 
-    addBootstrapCommands(yargs);
     const yargSaver = freshYargSaver();
+    addBootstrapCommands(yargSaver);
     addStartSdmDeliveryMachine(yargSaver);
     addStartListenerCommand(yargSaver);
     addAddGitHooksCommand(yargSaver);

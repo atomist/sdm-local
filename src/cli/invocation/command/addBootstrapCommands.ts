@@ -17,24 +17,24 @@
 import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import * as inquirer from "inquirer";
 import { Question } from "inquirer";
-import { Argv } from "yargs";
 import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
 import { sdmGenerator, superforkGenerator } from "./generator/bootstrapGenerators";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 import { AddLocalMode } from "./transform/addLocalModeTransform";
+import { YargSaver } from "./support/YargSaver";
 
 /**
  * Add bootstrap commands to generate a new SDM
  * and add local capability to an existing SDM
- * @param {yargs.Argv} yargs
+ * @param {YargSaver} yargs
  */
-export function addBootstrapCommands(yargs: Argv) {
+export function addBootstrapCommands(yargs: YargSaver) {
     addSdmGenerator(yargs);
     addSuperforkGenerator(yargs);
     addEnableLocalSupport(yargs);
 }
 
-function addSdmGenerator(yargs: Argv) {
+function addSdmGenerator(yargs: YargSaver) {
     const choices = ["spring", "blank"];
     const name = "newSdm";
     addEmbeddedCommand(yargs, {
@@ -86,7 +86,7 @@ function addSdmGenerator(yargs: Argv) {
     });
 }
 
-function addSuperforkGenerator(yargs: Argv) {
+function addSuperforkGenerator(yargs: YargSaver) {
     const name = "superfork";
     addEmbeddedCommand(yargs, {
         name,
@@ -107,9 +107,9 @@ function addSuperforkGenerator(yargs: Argv) {
 
 /**
  * Add local support to this project
- * @param {yargs.Argv} yargs
+ * @param {YargSaver} yargs
  */
-function addEnableLocalSupport(yargs: Argv) {
+function addEnableLocalSupport(yargs: YargSaver) {
     addEmbeddedCommand(yargs, {
         name: "addLocalMode",
         cliCommand: "enable local",
