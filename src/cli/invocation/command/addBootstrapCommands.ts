@@ -22,6 +22,8 @@ import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
 import { sdmGenerator, superforkGenerator } from "./generator/bootstrapGenerators";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 import { AddLocalMode } from "./transform/addLocalModeTransform";
+import { verifyCommandResult } from "./support/verifyCommandResult";
+import { verifyJDK, verifyMaven } from "./support/javaVerification";
 
 /**
  * Add bootstrap commands to generate a new SDM
@@ -78,12 +80,17 @@ function addSdmGenerator(yargs: Argv) {
             after: async (hr, chm) => {
                 // TODO tags seem to be getting set wrongly somewhere, or type definition is wrong
                 if (chm.tags.includes("spring" as any)) {
-                    adviceDoc("docs/springSdm.md");
+                    await doAfterSpringSdmCreation();
                 }
-                infoMessage("Type 'atomist deliver' to start CD for your new SDM\n");
             },
         }],
     });
+}
+
+async function doAfterSpringSdmCreation() {
+    adviceDoc("docs/springSdm.md");
+    await verifyJDK();
+    await verifyMaven();
 }
 
 function addSuperforkGenerator(yargs: Argv) {
