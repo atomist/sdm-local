@@ -60,9 +60,7 @@ export function multilevelCommand(params: YargSaverCommandSpec): YargSaverComman
             commandLine: parseCommandLine(nextWord),
             description: `${nextWord} -> ${rest}`,
             handleInstructions: DoNothing,
-            opts: { // todo: specify subcommand directly instead of a configure function
-                configureInner: ys => ys.withSubcommand(inner)
-            }
+            configureInner: ys => ys.withSubcommand(inner)
         })
 
     }
@@ -99,14 +97,13 @@ interface YargSaverCommandSpec {
     commandLine: CommandLine;
     description: string,
     handleInstructions: HandleInstructions,
-    opts: {
-        configureInner: (y: YargSaver) => (YargSaver | void)
-    }
+    nestedCommands?: YargSaverCommand[],
+    configureInner?: (y: YargSaver) => (YargSaver | void),
 }
 
 function buildYargSaverCommand(params: YargSaverCommandSpec) {
-    const { commandLine, description, handleInstructions, opts: { configureInner } } = params;
-    const inner = new YargSaverCommandWord(commandLine, description, handleInstructions, {});
+    const { commandLine, description, handleInstructions, configureInner, nestedCommands } = params;
+    const inner = new YargSaverCommandWord(commandLine, description, handleInstructions, { nestedCommands });
     if (configureInner) {
         configureInner(inner);
     }
@@ -116,15 +113,20 @@ function buildYargSaverCommand(params: YargSaverCommandSpec) {
 interface YargSaverCommand extends YargSaver {
     commandName: string;
     description: string;
+    isRunnable: boolean;
 }
 
 abstract class YargSaverContainer implements YargSaver {
     public commandDemanded: boolean = false;
 
-    // TODO: this might also be a positional-arg command
-    public nestedCommands: YargSaverCommand[] = [];
+    public nestedCommands: YargSaverCommand[];
 
     public parameters: CommandLineParameter[] = [];
+
+    constructor(nestedCommands: YargSaverCommand[] = [], parameters: CommandLineParameter[] = []) {
+        this.nestedCommands = nestedCommands;
+        this.parameters = parameters;
+    }
 
     public withSubcommand(c: YargSaverCommand): this {
         this.nestedCommands.push(c);
@@ -155,11 +157,11 @@ abstract class YargSaverContainer implements YargSaver {
         const handlerFunction = params.handler;
         const { aliases } = params;
         const handleInstructions = handlerFunction ? { fn: handlerFunction } : DoNothing;
-        const spec = {
+        const spec: YargSaverCommandSpec = {
             commandLine,
             description,
             handleInstructions,
-            opts: { configureInner }
+            configureInner,
         };
 
         let inner: YargSaverCommand;
@@ -217,6 +219,12 @@ function verifyOneWord(commandLine: CommandLine) {
     }
 }
 
+function verifyEmpty(arr: any[] | undefined, message: string) {
+    if (arr && arr.length > 0) {
+        throw new Error(message);
+    }
+}
+
 // TODO: check in .command() and call this one if it fits
 class YargSaverPositionalCommand extends YargSaverContainer implements YargSaverCommand {
 
@@ -225,6 +233,7 @@ class YargSaverPositionalCommand extends YargSaverContainer implements YargSaver
     public handleInstructions: HandleInstructions;
     public readonly opts: {};
     public readonly commandLine: CommandLine;
+    public readonly isRunnable = true;
 
     public withSubcommand(): never {
         throw new Error("You cannot have both subcommands and positional arguments");
@@ -232,6 +241,7 @@ class YargSaverPositionalCommand extends YargSaverContainer implements YargSaver
     constructor(spec: YargSaverCommandSpec) {
         super();
         verifyOneWord(spec.commandLine);
+        verifyEmpty(spec.nestedCommands, "You cannot have both subcommands and positional arguments")
         this.commandName = spec.commandLine.firstWord;
         this.commandLine = spec.commandLine;
         this.description = spec.description;
@@ -239,8 +249,6 @@ class YargSaverPositionalCommand extends YargSaverContainer implements YargSaver
     }
 
     public save(yarg: yargs.Argv): yargs.Argv {
-        // TODO: I need to use commandLine for the name of the command
-        // how does that work?
         this.parameters.forEach(p => yarg.option(p.parameterName, p));
         this.nestedCommands.forEach(c => c.save(yarg));
         if (this.commandDemanded) {
@@ -249,7 +257,11 @@ class YargSaverPositionalCommand extends YargSaverContainer implements YargSaver
         return yarg;
     }
 }
-class YargSaverCommandWord extends YargSaverContainer {
+
+function doesSomething(hi: HandleInstructions): boolean {
+    return hi !== DoNothing;
+}
+class YargSaverCommandWord extends YargSaverContainer implements YargSaverCommand {
 
     public get commandName() {
         return this.commandLine.firstWord;
@@ -258,15 +270,24 @@ class YargSaverCommandWord extends YargSaverContainer {
     constructor(public readonly commandLine: CommandLine,
         public readonly description: string,
         public handleInstructions: HandleInstructions,
-        public readonly opts: {} = {}) {
-        super();
+        public readonly opts: {
+            nestedCommands?: YargSaverCommand[],
+            parameters?: CommandLineParameter[],
+        } = {}) {
+        super(opts.nestedCommands, opts.parameters);
         verifyOneWord(commandLine);
+    }
+
+    /** 
+     * have they typed enough?
+     */
+    public get isRunnable(): boolean {
+        return doesSomething(this.handleInstructions) && !this.demandCommand
     }
 
     public save(yarg: yargs.Argv): yargs.Argv {
         yarg.command({
-            ...this.opts,
-            command: this.commandName,
+            command: this.commandLine.toString(),
             describe: this.description,
             builder: y => super.save(y),
             handler: handleFunctionFromInstructions(this.handleInstructions),
@@ -282,13 +303,30 @@ class YargSaverCommandWord extends YargSaverContainer {
 
         const duplicateNameErrors = super.validate();
 
-        const allErrors = [...nestedErrors, ...duplicateNameErrors]
+        const inconsistentRunningness = this.validateRunningness();
+
+        const allErrors = [...nestedErrors, ...duplicateNameErrors, ...inconsistentRunningness]
             .map(ve => ({
                 complaint: ve.complaint,
                 contexts: [myContext, ...ve.contexts],
             }))
 
         return allErrors;
+    }
+
+    private validateRunningness(): ValidationError[] {
+        if (doesSomething(this.handleInstructions) && !this.demandCommand) {
+            return [] // ok. does something
+        }
+        if (!doesSomething(this.handleInstructions) && this.demandCommand && this.parameters.length === 0) {
+            return [] // ok. does nothing
+        }
+        return [{
+            complaint: `Does it want to do something or not? Handler says ${
+                doesSomething(this.handleInstructions)}; demandCommand says ${
+                !this.demandCommand}; parameters says ${this.parameters.length > 0}`, contexts: []
+        }]
+
     }
 }
 
@@ -320,11 +358,34 @@ function whyNotCombine(yss: YargSaverCommand[]): ValidationError[] {
             contexts: [commonName]
         });
     }
+    const meaningfulInstructions = yscws.filter(ys => ys.isRunnable);
+    if (meaningfulInstructions.length > 1) {
+        reasons.push({
+            complaint: "There are two functions to respond to",
+            contexts: [commonName],
+        })
+    }
+
     return reasons;
 }
 
 function combine(yss: YargSaverCommand[]) {
-    // we can only combine the words. No positional args allowed
+    // assumption: whyNotCombine has been called, so several things are guaranteed
     const yswcs = yss as Array<YargSaverCommandWord>;
+    const one = yswcs[0];
+
+    const realCommand = yswcs.find(ys => ys.isRunnable) || {
+        handleInstructions: DoNothing,
+        parameters: [] as CommandLineParameter[],
+    };
+
+    return new YargSaverCommandWord(one.commandLine,
+        yswcs.map(y => y.description).join("; or, "),
+        realCommand.handleInstructions,
+        {
+            nestedCommands: _.flatMap(yswcs.map(ys => ys.nestedCommands)),
+            parameters: realCommand.parameters,
+        }
+    )
 
 }
