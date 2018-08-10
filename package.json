@@ -6,18 +6,19 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/atomist/slalom.git"
+    "url": "https://github.com/atomist/sdm-local.git"
   },
   "main": "index.js",
   "typings": "index.d.ts",
   "keywords": [
     "atomist",
     "automation",
-    "github"
+    "sdm",
+    "local"
   ],
-  "homepage": "https://github.com/atomist/slalom#readme",
+  "homepage": "https://github.com/atomist/sdm-local#readme",
   "bugs": {
-    "url": "https://github.com/atomist/slalom/issues"
+    "url": "https://github.com/atomist/sdm-local/issues"
   },
   "dependencies": {
     "@atomist/slack-messages": "^0.12.1",
