@@ -16,13 +16,13 @@
 
 import { logger } from "@atomist/automation-client";
 import * as _ from "lodash";
-import { Argv } from "yargs";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { PathElement, toPaths } from "../../util/PathElement";
 import { PostToAtomistListenerListener, ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { exposeParameters } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
+import { YargSaver } from "./support/YargSaver";
 
 /**
  * Add commands for all intents
@@ -30,7 +30,7 @@ import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnCol
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function addIntentsAsCommands(ai: AutomationClientInfo,
-    yargs: Argv, allowUserInput: boolean = true) {
+    yargSaver: YargSaver, allowUserInput: boolean = true) {
     const handlers = ai.client.commands
         .filter(hm => !!hm.intent && hm.intent.length > 0);
 
@@ -38,7 +38,7 @@ export function addIntentsAsCommands(ai: AutomationClientInfo,
     const sentences: string[][] =
         _.flatten(handlers.map(hm => hm.intent)).map(words => words.split(" "));
     const paths: PathElement[] = toPaths(sentences);
-    paths.forEach(pe => exposeAsCommands(ai, pe, yargs, [], allowUserInput));
+    paths.forEach(pe => exposeAsCommands(ai, pe, yargSaver, [], allowUserInput));
 }
 
 /**
@@ -52,7 +52,7 @@ export function addIntentsAsCommands(ai: AutomationClientInfo,
  */
 function exposeAsCommands(ai: AutomationClientInfo,
     pe: PathElement,
-    nested: Argv,
+    nested: YargSaver,
     previous: string[],
     allowUserInput: boolean) {
     const intent = previous.concat([pe.name]).join(" ");
@@ -78,9 +78,9 @@ function exposeAsCommands(ai: AutomationClientInfo,
                 handler: !!commandForCompletedIntent ? async argv => {
                     logger.debug("Args are %j", argv);
                     return logExceptionsToConsole(
-                        () => runByIntent(ai, intent, argv as any),
+                        () => runByIntent(ai, intent, argv),
                         ai.connectionConfig.showErrorStacks);
-                } : undefined
+                } : undefined,
             }));
     } else {
         const names = _.uniq([pe.name, pe.name.toLowerCase()]);

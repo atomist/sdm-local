@@ -15,8 +15,8 @@
  */
 
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
-import { Argv } from "yargs";
 import { convertToDisplayable } from "./runCommandOnColocatedAutomationClient";
+import { YargSaver } from "./YargSaver";
 
 /**
  * Expose the parameters for this command
@@ -24,7 +24,7 @@ import { convertToDisplayable } from "./runCommandOnColocatedAutomationClient";
  * @param {yargs.Argv} args
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
-export function exposeParameters(hi: CommandHandlerMetadata, args: Argv, allowUserInput: boolean) {
+export function exposeParameters(hi: CommandHandlerMetadata, args: YargSaver, allowUserInput: boolean) {
     hi.parameters
         .forEach(p => {
             const nameToUse = convertToDisplayable(p.name);

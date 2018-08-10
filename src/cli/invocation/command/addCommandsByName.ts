@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { Argv } from "yargs";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { exposeParameters } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
+import { YargSaver } from "./support/YargSaver";
 
 /**
  * Add commands by name from the given client
@@ -27,10 +27,11 @@ import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnCol
  * @param {boolean} allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function addCommandsByName(ai: AutomationClientInfo,
-                                  yargs: Argv,
-                                  allowUserInput: boolean = true) {
-    yargs.command("run", "Run a command",
-        args => {
+    yargs: YargSaver,
+    allowUserInput: boolean = true) {
+    yargs.command({
+        command: "run", describe: "Run a command",
+        builder: args => {
             ai.client.commands.forEach(hi => {
                 args.command({
                     command: hi.name,
@@ -43,12 +44,13 @@ export function addCommandsByName(ai: AutomationClientInfo,
                 });
             });
             return args;
-        });
+        }
+    });
 }
 
 async function runByCommandName(ai: AutomationClientInfo,
-                                name: string,
-                                command: any): Promise<any> {
+    name: string,
+    command: any): Promise<any> {
     const hm = ai.client.commands.find(h => h.name === name);
     if (!hm) {
         process.stdout.write(`No command with name [${name}]: Known command names are \n${ai.client.commands

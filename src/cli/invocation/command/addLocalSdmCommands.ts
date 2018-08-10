@@ -31,6 +31,7 @@ import { addStartListenerCommand } from "./addStartListenerCommand";
 import { addStartSdmDeliveryMachine } from "./addStartSdmDeliveryMachine";
 import { addTriggerCommand } from "./addTriggerCommand";
 import { addShowSkillsCommand } from "./showSkillsCommand";
+import { YargSaver, freshYargSaver } from "./support/YargSaver";
 
 /**
  * Given a yargs instance, add commands based on local SDMs we can connect to
@@ -39,7 +40,7 @@ import { addShowSkillsCommand } from "./showSkillsCommand";
  * @return {yargs.Arguments}
  */
 export async function addLocalSdmCommands(yargs: Argv,
-                                          finder: AutomationClientFinder = defaultAutomationClientFinder()) {
+    finder: AutomationClientFinder = defaultAutomationClientFinder()) {
     const teamContextResolver: TeamContextResolver = DefaultTeamContextResolver;
 
     addBootstrapCommands(yargs);
@@ -74,8 +75,10 @@ async function addCommandsToConnectTo(client: AutomationClientInfo, yargs: Argv)
 
     // If we were able to connect to an SDM...
     if (!!client.client) {
-        addCommandsByName(client, yargs);
-        addIntentsAsCommands(client, yargs);
+        const yargSaver: YargSaver = freshYargSaver();
+        addCommandsByName(client, yargSaver);
+        addIntentsAsCommands(client, yargSaver);
+        yargSaver.save(yargs);
         addShowSkillsCommand(client, yargs);
     }
 }
