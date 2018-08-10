@@ -33,6 +33,7 @@ import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUs
 import { newCliCorrelationId } from "../../http/support/newCorrelationId";
 import { portToListenOnFor } from "../../http/support/portAllocation";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
+import { ExtraParametersMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/CommandLineMappedParameterResolver";
 
 /**
  * Listeners to command execution
@@ -61,11 +62,11 @@ export interface CommandInvocationListener {
  * @return {Promise<any>}
  */
 export async function runCommandOnColocatedAutomationClient(connectionConfig: AutomationClientConnectionRequest,
-                                                            repositoryOwnerParentDirectory: string,
-                                                            target: InvocationTarget,
-                                                            hm: CommandHandlerMetadata,
-                                                            command: any,
-                                                            listeners: CommandInvocationListener[]): Promise<any> {
+    repositoryOwnerParentDirectory: string,
+    target: InvocationTarget,
+    hm: CommandHandlerMetadata,
+    command: any,
+    listeners: CommandInvocationListener[]): Promise<any> {
     for (const l of listeners) {
         if (!!l.before) {
             await l.before(hm);
@@ -81,7 +82,10 @@ export async function runCommandOnColocatedAutomationClient(connectionConfig: Au
         .concat(extraArgs);
     await promptForMissingParameters(hm, args);
     const mpr: MappedParameterResolver =
-        new FromAnyMappedParameterResolver(new ExpandedTreeMappedParameterResolver(repositoryOwnerParentDirectory));
+        new FromAnyMappedParameterResolver(
+            new ExpandedTreeMappedParameterResolver(repositoryOwnerParentDirectory),
+            new ExtraParametersMappedParameterResolver(extraArgs),
+        );
     const mappedParameters: Array<{ name: any; value: string | undefined }> = hm.mapped_parameters.map(mp => ({
         name: mp.name,
         value: mpr.resolve(mp),

@@ -17,7 +17,7 @@
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { ShowDescriptionListener } from "./support/commandInvocationListeners";
-import { exposeParameters, commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
+import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
 import { YargSaver, yargCommandFromSentence } from "./support/YargSaver";
 

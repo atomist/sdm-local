@@ -33,7 +33,7 @@ export function exposeParameters(hi: CommandHandlerMetadata, args: YargSaver, al
 }
 
 export function commandLineParametersFromCommandHandlerMetadata(hi: CommandHandlerMetadata, allowUserInput: boolean) {
-    return hi.parameters
+    const p1 = hi.parameters
         .map(p => {
             const nameToUse = convertToDisplayable(p.name);
             return {
@@ -41,4 +41,12 @@ export function commandLineParametersFromCommandHandlerMetadata(hi: CommandHandl
                 required: !allowUserInput && p.required && !p.default_value,
             };
         });
+    const p2 = (hi.mapped_parameters || []).map(mp => {
+        const nameToUse = convertToDisplayable(mp.name);
+        return {
+            parameterName: nameToUse,
+            required: false, // we might be able to populate these, even when required
+        };
+    })
+    return [...p1, ...p2];
 }
