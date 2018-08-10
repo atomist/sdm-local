@@ -4,6 +4,13 @@ export function freshYargSaver(): YargSaver {
     return new YargSaverTopLevel();
 }
 
+export function validateOrThrow(yargSaver: YargSaver) {
+    const result = yargSaver.validate();
+    if (result !== "OK") {
+        throw new Error("The collected commands are invalid: " + result.join("\n"));
+    }
+}
+
 type HandleInstructions = RunFunction | DoNothing;
 
 type DoNothing = "do nothing";
@@ -31,6 +38,8 @@ export interface YargSaver {
     }): void;
 
     save(yarg: yargs.Argv): yargs.Argv;
+
+    validate(): "OK" | string[];
 }
 
 abstract class YargSaverContainer implements YargSaver {
@@ -79,6 +88,10 @@ abstract class YargSaverContainer implements YargSaver {
             yarg.demandCommand();
         }
         return yarg;
+    }
+
+    public validate(): "OK" {
+        return "OK";
     }
 }
 
