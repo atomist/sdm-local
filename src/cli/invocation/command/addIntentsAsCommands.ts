@@ -30,7 +30,7 @@ import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnCol
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function addIntentsAsCommands(ai: AutomationClientInfo,
-                                     yargs: Argv, allowUserInput: boolean = true) {
+    yargs: Argv, allowUserInput: boolean = true) {
     const handlers = ai.client.commands
         .filter(hm => !!hm.intent && hm.intent.length > 0);
 
@@ -51,10 +51,10 @@ export function addIntentsAsCommands(ai: AutomationClientInfo,
  * @param {boolean} allowUserInput
  */
 function exposeAsCommands(ai: AutomationClientInfo,
-                          pe: PathElement,
-                          nested: Argv,
-                          previous: string[],
-                          allowUserInput: boolean) {
+    pe: PathElement,
+    nested: Argv,
+    previous: string[],
+    allowUserInput: boolean) {
     const intent = previous.concat([pe.name]).join(" ");
     const commandForCompletedIntent = ai.client.commands.find(hm => hm.intent.includes(intent));
 
@@ -62,10 +62,10 @@ function exposeAsCommands(ai: AutomationClientInfo,
         // Expose both lower case and actual case name
         const names = _.uniq([pe.name, pe.name.toLowerCase()]);
         names.forEach(name =>
-            nested.command(
-                name,
-                `${name} -> ${pe.kids.map(k => k.name).join("/")}`,
-                yargs => {
+            nested.command({
+                command: name,
+                describe: `${name} -> ${pe.kids.map(k => k.name).join("/")}`,
+                builder: yargs => {
                     pe.kids.forEach(kid =>
                         exposeAsCommands(ai, kid, yargs, previous.concat(pe.name), allowUserInput));
                     if (!!commandForCompletedIntent) {
@@ -75,12 +75,13 @@ function exposeAsCommands(ai: AutomationClientInfo,
                     }
                     return yargs;
                 },
-                !!commandForCompletedIntent ? async argv => {
+                handler: !!commandForCompletedIntent ? async argv => {
                     logger.debug("Args are %j", argv);
                     return logExceptionsToConsole(
                         () => runByIntent(ai, intent, argv as any),
                         ai.connectionConfig.showErrorStacks);
-                } : undefined));
+                } : undefined
+            }));
     } else {
         const names = _.uniq([pe.name, pe.name.toLowerCase()]);
         names.forEach(name =>
@@ -98,8 +99,8 @@ function exposeAsCommands(ai: AutomationClientInfo,
 }
 
 async function runByIntent(ai: AutomationClientInfo,
-                           intent: string,
-                           command: any): Promise<any> {
+    intent: string,
+    command: any): Promise<any> {
     // writeToConsole({ message: `Recognized intent "${intent}"...`, color: "cyan" });
     const hm = ai.client.commands.find(h => !!h.intent && h.intent.includes(intent));
     if (!hm) {
