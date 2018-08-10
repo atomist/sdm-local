@@ -27,8 +27,6 @@ export class ExtraParametersMappedParameterResolver implements MappedParameterRe
     private args: Array<{ name: string, value: string }>;
 
     public resolve(md: MappedParameterDeclaration): string | undefined {
-        process.stdout.write("Looking for: " + md.name);
-        process.stdout.write("have: " + this.args.map(d => d.name).join(", "));
         const found = this.args.find(n => n.name === md.name);
         return found ? found.value : undefined;
     }
