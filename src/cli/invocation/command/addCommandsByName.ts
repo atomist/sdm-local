@@ -43,6 +43,7 @@ export function addCommandsByName(ai: AutomationClientInfo,
                     builder: argv => exposeParameters(hi, argv, allowUserInput),
                 });
             });
+            args.demandCommand();
             return args;
         }
     });

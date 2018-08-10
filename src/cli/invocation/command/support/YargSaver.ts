@@ -8,11 +8,11 @@ export function freshYargSaver(): YargSaver {
 }
 
 export function optimizeOrThrow(yargSaver: YargSaver): YargSaver {
-    const result = yargSaver.optimized();
-    if (Array.isArray(result)) {
-        throw new Error("The collected commands are invalid: " + result.map(errorToString).join("\n"));
+    const problems = yargSaver.validate();
+    if (problems.length > 0) {
+        throw new Error("The collected commands are invalid: " + problems.map(errorToString).join("\n"));
     }
-    return result;
+    return yargSaver.optimized();
 }
 
 type HandleInstructions = RunFunction | DoNothing;
@@ -38,7 +38,7 @@ interface ValidationError {
 
 function errorToString(ve: ValidationError): string {
     const prefix = ve.contexts.length > 0 ?
-        ve.contexts.join(" ") + ": " : ""
+        ve.contexts.join(" -> ") + ": " : ""
     return prefix + ve.complaint;
 }
 
@@ -60,7 +60,7 @@ export function multilevelCommand(params: YargSaverCommandSpec): YargSaverComman
             commandLine: parseCommandLine(nextWord),
             description: `${nextWord} -> ${rest}`,
             handleInstructions: DoNothing,
-            configureInner: ys => ys.withSubcommand(inner)
+            nestedCommands: [inner],
         })
 
     }
@@ -88,7 +88,7 @@ export interface YargSaver {
     /**
      * Construct a YargSaver with duplicate commands combined etc.
      */
-    optimized(): YargSaver | ValidationError[];
+    optimized(): YargSaver;
 
     validate(): ValidationError[];
 }
@@ -123,13 +123,45 @@ abstract class YargSaverContainer implements YargSaver {
 
     public parameters: CommandLineParameter[] = [];
 
-    constructor(nestedCommands: YargSaverCommand[] = [], parameters: CommandLineParameter[] = []) {
+    public abstract commandName: string;
+
+    constructor(nestedCommands: YargSaverCommand[] = [], parameters: CommandLineParameter[] = [], commandDemanded = false) {
         this.nestedCommands = nestedCommands;
         this.parameters = parameters;
+        this.commandDemanded = false;
     }
 
     public withSubcommand(c: YargSaverCommand): this {
         this.nestedCommands.push(c);
+        return this;
+    }
+
+    public validate(): ValidationError[] {
+
+        const nestedErrors = _.flatMap(this.nestedCommands, nc => nc.validate())
+
+        const duplicateNameErrors = this.validateCanCombineChildren();
+
+        const allErrors = [...nestedErrors, ...duplicateNameErrors]
+            .map(putInContext(this.commandName))
+
+        return allErrors;
+    }
+
+    public validateCanCombineChildren(): ValidationError[] {
+        const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName)
+        const duplicateNameProblems: ValidationError[] = _.flatten(Object.entries(commandsByNames)
+            .filter(([k, v]) => v.length > 1)
+            .map(([k, v]) => whyNotCombine(v).map(putInContext(k))));
+        return duplicateNameProblems;
+    }
+
+    public optimized(): this {
+        // assumptions are made: validate has already been called
+        const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName)
+        const newNestedCommands = Object.entries(commandsByNames).map(([k, v]) =>
+            combine(v).optimized());
+        this.nestedCommands = newNestedCommands;
         return this;
     }
 
@@ -192,18 +224,6 @@ abstract class YargSaverContainer implements YargSaver {
         return yarg;
     }
 
-    public validate(): ValidationError[] {
-        const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName)
-        const duplicateNames = Object.entries(commandsByNames).filter(([k, v]) => v.length > 1);
-        const duplicateNameErrors = duplicateNames.map((([k, v]) =>
-            `Duplicate command ${k}. Descriptions: ${v.map(vv => vv.description).join("; ")}`))
-        return duplicateNameErrors.map(complaint => ({ complaint, contexts: [] }));
-    }
-
-    public optimized(): YargSaver | ValidationError[] {
-        const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName)
-        return this.validate();
-    }
 }
 
 function oneOrMany<T>(t: T | T[] | undefined): T[] {
@@ -256,6 +276,14 @@ class YargSaverPositionalCommand extends YargSaverContainer implements YargSaver
         }
         return yarg;
     }
+
+    public validate(): ValidationError[] {
+        return [];
+    }
+
+    public optimized() {
+        return this;
+    }
 }
 
 function doesSomething(hi: HandleInstructions): boolean {
@@ -275,6 +303,9 @@ class YargSaverCommandWord extends YargSaverContainer implements YargSaverComman
             parameters?: CommandLineParameter[],
         } = {}) {
         super(opts.nestedCommands, opts.parameters);
+        if (!doesSomething(handleInstructions) && opts.nestedCommands && opts.nestedCommands.length > 0) {
+            this.demandCommand(); // do things right
+        }
         verifyOneWord(commandLine);
     }
 
@@ -282,7 +313,7 @@ class YargSaverCommandWord extends YargSaverContainer implements YargSaverComman
      * have they typed enough?
      */
     public get isRunnable(): boolean {
-        return doesSomething(this.handleInstructions) && !this.demandCommand
+        return doesSomething(this.handleInstructions) && !this.commandDemanded
     }
 
     public save(yarg: yargs.Argv): yargs.Argv {
@@ -296,38 +327,30 @@ class YargSaverCommandWord extends YargSaverContainer implements YargSaverComman
     }
 
     public validate(): ValidationError[] {
-
-        const myContext = this.commandName;
-
-        const nestedErrors = _.flatMap(this.nestedCommands, nc => nc.validate())
-
-        const duplicateNameErrors = super.validate();
-
-        const inconsistentRunningness = this.validateRunningness();
-
-        const allErrors = [...nestedErrors, ...duplicateNameErrors, ...inconsistentRunningness]
-            .map(ve => ({
-                complaint: ve.complaint,
-                contexts: [myContext, ...ve.contexts],
-            }))
-
-        return allErrors;
+        return [...super.validate(), ...this.validateRunningness()]
     }
 
     private validateRunningness(): ValidationError[] {
-        if (doesSomething(this.handleInstructions) && !this.demandCommand) {
+        if (doesSomething(this.handleInstructions) && !this.commandDemanded) {
             return [] // ok. does something
         }
-        if (!doesSomething(this.handleInstructions) && this.demandCommand && this.parameters.length === 0) {
+        if (!doesSomething(this.handleInstructions) && this.commandDemanded && this.parameters.length === 0) {
             return [] // ok. does nothing
         }
         return [{
             complaint: `Does it want to do something or not? Handler says ${
                 doesSomething(this.handleInstructions)}; demandCommand says ${
-                !this.demandCommand}; parameters says ${this.parameters.length > 0}`, contexts: []
+                !this.commandDemanded}; parameters says ${this.parameters.length > 0}`, contexts: []
         }]
-
     }
+
+}
+
+function putInContext(additionalContext: string) {
+    return (ve: ValidationError) => ({
+        complaint: ve.complaint,
+        contexts: [additionalContext, ...ve.contexts],
+    })
 }
 
 function handleFunctionFromInstructions(instr: HandleInstructions):
