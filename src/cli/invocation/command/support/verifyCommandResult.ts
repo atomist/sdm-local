@@ -17,14 +17,44 @@
 import { exec, ExecOptions } from "child_process";
 import { promisify } from "util";
 
-export interface CommandVerificationOptions {
+// TODO this file should move to sdm, allowing it to be used in extension packs etc.
 
-    command: string;
+export interface CommandResult {
+    stdout: string;
+    stderr?: string;
+}
 
-    stdoutTest?: (stdout: string) => boolean;
+/**
+ * Test part of a command verification request.
+ * Allows reuse of command testing without defining
+ * actions on success or failure, which are more likely to vary
+ * in different contexts.
+ */
+export interface CommandTest {
 
     /**
-     * Called whe the command failed: For example,
+     * Command, including arguments, to pass to exec
+     */
+    command: string;
+
+    /**
+     * Test for the output of a successful command
+     * @param {string} stdout
+     * @return {boolean}
+     */
+    outputTest?: (output: CommandResult) => boolean;
+
+    /**
+     * Options to pass to child_process.exec
+     */
+    execOptions?: ExecOptions;
+
+}
+
+export interface CommandVerificationRequest extends CommandTest {
+
+    /**
+     * Called when the command failed: For example,
      * because the command isn't installed
      * @param {Error} e
      */
@@ -32,23 +62,28 @@ export interface CommandVerificationOptions {
 
     /**
      * Called when the command returns normally but we don't
-     * like the returned result
-     * @param {{stdout: string; stderr: string}} r
+     * like the returned result (test failed)
      */
-    onWrongVersion: (r: { stdout: string, stderr: string }) => void;
+    onWrongVersion: (r: CommandResult) => void;
+
+    /**
+     * Called when the command is successfully verified
+     * @param {string} stdout
+     */
     onVerified?: (stdout: string) => void;
-    execOptions?: ExecOptions;
+
 }
 
 /**
- * Verify the result of a command
- * @param {CommandVerificationOptions} opts
+ * Verify the result of a command. Useful to test
+ * whether a dependency of an SDM is installed
+ * @param {CommandVerificationRequest} opts
  * @return {Promise<void>}
  */
-export async function verifyCommandResult(opts: CommandVerificationOptions) {
+export async function verifyCommandResult(opts: CommandVerificationRequest) {
     try {
         const r = await promisify(exec)(opts.command, opts.execOptions);
-        if (!opts.stdoutTest || opts.stdoutTest(r.stdout)) {
+        if (!opts.outputTest || opts.outputTest(r)) {
             if (!!opts.onVerified) {
                 opts.onVerified(r.stdout);
             }

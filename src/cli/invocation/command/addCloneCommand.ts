@@ -27,6 +27,11 @@ import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
 import { YargSaver } from "./support/yargSaver/YargSaver";
 
+/**
+ * Takes the same arguments as Git clone but onboards the repo with Atomist
+ * @param {AutomationClientInfo[]} clients
+ * @param {YargSaver} yargs
+ */
 export function addCloneCommand(clients: AutomationClientInfo[], yargs: YargSaver) {
     yargs.command({
         command: "clone <args>",
