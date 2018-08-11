@@ -22,7 +22,7 @@ import { HookEvent } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
-import { yargCommandWithPositionalArguments, YargSaver } from "./support/YargSaver";
+import { yargCommandWithPositionalArguments, YargSaver } from "./support/yargSaver/YargSaver";
 
 /**
  * Add a command to replay execution following a git event

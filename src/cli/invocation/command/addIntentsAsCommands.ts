@@ -15,13 +15,13 @@
  */
 
 import { logger } from "@atomist/automation-client";
-import { CommandHandlerMetadata } from "../../../../node_modules/@atomist/automation-client/metadata/automationMetadata";
+import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { PostToAtomistListenerListener, ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
-import { yargCommandFromSentence, YargSaver } from "./support/YargSaver";
+import { yargCommandFromSentence, YargSaver } from "./support/yargSaver/YargSaver";
 
 /**
  * Add commands for all intents
@@ -46,6 +46,7 @@ export function addIntentsAsCommands(ai: AutomationClientInfo,
                         ai.connectionConfig.showErrorStacks);
                 },
                 parameters: commandLineParametersFromCommandHandlerMetadata(h, allowUserInput),
+                conflictResolution: { failEverything: false, commandDescription: `Intent '${intent}' on command ${h.name}` },
             }))));
 }
 

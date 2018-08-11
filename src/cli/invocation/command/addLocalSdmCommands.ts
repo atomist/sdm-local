@@ -18,7 +18,7 @@ import { Argv } from "yargs";
 import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { infoMessage } from "../../ui/consoleOutput";
+import { errorMessage, infoMessage } from "../../ui/consoleOutput";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "../http/support/defaultAutomationClientFinder";
 import { addBootstrapCommands } from "./addBootstrapCommands";
@@ -31,7 +31,7 @@ import { addReplayCommand } from "./addReplayCommand";
 import { addShowSdmsCommand } from "./addShowSdmsCommand";
 import { addStartSdmDeliveryMachine } from "./addStartSdmDeliveryMachine";
 import { addShowSkillsCommand } from "./showSkillsCommand";
-import { freshYargSaver, isYargSaver, optimizeOrThrow, YargSaver } from "./support/YargSaver";
+import { freshYargSaver, isYargSaver, YargSaver } from "./support/yargSaver/YargSaver";
 
 /**
  * Given a yargs instance, add commands based on local SDMs we can connect to
@@ -63,7 +63,7 @@ export async function addLocalSdmCommands(yargs: Argv | YargSaver,
     }
     if (!isYargSaver(yargs)) {
         // we constructed this, so use it
-        optimizeOrThrow(yargSaver).save(yargs);
+        yargSaver.optimized(errorMessage).save(yargs);
     }
 }
 
