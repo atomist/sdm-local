@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
+import { toStringArray } from "@atomist/automation-client/internal/util/string";
+import { AllMessagesPort } from "../../../common/ui/httpMessaging";
 import { HttpMessageListener, isListenerRunning } from "../../../sdm/ui/HttpMessageListener";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { YargSaver } from "./support/YargSaver";
-import { AllMessagesPort } from "../../../common/ui/httpMessaging";
-import { toStringArray } from "@atomist/automation-client/internal/util/string";
 
 /**
  * @param {yargs.Argv} yargs
@@ -43,7 +43,7 @@ export function addFeedCommand(yargs: YargSaver) {
                         new HttpMessageListener({
                             port: AllMessagesPort,
                             transient: false,
-                            channels
+                            channels,
                         }).start();
                         if (channels.length > 0) {
                             infoMessage("Atomist feed from all local SDM activity concerning channels [%s] will appear here\n",

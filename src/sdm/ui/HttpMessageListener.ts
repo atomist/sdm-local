@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { SlackDestination } from "@atomist/automation-client";
+import { toStringArray } from "@atomist/automation-client/internal/util/string";
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as http from "http";
@@ -24,13 +26,11 @@ import { canConnectTo } from "../../common/util/http/canConnectTo";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 import { isFailureMessage } from "../configuration/support/NotifyOnCompletionAutomationEventListener";
 import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
-import { toStringArray } from "@atomist/automation-client/internal/util/string";
-import { SlackDestination } from "@atomist/automation-client";
 
 export class HttpMessageListenerParameters {
-    readonly port: number;
-    readonly transient: boolean;
-    readonly channels?: string[] | string;
+    public readonly port: number;
+    public readonly transient: boolean;
+    public readonly channels?: string[] | string;
 }
 
 /**

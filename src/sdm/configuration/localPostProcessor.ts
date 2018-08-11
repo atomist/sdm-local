@@ -36,6 +36,7 @@ import {
     parseChannel,
     parsePort,
 } from "../../common/invocation/parseCorrelationId";
+import { AllMessagesPort } from "../../common/ui/httpMessaging";
 import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 import { LocalGraphClient } from "../binding/graph/LocalGraphClient";
 import {
@@ -50,7 +51,6 @@ import { SystemNotificationMessageClient } from "../binding/message/SystemNotifi
 import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandlerInProcess";
 import { createSdmOptions } from "./createSdmOptions";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
-import { AllMessagesPort } from "../../common/ui/httpMessaging";
 
 /**
  * Configures an automation client in local mode
