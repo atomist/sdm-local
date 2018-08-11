@@ -106,7 +106,7 @@ export class HttpMessageListener {
      */
     private addWriteRoute(app: core.Express) {
         // Raw message point. Ignore if not in verbose mode.
-        const verbose = this.parameters.verbose === true;
+        const verbose = this.parameters.verbose;
         app.post("/write", (req, res) => {
             if (verbose) {
                 infoMessage(req.body.message);
