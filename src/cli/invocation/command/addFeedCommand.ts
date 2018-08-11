@@ -16,7 +16,7 @@
 
 import { toStringArray } from "@atomist/automation-client/internal/util/string";
 import { AllMessagesPort } from "../../../common/ui/httpMessaging";
-import { HttpMessageListener, isListenerRunning } from "../../../sdm/ui/HttpMessageListener";
+import { HttpMessageListener, isFeedListenerRunning } from "../../../sdm/ui/HttpMessageListener";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { YargSaver } from "./support/yargSaver/YargSaver";
 
@@ -41,7 +41,7 @@ export function addFeedCommand(yargs: YargSaver) {
         handler: argv => {
             const channels = toStringArray(argv.channel || []);
             return logExceptionsToConsole(async () => {
-                const alreadyRunning = await isListenerRunning();
+                const alreadyRunning = await isFeedListenerRunning();
                 if (alreadyRunning) {
                     infoMessage("Lifecycle listener is already running\n");
                 } else {

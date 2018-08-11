@@ -25,10 +25,9 @@ export interface ModuleId {
 
 /**
  * Transform to add a module to a project. Uses npm install.
- * @param name name of the dependency to add. If not supplied it will be a required parameter
+ * @param opts dependency info. If not supplied, parameters will be used
  */
-export function addDependencyTransform(opts: {
-    name?: string,
+export function addDependencyTransform(opts: Partial<ModuleId> & {
     progressLog?: ProgressLog,
 }): Partial<CodeTransformRegistration<ModuleId>> {
     return {
@@ -40,7 +39,7 @@ export function addDependencyTransform(opts: {
             version: {
                 required: false,
                 description: "npm version qualification. Goes after module name, e.g. @branch-master",
-                defaultValue: "",
+                defaultValue: opts.version || "",
             },
         },
         transform: async (p, cli) => {

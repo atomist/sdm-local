@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { DefaultBootstrapPort } from "../../../embedded/embeddedMachine";
+import { DefaultEmbeddedMachinePort } from "../../../embedded/embeddedMachine";
 import { DefaultSdmCdPort } from "../../command/addStartSdmDeliveryMachine";
 import { AutomationClientFinder } from "../AutomationClientFinder";
 import { PortRangeAutomationClientFinder } from "./PortRangeAutomationClientFinder";
 
 export function defaultAutomationClientFinder(): AutomationClientFinder {
     return new PortRangeAutomationClientFinder({
-        additionalPorts: [DefaultSdmCdPort, DefaultBootstrapPort],
+        additionalPorts: [DefaultSdmCdPort, DefaultEmbeddedMachinePort],
     });
 }

@@ -29,9 +29,24 @@ import { isFailureMessage } from "../configuration/support/NotifyOnCompletionAut
 import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
 
 export class HttpMessageListenerParameters {
+
     public readonly port: number;
+
+    /**
+     * True if this is a short-lived listener that can be shut down
+     * once it's seen a command completion event
+     */
     public readonly transient: boolean;
+
+    /**
+     * If this is set, a list of channels we should listen on
+     */
     public readonly channels?: string[] | string;
+
+    /**
+     * Whether to display information about the invocation of commands.
+     * Useful when developing SDM commands.
+     */
     public readonly verbose?: boolean;
 }
 
@@ -146,6 +161,6 @@ export function messageListenerRoot(demonPort: number): string {
     return `http://${defaultHostUrlAliaser().alias()}:${demonPort}/`;
 }
 
-export async function isListenerRunning(demonPort: number = AllMessagesPort): Promise<boolean> {
+export async function isFeedListenerRunning(demonPort: number = AllMessagesPort): Promise<boolean> {
     return canConnectTo(messageListenerRoot(demonPort));
 }

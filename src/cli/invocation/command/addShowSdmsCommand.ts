@@ -20,6 +20,11 @@ import { renderClientsInfo } from "../../ui/renderClientInfo";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
 import { YargSaver } from "./support/yargSaver/YargSaver";
 
+/**
+ * Show all connected local SDMs
+ * @param {AutomationClientInfo[]} clients
+ * @param {YargSaver} yargSaver
+ */
 export function addShowSdmsCommand(clients: AutomationClientInfo[], yargSaver: YargSaver) {
     yargSaver.command({
         command: "show sdms",

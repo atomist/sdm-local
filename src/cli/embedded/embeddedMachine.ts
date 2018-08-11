@@ -31,7 +31,11 @@ import { LocalLifecycle } from "../../sdm/ui/localLifecycle";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { fetchMetadataFromAutomationClient } from "../invocation/http/fetchMetadataFromAutomationClient";
 
-export const DefaultBootstrapPort = 2900;
+/**
+ * Default port on which to start an embedded machine.
+ * @type {number}
+ */
+export const DefaultEmbeddedMachinePort = 2900;
 
 /**
  * Options for starting an embedded machine.
@@ -41,6 +45,12 @@ export interface EmbeddedMachineOptions {
     repositoryOwnerParentDirectory?: string;
     configure: ConfigureMachine;
     port?: number;
+
+    /**
+     * Whether to suppress log output. It will normally
+     * be routed to the console.
+     */
+    suppressConsoleLog?: boolean;
 }
 
 const createMachine = (configure: ConfigureMachine) => (config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine => {
@@ -95,12 +105,14 @@ function configurationFor(options: EmbeddedMachineOptions): Configuration {
  */
 export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Promise<AutomationClientInfo> {
     const optsToUse: EmbeddedMachineOptions = {
-        port: DefaultBootstrapPort,
+        port: DefaultEmbeddedMachinePort,
         ...options,
         repositoryOwnerParentDirectory: options.repositoryOwnerParentDirectory || determineDefaultRepositoryOwnerParentDirectory(),
     };
 
-    process.env.ATOMIST_DISABLE_LOGGING = "false";
+    if (!options.suppressConsoleLog) {
+        process.env.ATOMIST_DISABLE_LOGGING = "false";
+    }
     process.env.ATOMIST_MODE = "local";
     const config = await invokePostProcessors(
         configurationFor(optsToUse));

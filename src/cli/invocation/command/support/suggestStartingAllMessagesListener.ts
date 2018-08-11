@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { isListenerRunning } from "../../../../sdm/ui/HttpMessageListener";
+import { isFeedListenerRunning } from "../../../../sdm/ui/HttpMessageListener";
 import { adviceDoc } from "../../../ui/consoleOutput";
 
 /**
@@ -22,7 +22,7 @@ import { adviceDoc } from "../../../ui/consoleOutput";
  * @return {Promise<void>}
  */
 export async function suggestStartingAllMessagesListener() {
-    const running = await isListenerRunning();
+    const running = await isFeedListenerRunning();
     if (!running) {
         adviceDoc("docs/startListener.md");
     }
