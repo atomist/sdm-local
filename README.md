@@ -128,6 +128,12 @@ In order to see messages from events (not interspersed with logs), activate a me
 atomist feed
 
 ```
+You can narrow down messages with the `channel` option. For example, this will display only messages to the given two services:
+
+```
+atomist feed --channel=AccountService --channel=BillingService
+```
+You can use the `--verbose` flag to show more information about command invocation. This is particularly useful when developing your SDM.
 
 #### Configure Existing Projects
 

@@ -29,7 +29,12 @@ export function addFeedCommand(yargs: YargSaver) {
         describe: "Start listener daemon to display messages",
         builder: argv => {
             argv.option("channel", {
+                description: "Filter to a channel to listen to",
                 required: false,
+            }).option("verbose", {
+                type: "boolean",
+                description: "Show information about command invocation",
+                default: false,
             });
             return argv;
         },
@@ -44,6 +49,7 @@ export function addFeedCommand(yargs: YargSaver) {
                         port: AllMessagesPort,
                         transient: false,
                         channels,
+                        verbose: argv.verbose,
                     }).start();
                     if (channels.length > 0) {
                         infoMessage("Atomist feed from all local SDM activity concerning channels [%s] will appear here\n",

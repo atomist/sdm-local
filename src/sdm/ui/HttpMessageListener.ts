@@ -18,6 +18,7 @@ import { SlackDestination } from "@atomist/automation-client";
 import { toStringArray } from "@atomist/automation-client/internal/util/string";
 import * as bodyParser from "body-parser";
 import * as express from "express";
+import * as core from "express-serve-static-core";
 import * as http from "http";
 import { errorMessage, infoMessage } from "../../cli/ui/consoleOutput";
 import { CommandCompletionDestination } from "../../common/ui/CommandCompletionDestination";
@@ -31,6 +32,7 @@ export class HttpMessageListenerParameters {
     public readonly port: number;
     public readonly transient: boolean;
     public readonly channels?: string[] | string;
+    public readonly verbose?: boolean;
 }
 
 /**
@@ -47,16 +49,31 @@ export class HttpMessageListener {
 
     private readonly channels: string[];
 
+    /**
+     * Could this process be terminated, based on its configuration
+     * and the events it has seen?
+     * @return {boolean}
+     */
     get canTerminate() {
         return this.parameters.transient && this.seenCompletion;
     }
 
+    /**
+     * Start the server process
+     * @return {this}
+     */
     public start(): this {
         const app = express();
         app.use(bodyParser.json());
 
         app.get("/", (req, res) => res.send("Atomist Listener Daemon\n"));
 
+        this.addMessageRoute(app);
+        this.addWriteRoute(app);
+        return this;
+    }
+
+    private addMessageRoute(app: core.Express) {
         app.post(MessageRoute, (req, res, next) => {
             const destinations: SlackDestination[] = req.body.destinations;
             // Shut down the listener
@@ -73,7 +90,7 @@ export class HttpMessageListener {
             if (this.channels.length > 0) {
                 // Filter
                 if (!this.channels.some(c => destinations.some(d => !!d.channels && d.channels.includes(c)))) {
-                    return res.send({ignored: true});
+                    return res.send({ ignored: true });
                 }
             }
 
@@ -82,11 +99,19 @@ export class HttpMessageListener {
                 .then(() => res.send("Read message " + JSON.stringify(req.body) + "\n"))
                 .catch(next);
         });
+    }
 
-        // Raw message point
+    /**
+     * Add raw write route
+     */
+    private addWriteRoute(app: core.Express) {
+        // Raw message point. Ignore if not in verbose mode.
+        const verbose = this.parameters.verbose === true;
         app.post("/write", (req, res) => {
-            infoMessage(req.body.message);
-            res.send({ received: true });
+            if (verbose) {
+                infoMessage(req.body.message);
+            }
+            res.send({ received: true, shown: verbose });
         });
 
         this.server = app.listen(this.parameters.port,
@@ -97,7 +122,6 @@ export class HttpMessageListener {
                 }
             },
         );
-        return this;
     }
 
     /**
