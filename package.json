@@ -21,6 +21,7 @@
     "url": "https://github.com/atomist/sdm-local/issues"
   },
   "dependencies": {
+    "@atomist/microgrammar": "^0.8.0",
     "@atomist/slack-messages": "^0.12.1",
     "@octokit/rest": "^15.9.5",
     "@types/app-root-path": "^1.2.4",

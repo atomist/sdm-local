@@ -55,6 +55,7 @@ export async function addLocalSdmCommands(yargs: Argv | YargSaver,
     const clients = await finder.findAutomationClients();
 
     addShowSdmsCommand(clients, yargSaver);
+    addCloneCommand(clients, yargSaver);
 
     // TODO filter on working directories
     for (const client of clients) {
@@ -73,10 +74,6 @@ export async function addLocalSdmCommands(yargs: Argv | YargSaver,
  */
 async function addCommandsToConnectTo(client: AutomationClientInfo, yargSaver: YargSaver) {
     verifyLocalSdm(client);
-
-    if (!!client.localConfig) {
-        addCloneCommand(client, yargSaver);
-    }
 
     // If we were able to connect to an SDM...
     if (!!client.client) {

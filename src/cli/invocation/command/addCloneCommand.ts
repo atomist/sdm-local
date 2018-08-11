@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
+import { optional } from "@atomist/microgrammar/Ops";
 import { exec } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";
+import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
 import { sendChannelLinkEvent, sendRepoOnboardingEvent } from "../../../sdm/binding/event/repoOnboardingEvents";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { addGitHooks } from "../../setup/addGitHooks";
@@ -24,32 +27,42 @@ import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
 import { YargSaver } from "./support/YargSaver";
 
-export function addCloneCommand(ai: AutomationClientInfo, yargs: YargSaver) {
+export function addCloneCommand(clients: AutomationClientInfo[], yargs: YargSaver) {
     yargs.command({
-        command: "clone <owner> <repo> [remoteBase]",
-        describe: "Import from Git remote. Remote base defaults to https://github.com",
+        command: "clone <args>",
+        describe: "Like git clone but onboards the repo with Atomist",
         handler: argv => {
             return logExceptionsToConsole(async () => {
-                const remoteBase = !!argv.base ? argv.base : "https://github.com";
-                await importFromGitRemote(ai, argv.owner, argv.repo, remoteBase);
-            }, ai.connectionConfig.showErrorStacks);
+                await superclone(clients, argv.args);
+            }, true);
         },
     });
 }
 
-async function importFromGitRemote(ai: AutomationClientInfo,
-                                   owner: string,
-                                   repo: string,
-                                   remoteBase: string): Promise<any> {
-    infoMessage(`Importing Git remote project ${remoteBase}/${owner}/${repo}\n`);
-    const orgDir = `${ai.localConfig.repositoryOwnerParentDirectory}/${owner}`;
+async function superclone(clients: AutomationClientInfo[],
+                          args: string): Promise<any> {
+    infoMessage(`Importing Git remote project ${args}\n`);
+    const repositoryOwnerDirectory = determineDefaultRepositoryOwnerParentDirectory();
+    const { owner, repo } = GitRemoteParser.firstMatch(args);
+    const orgDir = repositoryOwnerDirectory + "/" + owner;
     if (!fs.existsSync(orgDir)) {
         fs.mkdirSync(orgDir);
     }
-    await promisify(exec)(`git clone ${remoteBase}/${owner}/${repo}`,
+    infoMessage("Owner=%s, repo=%s, cloning under %s\n", owner, repo, orgDir);
+    await promisify(exec)(`git clone ${args}`,
         { cwd: orgDir });
-    await addGitHooks(`${orgDir}/${repo}`);
-    const eventSender = invokeEventHandlerUsingHttp(ai.connectionConfig, ai.connectionConfig);
-    await sendRepoOnboardingEvent(ai.connectionConfig, { owner, repo }, eventSender);
-    await sendChannelLinkEvent(ai.connectionConfig, { owner, repo }, eventSender);
+    await addGitHooks(`${repositoryOwnerDirectory}/${owner}/${repo}`);
+    for (const client of clients) {
+        const eventSender = invokeEventHandlerUsingHttp(client.connectionConfig, client.connectionConfig);
+        await sendRepoOnboardingEvent(client.connectionConfig, { owner, repo }, eventSender);
+        await sendChannelLinkEvent(client.connectionConfig, { owner, repo }, eventSender);
+    }
 }
+
+export const GitRemoteParser = Microgrammar.fromString <{ base: string, owner: string, repo: string }>(
+    "${base}/${owner}/${repo}${dotgit}", {
+        base: /http[s]:\/\/[^\/]+/,
+        repo: /[^\s^\.]+/,
+        dotgit: optional(".git"),
+    },
+);
