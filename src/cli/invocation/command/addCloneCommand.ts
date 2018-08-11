@@ -25,7 +25,7 @@ import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { addGitHooks } from "../../setup/addGitHooks";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
-import { YargSaver } from "./support/YargSaver";
+import { YargSaver } from "./support/yargSaver/YargSaver";
 
 export function addCloneCommand(clients: AutomationClientInfo[], yargs: YargSaver) {
     yargs.command({

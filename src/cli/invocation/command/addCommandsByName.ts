@@ -19,7 +19,7 @@ import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
-import { yargCommandFromSentence, YargSaver } from "./support/YargSaver";
+import { yargCommandFromSentence, YargSaver } from "./support/yargSaver/YargSaver";
 
 /**
  * Add commands by name from the given client
@@ -41,6 +41,7 @@ export function addCommandsByName(ai: AutomationClientInfo,
                             () => runByCommandName(ai, hi.name, argv), ai.connectionConfig.showErrorStacks);
                     },
                     parameters: commandLineParametersFromCommandHandlerMetadata(hi, allowUserInput),
+                    conflictResolution: { failEverything: false, commandDescription: `run ${hi.name} (running command by name)` },
                 }));
             });
             args.demandCommand();

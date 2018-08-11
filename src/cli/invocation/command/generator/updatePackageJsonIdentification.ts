@@ -17,7 +17,7 @@
 import { logger } from "@atomist/automation-client";
 import { doWithJson } from "@atomist/automation-client/project/util/jsonUtils";
 import { CodeTransform } from "@atomist/sdm";
-import { NodeProjectCreationParameters } from "../generator/NodeProjectCreationParameters";
+import { NodeProjectCreationParameters } from "./NodeProjectCreationParameters";
 
 /**
  * Code transform to update identification fields of package.json

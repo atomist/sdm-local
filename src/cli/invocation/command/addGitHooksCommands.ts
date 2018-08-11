@@ -19,7 +19,7 @@ import { determineCwd } from "../../../sdm/binding/project/expandedTreeUtils";
 import { isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { addGitHooks, removeGitHooks } from "../../setup/addGitHooks";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
-import { YargSaver } from "./support/YargSaver";
+import { YargSaver } from "./support/yargSaver/YargSaver";
 
 /**
  * Command to add git hooks to current directory or all projects
@@ -29,13 +29,13 @@ export function addAddGitHooksCommand(yargs: YargSaver) {
     yargs.command({
         command: "add git hooks",
         describe: `Install git hooks to current project, or if 'base' parameter is supplied, under that base`,
-        builder: args => {
+        builder: (args: any) => {
             return args.option("base", {
                 required: false,
                 description: "Base for machine to add",
             });
         },
-        handler: argv => {
+        handler: (argv: any) => {
             return logExceptionsToConsole(() => installHookOrHooks(argv.base), true);
         },
     });

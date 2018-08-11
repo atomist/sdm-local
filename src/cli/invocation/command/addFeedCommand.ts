@@ -18,7 +18,7 @@ import { toStringArray } from "@atomist/automation-client/internal/util/string";
 import { AllMessagesPort } from "../../../common/ui/httpMessaging";
 import { HttpMessageListener, isListenerRunning } from "../../../sdm/ui/HttpMessageListener";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
-import { YargSaver } from "./support/YargSaver";
+import { YargSaver } from "./support/yargSaver/YargSaver";
 
 /**
  * @param {yargs.Argv} yargs
@@ -36,24 +36,24 @@ export function addFeedCommand(yargs: YargSaver) {
         handler: argv => {
             const channels = toStringArray(argv.channel || []);
             return logExceptionsToConsole(async () => {
-                    const alreadyRunning = await isListenerRunning();
-                    if (alreadyRunning) {
-                        infoMessage("Lifecycle listener is already running\n");
+                const alreadyRunning = await isListenerRunning();
+                if (alreadyRunning) {
+                    infoMessage("Lifecycle listener is already running\n");
+                } else {
+                    new HttpMessageListener({
+                        port: AllMessagesPort,
+                        transient: false,
+                        channels,
+                    }).start();
+                    if (channels.length > 0) {
+                        infoMessage("Atomist feed from all local SDM activity concerning channels [%s] will appear here\n",
+                            channels);
                     } else {
-                        new HttpMessageListener({
-                            port: AllMessagesPort,
-                            transient: false,
-                            channels,
-                        }).start();
-                        if (channels.length > 0) {
-                            infoMessage("Atomist feed from all local SDM activity concerning channels [%s] will appear here\n",
-                                channels);
-                        } else {
-                            infoMessage("Atomist feed from all local SDM activity will appear here\n");
+                        infoMessage("Atomist feed from all local SDM activity will appear here\n");
 
-                        }
                     }
-                },
+                }
+            },
                 true);
         },
     });
