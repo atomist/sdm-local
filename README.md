@@ -1,4 +1,4 @@
-# sdm-local: Local Software Delivery Machine
+# sdm-local: Local Software Delivery Machine Support
 
 A **software delivery machine** (SDM) helps you write and deliver code that is up to your own standards, at scale.
 This project runs a software delivery sdm.machine locally on your sdm.machine, responding to your commands and your commits.
@@ -39,15 +39,15 @@ npm i -g @atomist/cli
 Use the following command to create a new SDM:
 
 ```
-atomist new sdm
+atomist create sdm
 ```
 
 This will create a new SDM instance in a git repository on your local drive, by default under `<user home>/atomist/<org>`.
 
-In order to see what's happening across all your automation clients, start a local lifecycle listener. This plays the same role as Atomist lifecycle in Slack, showing activity on your repositories. The console will display messages:
+In order to see what's happening across all your automation clients, start a local listener to the Atomist lifecycle feed. This plays the same role as Atomist lifecycle in Slack, showing activity on your repositories. The console will display messages:
 
 ```
-atomist listen
+atomist feed
 ``` 
 
 *Optional*: You likely want CD for your own SDMs. (Otherwise, you can start and stop them yourselves, for example in your IDE.) SDM CD requires special support as an SDM would need to shut itself down to deliver itself. Thus there is a command to run a dedicated SDM to deliver other SDMs. Start it as follows:
@@ -85,7 +85,7 @@ Here is an [architecture diagram](https://github.com/atomisthq/sdm-local/blob/ma
 To create your local SDM, execute:
 
 ```
-@atomist new sdm
+atomist create sdm
 ```
 
 The SDM works only on `git` repositories.
@@ -110,20 +110,13 @@ $ATOMIST_ROOT
 
 3) Send commit events from your repositories to your SDM. See "Configure existing projects" below. TODO: test this. how does it know
  
-4) *TEMPORARY for Atomists*: currently sdm-local isn't published on npm, so you have to:
--   clone this repository. In its directory:
--   `npm install`
--   `npm run build`
--   `npm link`
--   Then over in your SDM repo, run `npm link @atomist/sdm-local`. Any time you `npm install` again, you'll have to re-link sdm-local. Also, IntelliJ won't like you because it isn't in the package.json, so it won't recognize references to it. This won't be an issue once this project is public.
-
 ### Startup
 
 Install the cli: `npm install -g @atomist/cli`
 
 Start your SDM in local mode by setting an environment variable and then invoking the atomist CLI. `ATOMIST_MODE=local atomist start`. The SDM will run in the background, listening for commands and events. This terminal will display logs.
 
-Trigger commands with `@atomist <command>` in another terminal. Try `@atomist say hello`! Your SDM will send messages right back to where you ran the command.
+Trigger commands with `atomist <command>` in another terminal. Try `atomist say hello`! Your SDM will send messages right back to where you ran the command.
 
 Events are triggered by git postCommit hooks. Messages from events don't come back to wherever you made the commit. Instead: 
 
@@ -132,7 +125,7 @@ Events are triggered by git postCommit hooks. Messages from events don't come ba
 In order to see messages from events (not interspersed with logs), activate a message listener in another terminal:
 
 ```
-@atomist listen
+atomist feed
 
 ```
 
@@ -145,7 +138,7 @@ Add the Atomist git hook to the existing git projects within this directory stru
 running the following command:
 
 ```
-@atomist add-git-hooks
+atomist add git hooks
 ```
 
 Success will result in output like the following:
@@ -163,7 +156,7 @@ Success will result in output like the following:
 2018-06-06T11:23:58.080Z [m:85087] [info ] addGitHooks: Adding git post-commit script to project at /Users/rodjohnson/temp/local-sdm/x/y
 ```
 
-> Running `@atomist add-git-hooks` is only necessary for pre-existing cloned directories and directories that are cloned using `git` rather than the local SDM.
+> Running `atomist add git hooks` is only necessary for pre-existing cloned directories and directories that are cloned using `git` rather than the local SDM.
 
 ## Reacting to commits
 
@@ -185,7 +178,7 @@ Further projects can be added under the expanded directory tree in three ways:
 
 ### Normal git Clone
 
-Cloning any git project from anywhere under `$SDM_PROJECTS_BASE` and running `@atomist add-git-hooks` to add git hooks to it.
+Cloning any git project from anywhere under `$ATOMIST_ROOT` and running `atomist add git hooks` to add git hooks to it.
 
 ### Symbolic Link
 Go to the correct organization directory, creating it if necessary. Then create a symlink to the required directory elsewhere on your sdm.machine. For example:
@@ -193,18 +186,19 @@ Go to the correct organization directory, creating it if necessary. Then create 
 ```
 ln -s /Users/rodjohnson/sforzando-dev/idea-projects/flight1
 ```
-Then run `@atomist add-git-hooks` and the linked project will be treated as a normal project.
+Then run `atomist add git hooks` and the linked project will be treated as a normal project.
 
-### Import Command
+### 'atomist clone' Command
 
-The easiest way to add an existing project to your SDM projects is: run the `import` command to clone a 
-GitHub.com repository in the right place in the expanded tree and automatically
- install the git hook:
-
-```
-@atomist import --owner=johnsonr --repo=initializr
+The easiest way to add an existing project to your SDM projects is: run the `atomist clone` command to clone a 
+GitHub.com repository in the right place in the expanded tree and automatically install the git hooks:
 
 ```
+atomist clone https://github.com/<owner>/<repo>
+
+```
+The arguments are the same as those to `git clone`.
+
 This is the recommended way, as it will run Atomist onboarding events for a new repo.
 
 Output will look as follows:
@@ -217,28 +211,32 @@ warning: redirecting to https://github.com/johnsonr/initializr/
 2018-06-06T11:27:33.349Z [m:85220] [info ] addGitHooks: Adding git post-commit script to project at /Users/rodjohnson/temp/local-sdm/johnsonr/initializr
 ```
 
-Only public repos are supported.
-
 ## Running Commands
-```
-@atomist show skills
-```
 
-Type in intents as follows:
+All commands ("skills") on connected SDMs will be shown by the following command:
 
 ```
-@atomist create spring
+atomist show skills
 ```
 
-No parameters beyond the command name are required. However, command-specific parameters may be provided in options syntax.
+The CLI exposes the "intents" of all commands based on their command registrations. Type in intents as follows to activate the command:
+
+```
+atomist create spring
+```
+
+No parameters beyond the command name are required to invoke an intent. However, command-specific parameters may be provided in options syntax.
+
+> Clashing intents cause ambiguity, which will be flagged in a warning message. Try to avoid clashing intents between your commands, within or across SDMs.
 
 ## Architecture
 
-This project consists of three parts:
+This project consists of four parts:
 
-- An Atomist SDM running in its own process, in a special local mode
-- A command line.
+- One or more Atomist SDMs running in their own processes, in a special local mode
+- A command line, exposed as a Node binary.
 - `git` hooks inserted in those projects you wish to use the local SDM with.
+- A feed listener process which, if running, will display all messages from the SDMs and some diagnostic information.
 
 ## Troubleshooting
 
