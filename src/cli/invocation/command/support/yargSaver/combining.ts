@@ -77,9 +77,10 @@ function thereIsConflict(yss: YargSaverCommand[]): boolean {
 
 function dropNonessentialCommands(yss: YargSaverCommand[], logWarning: (s: string) => void): YargSaverCommand[] {
     const essential = yss.filter(conflictBlocksStartup);
-    const nonessential = yss.filter(ys => !conflictBlocksStartup(ys))
+    const nonessential = yss.filter(ys => !conflictBlocksStartup(ys));
     nonessential.forEach(ys => {
-        logWarning("Warning: Because of a conflict, this command will not be available at the command line: " + descriptionForConflictWarning(ys) + "\n");
+        logWarning("Warning: Because of a conflict, this command will not be available at the command line: " +
+            descriptionForConflictWarning(ys) + "\n");
     });
     return essential;
 }
