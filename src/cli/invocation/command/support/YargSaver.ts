@@ -64,6 +64,26 @@ export function yargCommandWithPositionalArguments(
     });
 }
 
+/**
+ * Build up data about commands, and then put them in yargs later.
+ * The YargSaver lets you add lots of commands, including ones with spaces in them.
+ * Then optimize it, to combine all the commands optimally.
+ * You'll get errors if you've added duplicate commands (they won't overwrite each other).
+ * 
+ * To use it:
+ * Get a new one:
+ * const yargSaver = freshYargSaver();
+ * 
+ * Add commands to it:
+ * yargSaver.withSubcommand(yargCommandFromSentence({ command: "do this thing already", handler: (argv)=> console.log("stuff")}))
+ * 
+ * You can also add positional commands:
+ * yargSaver.withSubcommand(yargCommandWithPositionalArguments({ command: "run <thing>", ...}))
+ * 
+ * Then optimize it, and save by passing a real yargs:
+ * optimizeOrThrow(yargSaver).save(yargs)
+ * 
+ */
 export interface YargSaver {
 
     withSubcommand(command: YargSaverCommand): YargSaver;
@@ -71,7 +91,7 @@ export interface YargSaver {
 
     // compatibility with Yargs
     option(parameterName: string,
-           params: ParameterOptions): YargSaver;
+        params: ParameterOptions): YargSaver;
     demandCommand(): void;
 
     command(params: {
@@ -233,7 +253,7 @@ abstract class YargSaverContainer implements YargSaver {
     }
 
     public option(parameterName: string,
-                  opts: ParameterOptions) {
+        opts: ParameterOptions) {
         this.parameters.push({
             parameterName,
             ...opts,
@@ -374,9 +394,9 @@ class YargSaverCommandWord extends YargSaverContainer implements YargSaverComman
     }
 
     constructor(public readonly commandLine: CommandLine,
-                public readonly description: string,
-                public handleInstructions: HandleInstructions,
-                public readonly opts: {
+        public readonly description: string,
+        public handleInstructions: HandleInstructions,
+        public readonly opts: {
             nestedCommands?: YargSaverCommand[],
             parameters?: CommandLineParameter[],
         } = {}) {
