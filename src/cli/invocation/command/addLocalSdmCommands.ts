@@ -18,7 +18,7 @@ import { Argv } from "yargs";
 import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { errorMessage, infoMessage } from "../../ui/consoleOutput";
+import { infoMessage } from "../../ui/consoleOutput";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "../http/support/defaultAutomationClientFinder";
 import { addBootstrapCommands } from "./addBootstrapCommands";
@@ -31,7 +31,7 @@ import { addReplayCommand } from "./addReplayCommand";
 import { addShowSdmsCommand } from "./addShowSdmsCommand";
 import { addStartSdmDeliveryMachine } from "./addStartSdmDeliveryMachine";
 import { addShowSkillsCommand } from "./showSkillsCommand";
-import { freshYargSaver, isYargSaver, YargSaver } from "./support/yargSaver/YargSaver";
+import { freshYargSaver, isYargSaver, YargSaver } from "./support/yargSaver";
 
 /**
  * Given a yargs instance, add commands based on local SDMs we can connect to

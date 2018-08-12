@@ -21,7 +21,7 @@ import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import chalk from "chalk";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
 import { renderClientInfo } from "../../ui/renderClientInfo";
-import { YargSaver } from "./support/yargSaver/YargSaver";
+import { YargSaver } from "./support/yargSaver";
 
 export const DefaultSdmCdPort = 2901;
 

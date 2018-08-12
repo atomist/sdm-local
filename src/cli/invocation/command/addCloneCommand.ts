@@ -25,7 +25,7 @@ import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { addGitHooks } from "../../setup/addGitHooks";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
-import { YargSaver } from "./support/yargSaver/YargSaver";
+import { YargSaver } from "./support/yargSaver";
 
 /**
  * Takes the same arguments as Git clone but onboards the repo with Atomist
@@ -45,7 +45,7 @@ export function addCloneCommand(clients: AutomationClientInfo[], yargs: YargSave
 }
 
 async function superclone(clients: AutomationClientInfo[],
-                          args: string): Promise<any> {
+    args: string): Promise<any> {
     infoMessage(`Importing Git remote project ${args}\n`);
     const repositoryOwnerDirectory = determineDefaultRepositoryOwnerParentDirectory();
     const { owner, repo } = GitRemoteParser.firstMatch(args);
@@ -64,7 +64,7 @@ async function superclone(clients: AutomationClientInfo[],
     }
 }
 
-export const GitRemoteParser = Microgrammar.fromString <{ base: string, owner: string, repo: string }>(
+export const GitRemoteParser = Microgrammar.fromString<{ base: string, owner: string, repo: string }>(
     "${base}/${owner}/${repo}${dotgit}", {
         base: /http[s]:\/\/[^\/]+/,
         repo: /[^\s^\.]+/,

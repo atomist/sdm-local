@@ -22,15 +22,15 @@ import { HookEvent } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
-import { yargCommandWithPositionalArguments, YargSaver } from "./support/yargSaver/YargSaver";
+import { yargCommandWithPositionalArguments, YargSaver } from "./support/yargSaver";
 
 /**
  * Add a command to replay execution following a git event
  * @param {YargSaver} yargs
  */
 export function addReplayCommand(yargs: YargSaver,
-                                 automationClientFinder: AutomationClientFinder,
-                                 teamContextResolver: WorkspaceContextResolver) {
+    automationClientFinder: AutomationClientFinder,
+    teamContextResolver: WorkspaceContextResolver) {
     yargs.withSubcommand(yargCommandWithPositionalArguments({
         command: "replay <event> [depth]",
         describe: "Replay commit action on the current repository",
@@ -46,15 +46,15 @@ export function addReplayCommand(yargs: YargSaver,
         }],
         handler: ya => {
             return logExceptionsToConsole(async () => {
-                    const clients = await automationClientFinder.findAutomationClients();
-                    const msg = sprintf("Dispatching git event '%s' to %d clients...\n",
-                        ya.event,
-                        clients.length);
-                    infoMessage(msg);
-                    await postToListener(msg);
-                    await triggerGitEvents(clients, ya.event, ya.depth, teamContextResolver);
-                    return suggestStartingAllMessagesListener();
-                },
+                const clients = await automationClientFinder.findAutomationClients();
+                const msg = sprintf("Dispatching git event '%s' to %d clients...\n",
+                    ya.event,
+                    clients.length);
+                infoMessage(msg);
+                await postToListener(msg);
+                await triggerGitEvents(clients, ya.event, ya.depth, teamContextResolver);
+                return suggestStartingAllMessagesListener();
+            },
                 true);
         },
     }));

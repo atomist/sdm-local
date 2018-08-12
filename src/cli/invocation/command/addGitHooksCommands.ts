@@ -19,7 +19,7 @@ import { determineCwd } from "../../../sdm/binding/project/expandedTreeUtils";
 import { isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { addGitHooks, removeGitHooks } from "../../setup/addGitHooks";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
-import { YargSaver } from "./support/yargSaver/YargSaver";
+import { YargSaver } from "./support/yargSaver";
 
 /**
  * Command to add git hooks to current directory or all projects
