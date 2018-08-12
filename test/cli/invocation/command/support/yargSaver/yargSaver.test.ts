@@ -17,7 +17,7 @@
 import * as assert from "assert";
 import {
     freshYargSaver,
-    yargCommandFromSentence
+    yargCommandFromSentence,
 } from "../../../../../../src/cli/invocation/command/support/yargSaver";
 
 describe("yarg saver", () => {
@@ -73,7 +73,7 @@ describe("yarg saver", () => {
 
         const combined = subject.optimized();
 
-        assert(combined.helpMessages.some(line => line.includes("good job me")), "Help message was: " + combined.helpMessages.join("\n"))
+        assert(combined.helpMessages.some(line => line.includes("good job me")), "Help message was: " + combined.helpMessages.join("\n"));
 
     });
 });

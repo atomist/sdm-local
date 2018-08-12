@@ -40,7 +40,7 @@ import { freshYargSaver, isYargSaver, YargSaver } from "./support/yargSaver";
  * @return {yargs.Arguments}
  */
 export async function addLocalSdmCommands(yargs: Argv | YargSaver,
-    finder: AutomationClientFinder = defaultAutomationClientFinder()) {
+                                          finder: AutomationClientFinder = defaultAutomationClientFinder()) {
     const teamContextResolver: WorkspaceContextResolver = DefaultWorkspaceContextResolver;
 
     const yargSaver = isYargSaver(yargs) ? yargs : freshYargSaver();

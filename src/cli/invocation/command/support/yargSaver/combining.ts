@@ -15,11 +15,11 @@
  */
 
 import * as _ from "lodash";
+import { parseCommandLine } from "./commandLine";
 import {
     CommandLineParameter, DoNothing,
     hasPositionalArguments, YargSaverCommand, YargSaverCommandWord,
 } from "./YargSaver";
-import { parseCommandLine } from "./commandLine";
 
 interface ValidationError {
     complaint: string;

@@ -21,5 +21,5 @@ export {
     yargCommandWithPositionalArguments,
     CommandLineParameter,
     ParameterOptions,
-    isYargSaver
-} from "./YargSaver"
+    isYargSaver,
+} from "./YargSaver";

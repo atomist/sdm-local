@@ -23,7 +23,6 @@ import { CommandLine, commandLineAlias, dropFirstWord, parseCommandLine } from "
 
 export { PositionalOptions, PositionalOptionsType, Choices, ParameterOptions };
 
-
 /**
  * Build up data about commands, and then put them in yargs later.
  * The YargSaver lets you add lots of commands, including ones with spaces in them.
@@ -55,7 +54,7 @@ export interface YargSaver {
 
     // compatibility with Yargs
     option(parameterName: string,
-        params: ParameterOptions): YargSaver;
+           params: ParameterOptions): YargSaver;
     demandCommand(): void;
 
     command(params: {
@@ -203,11 +202,11 @@ abstract class YargSaverContainer implements YargSaver {
 
     public get helpMessages(): string[] {
         return _.flatMap(this.nestedCommands, nc => nc.helpMessages);
-    };
+    }
 
     constructor(nestedCommands: YargSaverCommand[] = [],
-        parameters: CommandLineParameter[] = [],
-        commandDemanded = false) {
+                parameters: CommandLineParameter[] = [],
+                commandDemanded = false) {
         this.nestedCommands = nestedCommands;
         this.parameters = parameters;
         this.commandDemanded = commandDemanded;
@@ -233,7 +232,7 @@ abstract class YargSaverContainer implements YargSaver {
     }
 
     public option(parameterName: string,
-        opts: ParameterOptions) {
+                  opts: ParameterOptions) {
         this.parameters.push({
             parameterName,
             ...opts,
@@ -309,7 +308,7 @@ class YargSaverTopLevel extends YargSaverContainer {
     constructor(opts: { commandName?: string, epilogForHelpMessage?: string }) {
         super();
         this.commandName = opts.commandName || "top-level";
-        this.epilogsForHelpMessage = opts.epilogForHelpMessage ? [opts.epilogForHelpMessage] : []
+        this.epilogsForHelpMessage = opts.epilogForHelpMessage ? [opts.epilogForHelpMessage] : [];
     }
 
     public get helpMessages() {
@@ -396,9 +395,9 @@ export class YargSaverCommandWord extends YargSaverContainer implements YargSave
     public readonly warnings: string[];
 
     constructor(public readonly commandLine: CommandLine,
-        public readonly description: string,
-        public readonly handleInstructions: HandleInstructions,
-        readonly opts: {
+                public readonly description: string,
+                public readonly handleInstructions: HandleInstructions,
+                readonly opts: {
             conflictResolution: ConflictResolution,
             nestedCommands?: YargSaverCommand[],
             parameters?: CommandLineParameter[],

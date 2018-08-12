@@ -29,8 +29,8 @@ import { yargCommandWithPositionalArguments, YargSaver } from "./support/yargSav
  * @param {YargSaver} yargs
  */
 export function addReplayCommand(yargs: YargSaver,
-    automationClientFinder: AutomationClientFinder,
-    teamContextResolver: WorkspaceContextResolver) {
+                                 automationClientFinder: AutomationClientFinder,
+                                 teamContextResolver: WorkspaceContextResolver) {
     yargs.withSubcommand(yargCommandWithPositionalArguments({
         command: "replay <event> [depth]",
         describe: "Replay commit action on the current repository",
