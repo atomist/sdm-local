@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
-import { optional } from "@atomist/microgrammar/Ops";
+import { Microgrammar, optional } from "@atomist/microgrammar";
 import { exec } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";

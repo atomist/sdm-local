@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
 import { successOn } from "@atomist/automation-client/action/ActionResult";
-import { RepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { ProjectPersister } from "@atomist/automation-client/operations/generate/generatorUtils";
-import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
-import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
+import { logger } from "@atomist/sdm";
+import { RepoRef } from "@atomist/sdm";
+import { GitProject, LocalProject, NodeFsLocalProject } from "@atomist/sdm";
 import { LocalModeConfiguration } from "@atomist/sdm-core";
 import * as fs from "fs";
 import { promisify } from "util";

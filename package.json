@@ -21,7 +21,7 @@
     "url": "https://github.com/atomist/sdm-local/issues"
   },
   "dependencies": {
-    "@atomist/microgrammar": "^0.8.0",
+    "@atomist/microgrammar": "^0.8.1",
     "@atomist/slack-messages": "^0.12.1",
     "@octokit/rest": "^15.9.5",
     "@types/app-root-path": "^1.2.4",
@@ -65,7 +65,7 @@
   },
   "devDependencies": {
     "@atomist/automation-client": "^0.19.7",
-    "@atomist/sdm": "^0.4.1",
+    "@atomist/sdm": "^0.4.2-forward.20180812180244",
     "@atomist/sdm-core": "^0.4.1",
     "@types/mocha": "^2.2.48",
     "@types/power-assert": "^1.4.29",

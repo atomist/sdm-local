@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
+import { logger } from "@atomist/sdm";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { PostToAtomistListenerListener, ShowDescriptionListener } from "./support/commandInvocationListeners";

@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
-import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
+import { LocalProject, NodeFsLocalProject } from "@atomist/sdm";
 import chalk from "chalk";
 import * as fs from "fs";
 import { sprintf } from "sprintf-js";

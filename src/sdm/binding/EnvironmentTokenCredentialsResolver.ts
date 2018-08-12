@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
-import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
-import { CredentialsResolver } from "@atomist/sdm";
+import { CredentialsResolver, logger, ProjectOperationCredentials } from "@atomist/sdm";
 
 export class EnvironmentTokenCredentialsResolver implements CredentialsResolver {
 

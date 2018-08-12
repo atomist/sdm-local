@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
-import { GitProject } from "@atomist/automation-client/project/git/GitProject";
+import { GitProject, logger } from "@atomist/sdm";
 import { runAndLog } from "./runAndLog";
 
 /**

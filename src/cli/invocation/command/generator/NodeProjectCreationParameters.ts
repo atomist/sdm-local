@@ -20,8 +20,7 @@ import {
     SemVerRegExp,
 } from "@atomist/sdm";
 
-import { MappedParameters } from "@atomist/automation-client";
-import { SeedDrivenGeneratorParameters } from "@atomist/automation-client/operations/generate/SeedDrivenGeneratorParameters";
+import { MappedParameters, SeedDrivenGeneratorParameters } from "@atomist/sdm";
 
 // This code is based on sdm-pack-node, but deliberately duplicated
 // here to avoid a dependency

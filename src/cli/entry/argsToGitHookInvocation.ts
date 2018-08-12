@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
+import { logger } from "@atomist/sdm";
 import { WorkspaceContextResolver } from "../../common/binding/WorkspaceContextResolver";
 import { GitHookInvocation } from "../invocation/git/handleGitHookEvent";
 
