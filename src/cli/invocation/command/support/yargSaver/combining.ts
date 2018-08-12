@@ -75,26 +75,22 @@ function thereIsConflict(yss: YargSaverCommand[]): boolean {
     return whyNotCombine(yss).length > 0;
 }
 
-function dropNonessentialCommands(yss: YargSaverCommand[], logWarning: (s: string) => void): YargSaverCommand[] {
-    const essential = yss.filter(conflictBlocksStartup);
-    const nonessential = yss.filter(ys => !conflictBlocksStartup(ys));
-    nonessential.forEach(ys => {
-        logWarning("Warning: Because of a conflict, this command will not be available at the command line: " +
-            descriptionForConflictWarning(ys) + "\n");
-    });
-    return essential;
+function dropNonessentialCommands(yss: YargSaverCommand[]): [YargSaverCommand[], string[]] {
+    const [essential, nonessential] = _.partition(yss, conflictBlocksStartup);
+    const warnings = nonessential.map(ys =>
+        `Warning: ${descriptionForConflictWarning(ys)} is not available because it conflicts with another command`);
+    return [essential, warnings];
 }
 
-export function combine(yss: YargSaverCommand[], logWarning: (s: string) => void): YargSaverCommand {
+export function combine(yss: YargSaverCommand[]): YargSaverCommand {
     if (yss.length === 1) {
         return yss[0];
     }
-    const combineThese = thereIsConflict(yss) ? dropNonessentialCommands(yss, logWarning) : yss;
+    const [combineThese, warnings] = thereIsConflict(yss) ? dropNonessentialCommands(yss) : [yss, []];
     if (thereIsConflict(combineThese)) {
         // still??
         throw new Error("Unresolvable conflict between commands: " + whyNotCombine(combineThese).map(errorToString).join("\n"));
     }
-    // assumption: whyNotCombine has been called, so several things are guaranteed
     const yswcs = combineThese as YargSaverCommandWord[];
     const one = yswcs[0];
 
@@ -113,6 +109,7 @@ export function combine(yss: YargSaverCommand[], logWarning: (s: string) => void
                 failEverything: true,
                 commandDescription: "This is already a combined command. Don't call optimize twice",
             },
+            warnings,
         },
     );
 

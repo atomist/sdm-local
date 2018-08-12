@@ -68,7 +68,9 @@ describe("yarg saver", () => {
             },
         ));
 
-        subject.optimized(() => { /* whatever */ });
+        const combined = subject.optimized(() => { /* whatever */ });
+
+        assert(combined.helpMessages.some(line => line.includes("good job me")), "Help message was: " + combined.helpMessages.join("\n"))
 
     });
 });
