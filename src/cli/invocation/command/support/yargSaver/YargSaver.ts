@@ -71,7 +71,7 @@ export interface YargSaver {
     /**
      * Construct a YargSaver with duplicate commands combined etc.
      */
-    optimized(logWarning: (s: string) => void): YargSaver;
+    optimized(): YargSaver;
 }
 
 export function freshYargSaver(opts: { commandName?: string, epilogForHelpMessage?: string } = {}): YargSaver {
@@ -223,11 +223,11 @@ abstract class YargSaverContainer implements YargSaver {
         return this;
     }
 
-    public optimized(logWarning: (s: string) => void): this {
+    public optimized(): this {
         // assumptions are made: validate has already been called
         const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName);
         const newNestedCommands = Object.entries(commandsByNames).map(([k, v]) =>
-            combine(v).optimized(logWarning));
+            combine(k, v).optimized());
         this.nestedCommands = newNestedCommands as YargSaverCommand[];
         return this;
     }
@@ -373,7 +373,7 @@ class YargSaverPositionalCommand extends YargSaverContainer implements YargSaver
         return yarg;
     }
 
-    public optimized(logWarning: (s: string) => void) {
+    public optimized() {
         return this;
     }
 }

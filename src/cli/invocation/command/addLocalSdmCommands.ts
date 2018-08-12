@@ -40,7 +40,7 @@ import { freshYargSaver, isYargSaver, YargSaver } from "./support/yargSaver/Yarg
  * @return {yargs.Arguments}
  */
 export async function addLocalSdmCommands(yargs: Argv | YargSaver,
-                                          finder: AutomationClientFinder = defaultAutomationClientFinder()) {
+    finder: AutomationClientFinder = defaultAutomationClientFinder()) {
     const teamContextResolver: WorkspaceContextResolver = DefaultWorkspaceContextResolver;
 
     const yargSaver = isYargSaver(yargs) ? yargs : freshYargSaver();
@@ -63,7 +63,7 @@ export async function addLocalSdmCommands(yargs: Argv | YargSaver,
     }
     if (!isYargSaver(yargs)) {
         // we constructed this, so use it
-        yargSaver.optimized(errorMessage).save(yargs);
+        yargSaver.optimized().save(yargs);
     }
 }
 

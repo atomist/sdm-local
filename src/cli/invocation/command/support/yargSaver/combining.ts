@@ -19,6 +19,7 @@ import {
     CommandLineParameter, DoNothing,
     hasPositionalArguments, YargSaverCommand, YargSaverCommandWord,
 } from "./YargSaver";
+import { parseCommandLine } from "./commandLine";
 
 interface ValidationError {
     complaint: string;
@@ -82,24 +83,24 @@ function dropNonessentialCommands(yss: YargSaverCommand[]): [YargSaverCommand[],
     return [essential, warnings];
 }
 
-export function combine(yss: YargSaverCommand[]): YargSaverCommand {
+export function combine(commandName: string, yss: YargSaverCommand[]): YargSaverCommand {
     if (yss.length === 1) {
         return yss[0];
     }
     const [combineThese, warnings] = thereIsConflict(yss) ? dropNonessentialCommands(yss) : [yss, []];
+
     if (thereIsConflict(combineThese)) {
         // still??
         throw new Error("Unresolvable conflict between commands: " + whyNotCombine(combineThese).map(errorToString).join("\n"));
     }
     const yswcs = combineThese as YargSaverCommandWord[];
-    const one = yswcs[0];
 
     const realCommand = yswcs.find(ys => ys.isRunnable) || {
         handleInstructions: DoNothing,
         parameters: [] as CommandLineParameter[],
     };
 
-    return new YargSaverCommandWord(one.commandLine,
+    return new YargSaverCommandWord(parseCommandLine(commandName),
         _.uniq(yswcs.map(y => y.description)).join("; or, "),
         realCommand.handleInstructions,
         {
