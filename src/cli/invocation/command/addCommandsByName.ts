@@ -19,7 +19,7 @@ import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
-import { yargCommandFromSentence, YargSaver } from "./support/yargSaver";
+import { yargCommandFromSentence, YargBuilder } from "./support/yargBuilder";
 
 /**
  * Add commands by name from the given client
@@ -27,7 +27,7 @@ import { yargCommandFromSentence, YargSaver } from "./support/yargSaver";
  * @param {boolean} allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function addCommandsByName(ai: AutomationClientInfo,
-    yargs: YargSaver,
+    yargs: YargBuilder,
     allowUserInput: boolean = true) {
     yargs.command({
         command: "run", describe: "Run a command",

@@ -18,15 +18,15 @@ import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { renderClientsInfo } from "../../ui/renderClientInfo";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
-import { YargSaver } from "./support/yargSaver";
+import { YargBuilder } from "./support/yargBuilder";
 
 /**
  * Show all connected local SDMs
  * @param {AutomationClientInfo[]} clients
- * @param {YargSaver} yargSaver
+ * @param {YargBuilder} YargBuilder
  */
-export function addShowSdmsCommand(clients: AutomationClientInfo[], yargSaver: YargSaver) {
-    yargSaver.command({
+export function addShowSdmsCommand(clients: AutomationClientInfo[], YargBuilder: YargBuilder) {
+    YargBuilder.command({
         command: "show sdms",
         describe: "Show connected sdms",
         handler: () => {

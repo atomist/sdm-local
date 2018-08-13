@@ -16,7 +16,7 @@
 
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { convertToDisplayable } from "./runCommandOnColocatedAutomationClient";
-import { YargSaver } from "./yargSaver/YargSaver";
+import { YargBuilder } from "./yargBuilder";
 
 /**
  * Expose the parameters for this command
@@ -24,7 +24,7 @@ import { YargSaver } from "./yargSaver/YargSaver";
  * @param {yargs.Argv} args
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
-export function exposeParameters(hi: CommandHandlerMetadata, args: YargSaver, allowUserInput: boolean) {
+export function exposeParameters(hi: CommandHandlerMetadata, args: YargBuilder, allowUserInput: boolean) {
     commandLineParametersFromCommandHandlerMetadata(hi, allowUserInput)
         .forEach(p => {
             args.withParameter(p);

@@ -21,15 +21,15 @@ import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import chalk from "chalk";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
 import { renderClientInfo } from "../../ui/renderClientInfo";
-import { YargSaver } from "./support/yargSaver";
+import { YargBuilder } from "./support/yargBuilder";
 
 export const DefaultSdmCdPort = 2901;
 
 /**
  * Start an SDM dedicated to SDM CD
- * @param {YargSaver} yargs
+ * @param {YargBuilder} yargs
  */
-export function addStartSdmDeliveryMachine(yargs: YargSaver) {
+export function addStartSdmDeliveryMachine(yargs: YargBuilder) {
     yargs.command({
         command: "deliver",
         describe: "Start SDM delivery machine",

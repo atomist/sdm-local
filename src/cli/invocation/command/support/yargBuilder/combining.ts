@@ -16,10 +16,14 @@
 
 import * as _ from "lodash";
 import {
-    CommandLineParameter, DoNothing,
-    hasPositionalArguments, YargSaverCommand, YargSaverCommandWord,
-} from "./YargSaver";
+    CommandLineParameter,
+    YargCommand,
+    YargContributor,
+} from "./YargBuilder";
 import { parseCommandLine } from "./commandLine";
+import { hasPositionalArguments } from "./positional";
+import { YargSaverCommandWord } from "./sentences";
+import { DoNothing } from "./handleInstruction";
 
 interface ValidationError {
     complaint: string;
@@ -34,11 +38,11 @@ interface ValidationError {
  * Others will politely yield.
  * @param ysc
  */
-function conflictBlocksStartup(ysc: YargSaverCommand): boolean {
+function conflictBlocksStartup(ysc: YargCommand): boolean {
     return ysc.conflictResolution.failEverything;
 }
 
-function descriptionForConflictWarning(ysc: YargSaverCommand): string {
+function descriptionForConflictWarning(ysc: YargCommand): string {
     return ysc.conflictResolution.commandDescription;
 }
 
@@ -48,7 +52,7 @@ function errorToString(ve: ValidationError): string {
     return prefix + ve.complaint;
 }
 
-function whyNotCombine(yss: YargSaverCommand[]): ValidationError[] {
+function whyNotCombine(yss: YargCommand[]): ValidationError[] {
     const reasons: ValidationError[] = [];
     if (yss.some(hasPositionalArguments)) {
         reasons.push({ complaint: "Cannot combine commands with positional arguments", contexts: [] });
@@ -72,18 +76,18 @@ function whyNotCombine(yss: YargSaverCommand[]): ValidationError[] {
     return reasons;
 }
 
-function thereIsConflict(yss: YargSaverCommand[]): boolean {
+function thereIsConflict(yss: YargCommand[]): boolean {
     return whyNotCombine(yss).length > 0;
 }
 
-function dropNonessentialCommands(yss: YargSaverCommand[]): [YargSaverCommand[], string[]] {
+function dropNonessentialCommands(yss: YargCommand[]): [YargCommand[], string[]] {
     const [essential, nonessential] = _.partition(yss, conflictBlocksStartup);
     const warnings = nonessential.map(ys =>
         `Warning: ${descriptionForConflictWarning(ys)} is not available because it conflicts with another command`);
     return [essential, warnings];
 }
 
-export function combine(commandName: string, yss: YargSaverCommand[]): YargSaverCommand {
+export function combine(commandName: string, yss: YargCommand[]): YargContributor {
     if (yss.length === 1) {
         return yss[0];
     }
@@ -93,7 +97,12 @@ export function combine(commandName: string, yss: YargSaverCommand[]): YargSaver
         // still??
         throw new Error("Unresolvable conflict between commands: " + whyNotCombine(combineThese).map(errorToString).join("\n"));
     }
-    const yswcs = combineThese as YargSaverCommandWord[];
+
+    if (combineThese.length === 0) {
+        return contributeOnlyHelpMessages(warnings)
+    }
+
+    const yswcs = combineThese as YargSaverCommandWord[]; // positional would cause conflict
 
     const realCommand = yswcs.find(ys => ys.isRunnable) || {
         handleInstructions: DoNothing,
@@ -114,4 +123,17 @@ export function combine(commandName: string, yss: YargSaverCommand[]): YargSaver
         },
     );
 
+}
+
+function contributeOnlyHelpMessages(ms: string[]): YargContributor {
+    return {
+        helpMessages: ms,
+        build() {
+            return {
+                save(v) {
+                    return v;
+                }
+            }
+        }
+    }
 }

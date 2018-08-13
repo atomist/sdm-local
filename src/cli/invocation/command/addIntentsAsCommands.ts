@@ -21,7 +21,7 @@ import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { PostToAtomistListenerListener, ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
-import { yargCommandFromSentence, YargSaver } from "./support/yargSaver";
+import { yargCommandFromSentence, YargBuilder } from "./support/yargBuilder";
 
 /**
  * Add commands for all intents
@@ -29,14 +29,14 @@ import { yargCommandFromSentence, YargSaver } from "./support/yargSaver";
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function addIntentsAsCommands(ai: AutomationClientInfo,
-    yargSaver: YargSaver,
+    yargBuilder: YargBuilder,
     allowUserInput: boolean = true) {
     const handlers = ai.client.commands
         .filter(hm => !!hm.intent && hm.intent.length > 0);
 
     handlers.forEach(h =>
         h.intent.forEach(intent =>
-            yargSaver.withSubcommand(yargCommandFromSentence({
+            yargBuilder.withSubcommand(yargCommandFromSentence({
                 command: intent,
                 describe: h.description,
                 handler: async argv => {

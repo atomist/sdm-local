@@ -18,12 +18,12 @@ import { toStringArray } from "@atomist/automation-client/internal/util/string";
 import { AllMessagesPort } from "../../../common/ui/httpMessaging";
 import { HttpMessageListener, isFeedListenerRunning } from "../../../sdm/ui/HttpMessageListener";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
-import { YargSaver } from "./support/yargSaver";
+import { YargBuilder } from "./support/yargBuilder";
 
 /**
  * @param {yargs.Argv} yargs
  */
-export function addFeedCommand(yargs: YargSaver) {
+export function addFeedCommand(yargs: YargBuilder) {
     yargs.command({
         command: "feed",
         describe: "Start listener daemon to display messages",

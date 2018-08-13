@@ -21,21 +21,21 @@ import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
 import { sdmGenerator, superforkGenerator } from "./generator/bootstrapGenerators";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 import { verifyJDK, verifyMaven } from "./support/javaVerification";
-import { YargSaver } from "./support/yargSaver";
+import { YargBuilder } from "./support/yargBuilder";
 import { AddLocalMode } from "./transform/addLocalModeTransform";
 
 /**
  * Add bootstrap commands to generate a new SDM
  * and add local capability to an existing SDM
- * @param {YargSaver} yargs
+ * @param {YargBuilder} yargs
  */
-export function addBootstrapCommands(yargs: YargSaver) {
+export function addBootstrapCommands(yargs: YargBuilder) {
     addSdmGenerator(yargs);
     addSuperforkGenerator(yargs);
     addEnableLocalSupport(yargs);
 }
 
-function addSdmGenerator(yargs: YargSaver) {
+function addSdmGenerator(yargs: YargBuilder) {
     const choices = ["spring", "blank"];
     const typeDescription = "Type of SDM to create";
     const name = "newSdm";
@@ -103,7 +103,7 @@ async function doAfterSpringSdmCreation() {
     await verifyMaven();
 }
 
-function addSuperforkGenerator(yargs: YargSaver) {
+function addSuperforkGenerator(yargs: YargBuilder) {
     const name = "superfork";
     addEmbeddedCommand(yargs, {
         name,
@@ -124,9 +124,9 @@ function addSuperforkGenerator(yargs: YargSaver) {
 
 /**
  * Add local support to this project
- * @param {YargSaver} yargs
+ * @param {YargBuilder} yargs
  */
-function addEnableLocalSupport(yargs: YargSaver) {
+function addEnableLocalSupport(yargs: YargBuilder) {
     addEmbeddedCommand(yargs, {
         name: "addLocalMode",
         cliCommand: "enable local",

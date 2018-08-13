@@ -25,14 +25,14 @@ import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { addGitHooks } from "../../setup/addGitHooks";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
-import { YargSaver } from "./support/yargSaver";
+import { YargBuilder } from "./support/yargBuilder";
 
 /**
  * Takes the same arguments as Git clone but onboards the repo with Atomist
  * @param {AutomationClientInfo[]} clients
- * @param {YargSaver} yargs
+ * @param {YargBuilder} yargs
  */
-export function addCloneCommand(clients: AutomationClientInfo[], yargs: YargSaver) {
+export function addCloneCommand(clients: AutomationClientInfo[], yargs: YargBuilder) {
     yargs.command({
         command: "clone <args>",
         describe: "Like git clone but onboards the repo with Atomist",

@@ -48,9 +48,16 @@ function isPositionalArgument(w: string) {
     return /^<.*>$/.test(w) || /^\[.*\]/.test(w);
 }
 
+export function verifyOneWord(commandLine: CommandLine) {
+    if (commandLine.words.length > 1) {
+        throw new Error("You can only have one word if there are positional arguments");
+    }
+}
+
+
 class CommandLineImpl implements CommandLine {
     constructor(public readonly words: string[],
-                public readonly positionalArguments: string[]) { }
+        public readonly positionalArguments: string[]) { }
 
     public get firstWord() {
         return this.words[0];

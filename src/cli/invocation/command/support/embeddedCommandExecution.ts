@@ -20,7 +20,7 @@ import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "../../../ui/consoleOutput";
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
 import { CommandInvocationListener, runCommandOnColocatedAutomationClient } from "./runCommandOnColocatedAutomationClient";
-import { YargSaver } from "./yargSaver/YargSaver";
+import { YargBuilder } from "./yargBuilder";
 
 /**
  * Spec for running an embedded command on an ephemeral SDM
@@ -38,7 +38,7 @@ export interface EmbeddedCommandSpec {
 
     parameters?: ParametersDefinition;
 
-    build?: (argv: YargSaver) => void;
+    build?: (argv: YargBuilder) => void;
 
     /**
      * Listeners to command invocation
@@ -48,7 +48,7 @@ export interface EmbeddedCommandSpec {
     /**
      * Configure the sdm.machine to run the command
      */
-    configurer: (argv: YargSaver) => Promise<ConfigureMachine>;
+    configurer: (argv: YargBuilder) => Promise<ConfigureMachine>;
 
 }
 
@@ -60,8 +60,8 @@ export interface EmbeddedCommandSpec {
  * being exposed as optional command parameters.
  * @param {yargs.Argv} yargs
  */
-export function addEmbeddedCommand(yargs: YargSaver,
-                                   spec: EmbeddedCommandSpec) {
+export function addEmbeddedCommand(yargs: YargBuilder,
+    spec: EmbeddedCommandSpec) {
     yargs.command({
         command: spec.cliCommand,
         describe: spec.cliDescription,
@@ -105,10 +105,10 @@ export function addEmbeddedCommand(yargs: YargSaver,
 }
 
 async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: string,
-                                           configure: ConfigureMachine,
-                                           name: string,
-                                           params: object,
-                                           listeners: CommandInvocationListener[] = []) {
+    configure: ConfigureMachine,
+    name: string,
+    params: object,
+    listeners: CommandInvocationListener[] = []) {
     const aca = await startEmbeddedMachine({
         repositoryOwnerParentDirectory,
         configure,

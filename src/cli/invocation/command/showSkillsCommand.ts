@@ -17,9 +17,9 @@
 import chalk from "chalk";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
-import { YargSaver } from "./support/yargSaver";
+import { YargBuilder } from "./support/yargBuilder";
 
-export function addShowSkillsCommand(ai: AutomationClientInfo, yargs: YargSaver) {
+export function addShowSkillsCommand(ai: AutomationClientInfo, yargs: YargBuilder) {
     yargs.command({
         command: "show skills",
         aliases: "s",

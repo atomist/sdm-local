@@ -16,15 +16,15 @@
 
 import * as assert from "assert";
 import {
-    freshYargSaver,
+    freshYargBuilder,
     yargCommandFromSentence
-} from "../../../../../../src/cli/invocation/command/support/yargSaver";
+} from "../../../../../../src/cli/invocation/command/support/yargBuilder";
 
 describe("yarg saver", () => {
 
     it("errors when there are duplicates", () => {
 
-        const subject = freshYargSaver();
+        const subject = freshYargBuilder();
 
         subject.withSubcommand(yargCommandFromSentence(
             {
@@ -44,14 +44,14 @@ describe("yarg saver", () => {
         ));
 
         assert.throws(() => {
-            subject.optimized();
+            subject.build();
         });
 
     });
 
     it("drops a polite duplicate", () => {
 
-        const subject = freshYargSaver();
+        const subject = freshYargBuilder();
 
         subject.withSubcommand(yargCommandFromSentence(
             {
@@ -71,9 +71,12 @@ describe("yarg saver", () => {
             },
         ));
 
-        const combined = subject.optimized();
+        const combined = subject.build();
 
-        assert(combined.helpMessages.some(line => line.includes("good job me")), "Help message was: " + combined.helpMessages.join("\n"))
+        const result = (combined as any).helpMessages;
+
+        assert(result.some((line: string) =>
+            line.includes("good job me")), "Help message was: " + result.join("\n"))
 
     });
 });
