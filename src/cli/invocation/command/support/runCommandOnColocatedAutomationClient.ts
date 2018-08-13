@@ -105,18 +105,11 @@ export async function runCommandOnColocatedAutomationClient(connectionConfig: Au
         correlationId,
     };
     logger.debug("Sending invocation %j\n", invocation);
-    for (const l of listeners) {
-        if (!!l.onDispatch) {
-            await l.onDispatch(hm, invocation);
-        }
-    }
+    await Promise.all(listeners.filter(l => !!l.onDispatch).map(l => l.onDispatch(hm, invocation));
     // Use repo channel if we're in a mapped repo channel
     const r = await invokeCommandHandlerUsingHttp(connectionConfig)(invocation);
-    for (const l of listeners) {
-        if (!!l.after) {
-            await l.after(r, hm);
-        }
-    }
+    await Promise.all(listeners.filter(l => !!l.after).map(l => l.after(r, invocation));
+
     await suggestStartingAllMessagesListener();
 
     if (listener.canTerminate) {
