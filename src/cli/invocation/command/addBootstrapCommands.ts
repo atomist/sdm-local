@@ -36,7 +36,7 @@ export function addBootstrapCommands(yargs: YargSaver) {
 }
 
 function addSdmGenerator(yargs: YargSaver) {
-    const choices = ["spring", "blank"];
+    const choices = ["spring", "blank", "sample"];
     const typeDescription = "Type of SDM to create";
     const name = "newSdm";
     addEmbeddedCommand(yargs, {
@@ -72,13 +72,17 @@ function addSdmGenerator(yargs: YargSaver) {
                 case "spring":
                     return sdm => {
                         sdm.addGeneratorCommand(sdmGenerator(name,
-                            new GitHubRepoRef("atomist", "sample-sdm"),
+                            new GitHubRepoRef("atomist", "seed-sdm"),
                             "spring"));
                     };
                 case "blank":
                     return sdm => sdm.addGeneratorCommand(sdmGenerator(name,
-                        new GitHubRepoRef("atomist", "seed-sdm"),
+                        new GitHubRepoRef("atomist", "blank-sdm"),
                         "blank"));
+                case "sample":
+                    return sdm => sdm.addGeneratorCommand(sdmGenerator(name,
+                        new GitHubRepoRef("atomist", "sample-sdm"),
+                        "sample"));
                 default:
                     throw new Error("Unknown SDM type " + answers.type);
             }
