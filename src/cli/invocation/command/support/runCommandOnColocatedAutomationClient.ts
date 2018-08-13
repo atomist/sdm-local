@@ -97,7 +97,7 @@ export async function runCommandOnColocatedAutomationClient(connectionConfig: Au
 
     const correlationId = await newCliCorrelationId({
         channel: parseOwnerAndRepo(repositoryOwnerParentDirectory).repo,
-        encodeListenerPort: true
+        encodeListenerPort: true,
     });
 
     const invocation: CommandHandlerInvocation = {

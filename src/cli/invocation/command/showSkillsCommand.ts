@@ -15,10 +15,10 @@
  */
 
 import chalk from "chalk";
+import * as _ from "lodash";
+import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { YargSaver } from "./support/yargSaver";
-import { AutomationClientInfo } from "../../AutomationClientInfo";
-import * as _ from "lodash";
 
 /**
  * Display the show skills command, backed by the given skills
