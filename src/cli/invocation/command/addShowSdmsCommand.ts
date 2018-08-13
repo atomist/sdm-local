@@ -18,7 +18,7 @@ import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { renderClientsInfo } from "../../ui/renderClientInfo";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
-import { YargSaver } from "./support/yargSaver/YargSaver";
+import { YargSaver } from "./support/yargSaver";
 
 /**
  * Show all connected local SDMs

@@ -18,7 +18,7 @@ import { toStringArray } from "@atomist/automation-client/internal/util/string";
 import { AllMessagesPort } from "../../../common/ui/httpMessaging";
 import { HttpMessageListener, isFeedListenerRunning } from "../../../sdm/ui/HttpMessageListener";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
-import { YargSaver } from "./support/yargSaver/YargSaver";
+import { YargSaver } from "./support/yargSaver";
 
 /**
  * @param {yargs.Argv} yargs

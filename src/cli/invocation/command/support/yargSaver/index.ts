@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-export { addLocalSdmCommands } from "./src/cli/invocation/command/addLocalSdmCommands";
-export { runOnGitHook } from "./src/cli/invocation/git/runOnGitHook";
-export { configureLocal } from "./src/sdm/configuration/localPostProcessor";
-export { LocalLifecycle } from "./src/sdm/ui/localLifecycle";
-export { infoMessage } from "./src/cli/ui/consoleOutput";
-export { sdmCd } from "./src/pack/sdm-cd/support/SdmCd";
-export { LocalSdmConfig } from "./src/sdm/configuration/localSdmConfig";
 export {
     YargSaver,
     freshYargSaver,
     yargCommandFromSentence,
     yargCommandWithPositionalArguments,
-    ParameterOptions,
     CommandLineParameter,
-} from "./src/cli/invocation/command/support/yargSaver";
+    ParameterOptions,
+    isYargSaver,
+} from "./YargSaver";

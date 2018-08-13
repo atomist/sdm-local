@@ -23,8 +23,58 @@ import { CommandLine, commandLineAlias, dropFirstWord, parseCommandLine } from "
 
 export { PositionalOptions, PositionalOptionsType, Choices, ParameterOptions };
 
-export function freshYargSaver(): YargSaver {
-    return new YargSaverTopLevel();
+/**
+ * Build up data about commands, and then put them in yargs later.
+ * The YargSaver lets you add lots of commands, including ones with spaces in them.
+ * Then optimize it, to combine all the commands optimally.
+ * You'll get errors if you've added duplicate commands (they won't overwrite each other).
+ *
+ * To use it:
+ * Get a new one:
+ * const yargSaver = freshYargSaver();
+ *
+ * Add commands to it:
+ * yargSaver.withSubcommand(yargCommandFromSentence({ command: "do this thing already", handler: (argv)=> console.log("stuff")}))
+ *
+ * You can also add positional commands:
+ * yargSaver.withSubcommand(yargCommandWithPositionalArguments({ command: "run <thing>", ...}))
+ *
+ * Then optimize it, and save by passing a real yargs:
+ * yargSaver.optimized().save(yargs)
+ *
+ */
+export interface YargSaver {
+
+    withSubcommand(command: YargSaverCommand): YargSaver;
+    withParameter(p: CommandLineParameter): YargSaver;
+    /*
+     * Contribution to the description displayed on --help
+     */
+    helpMessages: string[];
+
+    // compatibility with Yargs
+    option(parameterName: string,
+           params: ParameterOptions): YargSaver;
+    demandCommand(): void;
+
+    command(params: {
+        command: string,
+        describe: string,
+        aliases?: string,
+        builder?: (ys: YargSaver) => (YargSaver | void),
+        handler?: (argObject: any) => Promise<any>,
+    }): YargSaver;
+
+    save(yarg: yargs.Argv): yargs.Argv;
+
+    /**
+     * Construct a YargSaver with duplicate commands combined etc.
+     */
+    optimized(): YargSaver;
+}
+
+export function freshYargSaver(opts: { commandName?: string, epilogForHelpMessage?: string } = {}): YargSaver {
+    return new YargSaverTopLevel(opts);
 }
 
 export function isYargSaver(ya: yargs.Argv | YargSaver): ya is YargSaver {
@@ -67,52 +117,6 @@ export function yargCommandWithPositionalArguments(
         positionalArguments: params.positional,
         conflictResolution: params.conflictResolution || { failEverything: true, commandDescription: params.command },
     });
-}
-
-/**
- * Build up data about commands, and then put them in yargs later.
- * The YargSaver lets you add lots of commands, including ones with spaces in them.
- * Then optimize it, to combine all the commands optimally.
- * You'll get errors if you've added duplicate commands (they won't overwrite each other).
- *
- * To use it:
- * Get a new one:
- * const yargSaver = freshYargSaver();
- *
- * Add commands to it:
- * yargSaver.withSubcommand(yargCommandFromSentence({ command: "do this thing already", handler: (argv)=> console.log("stuff")}))
- *
- * You can also add positional commands:
- * yargSaver.withSubcommand(yargCommandWithPositionalArguments({ command: "run <thing>", ...}))
- *
- * Then optimize it, and save by passing a real yargs:
- * yargSaver.optimized().save(yargs)
- *
- */
-export interface YargSaver {
-
-    withSubcommand(command: YargSaverCommand): YargSaver;
-    withParameter(p: CommandLineParameter): YargSaver;
-
-    // compatibility with Yargs
-    option(parameterName: string,
-           params: ParameterOptions): YargSaver;
-    demandCommand(): void;
-
-    command(params: {
-        command: string,
-        describe: string,
-        aliases?: string,
-        builder?: (ys: YargSaver) => (YargSaver | void),
-        handler?: (argObject: any) => Promise<any>,
-    }): YargSaver;
-
-    save(yarg: yargs.Argv): yargs.Argv;
-
-    /**
-     * Construct a YargSaver with duplicate commands combined etc.
-     */
-    optimized(logWarning: (s: string) => void): YargSaver;
 }
 
 export type CommandLineParameter = ParameterOptions & {
@@ -196,10 +200,16 @@ abstract class YargSaverContainer implements YargSaver {
 
     public abstract commandName: string;
 
-    constructor(nestedCommands: YargSaverCommand[] = [], parameters: CommandLineParameter[] = [], commandDemanded = false) {
+    public get helpMessages(): string[] {
+        return _.flatMap(this.nestedCommands, nc => nc.helpMessages);
+    }
+
+    constructor(nestedCommands: YargSaverCommand[] = [],
+                parameters: CommandLineParameter[] = [],
+                commandDemanded = false) {
         this.nestedCommands = nestedCommands;
         this.parameters = parameters;
-        this.commandDemanded = false;
+        this.commandDemanded = commandDemanded;
     }
 
     public withSubcommand(c: YargSaverCommand): this {
@@ -212,11 +222,11 @@ abstract class YargSaverContainer implements YargSaver {
         return this;
     }
 
-    public optimized(logWarning: (s: string) => void): this {
+    public optimized(): this {
         // assumptions are made: validate has already been called
         const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName);
         const newNestedCommands = Object.entries(commandsByNames).map(([k, v]) =>
-            combine(v, logWarning).optimized(logWarning));
+            combine(k, v).optimized());
         this.nestedCommands = newNestedCommands as YargSaverCommand[];
         return this;
     }
@@ -284,6 +294,7 @@ abstract class YargSaverContainer implements YargSaver {
             yarg.recommendCommands();
         }
         yarg.showHelpOnFail(true);
+        yarg.epilog(this.helpMessages.join("\n"));
         return yarg;
     }
 }
@@ -293,6 +304,16 @@ function oneOrMany<T>(t: T | T[] | undefined): T[] {
 }
 class YargSaverTopLevel extends YargSaverContainer {
     public commandName: string;
+    public epilogsForHelpMessage: string[];
+    constructor(opts: { commandName?: string, epilogForHelpMessage?: string }) {
+        super();
+        this.commandName = opts.commandName || "top-level";
+        this.epilogsForHelpMessage = opts.epilogForHelpMessage ? [opts.epilogForHelpMessage] : [];
+    }
+
+    public get helpMessages() {
+        return [...super.helpMessages, ...this.epilogsForHelpMessage];
+    }
 }
 
 function verifyOneWord(commandLine: CommandLine) {
@@ -351,7 +372,7 @@ class YargSaverPositionalCommand extends YargSaverContainer implements YargSaver
         return yarg;
     }
 
-    public optimized(logWarning: (s: string) => void) {
+    public optimized() {
         return this;
     }
 }
@@ -371,20 +392,28 @@ export class YargSaverCommandWord extends YargSaverContainer implements YargSave
         return this.commandLine.firstWord;
     }
 
+    public readonly warnings: string[];
+
     constructor(public readonly commandLine: CommandLine,
                 public readonly description: string,
-                public handleInstructions: HandleInstructions,
-                public readonly opts: {
+                public readonly handleInstructions: HandleInstructions,
+                readonly opts: {
             conflictResolution: ConflictResolution,
             nestedCommands?: YargSaverCommand[],
             parameters?: CommandLineParameter[],
+            warnings?: string[],
         }) {
         super(opts.nestedCommands, opts.parameters);
         if (!doesSomething(handleInstructions) && opts.nestedCommands && opts.nestedCommands.length > 0) {
             this.demandCommand(); // do things right
         }
+        this.warnings = opts.warnings || [];
         verifyOneWord(commandLine);
         this.conflictResolution = opts.conflictResolution;
+    }
+
+    public get helpMessages(): string[] {
+        return [...super.helpMessages, ...this.warnings];
     }
 
     /**
