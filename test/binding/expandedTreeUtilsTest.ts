@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
+import * as path from "path";
 import * as assert from "power-assert";
 import { parseOwnerAndRepo, withinExpandedTree } from "../../src/sdm/binding/project/expandedTreeUtils";
 
 describe("expandedTreeUtils", () => {
 
+    const sep = path.sep;
+
     describe("parseOwnerAndRepo", () => {
 
         it("works not within directory tree", () => {
-            const base = "/usr/foo";
-            const dir = base + "/c/d/e";
+            const base = sep + "usr" + sep + "foo";
+            const dir = base + sep + "c" + sep + "d" + sep + "e";
             assert.deepEqual(parseOwnerAndRepo(base, dir), {});
         });
 
         it("works within directory tree", () => {
-            const base = "/Users/rodjohnson/temp/local-sdm";
-            const dir = base + "/spring-team/spring-rest-seed";
+            const base = sep + "Users" + sep + "rodjohnson" + sep + "temp" + sep + "local-sdm";
+            const dir = base + sep + "spring-team" + sep + "spring-rest-seed";
             assert.deepEqual(parseOwnerAndRepo(base, dir), {
                 owner: "spring-team",
                 repo: "spring-rest-seed",
@@ -37,8 +40,8 @@ describe("expandedTreeUtils", () => {
         });
 
         it("works within directory tree under org only", () => {
-            const base = "/Users/rodjohnson/temp/local-sdm";
-            const dir = base + "/spring-team";
+            const base = sep + "Users" + sep + "rodjohnson" + sep + "temp" + sep + "local-sdm";
+            const dir = base + sep + "spring-team";
             assert.deepEqual(parseOwnerAndRepo(base, dir), {
                 owner: "spring-team",
                 repo: undefined,
@@ -46,8 +49,8 @@ describe("expandedTreeUtils", () => {
         });
 
         it("works with org with trailing / after repo", () => {
-            const base = "/Users/rodjohnson/temp/local-sdm";
-            const dir = base + "/spring-team/melb1/";
+            const base = sep + "Users" + sep + "rodjohnson" + sep + "temp" + sep + "local-sdm";
+            const dir = base + sep + "spring-team" + sep + "melb1" + sep;
             assert.deepEqual(parseOwnerAndRepo(base, dir), {
                 owner: "spring-team",
                 repo: "melb1",
@@ -55,8 +58,8 @@ describe("expandedTreeUtils", () => {
         });
 
         it("works if base ends with /", () => {
-            const base = "/Users/me/projects/";
-            const dir = base + "spring-team/melb1/";
+            const base = sep + "Users" + sep + "me" + sep + "projects" + sep;
+            const dir = base + "spring-team" + sep + "melb1" + sep;
             assert.deepEqual(parseOwnerAndRepo(base, dir), {
                 owner: "spring-team",
                 repo: "melb1",
@@ -67,19 +70,19 @@ describe("expandedTreeUtils", () => {
     describe("withinExpandedTree", () => {
 
         it("works within", () => {
-            const base = "/usr/foo";
-            const dirs = ["a/b", "c/d", "a-thing/other-thing"];
+            const base = sep + "usr" + sep + "foo";
+            const dirs = ["a" + sep + "b", "c" + sep + "d", "a-thing" + sep + "other-thing"];
             dirs.forEach(d => {
-                const dir = base + "/" + d;
+                const dir = base + sep + "" + d;
                 assert(withinExpandedTree(base, dir), `${dir} is not within ${base}`);
             });
         });
 
         it("works not within", () => {
-            const base = "/usr/foo";
-            const dirs = ["ab", "c/d/e", "a-thi///ng/other-thing"];
+            const base = sep + "usr" + sep + "foo";
+            const dirs = ["ab", "c" + sep + "d" + sep + "e", "a-thi" + sep + sep + sep + "ng" + sep + "other-thing"];
             dirs.forEach(d => {
-                const dir = base + "/" + d;
+                const dir = base + sep + "" + d;
                 assert(!withinExpandedTree(base, dir), `${dir} is not within ${base}`);
             });
         });

@@ -23,6 +23,7 @@ import { LocalProject } from "@atomist/automation-client/project/local/LocalProj
 import { NodeFsLocalProject } from "@atomist/automation-client/project/local/NodeFsLocalProject";
 import { LocalModeConfiguration } from "@atomist/sdm-core";
 import * as fs from "fs";
+import * as path from "path";
 import { promisify } from "util";
 import { AutomationClientFinder } from "../../../cli/invocation/http/AutomationClientFinder";
 import { invokeEventHandlerUsingHttpOnAll } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
@@ -40,13 +41,13 @@ import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
  * conventions. Perform a git init and other after actions, such as installing
  * our git hooks. Fires off the necessary new repo events using HTTP to
  * all local automation clients.
- * @return {ProjectPersister}
+ * @return {ProjectPersister
  */
 export function fileSystemProjectPersister(teamContext: LocalTeamContext,
                                            localModeCofiguration: LocalModeConfiguration,
                                            automationClientFinder: AutomationClientFinder): ProjectPersister {
     return async (p, _, id, params) => {
-        const baseDir = `${localModeCofiguration.repositoryOwnerParentDirectory}/${id.owner}/${id.repo}`;
+        const baseDir = `${localModeCofiguration.repositoryOwnerParentDirectory}${path.sep}${id.owner}${path.sep}${id.repo}`;
         const frr = FileSystemRemoteRepoRef.fromDirectory({
             repositoryOwnerParentDirectory: localModeCofiguration.repositoryOwnerParentDirectory,
             baseDir,

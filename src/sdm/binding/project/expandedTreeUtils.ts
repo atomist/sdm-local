@@ -26,12 +26,14 @@ export function dirFor(repositoryOwnerParentDirectory: string, owner: string, re
     return `${repositoryOwnerParentDirectory}/${owner}/${repo}`;
 }
 
-const OwnerAndRepoPattern = path.join("^", "([^\/]+)", "([^\/]+)$");
+const sep = (path.sep === "\\") ? "\\\\" : path.sep;
 
-const OwnerOnlyPattern = path.join("^", "([^\/]+)$");
+const OwnerAndRepoPattern = new RegExp(["^", "([^", "]+)", "([^", "]+)$"].join(sep));
+
+const OwnerOnlyPattern = new RegExp(["^", "([^", "]+)$"].join(sep));
 
 function trimTrailingSlash(dir: string): string {
-    return dir.replace(/\/$/, "");
+    return dir.replace(/[\/\\]$/, "");
 }
 
 /**
@@ -77,5 +79,5 @@ export function withinExpandedTree(repositoryOwnerParentDirectory: string,
  */
 export function determineCwd(): string {
     // Be sure to respect symlinks
-    return process.env.PWD;
+    return process.cwd();
 }
