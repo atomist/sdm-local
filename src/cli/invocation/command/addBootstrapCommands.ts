@@ -91,7 +91,7 @@ function addSdmGenerator(yargs: YargSaver) {
             before: async () => {
                 infoMessage("Please follow the prompts to create a new SDM\n\n");
             },
-            after: async (hr, chm) => {
+            after: async (hr, _, chm) => {
                 // TODO tags seem to be getting set wrongly somewhere, or type definition is wrong
                 if (chm.tags.includes("spring" as any)) {
                     await doAfterSpringSdmCreation();
