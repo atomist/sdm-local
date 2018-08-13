@@ -15,25 +15,34 @@
  */
 
 import chalk from "chalk";
-import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { logExceptionsToConsole } from "../../ui/consoleOutput";
+import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { YargSaver } from "./support/yargSaver";
+import { AutomationClientInfo } from "../../AutomationClientInfo";
+import * as _ from "lodash";
 
-export function addShowSkillsCommand(ai: AutomationClientInfo, yargs: YargSaver) {
+/**
+ * Display the show skills command, backed by the given skills
+ * gathered from all connected clients
+ * @param {YargSaver} yargs
+ */
+export function addShowSkillsCommand(clients: AutomationClientInfo[],
+                                     yargs: YargSaver) {
+    const commands = _.flatten(clients.map(client => client.client.commands));
     yargs.command({
         command: "show skills",
         aliases: "s",
         describe: "Show skills",
         handler: () => {
             return logExceptionsToConsole(async () => {
-                const commands = ai.client.commands;
+                infoMessage("%s commands are available from %s connected SDMs\n",
+                    commands.length, clients.length);
                 commands.forEach(md => {
                     let msg = "\t" + chalk.cyan(md.intent.map(intent => `"${intent}"`).join(","));
                     msg += "\t" + chalk.green(md.name);
                     msg += "\t" + chalk.gray(md.description);
                     process.stdout.write(msg + "\n");
                 });
-            }, ai.connectionConfig.showErrorStacks);
+            }, true);
         },
     });
 }

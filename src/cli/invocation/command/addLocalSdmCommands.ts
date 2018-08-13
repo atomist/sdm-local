@@ -55,6 +55,8 @@ export async function addLocalSdmCommands(yargs: Argv | YargSaver,
     const clients = await finder.findAutomationClients();
 
     addShowSdmsCommand(clients, yargSaver);
+    addShowSkillsCommand(clients, yargSaver);
+
     addCloneCommand(clients, yargSaver);
 
     // TODO filter on working directories
@@ -79,7 +81,6 @@ async function addCommandsToConnectTo(client: AutomationClientInfo, yargSaver: Y
     if (!!client.client) {
         addCommandsByName(client, yargSaver);
         addIntentsAsCommands(client, yargSaver);
-        addShowSkillsCommand(client, yargSaver);
     }
 }
 

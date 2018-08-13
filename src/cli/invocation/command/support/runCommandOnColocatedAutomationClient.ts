@@ -52,7 +52,7 @@ export interface CommandInvocationListener {
      * Action to perform after running the command
      * @return {Promise<any>}
      */
-    after?: (h: HandlerResult, chm: CommandHandlerMetadata) => Promise<any>;
+    after?: (h: HandlerResult, inv: CommandHandlerInvocation, chm: CommandHandlerMetadata) => Promise<any>;
 }
 
 /**
@@ -95,7 +95,10 @@ export async function runCommandOnColocatedAutomationClient(connectionConfig: Au
     }));
     await promptForMissingMappedParameters(hm, mappedParameters);
 
-    const correlationId = await newCliCorrelationId({ channel: parseOwnerAndRepo(repositoryOwnerParentDirectory).repo, encodeListenerPort: true });
+    const correlationId = await newCliCorrelationId({
+        channel: parseOwnerAndRepo(repositoryOwnerParentDirectory).repo,
+        encodeListenerPort: true
+    });
 
     const invocation: CommandHandlerInvocation = {
         name: hm.name,
@@ -105,10 +108,14 @@ export async function runCommandOnColocatedAutomationClient(connectionConfig: Au
         correlationId,
     };
     logger.debug("Sending invocation %j\n", invocation);
-    await Promise.all(listeners.filter(l => !!l.onDispatch).map(l => l.onDispatch(hm, invocation));
+    await Promise.all(listeners
+        .filter(l => !!l.onDispatch)
+        .map(l => l.onDispatch(hm, invocation)));
     // Use repo channel if we're in a mapped repo channel
     const r = await invokeCommandHandlerUsingHttp(connectionConfig)(invocation);
-    await Promise.all(listeners.filter(l => !!l.after).map(l => l.after(r, invocation));
+    await Promise.all(listeners
+        .filter(l => !!l.after)
+        .map(l => l.after(r, invocation, hm)));
 
     await suggestStartingAllMessagesListener();
 
