@@ -5,7 +5,7 @@ import {
     YargCommandSpec,
     ParameterOptions,
     YargBuilder,
-} from "./YargBuilder";
+} from "./freshYargBuilder";
 import * as yargs from "yargs";
 import { parseCommandLine, CommandLine, verifyOneWord } from "./commandLine";
 import { handleFunctionFromInstructions, HandleInstructions } from "./handleInstruction";

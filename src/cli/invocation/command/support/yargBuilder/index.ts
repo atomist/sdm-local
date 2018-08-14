@@ -1,9 +1,11 @@
 export {
-    YargBuilder,
     freshYargBuilder,
+    isYargBuilder
+} from "./freshYargBuilder"
+export {
+    YargBuilder,
     CommandLineParameter,
     ParameterOptions,
-    isYargBuilder
-} from "./YargBuilder"
+} from "./interfaces"
 export { yargCommandWithPositionalArguments } from "./positional";
 export { yargCommandFromSentence } from "./sentences";

@@ -19,10 +19,10 @@ import {
     CommandLineParameter,
     YargCommand,
     YargContributor,
-} from "./YargBuilder";
+} from "./freshYargBuilder";
 import { parseCommandLine } from "./commandLine";
 import { hasPositionalArguments } from "./positional";
-import { YargSaverCommandWord } from "./sentences";
+import { YargCommandWord } from "./sentences";
 import { DoNothing } from "./handleInstruction";
 
 interface ValidationError {
@@ -102,14 +102,14 @@ export function combine(commandName: string, yss: YargCommand[]): YargContributo
         return contributeOnlyHelpMessages(warnings)
     }
 
-    const yswcs = combineThese as YargSaverCommandWord[]; // positional would cause conflict
+    const yswcs = combineThese as YargCommandWord[]; // positional would cause conflict
 
     const realCommand = yswcs.find(ys => ys.isRunnable) || {
         handleInstructions: DoNothing,
         parameters: [] as CommandLineParameter[],
     };
 
-    return new YargSaverCommandWord(parseCommandLine(commandName),
+    return new YargCommandWord(parseCommandLine(commandName),
         _.uniq(yswcs.map(y => y.description)).join("; or, "),
         realCommand.handleInstructions,
         {
