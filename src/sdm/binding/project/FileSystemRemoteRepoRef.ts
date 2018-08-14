@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
 import {
     ActionResult,
     successOn,
 } from "@atomist/automation-client/action/ActionResult";
 import { AbstractRemoteRepoRef } from "@atomist/automation-client/operations/common/AbstractRemoteRepoRef";
-import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
+import { logger } from "@atomist/sdm";
+import { ProjectOperationCredentials } from "@atomist/sdm";
 import {
     RemoteRepoRef,
     RepoRef,
-} from "@atomist/automation-client/operations/common/RepoId";
-import { Configurable } from "@atomist/automation-client/project/git/Configurable";
+} from "@atomist/sdm";
+import { Configurable } from "../../../../node_modules/@atomist/automation-client/project/git/Configurable";
 import {
     dirFor,
     parseOwnerAndRepo,

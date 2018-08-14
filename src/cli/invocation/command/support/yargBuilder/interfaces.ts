@@ -58,7 +58,7 @@ export interface YargBuilder extends BuildYargs {
     * @deprecated
     */
     option(parameterName: string,
-           params: ParameterOptions): YargBuilder;
+        params: ParameterOptions): YargBuilder;
     /**
     * This exists to be compatible with yargs syntax
     * But really, we'll figure out whether to call demandCommand() on yargs
@@ -77,9 +77,6 @@ export interface YargBuilder extends BuildYargs {
     command(params: SupportedSubsetOfYargsCommandMethod): YargBuilder;
 }
 
-export interface YargContributor extends BuildYargs {
-    helpMessages: string[];
-}
 
 export type CommandLineParameter = ParameterOptions & {
     parameterName: string;
@@ -118,4 +115,9 @@ export interface YargCommandWordSpec {
     runnableCommand?: YargRunnableCommandSpec;
     nestedCommands?: YargCommand[];
     warnings?: string[];
+}
+
+
+export interface YargContributor extends BuildYargs {
+    helpMessages: string[];
 }

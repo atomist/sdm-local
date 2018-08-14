@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { logger, Secrets, Success } from "@atomist/automation-client";
 import { replacer } from "@atomist/automation-client/internal/transport/AbstractRequestProcessor";
+import { logger, Secrets } from "@atomist/sdm";
 import * as stringify from "json-stringify-safe";
 import { EventSender } from "../../../common/invocation/EventHandlerInvocation";
 import { InvocationTarget } from "../../../common/invocation/InvocationTarget";
@@ -24,6 +24,7 @@ import { postToSdm } from "./support/httpInvoker";
 import { newCliCorrelationId } from "./support/newCorrelationId";
 
 import * as assert from "assert";
+import { Success } from "../../../../node_modules/@atomist/automation-client";
 import { AutomationClientFinder } from "./AutomationClientFinder";
 
 /**

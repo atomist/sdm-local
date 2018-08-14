@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
+import { GitHubRepoRef } from "@atomist/sdm";
 import * as inquirer from "inquirer";
 import { Question } from "inquirer";
 import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
@@ -36,7 +36,7 @@ export function addBootstrapCommands(yargs: YargBuilder) {
 }
 
 function addSdmGenerator(yargs: YargBuilder) {
-    const choices = ["spring", "blank"];
+    const choices = ["spring", "blank", "sample"];
     const typeDescription = "Type of SDM to create";
     const name = "newSdm";
     addEmbeddedCommand(yargs, {
@@ -72,13 +72,17 @@ function addSdmGenerator(yargs: YargBuilder) {
                 case "spring":
                     return sdm => {
                         sdm.addGeneratorCommand(sdmGenerator(name,
-                            new GitHubRepoRef("atomist", "sample-sdm"),
+                            new GitHubRepoRef("atomist", "seed-sdm"),
                             "spring"));
                     };
                 case "blank":
                     return sdm => sdm.addGeneratorCommand(sdmGenerator(name,
-                        new GitHubRepoRef("atomist", "seed-sdm"),
+                        new GitHubRepoRef("atomist", "blank-sdm"),
                         "blank"));
+                case "sample":
+                    return sdm => sdm.addGeneratorCommand(sdmGenerator(name,
+                        new GitHubRepoRef("atomist", "sample-sdm"),
+                        "sample"));
                 default:
                     throw new Error("Unknown SDM type " + answers.type);
             }
@@ -87,7 +91,7 @@ function addSdmGenerator(yargs: YargBuilder) {
             before: async () => {
                 infoMessage("Please follow the prompts to create a new SDM\n\n");
             },
-            after: async (hr, chm) => {
+            after: async (hr, _, chm) => {
                 // TODO tags seem to be getting set wrongly somewhere, or type definition is wrong
                 if (chm.tags.includes("spring" as any)) {
                     await doAfterSpringSdmCreation();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
+import { logger } from "@atomist/sdm";
 import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";
 import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSystemProjectLoader";
 import { AutomationClientInfo } from "../../AutomationClientInfo";

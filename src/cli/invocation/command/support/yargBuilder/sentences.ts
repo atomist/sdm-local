@@ -44,7 +44,7 @@ export class YargCommandWord implements YargCommand {
     public readonly warnings: string[];
 
     constructor(spec: YargCommandWordSpec) {
-        this.nestedCommands = spec.nestedCommands;
+        this.nestedCommands = spec.nestedCommands || [];
         this.runnableCommand = spec.runnableCommand;
         if (this.runnableCommand) { verifyOneWord(this.runnableCommand.commandLine); }
         this.conflictResolution = spec.conflictResolution;
@@ -121,7 +121,7 @@ export class YargCommandWord implements YargCommand {
                     describe: self.description,
                     builder: y => {
                         nestedCommandSavers.forEach(c => c.save(yarg));
-                        if (!self.runnableCommand && self.nestedCommands && self.nestedCommands.length > 0) {
+                        if (!self.runnableCommand && self.nestedCommands.length > 0) {
                             y.demandCommand();
                             y.recommendCommands();
                         }

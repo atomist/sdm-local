@@ -17,7 +17,7 @@
 import { toStringArray } from "@atomist/automation-client/internal/util/string";
 import { AllMessagesPort } from "../../../common/ui/httpMessaging";
 import { HttpMessageListener, isFeedListenerRunning } from "../../../sdm/ui/HttpMessageListener";
-import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
+import { adviceDoc, infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { YargBuilder } from "./support/yargBuilder";
 
 /**
@@ -56,7 +56,7 @@ export function addFeedCommand(yargs: YargBuilder) {
                             channels);
                     } else {
                         infoMessage("Atomist feed from all local SDM activity will appear here\n");
-
+                        adviceDoc("docs/onStartListener.md");
                     }
                 }
             },

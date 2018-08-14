@@ -128,15 +128,7 @@ export class HttpMessageListener {
             }
             res.send({ received: true, shown: verbose });
         });
-
-        this.server = app.listen(this.parameters.port,
-            () => {
-                if (!this.parameters.transient) {
-                    // It's not a transient destination
-                    infoMessage(`Atomist Local SDM: Listening on port ${this.parameters.port}...\n`);
-                }
-            },
-        );
+        this.server = app.listen(this.parameters.port);
     }
 
     /**

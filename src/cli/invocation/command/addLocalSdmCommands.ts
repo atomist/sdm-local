@@ -40,7 +40,7 @@ import { freshYargBuilder, isYargBuilder, YargBuilder } from "./support/yargBuil
  * @return {yargs.Arguments}
  */
 export async function addLocalSdmCommands(yargs: Argv | YargBuilder,
-                                          finder: AutomationClientFinder = defaultAutomationClientFinder()) {
+    finder: AutomationClientFinder = defaultAutomationClientFinder()) {
     const teamContextResolver: WorkspaceContextResolver = DefaultWorkspaceContextResolver;
 
     const yargBuilder = isYargBuilder(yargs) ? yargs : freshYargBuilder();
@@ -55,6 +55,8 @@ export async function addLocalSdmCommands(yargs: Argv | YargBuilder,
     const clients = await finder.findAutomationClients();
 
     addShowSdmsCommand(clients, yargBuilder);
+    addShowSkillsCommand(clients, yargBuilder);
+
     addCloneCommand(clients, yargBuilder);
 
     // TODO filter on working directories
@@ -72,14 +74,13 @@ export async function addLocalSdmCommands(yargs: Argv | YargBuilder,
  * @param yargs
  * @return {Promise<void>}
  */
-async function addCommandsToConnectTo(client: AutomationClientInfo, YargBuilder: YargBuilder) {
+async function addCommandsToConnectTo(client: AutomationClientInfo, yargBuilder: YargBuilder) {
     verifyLocalSdm(client);
 
     // If we were able to connect to an SDM...
     if (!!client.client) {
-        addCommandsByName(client, YargBuilder);
-        addIntentsAsCommands(client, YargBuilder);
-        addShowSkillsCommand(client, YargBuilder);
+        addCommandsByName(client, yargBuilder);
+        addIntentsAsCommands(client, yargBuilder);
     }
 }
 

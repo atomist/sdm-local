@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
+import { TargetsParams } from "@atomist/automation-client/operations/common/params/TargetsParams";
+import {
+    andFilter,
+    RepoFilter,
+} from "@atomist/automation-client/operations/common/repoFilter";
 import {
     logger,
     MappedParameter,
     MappedParameters,
     Parameter,
     Parameters,
-} from "@atomist/automation-client";
-import { GitBranchRegExp, GitShaRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
-import { TargetsParams } from "@atomist/automation-client/operations/common/params/TargetsParams";
-import { ProjectOperationCredentials } from "@atomist/automation-client/operations/common/ProjectOperationCredentials";
-import {
-    andFilter,
-    RepoFilter,
-} from "@atomist/automation-client/operations/common/repoFilter";
+    ProjectOperationCredentials,
+} from "@atomist/sdm";
+import { validationPatterns } from "@atomist/sdm";
 import { RepoTargets } from "@atomist/sdm";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
@@ -46,10 +46,13 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
     @MappedParameter(MappedParameters.GitHubRepository, false)
     public repo: string;
 
-    @Parameter({ description: "Branch or ref. Defaults to 'master'", ...GitBranchRegExp, required: false })
+    @Parameter({
+        description: "Branch or ref. Defaults to 'master'",
+        ...validationPatterns.GitBranchRegExp, required: false,
+    })
     public branch: string = "master";
 
-    @Parameter({ description: "Sha", ...GitShaRegExp, required: false })
+    @Parameter({ description: "Sha", ...validationPatterns.GitShaRegExp, required: false })
     public sha: string;
 
     @Parameter({ description: "regex", required: false })

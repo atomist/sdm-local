@@ -15,7 +15,12 @@
  */
 
 import { logger } from "@atomist/automation-client";
-import { Destination, MessageClient, MessageOptions, SlackMessageClient } from "@atomist/automation-client/spi/message/MessageClient";
+import {
+    Destination,
+    MessageClient,
+    MessageOptions,
+    SlackMessageClient,
+} from "@atomist/automation-client/spi/message/MessageClient";
 import { OnAnyRequestedSdmGoal, SdmGoalKey, SdmGoalState } from "@atomist/sdm";
 import { SlackMessage } from "@atomist/slack-messages";
 import { isValidSHA1 } from "../../../common/git/handlePushBasedEventOnRepo";
@@ -63,6 +68,13 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
                     break;
                 case SdmGoalState.success:
                     handlerNames = ["RespondOnGoalCompletion", "RequestDownstreamGoalsOnGoalSuccess"];
+                    break;
+                case SdmGoalState.in_process :
+                    break;
+                case SdmGoalState.planned :
+                    break;
+                case SdmGoalState.skipped :
+                    logger.info("Skipped goal: %j", msg);
                     break;
                 default:
                     throw new Error(`Unexpected SdmGoalState '${msg.state}'`);

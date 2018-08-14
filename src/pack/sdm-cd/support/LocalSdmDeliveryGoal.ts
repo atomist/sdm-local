@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
 import { asSpawnCommand } from "@atomist/automation-client/util/spawned";
+import { logger } from "@atomist/sdm";
 import { ExecuteGoal, GenericGoal, GoalInvocation } from "@atomist/sdm";
 import { DelimitedWriteProgressLogDecorator } from "@atomist/sdm/api-helper/log/DelimitedWriteProgressLogDecorator";
 import { ChildProcess, spawn } from "child_process";

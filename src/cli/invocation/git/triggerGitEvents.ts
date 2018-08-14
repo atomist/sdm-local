@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
-import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
+import { logger } from "@atomist/sdm";
+import { GitCommandGitProject } from "@atomist/sdm";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { determineCwd, withinExpandedTree } from "../../../sdm/binding/project/expandedTreeUtils";
 import { FileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
+import { logger } from "@atomist/sdm";
 import * as assert from "power-assert";
 import { CommandHandlerInvoker } from "../../../common/invocation/CommandHandlerInvocation";
 import { propertiesToArgs } from "../../../common/util/propertiesToArgs";

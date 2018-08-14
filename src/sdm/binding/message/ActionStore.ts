@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
+import { logger } from "@atomist/sdm";
 import { Action, SlackMessage } from "@atomist/slack-messages";
 import * as jsSHA from "jssha";
 import * as _ from "lodash";

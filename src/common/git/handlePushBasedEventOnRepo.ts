@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
-import { GitProject } from "@atomist/automation-client/project/git/GitProject";
+import { GitCommandGitProject, GitProject } from "@atomist/sdm";
 import { OnPushToAnyBranch } from "@atomist/sdm";
 import { LocalModeConfiguration } from "@atomist/sdm-core";
 import { errorMessage } from "../../cli/ui/consoleOutput";

@@ -77,7 +77,7 @@ class YargSaverPositionalCommand implements YargCommand {
     }
 
     public option(parameterName: string,
-                  opts: ParameterOptions): YargBuilder {
+        opts: ParameterOptions): YargBuilder {
         this.withParameter({
             parameterName,
             ...opts,
@@ -118,5 +118,5 @@ class YargSaverPositionalCommand implements YargCommand {
 }
 
 export function hasPositionalArguments(ys: YargCommand): ys is YargSaverPositionalCommand {
-    return (ys as any).commandLine.positionalArguments.length > 0;
+    return !!(ys as any).positionalArguments;
 }
