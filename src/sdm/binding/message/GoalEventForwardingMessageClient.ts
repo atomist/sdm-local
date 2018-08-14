@@ -19,7 +19,7 @@ import {
     Destination,
     MessageClient,
     MessageOptions,
-    SlackMessageClient
+    SlackMessageClient,
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { OnAnyRequestedSdmGoal, SdmGoalKey, SdmGoalState } from "@atomist/sdm";
 import { SlackMessage } from "@atomist/slack-messages";
