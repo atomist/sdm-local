@@ -24,7 +24,6 @@ export function yargCommandFromSentence(
         description: params.describe,
         handleInstructions: { fn: params.handler },
         parameters: params.parameters,
-        helpMessages: [],
         positional: []
     }, params.describe, conflictResolution);
 }
@@ -93,7 +92,6 @@ export class YargCommandWord implements YargCommand {
             this.runnableCommand = {
                 handleInstructions: DoNothing,
                 parameters: [],
-                helpMessages: [],
                 commandLine: parseCommandLine(this.commandName),
                 description: this.description,
                 positional: [],
@@ -114,9 +112,8 @@ export class YargCommandWord implements YargCommand {
         const nestedCommandSavers = Object.entries(commandsByNames).map(([k, v]) =>
             combine(k, v).build());
 
-        const myHelp = this.runnableCommand ? this.runnableCommand.helpMessages : [];
         const descendantHelps = _.flatMap(nestedCommandSavers, nc => nc.helpMessages);
-        const helpMessages = [...self.warnings, ...myHelp, ...descendantHelps];
+        const helpMessages = [...self.warnings, ...descendantHelps];
 
         return {
             helpMessages,
@@ -137,7 +134,7 @@ export class YargCommandWord implements YargCommand {
                                 y.option(p.parameterName, p));
                         }
                         y.showHelpOnFail(true);
-                        y.epilog(self.helpMessages.join("\n"));
+                        y.epilog(helpMessages.join("\n"));
                         return y;
                     },
                     handler: self.runnableCommand ?
@@ -165,7 +162,6 @@ export function imitateYargsCommandMethod(self: YargBuilder, params: SupportedSu
         description: params.describe,
         handleInstructions: handleInstructionsFromFunction(params.handler),
         parameters: [],
-        helpMessages: [],
         positional: [],
     };
     const conflictResolution: ConflictResolution = { failEverything: true, commandDescription: params.command };

@@ -22,7 +22,6 @@ export function yargCommandWithPositionalArguments(
     },
 ) {
     return new YargSaverPositionalCommand({
-        helpMessages: [],
         commandLine: parseCommandLine(params.command),
         description: params.describe,
         handleInstructions: { fn: params.handler },

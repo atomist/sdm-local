@@ -72,10 +72,6 @@ export interface YargCommand extends YargBuilder {
     description: string;
     conflictResolution: ConflictResolution;
     isRunnable: boolean;
-    /*
- * Contribution to the description displayed on --help
- */
-    helpMessages: string[];
 }
 
 export interface YargRunnableCommandSpec {
@@ -83,7 +79,6 @@ export interface YargRunnableCommandSpec {
     description: string;
     handleInstructions: HandleInstructions;
     parameters: CommandLineParameter[];
-    helpMessages: string[];
     positional: Array<{ key: string, opts: PositionalOptions }>
 }
 
