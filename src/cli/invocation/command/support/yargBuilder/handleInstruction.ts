@@ -1,4 +1,5 @@
 import * as stringify from "json-stringify-safe";
+import { Arguments } from "./interfaces";
 
 export type HandleInstructions = RunFunction | DoNothing;
 
@@ -6,7 +7,7 @@ type DoNothing = "do nothing";
 export const DoNothing: DoNothing = "do nothing";
 
 interface RunFunction {
-    fn: (argObject: object) => Promise<any>;
+    fn: (argObject: Arguments) => Promise<any>;
 }
 
 export function doesSomething(hi: HandleInstructions): boolean {
@@ -23,7 +24,7 @@ export function handleFunctionFromInstructions(instr: HandleInstructions):
     return instr.fn;
 }
 
-export function handleInstructionsFromFunction(fn?: (argObject: object) => any): HandleInstructions {
+export function handleInstructionsFromFunction(fn?: (argObject: Arguments) => any): HandleInstructions {
     if (!fn) {
         return DoNothing;
     }

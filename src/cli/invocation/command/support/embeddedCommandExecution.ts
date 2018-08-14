@@ -21,6 +21,7 @@ import { errorMessage, infoMessage, logExceptionsToConsole } from "../../../ui/c
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
 import { CommandInvocationListener, runCommandOnColocatedAutomationClient } from "./runCommandOnColocatedAutomationClient";
 import { YargBuilder } from "./yargBuilder";
+import { Arguments } from "./yargBuilder/interfaces";
 
 /**
  * Spec for running an embedded command on an ephemeral SDM
@@ -48,7 +49,7 @@ export interface EmbeddedCommandSpec {
     /**
      * Configure the sdm.machine to run the command
      */
-    configurer: (argv: YargBuilder) => Promise<ConfigureMachine>;
+    configurer: (argv: Arguments) => Promise<ConfigureMachine>;
 
 }
 
@@ -61,7 +62,7 @@ export interface EmbeddedCommandSpec {
  * @param {yargs.Argv} yargs
  */
 export function addEmbeddedCommand(yargs: YargBuilder,
-                                   spec: EmbeddedCommandSpec) {
+    spec: EmbeddedCommandSpec) {
     yargs.command({
         command: spec.cliCommand,
         describe: spec.cliDescription,
@@ -105,10 +106,10 @@ export function addEmbeddedCommand(yargs: YargBuilder,
 }
 
 async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: string,
-                                           configure: ConfigureMachine,
-                                           name: string,
-                                           params: object,
-                                           listeners: CommandInvocationListener[] = []) {
+    configure: ConfigureMachine,
+    name: string,
+    params: object,
+    listeners: CommandInvocationListener[] = []) {
     const aca = await startEmbeddedMachine({
         repositoryOwnerParentDirectory,
         configure,

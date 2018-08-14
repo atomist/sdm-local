@@ -1,9 +1,9 @@
-import { Choices, Options as ParameterOptions, PositionalOptions, PositionalOptionsType } from "yargs";
+import { Choices, Options as ParameterOptions, PositionalOptions, PositionalOptionsType, Arguments } from "yargs";
 import * as yargs from "yargs";
 import { CommandLine } from "./commandLine";
 import { HandleInstructions } from "./handleInstruction";
 
-export { PositionalOptions, PositionalOptionsType, Choices, ParameterOptions };
+export { PositionalOptions, PositionalOptionsType, Choices, ParameterOptions, Arguments };
 
 
 /**
@@ -82,18 +82,20 @@ export interface YargRunnableCommandSpec {
     description: string;
     handleInstructions: HandleInstructions;
     parameters: CommandLineParameter[];
-    positional: Array<{ key: string, opts: PositionalOptions }>
+    positional: Array<PositionalParameter>;
 }
+
+export type PositionalParameter = { key: string, opts: PositionalOptions };
 
 export interface SupportedSubsetOfYargsCommandMethod {
     command: string;
     describe: string;
     aliases?: string;
     builder?: (ys: YargBuilder) => YargBuilder;
-    handler?: (argObject: any) => Promise<any>;
+    handler?: (argObject: Arguments) => Promise<any>;
     parameters?: CommandLineParameter[]; // bonus; yargs doesn't include this
-
-    conflictResolution?: ConflictResolution,
+    positional?: PositionalParameter[];
+    conflictResolution?: ConflictResolution;
 }
 
 // internal

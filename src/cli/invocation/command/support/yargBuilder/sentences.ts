@@ -156,7 +156,7 @@ function yargsSpecToMySpecs(params: SupportedSubsetOfYargsCommandMethod): YargRu
         description: params.describe,
         handleInstructions: handleInstructionsFromFunction(params.handler),
         parameters: params.parameters || [],
-        positional: [],
+        positional: params.positional || [],
     };
     const aliasSpecs = oneOrMany(params.aliases).map(a => ({
         ...originalSpec,
