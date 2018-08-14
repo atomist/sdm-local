@@ -29,8 +29,8 @@ import { YargBuilder } from "./support/yargBuilder";
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function addIntentsAsCommands(ai: AutomationClientInfo,
-    yargBuilder: YargBuilder,
-    allowUserInput: boolean = true) {
+                                     yargBuilder: YargBuilder,
+                                     allowUserInput: boolean = true) {
     const handlers = ai.client.commands
         .filter(hm => !!hm.intent && hm.intent.length > 0);
 
@@ -51,8 +51,8 @@ export function addIntentsAsCommands(ai: AutomationClientInfo,
 }
 
 async function runByIntent(ai: AutomationClientInfo,
-    hm: CommandHandlerMetadata,
-    command: any): Promise<any> {
+                           hm: CommandHandlerMetadata,
+                           command: any): Promise<any> {
     return runCommandOnColocatedAutomationClient(ai.connectionConfig,
         ai.localConfig.repositoryOwnerParentDirectory,
         {

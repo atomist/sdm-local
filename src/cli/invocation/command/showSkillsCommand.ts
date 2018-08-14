@@ -26,7 +26,7 @@ import { YargBuilder } from "./support/yargBuilder";
  * @param {YargBuilder} yargs
  */
 export function addShowSkillsCommand(clients: AutomationClientInfo[],
-    yargs: YargBuilder) {
+                                     yargs: YargBuilder) {
     const commands = _.flatten(clients.map(client => client.client.commands));
     yargs.command({
         command: "show skills",

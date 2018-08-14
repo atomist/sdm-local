@@ -17,7 +17,7 @@
 import * as _ from "lodash";
 import * as yargs from "yargs";
 import { combine } from "./combining";
-import { CommandLineParameter, ParameterOptions, SupportedSubsetOfYargsCommandMethod, YargBuilder, YargCommand, isYargCommand } from "./interfaces";
+import { CommandLineParameter, isYargCommand, ParameterOptions, SupportedSubsetOfYargsCommandMethod, YargBuilder, YargCommand } from "./interfaces";
 import { imitateYargsCommandMethod } from "./sentences";
 
 export function freshYargBuilder(opts: { epilogForHelpMessage?: string } = {}): YargBuilder {
@@ -64,7 +64,7 @@ class YargBuilderTopLevel implements YargBuilder {
     }
 
     public option(parameterName: string,
-        opts: ParameterOptions): YargBuilder {
+                  opts: ParameterOptions): YargBuilder {
         this.withParameter({
             parameterName,
             ...opts,
@@ -79,7 +79,7 @@ class YargBuilderTopLevel implements YargBuilder {
             combine(k, v).build());
         const helpMessages = [
             ..._.flatMap(nestedCommandSavers, nc => nc.helpMessages),
-            ...this.epilogsForHelpMessage]
+            ...this.epilogsForHelpMessage];
 
         return {
             commandName: "top",

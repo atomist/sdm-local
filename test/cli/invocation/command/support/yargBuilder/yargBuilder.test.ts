@@ -83,7 +83,7 @@ describe("yarg saver", () => {
         subject.withSubcommand(
             {
                 command: "show skills <and> <stuff>",
-                handler: async (a) => "whatever",
+                handler: async a => "whatever",
                 describe: "Command 1",
                 parameters: [],
             },
@@ -91,7 +91,7 @@ describe("yarg saver", () => {
         subject.withSubcommand(
             {
                 command: "show other things",
-                handler: async (a) => { "no " },
+                handler: async a => { "no "; },
                 describe: "Command 2",
                 parameters: [],
                 conflictResolution: { failEverything: false, commandDescription: "good job me" },
@@ -102,17 +102,16 @@ describe("yarg saver", () => {
 
         const tree = treeifyNested(combined);
 
-
         const expected = {
-            "show": {
-                "skills": {},
-                "other": { "things": {} }
-            }
+            show: {
+                skills: {},
+                other: { things: {} },
+            },
         };
 
         assert.deepEqual(tree, expected, JSON.stringify(tree, null, 2));
 
-    })
+    });
 });
 
 function treeifyNested(c: any, tree: { [key: string]: any } = {}) {
@@ -120,7 +119,7 @@ function treeifyNested(c: any, tree: { [key: string]: any } = {}) {
         return tree;
     }
     c.nested.forEach((n: any) => {
-        tree[(n.commandName as string)] = treeifyNested(n)
-    })
+        tree[(n.commandName as string)] = treeifyNested(n);
+    });
     return tree;
 }

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-import { Choices, Options as ParameterOptions, PositionalOptions, PositionalOptionsType, Arguments } from "yargs";
+import { Arguments, Choices, Options as ParameterOptions, PositionalOptions, PositionalOptionsType } from "yargs";
 import * as yargs from "yargs";
 import { CommandLine } from "./commandLine";
 import { HandleInstructions } from "./handleInstruction";
 
 export { PositionalOptions, PositionalOptionsType, Choices, ParameterOptions, Arguments };
-
 
 /**
  * Build up data about commands, and then put them in yargs later.
@@ -56,7 +55,7 @@ export interface YargBuilder extends BuildYargs {
     * @deprecated
     */
     option(parameterName: string,
-        params: ParameterOptions): YargBuilder;
+           params: ParameterOptions): YargBuilder;
     /**
     * This exists to be compatible with yargs syntax
     * But really, we'll figure out whether to call demandCommand() on yargs
@@ -74,7 +73,6 @@ export interface YargBuilder extends BuildYargs {
      */
     command(params: SupportedSubsetOfYargsCommandMethod): YargBuilder;
 }
-
 
 export type CommandLineParameter = ParameterOptions & {
     parameterName: string;
@@ -98,10 +96,10 @@ export interface YargRunnableCommandSpec {
     description: string;
     handleInstructions: HandleInstructions;
     parameters: CommandLineParameter[];
-    positional: Array<PositionalParameter>;
+    positional: PositionalParameter[];
 }
 
-export type PositionalParameter = { key: string, opts: PositionalOptions };
+export interface PositionalParameter { key: string, opts: PositionalOptions }
 
 export interface SupportedSubsetOfYargsCommandMethod {
     command: string;
@@ -139,7 +137,7 @@ export interface BuildYargs {
          * Contribution to the description displayed on --help
          */
         helpMessages: string[];
-        /** 
+        /**
          * for rolling up descriptions of subcommands
          */
         descriptions: string[];

@@ -27,8 +27,8 @@ import { YargBuilder } from "./support/yargBuilder";
  * @param {boolean} allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function addCommandsByName(ai: AutomationClientInfo,
-    yargs: YargBuilder,
-    allowUserInput: boolean = true) {
+                                  yargs: YargBuilder,
+                                  allowUserInput: boolean = true) {
     yargs.command({
         command: "run", describe: "Run a command",
         builder: args => {
@@ -50,8 +50,8 @@ export function addCommandsByName(ai: AutomationClientInfo,
 }
 
 async function runByCommandName(ai: AutomationClientInfo,
-    name: string,
-    command: any): Promise<any> {
+                                name: string,
+                                command: any): Promise<any> {
     const hm = ai.client.commands.find(h => h.name === name);
     if (!hm) {
         process.stdout.write(`No command with name [${name}]: Known command names are \n${ai.client.commands

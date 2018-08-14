@@ -20,8 +20,8 @@ import { combine } from "./combining";
 import { commandLineAlias, dropFirstWord, parseCommandLine, verifyOneWord } from "./commandLine";
 import { DoNothing, handleFunctionFromInstructions, HandleInstructions, handleInstructionsFromFunction } from "./handleInstruction";
 import {
-    CommandLineParameter, ConflictResolution, ParameterOptions,
-    SupportedSubsetOfYargsCommandMethod, YargBuilder, YargCommand, YargCommandWordSpec, YargRunnableCommandSpec, isYargCommand,
+    CommandLineParameter, ConflictResolution, isYargCommand,
+    ParameterOptions, SupportedSubsetOfYargsCommandMethod, YargBuilder, YargCommand, YargCommandWordSpec, YargRunnableCommandSpec,
 } from "./interfaces";
 import { positionalCommand } from "./positional";
 
@@ -63,7 +63,7 @@ export class YargCommandWord implements YargCommand {
     }
 
     public option(parameterName: string,
-        opts: ParameterOptions): YargBuilder {
+                  opts: ParameterOptions): YargBuilder {
         this.withParameter({
             parameterName,
             ...opts,
@@ -184,7 +184,7 @@ export function imitateYargsCommandMethod(params: SupportedSubsetOfYargsCommandM
         { failEverything: true, commandDescription: params.command };
 
     return yargsSpecToMySpecs(params).map(spec =>
-        multilevelCommand(spec, params.describe, conflictResolution, params.builder))
+        multilevelCommand(spec, params.describe, conflictResolution, params.builder));
 }
 
 function yargsSpecToMySpecs(params: SupportedSubsetOfYargsCommandMethod): YargRunnableCommandSpec[] {
@@ -212,9 +212,9 @@ function oneOrMany<T>(t: T | T[] | undefined): T[] {
  * @param params
  */
 function multilevelCommand(params: YargRunnableCommandSpec,
-    description: string,
-    conflictResolution: ConflictResolution,
-    configureInner?: (ys: YargBuilder) => YargBuilder): YargCommand {
+                           description: string,
+                           conflictResolution: ConflictResolution,
+                           configureInner?: (ys: YargBuilder) => YargBuilder): YargCommand {
 
     const { commandLine } = params;
     if (commandLine.words.length === 1) {

@@ -40,7 +40,7 @@ import { freshYargBuilder, isYargBuilder, YargBuilder } from "./support/yargBuil
  * @return {yargs.Arguments}
  */
 export async function addLocalSdmCommands(yargs: Argv | YargBuilder,
-    finder: AutomationClientFinder = defaultAutomationClientFinder()) {
+                                          finder: AutomationClientFinder = defaultAutomationClientFinder()) {
     const teamContextResolver: WorkspaceContextResolver = DefaultWorkspaceContextResolver;
 
     const yargBuilder = isYargBuilder(yargs) ? yargs : freshYargBuilder();

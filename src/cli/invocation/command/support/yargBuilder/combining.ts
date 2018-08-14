@@ -16,11 +16,11 @@
 
 import * as _ from "lodash";
 import {
+    BuildYargs, YargCommand,
+} from "./interfaces";
+import {
     hasPositionalArguments,
 } from "./positional";
-import {
-    YargCommand, BuildYargs,
-} from "./interfaces";
 import { YargCommandWord } from "./sentences";
 
 interface ValidationError {
