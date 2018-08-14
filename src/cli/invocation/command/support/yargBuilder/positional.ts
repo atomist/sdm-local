@@ -93,7 +93,8 @@ class YargSaverPositionalCommand implements YargCommand {
         const ypc = this; // mutating this object will screw this up. Conceptually, should copy
         return {
             helpMessages: ypc.helpMessages,
-            commandName: this.commandName,
+            commandName: ypc.commandName,
+            descriptions: [ypc.description],
             save(yarg: yargs.Argv): yargs.Argv {
                 yarg.command({
                     command: ypc.commandLine.toString(),

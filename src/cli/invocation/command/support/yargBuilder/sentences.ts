@@ -101,14 +101,22 @@ export class YargCommandWord implements YargCommand {
         const descendantHelps = _.flatMap(nestedCommandSavers, nc => nc.helpMessages);
         const helpMessages = [...self.warnings, ...descendantHelps];
 
+        const childDescriptions = _.flatMap(nestedCommandSavers, nc => nc.descriptions);
+        const myDescription = self.isRunnable ? self.runnableCommand.description : undefined;
+        const allDescriptions = childDescriptions.slice();
+        if (myDescription) {
+            allDescriptions.push(myDescription);
+        }
+
         return {
             helpMessages,
+            descriptions: allDescriptions,
             nested: nestedCommandSavers, // the data here is for testing and debugging
             commandName: self.commandName,
             save(yarg: yargs.Argv): yargs.Argv {
                 yarg.command({
                     command: self.commandName,
-                    describe: self.description,
+                    describe: condenseDescriptions(childDescriptions, myDescription),
                     builder: y => {
                         nestedCommandSavers.forEach(c => c.save(yarg));
                         if (!self.runnableCommand && self.nestedCommands.length > 0) {
@@ -139,6 +147,20 @@ export class YargCommandWord implements YargCommand {
         }
     }
 
+}
+
+export function condenseDescriptions(allChildDescriptions: string[], myDescription?: string): string {
+    if (allChildDescriptions.length === 0) {
+        // it's just me
+        return myDescription || "no action";
+    }
+    const childDescriptions = _.uniq(allChildDescriptions); // if they happen to be duplicates, don't count them separately
+    const childrenDescription = childDescriptions.length === 1 ? "... " + childDescriptions[0] :
+        "... " + childDescriptions.length + " commands";
+    if (myDescription === undefined) {
+        return childrenDescription;
+    }
+    return myDescription + ", or " + childrenDescription;
 }
 
 export function imitateYargsCommandMethod(params: SupportedSubsetOfYargsCommandMethod) {

@@ -123,5 +123,9 @@ export interface BuildYargs {
          * Contribution to the description displayed on --help
          */
         helpMessages: string[];
+        /** 
+         * for rolling up descriptions of subcommands
+         */
+        descriptions: string[];
     };
 }

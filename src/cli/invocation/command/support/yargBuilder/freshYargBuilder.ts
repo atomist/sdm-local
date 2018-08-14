@@ -80,9 +80,11 @@ class YargBuilderTopLevel implements YargBuilder {
         const helpMessages = [
             ..._.flatMap(nestedCommandSavers, nc => nc.helpMessages),
             ...this.epilogsForHelpMessage]
+
         return {
             helpMessages,
             nested: nestedCommandSavers,
+            descriptions: [] as string[],
             save(y: yargs.Argv): yargs.Argv {
                 nestedCommandSavers.forEach(c => c.save(y));
                 if (self.nestedCommands && self.nestedCommands.length > 0) {

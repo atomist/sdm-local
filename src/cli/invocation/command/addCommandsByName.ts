@@ -44,7 +44,6 @@ export function addCommandsByName(ai: AutomationClientInfo,
                     conflictResolution: { failEverything: false, commandDescription: `run ${hi.name} (running command by name)` },
                 });
             });
-            args.demandCommand();
             return args;
         },
     });
