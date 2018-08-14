@@ -19,7 +19,6 @@ import {
     EphemeralLocalArtifactStore,
     LocalModeConfiguration,
 } from "@atomist/sdm-core";
-import { LoggingProgressLog } from "@atomist/sdm/api-helper/log/LoggingProgressLog";
 import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
 import { defaultAutomationClientFinder } from "../../cli/invocation/http/support/defaultAutomationClientFinder";
 import { DefaultWorkspaceContextResolver } from "../../common/binding/defaultWorkspaceContextResolver";
@@ -31,6 +30,7 @@ import { ExpandedTreeRepoRefResolver } from "../binding/project/ExpandedTreeRepo
 import { FileSystemProjectLoader } from "../binding/project/FileSystemProjectLoader";
 import { fileSystemProjectPersister } from "../binding/project/fileSystemProjectPersister";
 import { LocalRepoTargets } from "../binding/project/LocalRepoTargets";
+import { SimpleNodeLoggerProgressLog } from "../binding/log/SimpleNodeLoggerProgressLog";
 
 /**
  * Merge user-supplied configuration with defaults
@@ -52,7 +52,9 @@ export function createSdmOptions(
         projectLoader: new FileSystemProjectLoader(
             new CachingProjectLoader(),
             configToUse),
-        logFactory: async (context, goal) => new LoggingProgressLog(goal.name, "info"),
+        logFactory: async (context, goal) =>
+            new SimpleNodeLoggerProgressLog(goal.name, configToUse.repositoryOwnerParentDirectory),
+            // new LoggingProgressLog(goal.name, "info"),
         credentialsResolver: new EnvironmentTokenCredentialsResolver(),
         repoRefResolver,
         repoFinder: expandedTreeRepoFinder(configToUse.repositoryOwnerParentDirectory),
