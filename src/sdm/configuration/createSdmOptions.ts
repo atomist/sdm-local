@@ -25,12 +25,12 @@ import { DefaultWorkspaceContextResolver } from "../../common/binding/defaultWor
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
 import { LocalWorkspaceContext } from "../../common/invocation/LocalWorkspaceContext";
 import { EnvironmentTokenCredentialsResolver } from "../binding/EnvironmentTokenCredentialsResolver";
+import { SimpleNodeLoggerProgressLog } from "../binding/log/SimpleNodeLoggerProgressLog";
 import { expandedTreeRepoFinder } from "../binding/project/expandedTreeRepoFinder";
 import { ExpandedTreeRepoRefResolver } from "../binding/project/ExpandedTreeRepoRefResolver";
 import { FileSystemProjectLoader } from "../binding/project/FileSystemProjectLoader";
 import { fileSystemProjectPersister } from "../binding/project/fileSystemProjectPersister";
 import { LocalRepoTargets } from "../binding/project/LocalRepoTargets";
-import { SimpleNodeLoggerProgressLog } from "../binding/log/SimpleNodeLoggerProgressLog";
 
 /**
  * Merge user-supplied configuration with defaults
