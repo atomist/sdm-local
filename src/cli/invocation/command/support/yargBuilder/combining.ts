@@ -19,7 +19,7 @@ import {
     hasPositionalArguments,
 } from "./positional";
 import {
-    YargCommand, YargContributor
+    YargCommand, BuildYargs,
 } from "./interfaces";
 import { YargCommandWord } from "./sentences";
 
@@ -85,7 +85,7 @@ function dropNonessentialCommands(yss: YargCommand[]): [YargCommand[], string[]]
     return [essential, warnings];
 }
 
-export function combine(commandName: string, yss: YargCommand[]): YargContributor {
+export function combine(commandName: string, yss: YargCommand[]): BuildYargs {
     if (yss.length === 1) {
         return yss[0];
     }
@@ -99,11 +99,8 @@ export function combine(commandName: string, yss: YargCommand[]): YargContributo
     if (combineThese.length === 0) {
         return contributeOnlyHelpMessages(warnings);
     }
-    if (combineThese.length === 1) {
-        return combineThese[0];
-    }
 
-    const yswcs = combineThese as YargCommandWord[]; // positional would cause conflict
+    const yswcs = combineThese as YargCommandWord[]; // positional wouldju cause conflict
 
     const realCommand = yswcs.find(ys => ys.isRunnable);
 
@@ -114,18 +111,18 @@ export function combine(commandName: string, yss: YargCommand[]): YargContributo
         nestedCommands: _.flatMap(yswcs.map(ys => ys.nestedCommands)),
         conflictResolution: {
             failEverything: true,
-            commandDescription: "This is already a combined command. Don't call optimize twice",
+            commandDescription: "This is already a combined command. Don't call build() twice",
         },
         warnings,
     });
 
 }
 
-function contributeOnlyHelpMessages(ms: string[]): YargContributor {
+function contributeOnlyHelpMessages(ms: string[]): BuildYargs {
     return {
-        helpMessages: ms,
         build() {
             return {
+                helpMessages: ms,
                 save(v) {
                     return v;
                 },

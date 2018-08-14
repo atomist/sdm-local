@@ -25,6 +25,7 @@ export function yargCommandFromSentence(
         handleInstructions: { fn: params.handler },
         parameters: params.parameters,
         helpMessages: [],
+        positional: []
     }, params.describe, conflictResolution);
 }
 
@@ -51,12 +52,9 @@ export class YargCommandWord implements YargCommand {
         this.description = spec.description;
         this.commandName = spec.commandName;
         this.warnings = spec.warnings || [];
-    }
-
-    public get helpMessages(): string[] {
-        const myHelp = this.runnableCommand ? this.runnableCommand.helpMessages : [];
-        const descendantHelps = _.flatMap(this.nestedCommands, nc => nc.helpMessages);
-        return [...this.warnings, ...myHelp, ...descendantHelps];
+        if (spec.runnableCommand && spec.runnableCommand.positional.length > 0) {
+            throw new Error("Positional arguments are only ok in a PositionalCommand");
+        }
     }
 
     public withSubcommand(c: YargCommand): this {
@@ -98,6 +96,7 @@ export class YargCommandWord implements YargCommand {
                 helpMessages: [],
                 commandLine: parseCommandLine(this.commandName),
                 description: this.description,
+                positional: [],
             };
         }
     }
@@ -114,7 +113,15 @@ export class YargCommandWord implements YargCommand {
         const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName);
         const nestedCommandSavers = Object.entries(commandsByNames).map(([k, v]) =>
             combine(k, v).build());
+
+        const myHelp = this.runnableCommand ? this.runnableCommand.helpMessages : [];
+        const descendantHelps = _.flatMap(nestedCommandSavers, nc => nc.helpMessages);
+        const helpMessages = [...self.warnings, ...myHelp, ...descendantHelps];
+
         return {
+            helpMessages,
+            nested: nestedCommandSavers, // the data here is for testing and debugging
+            commandName: self.commandName,
             save(yarg: yargs.Argv): yargs.Argv {
                 yarg.command({
                     command: self.commandName,
@@ -159,6 +166,7 @@ export function imitateYargsCommandMethod(self: YargBuilder, params: SupportedSu
         handleInstructions: handleInstructionsFromFunction(params.handler),
         parameters: [],
         helpMessages: [],
+        positional: [],
     };
     const conflictResolution: ConflictResolution = { failEverything: true, commandDescription: params.command };
     const constructCommand = commandFactory(commandLine, conflictResolution, params.describe, params.builder);

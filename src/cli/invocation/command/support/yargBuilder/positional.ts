@@ -27,7 +27,7 @@ export function yargCommandWithPositionalArguments(
         description: params.describe,
         handleInstructions: { fn: params.handler },
         parameters: params.parameters || [],
-        positionalArguments: params.positional,
+        positional: params.positional,
         conflictResolution: params.conflictResolution || { failEverything: true, commandDescription: params.command },
     });
 }
@@ -38,7 +38,7 @@ export function positionalCommand(conflictResolution: ConflictResolution):
         new YargSaverPositionalCommand({ ...spec, conflictResolution });
 }
 
-// TODO: check in .command() and call this one if it fits
+// TODO: check in multilevelCommand and call this one if it fits
 class YargSaverPositionalCommand implements YargCommand {
 
     public readonly parameters: CommandLineParameter[] = [];
@@ -59,14 +59,13 @@ class YargSaverPositionalCommand implements YargCommand {
         throw new Error("You cannot have both subcommands and positional arguments");
     }
     constructor(spec: YargRunnableCommandSpec &
-    { positionalArguments?: Array<{ key: string, opts: yargs.PositionalOptions }> } &
     { conflictResolution: ConflictResolution }) {
         verifyOneWord(spec.commandLine);
         this.commandName = spec.commandLine.firstWord;
         this.commandLine = spec.commandLine;
         this.description = spec.description;
         this.handleInstructions = spec.handleInstructions;
-        this.positionalArguments = spec.positionalArguments || [];
+        this.positionalArguments = spec.positional || [];
         this.conflictResolution = spec.conflictResolution;
         this.parameters = spec.parameters;
     }
@@ -96,6 +95,7 @@ class YargSaverPositionalCommand implements YargCommand {
     public build() {
         const ypc = this; // mutating this object will screw this up. Conceptually, should copy
         return {
+            helpMessages: ypc.helpMessages,
             save(yarg: yargs.Argv): yargs.Argv {
                 yarg.command({
                     command: ypc.commandLine.toString(),

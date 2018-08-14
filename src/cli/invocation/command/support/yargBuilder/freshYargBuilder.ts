@@ -59,7 +59,7 @@ class YargBuilderTopLevel implements YargBuilder {
     }
 
     public option(parameterName: string,
-                  opts: ParameterOptions): YargBuilder {
+        opts: ParameterOptions): YargBuilder {
         this.withParameter({
             parameterName,
             ...opts,
@@ -67,16 +67,17 @@ class YargBuilderTopLevel implements YargBuilder {
         return this;
     }
 
-    public get helpMessages() {
-        return this.epilogsForHelpMessage;
-    }
-
     public build() {
         const self = this;
         const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName);
         const nestedCommandSavers = Object.entries(commandsByNames).map(([k, v]) =>
             combine(k, v).build());
+        const helpMessages = [
+            ..._.flatMap(nestedCommandSavers, nc => nc.helpMessages),
+            ...this.epilogsForHelpMessage]
         return {
+            helpMessages,
+            nested: nestedCommandSavers,
             save(y: yargs.Argv): yargs.Argv {
                 nestedCommandSavers.forEach(c => c.save(y));
                 if (self.nestedCommands && self.nestedCommands.length > 0) {
@@ -86,7 +87,7 @@ class YargBuilderTopLevel implements YargBuilder {
                 self.parameters.forEach(p =>
                     y.option(p.parameterName, p));
                 y.showHelpOnFail(true);
-                y.epilog(self.helpMessages.join("\n"));
+                y.epilog(helpMessages.join("\n"));
                 return y;
             },
         };

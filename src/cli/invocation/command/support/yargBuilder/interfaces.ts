@@ -6,20 +6,7 @@ import { HandleInstructions } from "./handleInstruction";
 
 export { PositionalOptions, PositionalOptionsType, Choices, ParameterOptions };
 
-interface BuildYargs {
-    /**
-     * Combine the tree of commands,
-     * convert duplicates into warnings.
-     * After this, you should only save.
-     */
-    build(): {
-        /**
-        * Put everything we know into the real yargs
-        * @param  yarg
-        */
-        save(yarg: yargs.Argv): yargs.Argv;
-    };
-}
+
 /**
  * Build up data about commands, and then put them in yargs later.
  * The YargBuilder lets you add lots of commands, including ones with spaces in them.
@@ -45,10 +32,6 @@ export interface YargBuilder extends BuildYargs {
 
     withSubcommand(command: YargCommand): void;
     withParameter(p: CommandLineParameter): void;
-    /*
-     * Contribution to the description displayed on --help
-     */
-    helpMessages: string[];
 
     // compatibility with Yargs
     /**
@@ -89,6 +72,10 @@ export interface YargCommand extends YargBuilder {
     description: string;
     conflictResolution: ConflictResolution;
     isRunnable: boolean;
+    /*
+ * Contribution to the description displayed on --help
+ */
+    helpMessages: string[];
 }
 
 export interface YargRunnableCommandSpec {
@@ -97,6 +84,7 @@ export interface YargRunnableCommandSpec {
     handleInstructions: HandleInstructions;
     parameters: CommandLineParameter[];
     helpMessages: string[];
+    positional: Array<{ key: string, opts: PositionalOptions }>
 }
 
 export interface SupportedSubsetOfYargsCommandMethod {
@@ -116,8 +104,21 @@ export interface YargCommandWordSpec {
     nestedCommands?: YargCommand[];
     warnings?: string[];
 }
-
-
-export interface YargContributor extends BuildYargs {
-    helpMessages: string[];
+export interface BuildYargs {
+    /**
+     * Combine the tree of commands,
+     * convert duplicates into warnings.
+     * After this, you should only save.
+     */
+    build(): {
+        /**
+        * Put everything we know into the real yargs
+        * @param  yarg
+        */
+        save(yarg: yargs.Argv): yargs.Argv;
+        /**
+         * Contribution to the description displayed on --help
+         */
+        helpMessages: string[];
+    };
 }

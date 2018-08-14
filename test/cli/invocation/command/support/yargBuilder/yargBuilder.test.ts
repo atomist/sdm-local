@@ -76,4 +76,10 @@ describe("yarg saver", () => {
         assert(combined.helpMessages.some((line: string) => line.includes("good job me")), "Help message was: " + combined.helpMessages.join("\n"));
 
     });
+
+    it("can combine a multiword positional command with another one that shares the same first word", () => {
+
+
+
+    })
 });
