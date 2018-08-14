@@ -82,11 +82,12 @@ class YargBuilderTopLevel implements YargBuilder {
             ...this.epilogsForHelpMessage]
 
         return {
+            commandName: "top",
             helpMessages,
             nested: nestedCommandSavers,
             descriptions: [] as string[],
             save(y: yargs.Argv): yargs.Argv {
-                nestedCommandSavers.forEach(c => c.save(y));
+                _.sortBy(nestedCommandSavers, n => n.commandName).forEach(c => c.save(y));
                 if (self.nestedCommands && self.nestedCommands.length > 0) {
                     y.demandCommand();
                     y.recommendCommands();

@@ -127,5 +127,9 @@ export interface BuildYargs {
          * for rolling up descriptions of subcommands
          */
         descriptions: string[];
+        /**
+         * for sorting
+         */
+        commandName: string;
     };
 }
