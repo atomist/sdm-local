@@ -45,7 +45,7 @@ export function addCloneCommand(clients: AutomationClientInfo[], yargs: YargBuil
 }
 
 async function superclone(clients: AutomationClientInfo[],
-    args: string): Promise<any> {
+                          args: string): Promise<any> {
     infoMessage(`Importing Git remote project ${args}\n`);
     const repositoryOwnerDirectory = determineDefaultRepositoryOwnerParentDirectory();
     const { owner, repo } = GitRemoteParser.firstMatch(args);

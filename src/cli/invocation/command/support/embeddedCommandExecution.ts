@@ -61,7 +61,7 @@ export interface EmbeddedCommandSpec {
  * @param {yargs.Argv} yargs
  */
 export function addEmbeddedCommand(yargs: YargBuilder,
-    spec: EmbeddedCommandSpec) {
+                                   spec: EmbeddedCommandSpec) {
     yargs.command({
         command: spec.cliCommand,
         describe: spec.cliDescription,
@@ -105,10 +105,10 @@ export function addEmbeddedCommand(yargs: YargBuilder,
 }
 
 async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: string,
-    configure: ConfigureMachine,
-    name: string,
-    params: object,
-    listeners: CommandInvocationListener[] = []) {
+                                           configure: ConfigureMachine,
+                                           name: string,
+                                           params: object,
+                                           listeners: CommandInvocationListener[] = []) {
     const aca = await startEmbeddedMachine({
         repositoryOwnerParentDirectory,
         configure,

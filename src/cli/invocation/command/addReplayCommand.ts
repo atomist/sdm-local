@@ -22,15 +22,15 @@ import { HookEvent } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
-import { yargCommandWithPositionalArguments, YargBuilder } from "./support/yargBuilder";
+import { YargBuilder, yargCommandWithPositionalArguments } from "./support/yargBuilder";
 
 /**
  * Add a command to replay execution following a git event
  * @param {YargBuilder} yargs
  */
 export function addReplayCommand(yargs: YargBuilder,
-    automationClientFinder: AutomationClientFinder,
-    teamContextResolver: WorkspaceContextResolver) {
+                                 automationClientFinder: AutomationClientFinder,
+                                 teamContextResolver: WorkspaceContextResolver) {
     yargs.withSubcommand(yargCommandWithPositionalArguments({
         command: "replay <event> [depth]",
         describe: "Replay commit action on the current repository",

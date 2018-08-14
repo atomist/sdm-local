@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import * as yargs from "yargs";
-import { YargBuilder, CommandLineParameter, SupportedSubsetOfYargsCommandMethod, YargCommand, ParameterOptions } from "./interfaces";
-import { imitateYargsCommandMethod } from "./sentences";
-import { combine } from "./combining";
 import * as _ from "lodash";
-
+import * as yargs from "yargs";
+import { combine } from "./combining";
+import { CommandLineParameter, ParameterOptions, SupportedSubsetOfYargsCommandMethod, YargBuilder, YargCommand } from "./interfaces";
+import { imitateYargsCommandMethod } from "./sentences";
 
 export function freshYargBuilder(opts: { epilogForHelpMessage?: string } = {}): YargBuilder {
     return new YargBuilderTopLevel(opts);
@@ -35,7 +34,7 @@ class YargBuilderTopLevel implements YargBuilder {
     public readonly parameters: CommandLineParameter[] = [];
 
     constructor(opts: { epilogForHelpMessage?: string }) {
-        this.epilogsForHelpMessage = opts.epilogForHelpMessage ? [opts.epilogForHelpMessage] : []
+        this.epilogsForHelpMessage = opts.epilogForHelpMessage ? [opts.epilogForHelpMessage] : [];
     }
 
     public demandCommand() {
@@ -60,7 +59,7 @@ class YargBuilderTopLevel implements YargBuilder {
     }
 
     public option(parameterName: string,
-        opts: ParameterOptions): YargBuilder {
+                  opts: ParameterOptions): YargBuilder {
         this.withParameter({
             parameterName,
             ...opts,
@@ -78,11 +77,6 @@ class YargBuilderTopLevel implements YargBuilder {
         const nestedCommandSavers = Object.entries(commandsByNames).map(([k, v]) =>
             combine(k, v).build());
         return {
-            save(yarg: yargs.Argv): yargs.Argv {
-                return yarg;
-            }
-        };
-        return {
             save(y: yargs.Argv): yargs.Argv {
                 nestedCommandSavers.forEach(c => c.save(y));
                 if (self.nestedCommands && self.nestedCommands.length > 0) {
@@ -94,8 +88,7 @@ class YargBuilderTopLevel implements YargBuilder {
                 y.showHelpOnFail(true);
                 y.epilog(self.helpMessages.join("\n"));
                 return y;
-            }
-        }
+            },
+        };
     }
 }
-

@@ -1,15 +1,15 @@
+import * as yargs from "yargs";
+import { CommandLine, parseCommandLine, verifyOneWord } from "./commandLine";
+import { handleFunctionFromInstructions, HandleInstructions } from "./handleInstruction";
 import {
     CommandLineParameter,
+    ConflictResolution,
+    ParameterOptions,
     PositionalOptions,
+    YargBuilder,
     YargCommand,
     YargRunnableCommandSpec,
-    ParameterOptions,
-    YargBuilder,
-    ConflictResolution,
 } from "./interfaces";
-import * as yargs from "yargs";
-import { parseCommandLine, CommandLine, verifyOneWord } from "./commandLine";
-import { handleFunctionFromInstructions, HandleInstructions } from "./handleInstruction";
 
 export function yargCommandWithPositionalArguments(
     params: {
@@ -40,7 +40,6 @@ export function positionalCommand(conflictResolution: ConflictResolution):
 
 // TODO: check in .command() and call this one if it fits
 class YargSaverPositionalCommand implements YargCommand {
-
 
     public readonly parameters: CommandLineParameter[] = [];
 
@@ -78,14 +77,13 @@ class YargSaverPositionalCommand implements YargCommand {
     }
 
     public option(parameterName: string,
-        opts: ParameterOptions): YargBuilder {
+                  opts: ParameterOptions): YargBuilder {
         this.withParameter({
             parameterName,
             ...opts,
         });
         return this;
     }
-
 
     public demandCommand(): YargBuilder {
         throw new Error("Commands with positional arguments may not have subcommands");
@@ -94,7 +92,6 @@ class YargSaverPositionalCommand implements YargCommand {
     public command(): YargBuilder {
         throw new Error("Commands with positional arguments may not have subcommands");
     }
-
 
     public build() {
         const ypc = this; // mutating this object will screw this up. Conceptually, should copy
@@ -114,12 +111,11 @@ class YargSaverPositionalCommand implements YargCommand {
                     },
                 });
                 return yarg;
-            }
+            },
         };
 
     }
 }
-
 
 export function hasPositionalArguments(ys: YargCommand): ys is YargSaverPositionalCommand {
     return (ys as any).commandLine.positionalArguments.length > 0;

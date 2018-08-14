@@ -1,21 +1,21 @@
 
 import { Choices, Options as ParameterOptions, PositionalOptions, PositionalOptionsType } from "yargs";
+import * as yargs from "yargs";
 import { CommandLine } from "./commandLine";
 import { HandleInstructions } from "./handleInstruction";
-import * as yargs from "yargs";
 
 export { PositionalOptions, PositionalOptionsType, Choices, ParameterOptions };
 
 interface BuildYargs {
     /**
-     * Combine the tree of commands, 
+     * Combine the tree of commands,
      * convert duplicates into warnings.
      * After this, you should only save.
      */
     build(): {
         /**
         * Put everything we know into the real yargs
-        * @param  yarg 
+        * @param  yarg
         */
         save(yarg: yargs.Argv): yargs.Argv;
     };
@@ -54,16 +54,16 @@ export interface YargBuilder extends BuildYargs {
     /**
     * This exists to be compatible with yargs syntax
     * once we aren't using it, we could remove it
-    * @param params 
+    * @param params
     * @deprecated
     */
     option(parameterName: string,
-        params: ParameterOptions): YargBuilder;
+           params: ParameterOptions): YargBuilder;
     /**
     * This exists to be compatible with yargs syntax
     * But really, we'll figure out whether to call demandCommand() on yargs
     * based on whether a handler function was supplied
-    * @param params 
+    * @param params
     * @deprecated
     */
     demandCommand(): YargBuilder;
@@ -71,7 +71,7 @@ export interface YargBuilder extends BuildYargs {
     /**
      * This exists to be compatible with yargs syntax
      * once we aren't using it, we could remove it
-     * @param params 
+     * @param params
      * @deprecated
      */
     command(params: SupportedSubsetOfYargsCommandMethod): YargBuilder;
@@ -80,7 +80,6 @@ export interface YargBuilder extends BuildYargs {
 export interface YargContributor extends BuildYargs {
     helpMessages: string[];
 }
-
 
 export type CommandLineParameter = ParameterOptions & {
     parameterName: string;
@@ -92,7 +91,7 @@ export interface YargCommand extends YargBuilder {
     commandName: string;
     description: string;
     conflictResolution: ConflictResolution;
-    isRunnable: boolean,
+    isRunnable: boolean;
 }
 
 export interface YargRunnableCommandSpec {
@@ -103,13 +102,13 @@ export interface YargRunnableCommandSpec {
     helpMessages: string[];
 }
 
-export type SupportedSubsetOfYargsCommandMethod = {
-    command: string,
-    describe: string,
-    aliases?: string,
-    builder?: (ys: YargBuilder) => YargBuilder,
-    handler?: (argObject: any) => Promise<any>,
-};
+export interface SupportedSubsetOfYargsCommandMethod {
+    command: string;
+    describe: string;
+    aliases?: string;
+    builder?: (ys: YargBuilder) => YargBuilder;
+    handler?: (argObject: any) => Promise<any>;
+}
 
 // internal
 export interface YargCommandWordSpec {

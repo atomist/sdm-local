@@ -54,10 +54,9 @@ export function verifyOneWord(commandLine: CommandLine) {
     }
 }
 
-
 class CommandLineImpl implements CommandLine {
     constructor(public readonly words: string[],
-        public readonly positionalArguments: string[]) { }
+                public readonly positionalArguments: string[]) { }
 
     public get firstWord() {
         return this.words[0];

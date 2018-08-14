@@ -96,7 +96,7 @@ export function combine(commandName: string, yss: YargCommand[]): YargContributo
     }
 
     if (combineThese.length === 0) {
-        return contributeOnlyHelpMessages(warnings)
+        return contributeOnlyHelpMessages(warnings);
     }
     if (combineThese.length === 1) {
         return combineThese[0];
@@ -104,7 +104,7 @@ export function combine(commandName: string, yss: YargCommand[]): YargContributo
 
     const yswcs = combineThese as YargCommandWord[]; // positional would cause conflict
 
-    const realCommand = yswcs.find(ys => ys.isRunnable)
+    const realCommand = yswcs.find(ys => ys.isRunnable);
 
     return new YargCommandWord({
         commandName,
@@ -127,8 +127,8 @@ function contributeOnlyHelpMessages(ms: string[]): YargContributor {
             return {
                 save(v) {
                     return v;
-                }
-            }
-        }
-    }
+                },
+            };
+        },
+    };
 }

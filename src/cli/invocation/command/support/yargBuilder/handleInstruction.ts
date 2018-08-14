@@ -27,5 +27,5 @@ export function handleInstructionsFromFunction(fn?: (argObject: object) => any):
     if (!fn) {
         return DoNothing;
     }
-    return { fn }
+    return { fn };
 }
