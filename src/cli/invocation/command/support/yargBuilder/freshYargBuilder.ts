@@ -15,46 +15,87 @@
  */
 
 import * as yargs from "yargs";
-import { YargBuilder } from "./interfaces";
+import { YargBuilder, CommandLineParameter, SupportedSubsetOfYargsCommandMethod, YargCommand, ParameterOptions } from "./interfaces";
+import { imitateYargsCommandMethod } from "./sentences";
+import { combine } from "./combining";
+import * as _ from "lodash";
 
-export function freshYargBuilder(opts: { commandName?: string, epilogForHelpMessage?: string } = {}): YargBuilder {
-    return new YargSaverTopLevel(opts);
+
+export function freshYargBuilder(opts: { epilogForHelpMessage?: string } = {}): YargBuilder {
+    return new YargBuilderTopLevel(opts);
 }
 
 export function isYargBuilder(ya: yargs.Argv | YargBuilder): ya is YargBuilder {
     return !!(ya as YargBuilder).build;
 }
 
-
-
-/**
- * A command is expandible in yargs, so you have to be able
- * to build on it here. Implementations that don't allow subcommands
- * can throw exceptions.
- */
-export interface YargCommand extends YargBuilder {
-    commandName: string;
-    description: string;
-    isRunnable: boolean;
-    conflictResolution: ConflictResolution;
-}
-
-export abstract class YargSaverContainer implements YargBuilder {
-
-
-
-}
-
-class YargSaverTopLevel extends YargSaverContainer implements YargBuilder {
-    public commandName: string;
+class YargBuilderTopLevel implements YargBuilder {
     public epilogsForHelpMessage: string[];
-    constructor(opts: { commandName?: string, epilogForHelpMessage?: string }) {
-        super();
-        this.commandName = opts.commandName || "top-level";
+    public readonly nestedCommands: YargCommand[] = [];
+    public readonly parameters: CommandLineParameter[] = [];
+
+    constructor(opts: { epilogForHelpMessage?: string }) {
         this.epilogsForHelpMessage = opts.epilogForHelpMessage ? [opts.epilogForHelpMessage] : []
     }
 
+    public demandCommand() {
+        // no-op. Only here for compatibility with yargs syntax.
+        // We can figure out whether to demand a command.
+        return this;
+    }
+
+    public command(params: SupportedSubsetOfYargsCommandMethod): this {
+        imitateYargsCommandMethod(this, params);
+        return this;
+    }
+
+    public withParameter(p: CommandLineParameter) {
+        this.parameters.push(p);
+        return this;
+    }
+
+    public withSubcommand(c: YargCommand): this {
+        this.nestedCommands.push(c);
+        return this;
+    }
+
+    public option(parameterName: string,
+        opts: ParameterOptions): YargBuilder {
+        this.withParameter({
+            parameterName,
+            ...opts,
+        });
+        return this;
+    }
+
     public get helpMessages() {
-        return [...super.helpMessages, ...this.epilogsForHelpMessage];
+        return this.epilogsForHelpMessage;
+    }
+
+    public build() {
+        const self = this;
+        const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName);
+        const nestedCommandSavers = Object.entries(commandsByNames).map(([k, v]) =>
+            combine(k, v).build());
+        return {
+            save(yarg: yargs.Argv): yargs.Argv {
+                return yarg;
+            }
+        };
+        return {
+            save(y: yargs.Argv): yargs.Argv {
+                nestedCommandSavers.forEach(c => c.save(y));
+                if (self.nestedCommands && self.nestedCommands.length > 0) {
+                    y.demandCommand();
+                    y.recommendCommands();
+                }
+                self.parameters.forEach(p =>
+                    y.option(p.parameterName, p));
+                y.showHelpOnFail(true);
+                y.epilog(self.helpMessages.join("\n"));
+                return y;
+            }
+        }
     }
 }
+

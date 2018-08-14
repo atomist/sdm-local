@@ -1,11 +1,12 @@
 import {
     CommandLineParameter,
-    PositionalOptions, ConflictResolution,
+    PositionalOptions,
     YargCommand,
-    YargCommandSpec,
+    YargRunnableCommandSpec,
     ParameterOptions,
     YargBuilder,
-} from "./freshYargBuilder";
+    ConflictResolution,
+} from "./interfaces";
 import * as yargs from "yargs";
 import { parseCommandLine, CommandLine, verifyOneWord } from "./commandLine";
 import { handleFunctionFromInstructions, HandleInstructions } from "./handleInstruction";
@@ -21,6 +22,7 @@ export function yargCommandWithPositionalArguments(
     },
 ) {
     return new YargSaverPositionalCommand({
+        helpMessages: [],
         commandLine: parseCommandLine(params.command),
         description: params.describe,
         handleInstructions: { fn: params.handler },
@@ -30,8 +32,10 @@ export function yargCommandWithPositionalArguments(
     });
 }
 
-export function positionalCommand(spec: YargCommandSpec): YargCommand {
-    return new YargSaverPositionalCommand(spec);
+export function positionalCommand(conflictResolution: ConflictResolution):
+    (ys: YargRunnableCommandSpec) => YargCommand {
+    return (spec: YargRunnableCommandSpec) =>
+        new YargSaverPositionalCommand({ ...spec, conflictResolution });
 }
 
 // TODO: check in .command() and call this one if it fits
@@ -55,10 +59,10 @@ class YargSaverPositionalCommand implements YargCommand {
     public withSubcommand(): never {
         throw new Error("You cannot have both subcommands and positional arguments");
     }
-    constructor(spec: YargCommandSpec &
-    { positionalArguments?: Array<{ key: string, opts: yargs.PositionalOptions }> }) {
+    constructor(spec: YargRunnableCommandSpec &
+    { positionalArguments?: Array<{ key: string, opts: yargs.PositionalOptions }> } &
+    { conflictResolution: ConflictResolution }) {
         verifyOneWord(spec.commandLine);
-        verifyEmpty(spec.nestedCommands, "You cannot have both subcommands and positional arguments");
         this.commandName = spec.commandLine.firstWord;
         this.commandLine = spec.commandLine;
         this.description = spec.description;
@@ -119,11 +123,4 @@ class YargSaverPositionalCommand implements YargCommand {
 
 export function hasPositionalArguments(ys: YargCommand): ys is YargSaverPositionalCommand {
     return (ys as any).commandLine.positionalArguments.length > 0;
-}
-
-
-function verifyEmpty(arr: any[] | undefined, message: string) {
-    if (arr && arr.length > 0) {
-        throw new Error(message);
-    }
 }

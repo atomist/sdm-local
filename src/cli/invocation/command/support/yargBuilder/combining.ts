@@ -16,14 +16,11 @@
 
 import * as _ from "lodash";
 import {
-    CommandLineParameter,
     YargCommand,
     YargContributor,
-} from "./freshYargBuilder";
-import { parseCommandLine } from "./commandLine";
+} from "./interfaces";
 import { hasPositionalArguments } from "./positional";
 import { YargCommandWord } from "./sentences";
-import { DoNothing } from "./handleInstruction";
 
 interface ValidationError {
     complaint: string;
@@ -101,27 +98,25 @@ export function combine(commandName: string, yss: YargCommand[]): YargContributo
     if (combineThese.length === 0) {
         return contributeOnlyHelpMessages(warnings)
     }
+    if (combineThese.length === 1) {
+        return combineThese[0];
+    }
 
     const yswcs = combineThese as YargCommandWord[]; // positional would cause conflict
 
-    const realCommand = yswcs.find(ys => ys.isRunnable) || {
-        handleInstructions: DoNothing,
-        parameters: [] as CommandLineParameter[],
-    };
+    const realCommand = yswcs.find(ys => ys.isRunnable)
 
-    return new YargCommandWord(parseCommandLine(commandName),
-        _.uniq(yswcs.map(y => y.description)).join("; or, "),
-        realCommand.handleInstructions,
-        {
-            nestedCommands: _.flatMap(yswcs.map(ys => ys.nestedCommands)),
-            parameters: realCommand.parameters,
-            conflictResolution: {
-                failEverything: true,
-                commandDescription: "This is already a combined command. Don't call optimize twice",
-            },
-            warnings,
+    return new YargCommandWord({
+        commandName,
+        description: _.uniq(yswcs.map(y => y.description)).join("; or, "),
+        runnableCommand: realCommand ? realCommand.runnableCommand : undefined,
+        nestedCommands: _.flatMap(yswcs.map(ys => ys.nestedCommands)),
+        conflictResolution: {
+            failEverything: true,
+            commandDescription: "This is already a combined command. Don't call optimize twice",
         },
-    );
+        warnings,
+    });
 
 }
 

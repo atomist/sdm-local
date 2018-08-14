@@ -23,3 +23,9 @@ export function handleFunctionFromInstructions(instr: HandleInstructions):
     return instr.fn;
 }
 
+export function handleInstructionsFromFunction(fn?: (argObject: object) => any): HandleInstructions {
+    if (!fn) {
+        return DoNothing;
+    }
+    return { fn }
+}

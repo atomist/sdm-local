@@ -1,12 +1,13 @@
 import {
     ConflictResolution, CommandLineParameter, YargCommand,
-    YargCommandSpec, ParameterOptions, YargBuilder
-} from "./freshYargBuilder";
-import { parseCommandLine, dropFirstWord, CommandLine, verifyOneWord } from "./commandLine";
+    YargRunnableCommandSpec, ParameterOptions, YargBuilder, YargCommandWordSpec, SupportedSubsetOfYargsCommandMethod
+} from "./interfaces";
+import { parseCommandLine, dropFirstWord, CommandLine, verifyOneWord, commandLineAlias } from "./commandLine";
 import * as yargs from "yargs";
-import { DoNothing, HandleInstructions, doesSomething, handleFunctionFromInstructions } from "./handleInstruction";
+import { DoNothing, HandleInstructions, handleFunctionFromInstructions, handleInstructionsFromFunction } from "./handleInstruction";
 import * as _ from "lodash";
 import { combine } from "./combining";
+import { positionalCommand } from "./positional";
 
 export function yargCommandFromSentence(
     params: {
@@ -17,44 +18,16 @@ export function yargCommandFromSentence(
         conflictResolution?: ConflictResolution,
     },
 ): YargCommand {
+    const conflictResolution = params.conflictResolution || { failEverything: true, commandDescription: params.command }
     return multilevelCommand({
         commandLine: parseCommandLine(params.command),
         description: params.describe,
         handleInstructions: { fn: params.handler },
         parameters: params.parameters,
-        conflictResolution: params.conflictResolution || { failEverything: true, commandDescription: params.command },
-    });
+        helpMessages: [],
+    }, params.describe, conflictResolution);
 }
 
-
-/**
- * Recursively create a command with subcommands for all the words
- * @param params
- */
-export function multilevelCommand(params: YargCommandSpec): YargCommandWord {
-    const { commandLine } = params;
-    if (commandLine.words.length === 1) {
-        return buildYargSaverCommand(params);
-    } else {
-        const nextWord = commandLine.firstWord;
-        const rest = dropFirstWord(commandLine);
-        /* build the nested commands */
-        const inner = multilevelCommand({
-            ...params,
-            commandLine: rest,
-        });
-
-        /* now build the container */
-        return buildYargSaverCommand({
-            commandLine: parseCommandLine(nextWord),
-            description: `...`,
-            handleInstructions: DoNothing,
-            nestedCommands: [inner],
-            conflictResolution: params.conflictResolution,
-        });
-
-    }
-}
 
 
 /**
@@ -62,15 +35,31 @@ export function multilevelCommand(params: YargCommandSpec): YargCommandWord {
  * 
  * It can be constructed whole, or built up yargs-style.
  */
-export class YargCommandWord {
+export class YargCommandWord implements YargCommand {
 
-    public runnableCommand?: YargCommand = null;
+    public runnableCommand?: YargRunnableCommandSpec = null;
     public readonly nestedCommands: YargCommand[];
 
+    public readonly conflictResolution: ConflictResolution;
+    public readonly description: string;
+    public readonly commandName: string;
+    public readonly warnings: string[];
+
+
+    constructor(spec: YargCommandWordSpec) {
+        this.nestedCommands = spec.nestedCommands;
+        this.runnableCommand = spec.runnableCommand;
+        if (this.runnableCommand) { verifyOneWord(this.runnableCommand.commandLine) };
+        this.conflictResolution = spec.conflictResolution;
+        this.description = spec.description;
+        this.commandName = spec.commandName;
+        this.warnings = spec.warnings || [];
+    }
+
     public get helpMessages(): string[] {
-        const myHelp = this.finalCommandConfiguration ? this.finalCommandConfiguration.helpMessages : [];
+        const myHelp = this.runnableCommand ? this.runnableCommand.helpMessages : [];
         const descendantHelps = _.flatMap(this.nestedCommands, nc => nc.helpMessages);
-        return [...myHelp, ...descendantHelps]
+        return [...this.warnings, ...myHelp, ...descendantHelps];
     };
 
     public withSubcommand(c: YargCommand): this {
@@ -93,80 +82,34 @@ export class YargCommandWord {
         return this;
     }
 
-    public command(params: {
-        command: string,
-        describe: string,
-        aliases?: string,
-        builder?: (ys: YargBuilder) => YargBuilder,
-        handler?: (argObject: any) => Promise<any>,
-    }) {
-        const commandLine = parseCommandLine(params.command);
-        const description = params.describe;
-        const configureInner = params.builder;
-        const handlerFunction = params.handler;
-        const { aliases } = params;
-        const handleInstructions = handlerFunction ? { fn: handlerFunction } : DoNothing;
-        const spec: YargCommandSpec = {
-            commandLine,
-            description,
-            handleInstructions,
-            configureInner,
-            conflictResolution: { failEverything: true, commandDescription: params.command },
-        };
-
-        let constructCommand = commandFactory(commandLine);
-        this.withSubcommand(constructCommand(spec));
-
-        const allAliases = oneOrMany(aliases);
-        allAliases.forEach(a => {
-            const alternateSpec = {
-                ...spec,
-                commandLine: commandLineAlias(spec.commandLine, a),
-            };
-            this.withSubcommand(constructCommand(alternateSpec));
-        });
+    public command(params: SupportedSubsetOfYargsCommandMethod): this {
+        imitateYargsCommandMethod(this, params);
         return this;
-    }
-
-    public get commandName() {
-        return this.commandLine.firstWord;
-    }
-
-    public readonly warnings: string[];
-
-    constructor(public readonly commandLine: CommandLine,
-        public readonly description: string,
-        public readonly handleInstructions: HandleInstructions,
-        readonly opts: {
-            conflictResolution: ConflictResolution,
-            nestedCommands?: YargCommand[],
-            parameters?: CommandLineParameter[],
-            warnings?: string[],
-        }) {
-        this.nestedCommands = opts.nestedCommands;
-        this.warnings = opts.warnings || [];
-        verifyOneWord(commandLine);
-        this.conflictResolution = opts.conflictResolution;
-        this.parameters = opts.parameters;
-    }
-
-    public get helpMessages(): string[] {
-        return [...super.helpMessages, ...this.warnings];
     }
 
     public withParameter(p: CommandLineParameter) {
-        if (!this.isRunnable) {
-            this.isRunnable = true;
-        }
-        this.parameters.push(p);
+        this.beRunnable();
+        this.runnableCommand.parameters.push(p);
         return this;
+    }
+
+    public beRunnable() {
+        if (!this.runnableCommand) {
+            this.runnableCommand = {
+                handleInstructions: DoNothing,
+                parameters: [],
+                helpMessages: [],
+                commandLine: parseCommandLine(this.commandName),
+                description: this.description,
+            }
+        }
     }
 
     /**
      * have they typed enough?
      */
     public get isRunnable(): boolean {
-        return doesSomething(this.handleInstructions);
+        return !!this.runnableCommand;
     }
 
     public build() {
@@ -182,22 +125,24 @@ export class YargCommandWord {
         return {
             save(yarg: yargs.Argv): yargs.Argv {
                 yarg.command({
-                    command: self.commandLine.toString(),
+                    command: self.commandName,
                     describe: self.description,
                     builder: y => {
                         nestedCommandSavers.forEach(c => c.save(yarg));
-                        if (!self.isRunnable && self.nestedCommands && self.nestedCommands.length > 0) {
+                        if (!self.runnableCommand && self.nestedCommands && self.nestedCommands.length > 0) {
                             y.demandCommand();
                             y.recommendCommands();
-                        } else {
-                            self.finalCommandConfiguration.parameters.forEach(p =>
+                        }
+                        if (!!self.runnableCommand) {
+                            self.runnableCommand.parameters.forEach(p =>
                                 y.option(p.parameterName, p));
                         }
                         y.showHelpOnFail(true);
                         y.epilog(self.helpMessages.join("\n"));
                         return y;
                     },
-                    handler: handleFunctionFromInstructions(this.handleInstructions),
+                    handler: self.runnableCommand ?
+                        handleFunctionFromInstructions(self.runnableCommand.handleInstructions) : undefined,
                 });
                 return yarg;
             }
@@ -205,8 +150,8 @@ export class YargCommandWord {
     }
 
     public get handleInstructions(): HandleInstructions {
-        if (this.isRunnable) {
-            return this.finalCommandConfiguration.handleInstructions;
+        if (!!this.runnableCommand) {
+            return this.runnableCommand.handleInstructions;
         } else {
             return DoNothing;
         }
@@ -214,29 +159,88 @@ export class YargCommandWord {
 
 }
 
+export function imitateYargsCommandMethod(self: YargBuilder, params: SupportedSubsetOfYargsCommandMethod) {
+    const commandLine = parseCommandLine(params.command);
+    const spec: YargRunnableCommandSpec = {
+        commandLine,
+        description: params.describe,
+        handleInstructions: handleInstructionsFromFunction(params.handler),
+        parameters: [],
+        helpMessages: []
+    };
+    const conflictResolution: ConflictResolution = { failEverything: true, commandDescription: params.command };
+    const constructCommand = commandFactory(commandLine, conflictResolution, params.describe, params.builder);
 
-function buildYargSaverCommand(params: YargCommandSpec) {
-    const { commandLine, description, handleInstructions,
-        configureInner, nestedCommands, parameters, conflictResolution } = params;
-    const inner = new YargCommandWord(commandLine, description, handleInstructions,
-        { nestedCommands, parameters, conflictResolution });
-    if (configureInner) {
-        configureInner(inner);
-    }
-    return inner;
+    self.withSubcommand(constructCommand(spec));
+
+    const allAliases = oneOrMany(params.aliases);
+    allAliases.forEach(a => {
+        const alternateSpec = {
+            ...spec,
+            commandLine: commandLineAlias(spec.commandLine, a),
+        };
+        self.withSubcommand(constructCommand(alternateSpec));
+    });
 }
 
-
-function commandFactory(commandLine: CommandLine): (y: YargCommandSpec) => YargCommand {
+function commandFactory(commandLine: CommandLine, conflictResolution: ConflictResolution, description: string,
+    configureInner?: (ys: YargBuilder) => YargBuilder): (y: YargRunnableCommandSpec) => YargCommand {
     // note: "show skills <thing>" is still not gonna parse correctly;
     // that one should be multilevel and then positional
     if (commandLine.positionalArguments.length > 0) {
-        return positionalCommand;
+        return (spec) => {
+            const pc = positionalCommand(conflictResolution)(spec);
+            if (configureInner) { configureInner(pc); }
+            return pc;
+        }
     } else {
-        return multilevelCommand;
+        return (spec) => multilevelCommand(spec, description, conflictResolution, configureInner);
     }
 }
 
 function oneOrMany<T>(t: T | T[] | undefined): T[] {
     return t === undefined ? [] : (Array.isArray(t) ? t : [t]);
+}
+
+
+/**
+ * Recursively create a command with subcommands for all the words
+ * @param params
+ */
+function multilevelCommand(params: YargRunnableCommandSpec,
+    description: string,
+    conflictResolution: ConflictResolution,
+    configureInner?: (ys: YargBuilder) => YargBuilder): YargCommandWord {
+
+    const { commandLine } = params;
+    if (commandLine.words.length === 1) {
+        /* This is the real thing */
+        const cmd = new YargCommandWord({
+            commandName: commandLine.firstWord,
+            description,
+            conflictResolution,
+            runnableCommand: params
+        });
+        if (configureInner) {
+            configureInner(cmd);
+        }
+        return cmd;
+    } else {
+        const nextWord = commandLine.firstWord;
+        const rest = dropFirstWord(commandLine);
+        /* build the nested commands */
+        const inner = multilevelCommand({
+            ...params,
+            commandLine: rest,
+        }, description, conflictResolution, configureInner);
+
+        /* now build the container */
+        return new YargCommandWord({
+            commandName: nextWord,
+            description: "...",
+            conflictResolution,
+            nestedCommands: [inner],
+        });
+
+    }
 }

@@ -1,5 +1,8 @@
 
 import { Choices, Options as ParameterOptions, PositionalOptions, PositionalOptionsType } from "yargs";
+import { CommandLine } from "./commandLine";
+import { HandleInstructions } from "./handleInstruction";
+import * as yargs from "yargs";
 
 export { PositionalOptions, PositionalOptionsType, Choices, ParameterOptions };
 
@@ -71,13 +74,7 @@ export interface YargBuilder extends BuildYargs {
      * @param params 
      * @deprecated
      */
-    command(params: {
-        command: string,
-        describe: string,
-        aliases?: string,
-        builder?: (ys: YargBuilder) => (YargBuilder | void),
-        handler?: (argObject: any) => Promise<any>,
-    }): YargBuilder;
+    command(params: SupportedSubsetOfYargsCommandMethod): YargBuilder;
 }
 
 export interface YargContributor extends BuildYargs {
@@ -91,16 +88,35 @@ export type CommandLineParameter = ParameterOptions & {
 
 export interface ConflictResolution { failEverything: boolean; commandDescription: string; }
 
+export interface YargCommand extends YargBuilder {
+    commandName: string;
+    description: string;
+    conflictResolution: ConflictResolution;
+    isRunnable: boolean,
+}
 
-// All of the rest of this is exported for interfile use only
-
-
-export interface YargCommandSpec {
+export interface YargRunnableCommandSpec {
     commandLine: CommandLine;
     description: string;
     handleInstructions: HandleInstructions;
-    nestedCommands?: YargCommand[];
-    parameters?: CommandLineParameter[];
-    configureInner?: (y: YargBuilder) => (YargBuilder | void);
+    parameters: CommandLineParameter[];
+    helpMessages: string[];
+}
+
+export type SupportedSubsetOfYargsCommandMethod = {
+    command: string,
+    describe: string,
+    aliases?: string,
+    builder?: (ys: YargBuilder) => YargBuilder,
+    handler?: (argObject: any) => Promise<any>,
+};
+
+// internal
+export interface YargCommandWordSpec {
+    commandName: string;
+    description: string;
     conflictResolution: ConflictResolution;
+    runnableCommand?: YargRunnableCommandSpec;
+    nestedCommands?: YargCommand[];
+    warnings?: string[];
 }
