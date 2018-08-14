@@ -97,7 +97,7 @@ export function combine(commandName: string, yss: YargCommand[]): BuildYargs {
     }
 
     if (combineThese.length === 0) {
-        return contributeOnlyHelpMessages(warnings);
+        return contributeOnlyHelpMessages(commandName, warnings);
     }
 
     const yswcs = combineThese as YargCommandWord[]; // positional wouldju cause conflict
@@ -118,11 +118,13 @@ export function combine(commandName: string, yss: YargCommand[]): BuildYargs {
 
 }
 
-function contributeOnlyHelpMessages(ms: string[]): BuildYargs {
+function contributeOnlyHelpMessages(formerCommandName: string, ms: string[]): BuildYargs {
     return {
         build() {
             return {
                 helpMessages: ms,
+                descriptions: [],
+                commandName: formerCommandName,
                 save(v) {
                     return v;
                 },
