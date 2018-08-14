@@ -24,7 +24,6 @@ export { LocalSdmConfig } from "./src/sdm/configuration/localSdmConfig";
 export {
     YargBuilder,
     freshYargBuilder,
-    yargCommandFromSentence,
     yargCommandWithPositionalArguments,
     ParameterOptions,
     CommandLineParameter,

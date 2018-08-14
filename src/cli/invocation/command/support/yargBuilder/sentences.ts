@@ -1,32 +1,13 @@
 import * as _ from "lodash";
 import * as yargs from "yargs";
 import { combine } from "./combining";
-import { CommandLine, commandLineAlias, dropFirstWord, parseCommandLine, verifyOneWord } from "./commandLine";
+import { commandLineAlias, dropFirstWord, parseCommandLine, verifyOneWord } from "./commandLine";
 import { DoNothing, handleFunctionFromInstructions, HandleInstructions, handleInstructionsFromFunction } from "./handleInstruction";
 import {
     CommandLineParameter, ConflictResolution, ParameterOptions,
-    SupportedSubsetOfYargsCommandMethod, YargBuilder, YargCommand, YargCommandWordSpec, YargRunnableCommandSpec,
+    SupportedSubsetOfYargsCommandMethod, YargBuilder, YargCommand, YargCommandWordSpec, YargRunnableCommandSpec, isYargCommand,
 } from "./interfaces";
 import { positionalCommand } from "./positional";
-
-export function yargCommandFromSentence(
-    params: {
-        command: string,
-        describe: string,
-        handler: (argObject: any) => Promise<any>,
-        parameters: CommandLineParameter[],
-        conflictResolution?: ConflictResolution,
-    },
-): YargCommand {
-    const conflictResolution = params.conflictResolution || { failEverything: true, commandDescription: params.command };
-    return multilevelCommand({
-        commandLine: parseCommandLine(params.command),
-        description: params.describe,
-        handleInstructions: { fn: params.handler },
-        parameters: params.parameters,
-        positional: []
-    }, params.describe, conflictResolution);
-}
 
 /**
  * This command might be runnable by itself, and might also have subcommands.
@@ -56,8 +37,12 @@ export class YargCommandWord implements YargCommand {
         }
     }
 
-    public withSubcommand(c: YargCommand): this {
-        this.nestedCommands.push(c);
+    public withSubcommand(c: YargCommand | SupportedSubsetOfYargsCommandMethod): this {
+        if (isYargCommand(c)) {
+            this.nestedCommands.push(c);
+        } else {
+            this.command(c);
+        }
         return this;
     }
 
@@ -77,7 +62,8 @@ export class YargCommandWord implements YargCommand {
     }
 
     public command(params: SupportedSubsetOfYargsCommandMethod): this {
-        imitateYargsCommandMethod(this, params);
+        const newCommands = imitateYargsCommandMethod(params);
+        newCommands.forEach(c => this.nestedCommands.push(c));
         return this;
     }
 
@@ -155,43 +141,28 @@ export class YargCommandWord implements YargCommand {
 
 }
 
-export function imitateYargsCommandMethod(self: YargBuilder, params: SupportedSubsetOfYargsCommandMethod) {
+export function imitateYargsCommandMethod(params: SupportedSubsetOfYargsCommandMethod) {
+    const conflictResolution: ConflictResolution = params.conflictResolution ||
+        { failEverything: true, commandDescription: params.command };
+
+    return yargsSpecToMySpecs(params).map(spec =>
+        multilevelCommand(spec, params.describe, conflictResolution, params.builder))
+}
+
+function yargsSpecToMySpecs(params: SupportedSubsetOfYargsCommandMethod): YargRunnableCommandSpec[] {
     const commandLine = parseCommandLine(params.command);
-    const spec: YargRunnableCommandSpec = {
+    const originalSpec: YargRunnableCommandSpec = {
         commandLine,
         description: params.describe,
         handleInstructions: handleInstructionsFromFunction(params.handler),
-        parameters: [],
+        parameters: params.parameters || [],
         positional: [],
     };
-    const conflictResolution: ConflictResolution = { failEverything: true, commandDescription: params.command };
-    const constructCommand = commandFactory(commandLine, conflictResolution, params.describe, params.builder);
-
-    self.withSubcommand(constructCommand(spec));
-
-    const allAliases = oneOrMany(params.aliases);
-    allAliases.forEach(a => {
-        const alternateSpec = {
-            ...spec,
-            commandLine: commandLineAlias(spec.commandLine, a),
-        };
-        self.withSubcommand(constructCommand(alternateSpec));
-    });
-}
-
-function commandFactory(commandLine: CommandLine, conflictResolution: ConflictResolution, description: string,
-    configureInner?: (ys: YargBuilder) => YargBuilder): (y: YargRunnableCommandSpec) => YargCommand {
-    // note: "show skills <thing>" is still not gonna parse correctly;
-    // that one should be multilevel and then positional
-    if (commandLine.positionalArguments.length > 0) {
-        return spec => {
-            const pc = positionalCommand(conflictResolution)(spec);
-            if (configureInner) { configureInner(pc); }
-            return pc;
-        };
-    } else {
-        return spec => multilevelCommand(spec, description, conflictResolution, configureInner);
-    }
+    const aliasSpecs = oneOrMany(params.aliases).map(a => ({
+        ...originalSpec,
+        commandLine: commandLineAlias(commandLine, a),
+    }));
+    return [originalSpec, ...aliasSpecs];
 }
 
 function oneOrMany<T>(t: T | T[] | undefined): T[] {
@@ -205,17 +176,19 @@ function oneOrMany<T>(t: T | T[] | undefined): T[] {
 function multilevelCommand(params: YargRunnableCommandSpec,
     description: string,
     conflictResolution: ConflictResolution,
-    configureInner?: (ys: YargBuilder) => YargBuilder): YargCommandWord {
+    configureInner?: (ys: YargBuilder) => YargBuilder): YargCommand {
 
     const { commandLine } = params;
     if (commandLine.words.length === 1) {
         /* This is the real thing */
-        const cmd = new YargCommandWord({
-            commandName: commandLine.firstWord,
-            description,
-            conflictResolution,
-            runnableCommand: params,
-        });
+        const cmd: YargCommand = commandLine.positionalArguments.length > 0 ?
+            positionalCommand(conflictResolution, params)
+            : new YargCommandWord({
+                commandName: commandLine.firstWord,
+                description,
+                conflictResolution,
+                runnableCommand: params,
+            });
         if (configureInner) {
             configureInner(cmd);
         }

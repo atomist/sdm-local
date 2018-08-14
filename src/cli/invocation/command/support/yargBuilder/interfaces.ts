@@ -1,4 +1,3 @@
-
 import { Choices, Options as ParameterOptions, PositionalOptions, PositionalOptionsType } from "yargs";
 import * as yargs from "yargs";
 import { CommandLine } from "./commandLine";
@@ -30,7 +29,7 @@ export { PositionalOptions, PositionalOptionsType, Choices, ParameterOptions };
 
 export interface YargBuilder extends BuildYargs {
 
-    withSubcommand(command: YargCommand): void;
+    withSubcommand(command: YargCommand | SupportedSubsetOfYargsCommandMethod): void;
     withParameter(p: CommandLineParameter): void;
 
     // compatibility with Yargs
@@ -74,6 +73,10 @@ export interface YargCommand extends YargBuilder {
     isRunnable: boolean;
 }
 
+export function isYargCommand(yc: YargCommand | SupportedSubsetOfYargsCommandMethod): yc is YargCommand {
+    return (yc as YargCommand).commandName !== undefined;
+}
+
 export interface YargRunnableCommandSpec {
     commandLine: CommandLine;
     description: string;
@@ -88,6 +91,9 @@ export interface SupportedSubsetOfYargsCommandMethod {
     aliases?: string;
     builder?: (ys: YargBuilder) => YargBuilder;
     handler?: (argObject: any) => Promise<any>;
+    parameters?: CommandLineParameter[]; // bonus; yargs doesn't include this
+
+    conflictResolution?: ConflictResolution,
 }
 
 // internal

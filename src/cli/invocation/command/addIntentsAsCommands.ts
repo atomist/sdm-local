@@ -21,7 +21,7 @@ import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { PostToAtomistListenerListener, ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
-import { YargBuilder, yargCommandFromSentence } from "./support/yargBuilder";
+import { YargBuilder } from "./support/yargBuilder";
 
 /**
  * Add commands for all intents
@@ -36,7 +36,7 @@ export function addIntentsAsCommands(ai: AutomationClientInfo,
 
     handlers.forEach(h =>
         h.intent.forEach(intent =>
-            yargBuilder.withSubcommand(yargCommandFromSentence({
+            yargBuilder.withSubcommand({
                 command: intent,
                 describe: h.description,
                 handler: async argv => {
@@ -47,7 +47,7 @@ export function addIntentsAsCommands(ai: AutomationClientInfo,
                 },
                 parameters: commandLineParametersFromCommandHandlerMetadata(h, allowUserInput),
                 conflictResolution: { failEverything: false, commandDescription: `Intent '${intent}' on command ${h.name}` },
-            }))));
+            })));
 }
 
 async function runByIntent(ai: AutomationClientInfo,

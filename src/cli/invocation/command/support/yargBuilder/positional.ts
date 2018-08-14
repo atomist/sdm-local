@@ -31,10 +31,8 @@ export function yargCommandWithPositionalArguments(
     });
 }
 
-export function positionalCommand(conflictResolution: ConflictResolution):
-    (ys: YargRunnableCommandSpec) => YargCommand {
-    return (spec: YargRunnableCommandSpec) =>
-        new YargSaverPositionalCommand({ ...spec, conflictResolution });
+export function positionalCommand(conflictResolution: ConflictResolution, spec: YargRunnableCommandSpec) {
+    return new YargSaverPositionalCommand({ ...spec, conflictResolution });
 }
 
 // TODO: check in multilevelCommand and call this one if it fits
@@ -95,6 +93,7 @@ class YargSaverPositionalCommand implements YargCommand {
         const ypc = this; // mutating this object will screw this up. Conceptually, should copy
         return {
             helpMessages: ypc.helpMessages,
+            commandName: this.commandName,
             save(yarg: yargs.Argv): yargs.Argv {
                 yarg.command({
                     command: ypc.commandLine.toString(),

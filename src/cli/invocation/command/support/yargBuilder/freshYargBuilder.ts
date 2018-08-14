@@ -17,7 +17,7 @@
 import * as _ from "lodash";
 import * as yargs from "yargs";
 import { combine } from "./combining";
-import { CommandLineParameter, ParameterOptions, SupportedSubsetOfYargsCommandMethod, YargBuilder, YargCommand } from "./interfaces";
+import { CommandLineParameter, ParameterOptions, SupportedSubsetOfYargsCommandMethod, YargBuilder, YargCommand, isYargCommand } from "./interfaces";
 import { imitateYargsCommandMethod } from "./sentences";
 
 export function freshYargBuilder(opts: { epilogForHelpMessage?: string } = {}): YargBuilder {
@@ -44,7 +44,8 @@ class YargBuilderTopLevel implements YargBuilder {
     }
 
     public command(params: SupportedSubsetOfYargsCommandMethod): this {
-        imitateYargsCommandMethod(this, params);
+        const newCommands = imitateYargsCommandMethod(params);
+        newCommands.forEach(c => this.nestedCommands.push(c));
         return this;
     }
 
@@ -53,8 +54,12 @@ class YargBuilderTopLevel implements YargBuilder {
         return this;
     }
 
-    public withSubcommand(c: YargCommand): this {
-        this.nestedCommands.push(c);
+    public withSubcommand(c: YargCommand | SupportedSubsetOfYargsCommandMethod): this {
+        if (isYargCommand(c)) {
+            this.nestedCommands.push(c);
+        } else {
+            this.command(c);
+        }
         return this;
     }
 

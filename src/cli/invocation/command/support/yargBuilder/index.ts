@@ -8,4 +8,3 @@ export {
     ParameterOptions,
 } from "./interfaces";
 export { yargCommandWithPositionalArguments } from "./positional";
-export { yargCommandFromSentence } from "./sentences";

@@ -17,7 +17,6 @@
 import * as assert from "assert";
 import {
     freshYargBuilder,
-    yargCommandFromSentence,
 } from "../../../../../../src/cli/invocation/command/support/yargBuilder";
 
 describe("yarg saver", () => {
@@ -26,22 +25,22 @@ describe("yarg saver", () => {
 
         const subject = freshYargBuilder();
 
-        subject.withSubcommand(yargCommandFromSentence(
+        subject.withSubcommand(
             {
                 command: "show skills",
                 handler: async () => "I am showing the skills",
                 describe: "Command 1",
                 parameters: [],
             },
-        ));
-        subject.withSubcommand(yargCommandFromSentence(
+        );
+        subject.withSubcommand(
             {
                 command: "show skills",
                 handler: async () => "I am showing the mad skillz",
                 describe: "Command 2",
                 parameters: [],
             },
-        ));
+        );
 
         assert.throws(() => {
             subject.build();
@@ -53,15 +52,15 @@ describe("yarg saver", () => {
 
         const subject = freshYargBuilder();
 
-        subject.withSubcommand(yargCommandFromSentence(
+        subject.withSubcommand(
             {
                 command: "show skills",
                 handler: async () => "I am showing the skills",
                 describe: "Command 1",
                 parameters: [],
             },
-        ));
-        subject.withSubcommand(yargCommandFromSentence(
+        );
+        subject.withSubcommand(
             {
                 command: "show skills",
                 handler: async () => "I am showing the mad skillz",
@@ -69,7 +68,7 @@ describe("yarg saver", () => {
                 parameters: [],
                 conflictResolution: { failEverything: false, commandDescription: "good job me" },
             },
-        ));
+        );
 
         const combined = subject.build() as any;
 
@@ -79,7 +78,49 @@ describe("yarg saver", () => {
 
     it("can combine a multiword positional command with another one that shares the same first word", () => {
 
+        const subject = freshYargBuilder();
 
+        subject.withSubcommand(
+            {
+                command: "show skills <and> <stuff>",
+                handler: async (a) => "whatever",
+                describe: "Command 1",
+                parameters: [],
+            },
+        );
+        subject.withSubcommand(
+            {
+                command: "show other things",
+                handler: async (a) => { "no " },
+                describe: "Command 2",
+                parameters: [],
+                conflictResolution: { failEverything: false, commandDescription: "good job me" },
+            },
+        );
+
+        const combined = subject.build();
+
+        const tree = treeifyNested(combined);
+
+
+        const expected = {
+            "show": {
+                "skills": {},
+                "other": { "things": {} }
+            }
+        };
+
+        assert.deepEqual(tree, expected, JSON.stringify(tree, null, 2));
 
     })
 });
+
+function treeifyNested(c: any, tree: { [key: string]: any } = {}) {
+    if (!c.nested) {
+        return tree;
+    }
+    c.nested.forEach((n: any) => {
+        tree[(n.commandName as string)] = treeifyNested(n)
+    })
+    return tree;
+}
