@@ -34,10 +34,12 @@ export function addShowSkillsCommand(clients: AutomationClientInfo[],
         describe: "Show skills",
         handler: () => {
             return logExceptionsToConsole(async () => {
-                infoMessage("%s commands are available from %s connected SDMs\n",
+                infoMessage("%s commands are available from %s connected SDMs\n\n",
                     commands.length, clients.length);
                 commands.forEach(md => {
-                    let msg = "\t" + chalk.cyan(md.intent.map(intent => `"${intent}"`).join(","));
+                    let msg = !!md.intent && md.intent.length > 0 ?
+                        "\t" + chalk.cyan(md.intent.map(intent => `"${intent}"`).join(",")) :
+                        "\t" + chalk.dim(chalk.cyan("no intents"));
                     msg += "\t" + chalk.green(md.name);
                     msg += "\t" + chalk.gray(md.description);
                     process.stdout.write(msg + "\n");
