@@ -45,24 +45,26 @@ export { PositionalOptions, PositionalOptionsType, Choices, ParameterOptions, Ar
 export interface YargBuilder extends BuildYargs {
 
     withSubcommand(command: YargCommand | SupportedSubsetOfYargsCommandMethod): void;
+
     withParameter(p: CommandLineParameter): void;
 
     // compatibility with Yargs
     /**
-    * This exists to be compatible with yargs syntax
-    * once we aren't using it, we could remove it
-    * @param params
-    * @deprecated
-    */
+     * This exists to be compatible with yargs syntax
+     * once we aren't using it, we could remove it
+     * @param params
+     * @deprecated
+     */
     option(parameterName: string,
            params: ParameterOptions): YargBuilder;
+
     /**
-    * This exists to be compatible with yargs syntax
-    * But really, we'll figure out whether to call demandCommand() on yargs
-    * based on whether a handler function was supplied
-    * @param params
-    * @deprecated
-    */
+     * This exists to be compatible with yargs syntax
+     * But really, we'll figure out whether to call demandCommand() on yargs
+     * based on whether a handler function was supplied
+     * @param params
+     * @deprecated
+     */
     demandCommand(): YargBuilder;
 
     /**
@@ -78,7 +80,10 @@ export type CommandLineParameter = ParameterOptions & {
     parameterName: string;
 };
 
-export interface ConflictResolution { failEverything: boolean; commandDescription: string; }
+export interface ConflictResolution {
+    failEverything: boolean;
+    commandDescription: string;
+}
 
 export interface YargCommand extends YargBuilder {
     commandName: string;
@@ -99,7 +104,10 @@ export interface YargRunnableCommandSpec {
     positional: PositionalParameter[];
 }
 
-export interface PositionalParameter { key: string, opts: PositionalOptions }
+export interface PositionalParameter {
+    key: string;
+    opts: PositionalOptions;
+}
 
 export interface SupportedSubsetOfYargsCommandMethod {
     command: string;
@@ -121,6 +129,7 @@ export interface YargCommandWordSpec {
     nestedCommands?: YargCommand[];
     warnings?: string[];
 }
+
 export interface BuildYargs {
     /**
      * Combine the tree of commands,
@@ -129,9 +138,9 @@ export interface BuildYargs {
      */
     build(): {
         /**
-        * Put everything we know into the real yargs
-        * @param  yarg
-        */
+         * Put everything we know into the real yargs
+         * @param  yarg
+         */
         save(yarg: yargs.Argv): yargs.Argv;
         /**
          * Contribution to the description displayed on --help
