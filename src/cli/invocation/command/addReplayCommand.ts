@@ -22,13 +22,13 @@ import { HookEvent } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
-import { yargCommandWithPositionalArguments, YargSaver } from "./support/yargSaver";
+import { YargBuilder, yargCommandWithPositionalArguments } from "./support/yargBuilder";
 
 /**
  * Add a command to replay execution following a git event
- * @param {YargSaver} yargs
+ * @param {YargBuilder} yargs
  */
-export function addReplayCommand(yargs: YargSaver,
+export function addReplayCommand(yargs: YargBuilder,
                                  automationClientFinder: AutomationClientFinder,
                                  teamContextResolver: WorkspaceContextResolver) {
     yargs.withSubcommand(yargCommandWithPositionalArguments({

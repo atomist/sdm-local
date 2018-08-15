@@ -28,8 +28,9 @@ export function parseCommandLine(s: string): CommandLine {
     if (firstPositionalArgument < 0) {
         return new CommandLineImpl(allWords, []);
     }
-    const result = new CommandLineImpl(allWords.splice(0, firstPositionalArgument),
-        allWords.splice(firstPositionalArgument - 1));
+    const result = new CommandLineImpl(
+        allWords.slice(0, firstPositionalArgument),
+        allWords.slice(firstPositionalArgument));
     // could verify that all positionalArguments are positional arguments
     assert(s === result.toString(), `Command line parsed incorrectly: ${s} parsed to ${result}`);
     return result;
@@ -46,6 +47,12 @@ export function commandLineAlias(commandLine: CommandLine, alias: string): Comma
 
 function isPositionalArgument(w: string) {
     return /^<.*>$/.test(w) || /^\[.*\]/.test(w);
+}
+
+export function verifyOneWord(commandLine: CommandLine) {
+    if (commandLine.words.length > 1) {
+        throw new Error("You can only have one word if there are positional arguments");
+    }
 }
 
 class CommandLineImpl implements CommandLine {

@@ -22,10 +22,9 @@ export { infoMessage } from "./src/cli/ui/consoleOutput";
 export { sdmCd } from "./src/pack/sdm-cd/support/SdmCd";
 export { LocalSdmConfig } from "./src/sdm/configuration/localSdmConfig";
 export {
-    YargSaver,
-    freshYargSaver,
-    yargCommandFromSentence,
+    YargBuilder,
+    freshYargBuilder,
     yargCommandWithPositionalArguments,
     ParameterOptions,
     CommandLineParameter,
-} from "./src/cli/invocation/command/support/yargSaver";
+} from "./src/cli/invocation/command/support/yargBuilder";

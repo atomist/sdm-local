@@ -31,7 +31,7 @@ import { addReplayCommand } from "./addReplayCommand";
 import { addShowSdmsCommand } from "./addShowSdmsCommand";
 import { addStartSdmDeliveryMachine } from "./addStartSdmDeliveryMachine";
 import { addShowSkillsCommand } from "./showSkillsCommand";
-import { freshYargSaver, isYargSaver, YargSaver } from "./support/yargSaver";
+import { freshYargBuilder, isYargBuilder, YargBuilder } from "./support/yargBuilder";
 
 /**
  * Given a yargs instance, add commands based on local SDMs we can connect to
@@ -39,33 +39,33 @@ import { freshYargSaver, isYargSaver, YargSaver } from "./support/yargSaver";
  * @param finder strategy for finding running automation client instances
  * @return {yargs.Arguments}
  */
-export async function addLocalSdmCommands(yargs: Argv | YargSaver,
+export async function addLocalSdmCommands(yargs: Argv | YargBuilder,
                                           finder: AutomationClientFinder = defaultAutomationClientFinder()) {
     const teamContextResolver: WorkspaceContextResolver = DefaultWorkspaceContextResolver;
 
-    const yargSaver = isYargSaver(yargs) ? yargs : freshYargSaver();
-    addBootstrapCommands(yargSaver);
-    addStartSdmDeliveryMachine(yargSaver);
-    addFeedCommand(yargSaver);
-    addAddGitHooksCommand(yargSaver);
-    addRemoveGitHooksCommand(yargSaver);
+    const yargBuilder = isYargBuilder(yargs) ? yargs : freshYargBuilder();
+    addBootstrapCommands(yargBuilder);
+    addStartSdmDeliveryMachine(yargBuilder);
+    addFeedCommand(yargBuilder);
+    addAddGitHooksCommand(yargBuilder);
+    addRemoveGitHooksCommand(yargBuilder);
 
-    addReplayCommand(yargSaver, finder, teamContextResolver);
+    addReplayCommand(yargBuilder, finder, teamContextResolver);
 
     const clients = await finder.findAutomationClients();
 
-    addShowSdmsCommand(clients, yargSaver);
-    addShowSkillsCommand(clients, yargSaver);
+    addShowSdmsCommand(clients, yargBuilder);
+    addShowSkillsCommand(clients, yargBuilder);
 
-    addCloneCommand(clients, yargSaver);
+    addCloneCommand(clients, yargBuilder);
 
     // TODO filter on working directories
     for (const client of clients) {
-        await addCommandsToConnectTo(client, yargSaver);
+        await addCommandsToConnectTo(client, yargBuilder);
     }
-    if (!isYargSaver(yargs)) {
+    if (!isYargBuilder(yargs)) {
         // we constructed this, so use it
-        yargSaver.optimized().save(yargs);
+        yargBuilder.build().save(yargs);
     }
 }
 
@@ -74,13 +74,13 @@ export async function addLocalSdmCommands(yargs: Argv | YargSaver,
  * @param yargs
  * @return {Promise<void>}
  */
-async function addCommandsToConnectTo(client: AutomationClientInfo, yargSaver: YargSaver) {
+async function addCommandsToConnectTo(client: AutomationClientInfo, yargBuilder: YargBuilder) {
     verifyLocalSdm(client);
 
     // If we were able to connect to an SDM...
     if (!!client.client) {
-        addCommandsByName(client, yargSaver);
-        addIntentsAsCommands(client, yargSaver);
+        addCommandsByName(client, yargBuilder);
+        addIntentsAsCommands(client, yargBuilder);
     }
 }
 

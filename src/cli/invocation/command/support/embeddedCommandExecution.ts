@@ -20,7 +20,8 @@ import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
 import { errorMessage, infoMessage, logExceptionsToConsole } from "../../../ui/consoleOutput";
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
 import { CommandInvocationListener, runCommandOnColocatedAutomationClient } from "./runCommandOnColocatedAutomationClient";
-import { YargSaver } from "./yargSaver/YargSaver";
+import { YargBuilder } from "./yargBuilder";
+import { Arguments } from "./yargBuilder/interfaces";
 
 /**
  * Spec for running an embedded command on an ephemeral SDM
@@ -38,7 +39,7 @@ export interface EmbeddedCommandSpec {
 
     parameters?: ParametersDefinition;
 
-    build?: (argv: YargSaver) => void;
+    build?: (argv: YargBuilder) => void;
 
     /**
      * Listeners to command invocation
@@ -48,7 +49,7 @@ export interface EmbeddedCommandSpec {
     /**
      * Configure the sdm.machine to run the command
      */
-    configurer: (argv: YargSaver) => Promise<ConfigureMachine>;
+    configurer: (argv: Arguments) => Promise<ConfigureMachine>;
 
 }
 
@@ -60,7 +61,7 @@ export interface EmbeddedCommandSpec {
  * being exposed as optional command parameters.
  * @param {yargs.Argv} yargs
  */
-export function addEmbeddedCommand(yargs: YargSaver,
+export function addEmbeddedCommand(yargs: YargBuilder,
                                    spec: EmbeddedCommandSpec) {
     yargs.command({
         command: spec.cliCommand,

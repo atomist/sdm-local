@@ -19,7 +19,7 @@ import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
-import { yargCommandFromSentence, YargSaver } from "./support/yargSaver";
+import { YargBuilder } from "./support/yargBuilder";
 
 /**
  * Add commands by name from the given client
@@ -27,13 +27,13 @@ import { yargCommandFromSentence, YargSaver } from "./support/yargSaver";
  * @param {boolean} allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function addCommandsByName(ai: AutomationClientInfo,
-                                  yargs: YargSaver,
+                                  yargs: YargBuilder,
                                   allowUserInput: boolean = true) {
     yargs.command({
         command: "run", describe: "Run a command",
         builder: args => {
             ai.client.commands.forEach(hi => {
-                args.withSubcommand(yargCommandFromSentence({
+                args.withSubcommand({
                     command: hi.name,
                     describe: hi.description,
                     handler: async argv => {
@@ -42,9 +42,8 @@ export function addCommandsByName(ai: AutomationClientInfo,
                     },
                     parameters: commandLineParametersFromCommandHandlerMetadata(hi, allowUserInput),
                     conflictResolution: { failEverything: false, commandDescription: `run ${hi.name} (running command by name)` },
-                }));
+                });
             });
-            args.demandCommand();
             return args;
         },
     });

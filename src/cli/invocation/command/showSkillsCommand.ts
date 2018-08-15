@@ -18,15 +18,15 @@ import chalk from "chalk";
 import * as _ from "lodash";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
-import { YargSaver } from "./support/yargSaver";
+import { YargBuilder } from "./support/yargBuilder";
 
 /**
  * Display the show skills command, backed by the given skills
  * gathered from all connected clients
- * @param {YargSaver} yargs
+ * @param {YargBuilder} yargs
  */
 export function addShowSkillsCommand(clients: AutomationClientInfo[],
-                                     yargs: YargSaver) {
+                                     yargs: YargBuilder) {
     const commands = _.flatten(clients.map(client => client.client.commands));
     yargs.command({
         command: "show skills",
