@@ -68,7 +68,7 @@ async function sendTo(automationClientInfo: AutomationClientInfo, invocation: Gi
         }
         return logExceptionsToConsole(() =>
                 handleGitHookEvent(
-                    automationClientInfo.connectionConfig,
+                    automationClientInfo.location,
                     automationClientInfo.localConfig, invocation),
             true,
         );

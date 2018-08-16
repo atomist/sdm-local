@@ -25,8 +25,8 @@ import { AutomationClientInfo } from "../AutomationClientInfo";
  */
 export function renderClientInfo(aci: AutomationClientInfo): string {
     const local = aci.localConfig ? aci.localConfig.repositoryOwnerParentDirectory : "(remote)";
-    const reg = aci.connectionConfig.baseEndpoint + "/registration";
-    return `${chalk.bold(aci.client.name)} @ ${chalk.underline(aci.connectionConfig.baseEndpoint)} - ${local} - ${reg}`;
+    const reg = aci.location.baseEndpoint + "/registration";
+    return `${chalk.bold(aci.client.name)} @ ${chalk.underline(aci.location.baseEndpoint)} - ${local} - ${reg}`;
 }
 
 export function renderEventDispatch(aci: AutomationClientInfo, what: any) {

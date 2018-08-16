@@ -65,7 +65,7 @@ async function triggerGitEventsOn(ai: AutomationClientInfo,
             const invocation = { event, baseDir: currentDir, branch, sha, workspaceId };
             logger.debug("Trigger %j", invocation);
             infoMessage(renderEventDispatch(ai, invocation));
-            await handleGitHookEvent(ai.connectionConfig, ai.localConfig, invocation);
+            await handleGitHookEvent(ai.location, ai.localConfig, invocation);
         }
     } else {
         errorMessage(

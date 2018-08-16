@@ -85,7 +85,7 @@ async function addCommandsToConnectTo(client: AutomationClientInfo, yargBuilder:
 }
 
 function verifyLocalSdm(automationClientInfo: AutomationClientInfo) {
-    if (!!automationClientInfo.connectionConfig && !automationClientInfo.localConfig) {
+    if (!!automationClientInfo.location && !automationClientInfo.localConfig) {
         process.stderr.write("ERROR: SDM detected, but it is not running in local mode.\nPlease set ATOMIST_MODE=local when starting your SDM.\n");
         process.exit(1);
     }

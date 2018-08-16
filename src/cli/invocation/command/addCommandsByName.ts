@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
+import { EnvConfigWorkspaceContextResolver } from "../../../common/binding/EnvConfigWorkspaceContextResolver";
+import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
+import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
 import { YargBuilder } from "./support/yargBuilder";
-import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
-import { EnvConfigWorkspaceContextResolver } from "../../../common/binding/EnvConfigWorkspaceContextResolver";
-import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 
 /**
  * Add commands by name from the given client
@@ -51,7 +51,7 @@ export function addCommandsByName(ai: AutomationClientInfo,
                     parameters: commandLineParametersFromCommandHandlerMetadata(hi, allowUserInput),
                     conflictResolution: {
                         failEverything: false,
-                        commandDescription: `run ${hi.name} (running command by name)`
+                        commandDescription: `run ${hi.name} (running command by name)`,
                     },
                 });
             });
@@ -71,7 +71,7 @@ async function runByCommandName(ai: AutomationClientInfo,
         process.exit(1);
     }
     return runCommandOnColocatedAutomationClient(
-        ai.connectionConfig,
+        ai.location,
         ai.localConfig.repositoryOwnerParentDirectory,
         {
             workspaceName: workspaceContext.workspaceName,

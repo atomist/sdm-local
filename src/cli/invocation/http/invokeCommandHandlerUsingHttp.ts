@@ -22,7 +22,12 @@ import { AutomationClientConnectionRequest } from "./AutomationClientConnectionR
 import { postToSdm } from "./support/httpInvoker";
 import { newCliCorrelationId } from "./support/newCorrelationId";
 
-export function invokeCommandHandlerUsingHttp(config: AutomationClientConnectionRequest): CommandHandlerInvoker {
+/**
+ * Return a command invoker using HTTP to the given address
+ * @param {AutomationClientConnectionRequest} location
+ * @return {CommandHandlerInvoker}
+ */
+export function invokeCommandHandlerUsingHttp(location: AutomationClientConnectionRequest): CommandHandlerInvoker {
     return async invocation => {
         const parameters = propertiesToArgs(invocation.parameters);
         const data = {
@@ -42,11 +47,11 @@ export function invokeCommandHandlerUsingHttp(config: AutomationClientConnection
             },
         };
 
-        assert(!!config, "Config must be provided");
-        assert(!!config.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(config));
+        assert(!!location, "Config must be provided");
+        assert(!!location.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(location));
         const url = `/command`;
         logger.debug("Hitting %s to invoke command %s using %j", url, invocation.name, data);
-        const resp = await postToSdm(config, url, data);
+        const resp = await postToSdm(location, url, data);
         if (resp.code !== 0) {
             logger.error("Command handler did not succeed. Returned: " + JSON.stringify(resp, null, 2));
         }

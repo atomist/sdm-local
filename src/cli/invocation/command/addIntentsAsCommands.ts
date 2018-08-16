@@ -16,15 +16,15 @@
 
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { logger } from "@atomist/sdm";
+import { EnvConfigWorkspaceContextResolver } from "../../../common/binding/EnvConfigWorkspaceContextResolver";
+import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
+import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { PostToAtomistListenerListener, ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
 import { YargBuilder } from "./support/yargBuilder";
-import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
-import { EnvConfigWorkspaceContextResolver } from "../../../common/binding/EnvConfigWorkspaceContextResolver";
-import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 
 /**
  * Add commands for all intents
@@ -52,7 +52,7 @@ export function addIntentsAsCommands(ai: AutomationClientInfo,
                 parameters: commandLineParametersFromCommandHandlerMetadata(h, allowUserInput),
                 conflictResolution: {
                     failEverything: false,
-                    commandDescription: `Intent '${intent}' on command ${h.name}`
+                    commandDescription: `Intent '${intent}' on command ${h.name}`,
                 },
             })));
 }
@@ -61,7 +61,7 @@ async function runByIntent(ai: AutomationClientInfo,
                            hm: CommandHandlerMetadata,
                            command: any,
                            workspaceContext: LocalWorkspaceContext): Promise<any> {
-    return runCommandOnColocatedAutomationClient(ai.connectionConfig,
+    return runCommandOnColocatedAutomationClient(ai.location,
         ai.localConfig.repositoryOwnerParentDirectory,
         {
             workspaceName: workspaceContext.workspaceName,

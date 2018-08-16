@@ -114,9 +114,9 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
         repositoryOwnerParentDirectory,
         configure,
     });
-    const ai = await fetchMetadataFromAutomationClient(aca.connectionConfig);
+    const ai = await fetchMetadataFromAutomationClient(aca.location);
     if (!ai.client) {
-        errorMessage("Could not connect to the bootstrap SDM at %s\n", aca.connectionConfig.baseEndpoint);
+        errorMessage("Could not connect to the bootstrap SDM at %s\n", aca.location.baseEndpoint);
         process.exit(1);
     }
     if (!ai.localConfig) {
@@ -128,7 +128,7 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
         process.exit(1);
     }
     return runCommandOnColocatedAutomationClient(
-        aca.connectionConfig,
+        aca.location,
         aca.localConfig.repositoryOwnerParentDirectory,
         {
             workspaceName: "embedded",

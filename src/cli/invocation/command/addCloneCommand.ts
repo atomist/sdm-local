@@ -18,16 +18,16 @@ import { Microgrammar, optional } from "@atomist/microgrammar";
 import { exec } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";
+import { EnvConfigWorkspaceContextResolver } from "../../../common/binding/EnvConfigWorkspaceContextResolver";
+import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
+import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 import { sendChannelLinkEvent, sendRepoOnboardingEvent } from "../../../sdm/binding/event/repoOnboardingEvents";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { addGitHooks } from "../../setup/addGitHooks";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
 import { YargBuilder } from "./support/yargBuilder";
-import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
-import { EnvConfigWorkspaceContextResolver } from "../../../common/binding/EnvConfigWorkspaceContextResolver";
-import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 
 /**
  * Takes the same arguments as Git clone but onboards the repo with Atomist
@@ -64,7 +64,7 @@ async function superclone(clients: AutomationClientInfo[],
     await addGitHooks(`${repositoryOwnerDirectory}/${owner}/${repo}`);
     for (const client of clients) {
         const eventSender = invokeEventHandlerUsingHttp(
-            client.connectionConfig,
+            client.location,
             workspaceContext);
         await sendRepoOnboardingEvent(workspaceContext, { owner, repo }, eventSender);
         await sendChannelLinkEvent(workspaceContext, { owner, repo }, eventSender);

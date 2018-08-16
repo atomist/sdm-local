@@ -16,22 +16,21 @@
 
 import { LocalModeConfiguration } from "@atomist/sdm-core";
 import axios from "axios";
-import { AutomationClientInfo, ConnectedClient, } from "../../AutomationClientInfo";
+import { AutomationClientInfo, ConnectedClient } from "../../AutomationClientInfo";
 import { AutomationClientConnectionRequest } from "./AutomationClientConnectionRequest";
 
 /**
  * Call into an automation client at the given location and retrieve metadata
- * @param {AutomationClientConnectionConfig} connectionConfig
  * @return {Promise<AutomationClientInfo>}
  */
-export async function fetchMetadataFromAutomationClient(connectionConfig: AutomationClientConnectionRequest): Promise<AutomationClientInfo> {
+export async function fetchMetadataFromAutomationClient(location: AutomationClientConnectionRequest): Promise<AutomationClientInfo> {
     try {
-        const resp = await axios.get(connectionConfig.baseEndpoint + "/registration", {
+        const resp = await axios.get(location.baseEndpoint + "/registration", {
             timeout: 5 * 1000,
         });
         let localConfig: LocalModeConfiguration;
         try {
-            localConfig = (await axios.get(connectionConfig.baseEndpoint + "/local/configuration")).data;
+            localConfig = (await axios.get(location.baseEndpoint + "/local/configuration")).data;
         } catch {
             // Do nothing. The automation client we're talking to is not in local mode
         }
@@ -39,15 +38,15 @@ export async function fetchMetadataFromAutomationClient(connectionConfig: Automa
         return {
             client,
             localConfig,
-            connectionConfig,
+            location,
         };
     } catch (e) {
         // errorMessage("Unable to connect to '%s': Is a Software Delivery Machine running?\n\t(%s)\n",
-        //     connectionConfig.baseEndpoint, e);
+        //     location.baseEndpoint, e);
         return {
             client: undefined,
             localConfig: undefined,
-            connectionConfig,
+            location,
         };
     }
 }

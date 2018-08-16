@@ -38,17 +38,16 @@ export async function invokeEventHandlerUsingHttpOnAll(clientFinder: AutomationC
     const clients = await clientFinder.findAutomationClients();
     return async invocation => {
         await Promise.all(clients.map(client =>
-            invokeEventHandlerUsingHttp(client.connectionConfig, target)(invocation)));
+            invokeEventHandlerUsingHttp(client.location, target)(invocation)));
         return Success;
     };
 }
 
 /**
- * Invoke an event handler on the automation client at the given location
- * @param {AutomationClientConnectionConfig} config
+ * Return an event invoker using HTTP to the given address
  * @return {Promise<HandlerResult>}
  */
-export function invokeEventHandlerUsingHttp(config: AutomationClientConnectionRequest,
+export function invokeEventHandlerUsingHttp(location: AutomationClientConnectionRequest,
                                             target: InvocationTarget): EventSender {
     assert(!!target);
     return async invocation => {
@@ -73,9 +72,9 @@ export function invokeEventHandlerUsingHttp(config: AutomationClientConnectionRe
         const url = `/event`;
         logger.info("Calling url %s to handler %s using %s",
             url, invocation.name, stringify(data, replacer));
-        assert(!!config, "Config must be provided");
-        assert(!!config.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(config));
-        const resp = await postToSdm(config, url, data);
+        assert(!!location, "HTTP location must be provided");
+        assert(!!location.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(location));
+        const resp = await postToSdm(location, url, data);
         assert(resp.code !== 0,
             "Event handler did not succeed. Returned: " + JSON.stringify(resp, null, 2));
         return resp;

@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+/**
+ * Coordinates of an automation client
+ */
 export interface AutomationClientConnectionRequest {
 
     /**

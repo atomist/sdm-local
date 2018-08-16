@@ -43,10 +43,14 @@ export interface AutomationClientInfo {
      */
     client?: ConnectedClient;
 
-    connectionConfig: AutomationClientConnectionRequest;
+    /**
+     * How to connect to this client
+     */
+    location: AutomationClientConnectionRequest;
 
     /**
-     * If this is a local SDM, include this
+     * If this is a local SDM, include information about its local configuration
+     * so we know what expanded directory it uses etc
      */
     localConfig?: LocalModeConfiguration;
 
