@@ -70,7 +70,7 @@ async function sendTo(automationClientInfo: AutomationClientInfo, invocation: Gi
                 handleGitHookEvent(
                     automationClientInfo.connectionConfig,
                     automationClientInfo.localConfig, invocation),
-            automationClientInfo.connectionConfig.showErrorStacks,
+            true,
         );
     }
 }

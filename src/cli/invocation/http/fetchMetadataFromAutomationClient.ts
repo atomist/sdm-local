@@ -16,11 +16,7 @@
 
 import { LocalModeConfiguration } from "@atomist/sdm-core";
 import axios from "axios";
-import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";
-import {
-    AutomationClientInfo,
-    ConnectedClient,
-} from "../../AutomationClientInfo";
+import { AutomationClientInfo, ConnectedClient, } from "../../AutomationClientInfo";
 import { AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
 
 /**
@@ -40,15 +36,10 @@ export async function fetchMetadataFromAutomationClient(connectionConfig: Automa
             // Do nothing. The automation client we're talking to is not in local mode
         }
         const client: ConnectedClient = resp.data;
-        const workspaceContext = DefaultWorkspaceContextResolver.workspaceContext;
         return {
             client,
             localConfig,
-            connectionConfig: {
-                ...connectionConfig,
-                workspaceId: client.team_ids ? client.team_ids[0] : workspaceContext.workspaceId,
-                workspaceName: workspaceContext.workspaceName,
-            },
+            connectionConfig,
         };
     } catch (e) {
         // errorMessage("Unable to connect to '%s': Is a Software Delivery Machine running?\n\t(%s)\n",
@@ -56,11 +47,7 @@ export async function fetchMetadataFromAutomationClient(connectionConfig: Automa
         return {
             client: undefined,
             localConfig: undefined,
-            connectionConfig: {
-                ...connectionConfig,
-                workspaceId: undefined,
-                workspaceName: undefined,
-            },
+            connectionConfig,
         };
     }
 }

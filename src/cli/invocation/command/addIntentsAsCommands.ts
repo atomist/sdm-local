@@ -22,6 +22,9 @@ import { PostToAtomistListenerListener, ShowDescriptionListener } from "./suppor
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
 import { YargBuilder } from "./support/yargBuilder";
+import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
+import { EnvConfigWorkspaceContextResolver } from "../../../common/binding/EnvConfigWorkspaceContextResolver";
+import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 
 /**
  * Add commands for all intents
@@ -30,6 +33,7 @@ import { YargBuilder } from "./support/yargBuilder";
  */
 export function addIntentsAsCommands(ai: AutomationClientInfo,
                                      yargBuilder: YargBuilder,
+                                     workSpaceContextResolver: WorkspaceContextResolver = new EnvConfigWorkspaceContextResolver(),
                                      allowUserInput: boolean = true) {
     const handlers = ai.client.commands
         .filter(hm => !!hm.intent && hm.intent.length > 0);
@@ -42,22 +46,26 @@ export function addIntentsAsCommands(ai: AutomationClientInfo,
                 handler: async argv => {
                     logger.debug("Args are %j", argv);
                     return logExceptionsToConsole(
-                        () => runByIntent(ai, h, argv),
-                        ai.connectionConfig.showErrorStacks);
+                        () => runByIntent(ai, h, argv, workSpaceContextResolver.workspaceContext),
+                        true);
                 },
                 parameters: commandLineParametersFromCommandHandlerMetadata(h, allowUserInput),
-                conflictResolution: { failEverything: false, commandDescription: `Intent '${intent}' on command ${h.name}` },
+                conflictResolution: {
+                    failEverything: false,
+                    commandDescription: `Intent '${intent}' on command ${h.name}`
+                },
             })));
 }
 
 async function runByIntent(ai: AutomationClientInfo,
                            hm: CommandHandlerMetadata,
-                           command: any): Promise<any> {
+                           command: any,
+                           workspaceContext: LocalWorkspaceContext): Promise<any> {
     return runCommandOnColocatedAutomationClient(ai.connectionConfig,
         ai.localConfig.repositoryOwnerParentDirectory,
         {
-            workspaceName: ai.connectionConfig.workspaceName,
-            workspaceId: ai.connectionConfig.workspaceId,
+            workspaceName: workspaceContext.workspaceName,
+            workspaceId: workspaceContext.workspaceId,
         },
         hm, command, [ShowDescriptionListener, PostToAtomistListenerListener]);
 }

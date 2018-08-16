@@ -25,26 +25,32 @@ import { addGitHooks } from "../../setup/addGitHooks";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
 import { YargBuilder } from "./support/yargBuilder";
+import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
+import { EnvConfigWorkspaceContextResolver } from "../../../common/binding/EnvConfigWorkspaceContextResolver";
+import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 
 /**
  * Takes the same arguments as Git clone but onboards the repo with Atomist
  * @param {AutomationClientInfo[]} clients
  * @param {YargBuilder} yargs
  */
-export function addCloneCommand(clients: AutomationClientInfo[], yargs: YargBuilder) {
+export function addCloneCommand(clients: AutomationClientInfo[],
+                                yargs: YargBuilder,
+                                workspaceContextResolver: WorkspaceContextResolver = new EnvConfigWorkspaceContextResolver()) {
     yargs.command({
         command: "clone <args>",
         describe: "Like git clone but onboards the repo with Atomist",
         handler: argv => {
             return logExceptionsToConsole(async () => {
-                await superclone(clients, argv.args);
+                await superclone(clients, argv.args, workspaceContextResolver.workspaceContext);
             }, true);
         },
     });
 }
 
 async function superclone(clients: AutomationClientInfo[],
-                          args: string): Promise<any> {
+                          args: string,
+                          workspaceContext: LocalWorkspaceContext): Promise<any> {
     infoMessage(`Importing Git remote project ${args}\n`);
     const repositoryOwnerDirectory = determineDefaultRepositoryOwnerParentDirectory();
     const { owner, repo } = GitRemoteParser.firstMatch(args);
@@ -57,9 +63,11 @@ async function superclone(clients: AutomationClientInfo[],
         { cwd: orgDir });
     await addGitHooks(`${repositoryOwnerDirectory}/${owner}/${repo}`);
     for (const client of clients) {
-        const eventSender = invokeEventHandlerUsingHttp(client.connectionConfig, client.connectionConfig);
-        await sendRepoOnboardingEvent(client.connectionConfig, { owner, repo }, eventSender);
-        await sendChannelLinkEvent(client.connectionConfig, { owner, repo }, eventSender);
+        const eventSender = invokeEventHandlerUsingHttp(
+            client.connectionConfig,
+            workspaceContext);
+        await sendRepoOnboardingEvent(workspaceContext, { owner, repo }, eventSender);
+        await sendChannelLinkEvent(workspaceContext, { owner, repo }, eventSender);
     }
 }
 
