@@ -55,7 +55,7 @@ export async function addLocalSdmCommands(yargs: Argv | YargBuilder,
     const clients = await finder.findAutomationClients();
 
     addShowSdmsCommand(clients, yargBuilder);
-    addShowSkillsCommand(clients, yargBuilder);
+    addShowSkillsCommand(finder, yargBuilder);
 
     addCloneCommand(clients, yargBuilder);
 
