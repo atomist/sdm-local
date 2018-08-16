@@ -39,7 +39,6 @@ export function addShowSkillsCommand(clientFinder: AutomationClientFinder,
             const clients = await clientFinder.findAutomationClients();
             return logExceptionsToConsole(
                 async () => printSkillsToConsole(clients), true);
-        },
     });
 }
 
