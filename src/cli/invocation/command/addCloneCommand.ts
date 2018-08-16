@@ -18,7 +18,6 @@ import { Microgrammar, optional } from "@atomist/microgrammar";
 import { exec } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";
-import { EnvConfigWorkspaceContextResolver } from "../../../common/binding/EnvConfigWorkspaceContextResolver";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
@@ -36,7 +35,7 @@ import { YargBuilder } from "./support/yargBuilder";
  */
 export function addCloneCommand(clients: AutomationClientInfo[],
                                 yargs: YargBuilder,
-                                workspaceContextResolver: WorkspaceContextResolver = new EnvConfigWorkspaceContextResolver()) {
+                                workspaceContextResolver: WorkspaceContextResolver) {
     yargs.command({
         command: "clone <args>",
         describe: "Like git clone but onboards the repo with Atomist",

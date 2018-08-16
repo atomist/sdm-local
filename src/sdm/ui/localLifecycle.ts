@@ -19,8 +19,9 @@ import { isInLocalMode } from "@atomist/sdm-core";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
 import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
 import chalk from "chalk";
-import { HttpBuildStatusUpdater } from "../binding/HttpBuildStatusUpdater";
 import Push = OnPushToAnyBranch.Push;
+import { DefaultWorkspaceContextResolver } from "../../common/binding/defaultWorkspaceContextResolver";
+import { HttpBuildStatusUpdater } from "../binding/HttpBuildStatusUpdater";
 
 /**
  * Add Local IO to the given SDM.
@@ -33,7 +34,7 @@ export const LocalLifecycle: ExtensionPack = {
         if (isInLocalMode()) {
             addLocalLifecycle(sdm);
             const bu = sdm as any as BuildStatusUpdater;
-            const buu = new HttpBuildStatusUpdater();
+            const buu = new HttpBuildStatusUpdater(DefaultWorkspaceContextResolver.workspaceContext);
             bu.updateBuildStatus = buu.updateBuildStatus.bind(buu);
         }
     },

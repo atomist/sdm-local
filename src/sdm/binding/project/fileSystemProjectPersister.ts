@@ -74,30 +74,30 @@ export function fileSystemProjectPersister(teamContext: LocalWorkspaceContext,
 /**
  * Send events that should apply to a new project
  */
-async function emitEventsForNewProject(cc: LocalWorkspaceContext,
+async function emitEventsForNewProject(workspaceContext: LocalWorkspaceContext,
                                        lc: LocalModeConfiguration,
                                        createdProject: LocalProject,
                                        id: RepoRef,
                                        automationClientFinder: AutomationClientFinder) {
-    const eventSender = await invokeEventHandlerUsingHttpOnAll(automationClientFinder, cc);
-    await sendRepoCreationEvent(cc, id, eventSender);
+    const eventSender = await invokeEventHandlerUsingHttpOnAll(automationClientFinder, workspaceContext);
+    await sendRepoCreationEvent(workspaceContext, id, eventSender);
 
     const sha = await lastSha(createdProject as GitProject);
     const branch = "master";
 
-    await handlePushBasedEventOnRepo(cc.workspaceId, invokeEventHandlerInProcess(), lc, {
+    await handlePushBasedEventOnRepo(workspaceContext.workspaceId, invokeEventHandlerInProcess(workspaceContext), lc, {
         baseDir: createdProject.baseDir,
         sha,
         branch,
     }, "OnFirstPushToRepo");
 
     // This is the first push
-    await handlePushBasedEventOnRepo(cc.workspaceId, invokeEventHandlerInProcess(), lc, {
+    await handlePushBasedEventOnRepo(workspaceContext.workspaceId, invokeEventHandlerInProcess(workspaceContext), lc, {
         baseDir: createdProject.baseDir,
         sha,
         branch,
     }, "SetGoalsOnPush");
 
-    await sendRepoOnboardingEvent(cc, id, eventSender);
-    await sendChannelLinkEvent(cc, id, eventSender);
+    await sendRepoOnboardingEvent(workspaceContext, id, eventSender);
+    await sendChannelLinkEvent(workspaceContext, id, eventSender);
 }

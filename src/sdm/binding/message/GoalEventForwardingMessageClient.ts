@@ -23,6 +23,7 @@ import {
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { OnAnyRequestedSdmGoal, SdmGoalKey, SdmGoalState } from "@atomist/sdm";
 import { SlackMessage } from "@atomist/slack-messages";
+import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";
 import { isValidSHA1 } from "../../../common/git/handlePushBasedEventOnRepo";
 import { invokeEventHandlerInProcess } from "../../invocation/invokeEventHandlerInProcess";
 
@@ -86,7 +87,8 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
             // We want to return to let this work in the background
             // tslint:disable-next-line:no-floating-promises
             Promise.all(handlerNames.map(name =>
-                invokeEventHandlerInProcess()({
+                // TODO pass this in
+                invokeEventHandlerInProcess(DefaultWorkspaceContextResolver.workspaceContext)({
                     name,
                     payload,
                 })));

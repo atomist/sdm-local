@@ -16,7 +16,6 @@
 
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { logger } from "@atomist/sdm";
-import { EnvConfigWorkspaceContextResolver } from "../../../common/binding/EnvConfigWorkspaceContextResolver";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
@@ -28,12 +27,11 @@ import { YargBuilder } from "./support/yargBuilder";
 
 /**
  * Add commands for all intents
- * @param {yargs.Argv} yargs
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function addIntentsAsCommands(ai: AutomationClientInfo,
                                      yargBuilder: YargBuilder,
-                                     workSpaceContextResolver: WorkspaceContextResolver = new EnvConfigWorkspaceContextResolver(),
+                                     workSpaceContextResolver: WorkspaceContextResolver,
                                      allowUserInput: boolean = true) {
     const handlers = ai.client.commands
         .filter(hm => !!hm.intent && hm.intent.length > 0);

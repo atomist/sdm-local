@@ -20,25 +20,24 @@ import { EventIncoming } from "@atomist/automation-client/internal/transport/Req
 import * as stringify from "json-stringify-safe";
 import * as assert from "power-assert";
 import { newCliCorrelationId } from "../../cli/invocation/http/support/newCorrelationId";
-import { DefaultWorkspaceContextResolver } from "../../common/binding/defaultWorkspaceContextResolver";
-import { WorkspaceContextResolver } from "../../common/binding/WorkspaceContextResolver";
 import { EventSender } from "../../common/invocation/EventHandlerInvocation";
+import { LocalWorkspaceContext } from "../../common/invocation/LocalWorkspaceContext";
 
 /**
  * Invoke an event handler on the automation client at the given location
  * @return {Promise<HandlerResult>}
  */
-export function invokeEventHandlerInProcess(correlationId?: string,
-                                            teamContextResolver: WorkspaceContextResolver = DefaultWorkspaceContextResolver): EventSender {
+export function invokeEventHandlerInProcess(workspaceContext: LocalWorkspaceContext,
+                                            correlationId?: string): EventSender {
     return async invocation => {
         if (!automationClientInstance()) {
             throw new Error("This function must be invoked inside an automation client locally");
         }
 
         // tslint:disable-next-line:variable-name
-        const team_id = teamContextResolver.workspaceContext.workspaceId;
+        const team_id = workspaceContext.workspaceId;
         // tslint:disable-next-line:variable-name
-        const team_name = teamContextResolver.workspaceContext.workspaceName;
+        const team_name = workspaceContext.workspaceName;
 
         const data = {
             extensions: {

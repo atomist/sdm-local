@@ -18,6 +18,7 @@ import { HandlerContext } from "@atomist/automation-client";
 import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
 import { BuildStatus, OnBuildComplete, SdmGoalEvent } from "@atomist/sdm";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
+import { LocalWorkspaceContext } from "../../common/invocation/LocalWorkspaceContext";
 import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInProcess";
 
 /**
@@ -31,7 +32,9 @@ export class HttpBuildStatusUpdater implements BuildStatusUpdater {
                                        team: string;
                                    },
                                    status: "started" | "failed" | "error" | "passed" | "canceled",
-                                   branch: string, buildNo: string, ctx: HandlerContext) {
+                                   branch: string,
+                                   buildNo: string,
+                                   ctx: HandlerContext) {
         const goal: SdmGoalEvent = (ctx as any).trigger.data.SdmGoal[0];
         const payload: OnBuildComplete.Subscription = {
             Build: [{
@@ -58,10 +61,12 @@ export class HttpBuildStatusUpdater implements BuildStatusUpdater {
         };
         const handlerNames = ["InvokeListenersOnBuildComplete"];
         return Promise.all(handlerNames.map(name =>
-            invokeEventHandlerInProcess()({
+            invokeEventHandlerInProcess(this.workspaceContext)({
                 name,
                 payload,
             })));
     }
+
+    constructor(private readonly workspaceContext: LocalWorkspaceContext) {}
 
 }

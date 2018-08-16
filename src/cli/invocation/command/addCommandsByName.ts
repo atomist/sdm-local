@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { EnvConfigWorkspaceContextResolver } from "../../../common/binding/EnvConfigWorkspaceContextResolver";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
@@ -31,7 +30,7 @@ import { YargBuilder } from "./support/yargBuilder";
  */
 export function addCommandsByName(ai: AutomationClientInfo,
                                   yargs: YargBuilder,
-                                  workspaceResolver: WorkspaceContextResolver = new EnvConfigWorkspaceContextResolver(),
+                                  workspaceResolver: WorkspaceContextResolver,
                                   allowUserInput: boolean = true) {
     yargs.command({
         command: "run", describe: "Run a command",

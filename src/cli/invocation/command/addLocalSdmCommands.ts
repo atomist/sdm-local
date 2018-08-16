@@ -41,7 +41,7 @@ import { freshYargBuilder, isYargBuilder, YargBuilder } from "./support/yargBuil
  */
 export async function addLocalSdmCommands(yargs: Argv | YargBuilder,
                                           finder: AutomationClientFinder = defaultAutomationClientFinder()) {
-    const teamContextResolver: WorkspaceContextResolver = DefaultWorkspaceContextResolver;
+    const workspaceContextResolver: WorkspaceContextResolver = DefaultWorkspaceContextResolver;
 
     const yargBuilder = isYargBuilder(yargs) ? yargs : freshYargBuilder();
     addBootstrapCommands(yargBuilder);
@@ -50,18 +50,18 @@ export async function addLocalSdmCommands(yargs: Argv | YargBuilder,
     addAddGitHooksCommand(yargBuilder);
     addRemoveGitHooksCommand(yargBuilder);
 
-    addReplayCommand(yargBuilder, finder, teamContextResolver);
+    addReplayCommand(yargBuilder, finder, workspaceContextResolver);
 
     const clients = await finder.findAutomationClients();
 
     addShowSdmsCommand(clients, yargBuilder);
     addShowSkillsCommand(finder, yargBuilder);
 
-    addCloneCommand(clients, yargBuilder);
+    addCloneCommand(clients, yargBuilder, workspaceContextResolver);
 
     // TODO filter on working directories
     for (const client of clients) {
-        await addCommandsToConnectTo(client, yargBuilder);
+        await addCommandsToConnectTo(client, yargBuilder, workspaceContextResolver);
     }
     if (!isYargBuilder(yargs)) {
         // we constructed this, so use it
@@ -71,16 +71,17 @@ export async function addLocalSdmCommands(yargs: Argv | YargBuilder,
 
 /**
  * Add commands to command to this automation client
- * @param yargs
  * @return {Promise<void>}
  */
-async function addCommandsToConnectTo(client: AutomationClientInfo, yargBuilder: YargBuilder) {
+async function addCommandsToConnectTo(client: AutomationClientInfo,
+                                      yargBuilder: YargBuilder,
+                                      workspaceContextResolver: WorkspaceContextResolver) {
     verifyLocalSdm(client);
 
     // If we were able to connect to an SDM...
     if (!!client.client) {
-        addCommandsByName(client, yargBuilder);
-        addIntentsAsCommands(client, yargBuilder);
+        addCommandsByName(client, yargBuilder, workspaceContextResolver);
+        addIntentsAsCommands(client, yargBuilder, workspaceContextResolver);
     }
 }
 
