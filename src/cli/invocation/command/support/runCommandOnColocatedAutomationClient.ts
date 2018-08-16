@@ -29,7 +29,7 @@ import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/pro
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
 import { HttpMessageListener } from "../../../../sdm/ui/HttpMessageListener";
 import { warningMessage } from "../../../ui/consoleOutput";
-import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionConfig";
+import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionRequest";
 import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUsingHttp";
 import { newCliCorrelationId } from "../../http/support/newCorrelationId";
 import { portToListenOnFor } from "../../http/support/portAllocation";

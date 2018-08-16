@@ -26,21 +26,3 @@ export interface AutomationClientConnectionRequest {
     password?: string;
 
 }
-
-/**
- * How to connect to an automation client
- */
-export interface AutomationClientConnectionConfig extends AutomationClientConnectionRequest {
-
-    /** @deprecated replace when we don't use HTTP invocation from within service */
-    workspaceId: string;
-
-    /** @deprecated replace when we don't use HTTP invocation from within service */
-    workspaceName: string;
-
-    /**
-     * Whether to display error stacks to console
-     */
-    showErrorStacks?: boolean;
-
-}

@@ -16,7 +16,7 @@
 
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import { LocalModeConfiguration } from "@atomist/sdm-core";
-import { AutomationClientConnectionRequest } from "./invocation/http/AutomationClientConnectionConfig";
+import { AutomationClientConnectionRequest } from "./invocation/http/AutomationClientConnectionRequest";
 
 /**
  * Parallels what's returned from automation client

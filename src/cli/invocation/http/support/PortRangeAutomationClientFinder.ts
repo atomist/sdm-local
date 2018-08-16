@@ -19,7 +19,7 @@ import { AutomationClientFinder } from "../AutomationClientFinder";
 
 import * as _ from "lodash";
 import { defaultHostUrlAliaser } from "../../../../common/util/http/defaultLocalHostUrlAliaser";
-import { AutomationClientConnectionRequest } from "../AutomationClientConnectionConfig";
+import { AutomationClientConnectionRequest } from "../AutomationClientConnectionRequest";
 import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
 
 export interface PortRangeOptions {

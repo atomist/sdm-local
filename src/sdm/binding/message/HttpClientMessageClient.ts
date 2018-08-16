@@ -25,7 +25,7 @@ import {
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
-import { AutomationClientConnectionRequest } from "../../../cli/invocation/http/AutomationClientConnectionConfig";
+import { AutomationClientConnectionRequest } from "../../../cli/invocation/http/AutomationClientConnectionRequest";
 import { StreamedMessage } from "../../../common/ui/httpMessaging";
 import { messageListenerEndpoint } from "../../ui/HttpMessageListener";
 import { ActionStore } from "./ActionStore";

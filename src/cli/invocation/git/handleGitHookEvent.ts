@@ -18,7 +18,7 @@ import { LocalModeConfiguration } from "@atomist/sdm-core";
 import { EventOnRepo, handlePushBasedEventOnRepo } from "../../../common/git/handlePushBasedEventOnRepo";
 import { InvocationTarget } from "../../../common/invocation/InvocationTarget";
 import { errorMessage } from "../../ui/consoleOutput";
-import { AutomationClientConnectionRequest } from "../http/AutomationClientConnectionConfig";
+import { AutomationClientConnectionRequest } from "../http/AutomationClientConnectionRequest";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
 
 export interface GitHookInvocation extends EventOnRepo {

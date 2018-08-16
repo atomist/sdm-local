@@ -18,7 +18,7 @@ import { logger } from "@atomist/sdm";
 import * as assert from "power-assert";
 import { CommandHandlerInvoker } from "../../../common/invocation/CommandHandlerInvocation";
 import { propertiesToArgs } from "../../../common/util/propertiesToArgs";
-import { AutomationClientConnectionRequest } from "./AutomationClientConnectionConfig";
+import { AutomationClientConnectionRequest } from "./AutomationClientConnectionRequest";
 import { postToSdm } from "./support/httpInvoker";
 import { newCliCorrelationId } from "./support/newCorrelationId";
 
