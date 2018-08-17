@@ -17,16 +17,18 @@
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import chalk from "chalk";
 import * as _ from "lodash";
+import { sprintf } from "sprintf-js";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { YargBuilder } from "./support/yargBuilder";
 
-const MaxColumnWidth = 50;
+const MaxColumnWidth = 30;
 
 /**
  * Display the show skills command, backed by the given skills
  * gathered from all connected clients
+ * @param clientFinder help find connected clients
  * @param {YargBuilder} yargs
  */
 export function addShowSkillsCommand(clientFinder: AutomationClientFinder,
@@ -50,27 +52,24 @@ function printSkillsToConsole(clients: AutomationClientInfo[]) {
         clients.length,
         clients.length === 1 ? "" : "s");
     const padLength = Math.max(longestSingleIntentString(commands), MaxColumnWidth);
+    const longestCommandNameLength = Math.max(
+        commands.map(c => c.name).reduce((a, b) => a.length > b.length ? a : b).length + 5,
+        MaxColumnWidth);
+    const separatorLength = 2 * padLength + longestCommandNameLength;
     infoMessage("%s%s%s\n",
-        rightPad("Intent(s)", padLength),
-        rightPad("Command name", padLength),
-        rightPad("Description", padLength));
-    infoMessage("-".padStart(3 * padLength, "-") + "\n");
-    commands.forEach(md => {
-        let msg = rightPad(chalk.cyan(toIntentString(md)), padLength);
-        msg += rightPad(chalk.green(md.name), padLength);
-        msg += rightPad(chalk.gray(md.description), padLength);
-        infoMessage(msg + "\n");
-    });
-}
-
-/**
- * Make the string exactly n in length padding as necessary
- * @param {string} s
- * @param {number} n
- * @return {string}
- */
-function rightPad(s: string, n: number) {
-    return s.substr(0, n).padEnd(n);
+        chalk.italic("Intent".padEnd(padLength)),
+        chalk.italic("Command name".padEnd(longestCommandNameLength)),
+        chalk.italic("Description".padEnd(padLength)),
+    );
+    infoMessage("%s\n", "=".repeat(separatorLength));
+    const commandChunks = commands.map(md =>
+        sprintf("%s%s%s\n",
+            chalk.bold(paddedIntentString(md, padLength)),
+            chalk.gray(md.name.padEnd(longestCommandNameLength)),
+            chalk.italic(md.description),
+        ));
+    const separator = sprintf("%s\n", chalk.gray("-".repeat(separatorLength)));
+    infoMessage(commandChunks.join(separator));
 }
 
 /**
@@ -80,9 +79,17 @@ function rightPad(s: string, n: number) {
  */
 function toIntentString(md: CommandHandlerMetadata): string {
     return !!md.intent && md.intent.length > 0 ?
-        // TODO display more intents
-        md.intent.map(intent => `"${intent}"`)[0] : // .join(",\n") :
-        "-";
+        md.intent.join("\n") :
+        "";
+}
+
+function paddedIntentString(md: CommandHandlerMetadata, n: number): string {
+    const arrays: string[] = !!md.intent && md.intent.length > 0 ?
+        md.intent :
+        [""];
+    // Pad last element
+    arrays[arrays.length - 1] = arrays[arrays.length - 1].padEnd(n);
+    return arrays.join("\n");
 }
 
 function longestSingleIntentString(commands: CommandHandlerMetadata[]): number {
