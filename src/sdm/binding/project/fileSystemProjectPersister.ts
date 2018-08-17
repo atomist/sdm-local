@@ -21,6 +21,7 @@ import { RepoRef } from "@atomist/sdm";
 import { GitProject, LocalProject, NodeFsLocalProject } from "@atomist/sdm";
 import { LocalModeConfiguration } from "@atomist/sdm-core";
 import * as fs from "fs";
+import * as path from "path";
 import { promisify } from "util";
 import { AutomationClientFinder } from "../../../cli/invocation/http/AutomationClientFinder";
 import { invokeEventHandlerUsingHttpOnAll } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
@@ -44,7 +45,7 @@ export function fileSystemProjectPersister(teamContext: LocalWorkspaceContext,
                                            localModeCofiguration: LocalModeConfiguration,
                                            automationClientFinder: AutomationClientFinder): ProjectPersister {
     return async (p, _, id, params) => {
-        const baseDir = `${localModeCofiguration.repositoryOwnerParentDirectory}/${id.owner}/${id.repo}`;
+        const baseDir = `${localModeCofiguration.repositoryOwnerParentDirectory}${path.sep}${id.owner}${path.sep}${id.repo}`;
         const frr = FileSystemRemoteRepoRef.fromDirectory({
             repositoryOwnerParentDirectory: localModeCofiguration.repositoryOwnerParentDirectory,
             baseDir,
