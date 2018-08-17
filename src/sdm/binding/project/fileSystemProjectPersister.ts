@@ -41,7 +41,7 @@ import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
  * conventions. Perform a git init and other after actions, such as installing
  * our git hooks. Fires off the necessary new repo events using HTTP to
  * all local automation clients.
- * @return {ProjectPersister
+ * @return {ProjectPersister}
  */
 export function fileSystemProjectPersister(teamContext: LocalTeamContext,
                                            localModeCofiguration: LocalModeConfiguration,

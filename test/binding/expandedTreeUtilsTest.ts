@@ -20,19 +20,17 @@ import { parseOwnerAndRepo, withinExpandedTree } from "../../src/sdm/binding/pro
 
 describe("expandedTreeUtils", () => {
 
-    const sep = path.sep;
-
     describe("parseOwnerAndRepo", () => {
 
         it("works not within directory tree", () => {
-            const base = sep + "usr" + sep + "foo";
-            const dir = base + sep + "c" + sep + "d" + sep + "e";
+            const base = path.join("", "usr", "foo");
+            const dir = path.join(base, "c", "d", "e");
             assert.deepEqual(parseOwnerAndRepo(base, dir), {});
         });
 
         it("works within directory tree", () => {
-            const base = sep + "Users" + sep + "rodjohnson" + sep + "temp" + sep + "local-sdm";
-            const dir = base + sep + "spring-team" + sep + "spring-rest-seed";
+            const base = path.join("", "Users", "rodjohnson", "temp", "local-sdm");
+            const dir = path.join(base, "spring-team", "spring-rest-seed");
             assert.deepEqual(parseOwnerAndRepo(base, dir), {
                 owner: "spring-team",
                 repo: "spring-rest-seed",
@@ -40,26 +38,26 @@ describe("expandedTreeUtils", () => {
         });
 
         it("works within directory tree under org only", () => {
-            const base = sep + "Users" + sep + "rodjohnson" + sep + "temp" + sep + "local-sdm";
-            const dir = base + sep + "spring-team";
+            const base = path.join("", "Users", "rodjohnson", "temp", "local-sdm");
+            const dir = path.join(base, "spring-team");
             assert.deepEqual(parseOwnerAndRepo(base, dir), {
                 owner: "spring-team",
                 repo: undefined,
             });
         });
 
-        it("works with org with trailing / after repo", () => {
-            const base = sep + "Users" + sep + "rodjohnson" + sep + "temp" + sep + "local-sdm";
-            const dir = base + sep + "spring-team" + sep + "melb1" + sep;
+        it("works with org with trailing path separator after repo", () => {
+            const base = path.join("", "Users", "rodjohnson", "temp", "local-sdm");
+            const dir = path.join(base, "spring-team", "melb1", "");
             assert.deepEqual(parseOwnerAndRepo(base, dir), {
                 owner: "spring-team",
                 repo: "melb1",
             });
         });
 
-        it("works if base ends with /", () => {
-            const base = sep + "Users" + sep + "me" + sep + "projects" + sep;
-            const dir = base + "spring-team" + sep + "melb1" + sep;
+        it("works if base ends with path separator", () => {
+            const base = path.join("", "Users", "me", "projects" + path.sep);
+            const dir = path.join(base + "spring-team", "melb1" + path.sep);
             assert.deepEqual(parseOwnerAndRepo(base, dir), {
                 owner: "spring-team",
                 repo: "melb1",
@@ -70,19 +68,19 @@ describe("expandedTreeUtils", () => {
     describe("withinExpandedTree", () => {
 
         it("works within", () => {
-            const base = sep + "usr" + sep + "foo";
-            const dirs = ["a" + sep + "b", "c" + sep + "d", "a-thing" + sep + "other-thing"];
+            const base = path.join("", "usr", "foo");
+            const dirs = [path.join("a", "b"), path.join("c", "d"), path.join("a-thing", "other-thing")];
             dirs.forEach(d => {
-                const dir = base + sep + "" + d;
+                const dir = path.join(base, "" + d);
                 assert(withinExpandedTree(base, dir), `${dir} is not within ${base}`);
             });
         });
 
         it("works not within", () => {
-            const base = sep + "usr" + sep + "foo";
-            const dirs = ["ab", "c" + sep + "d" + sep + "e", "a-thi" + sep + sep + sep + "ng" + sep + "other-thing"];
+            const base = path.join("", "usr", "foo");
+            const dirs = ["ab", "c", "d", "e", "a-thi", "", "ng", "other-thing"];
             dirs.forEach(d => {
-                const dir = base + sep + "" + d;
+                const dir = path.join(base, "" + d);
                 assert(!withinExpandedTree(base, dir), `${dir} is not within ${base}`);
             });
         });
