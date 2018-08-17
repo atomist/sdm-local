@@ -86,6 +86,9 @@ function toIntentString(md: CommandHandlerMetadata): string {
 }
 
 function longestSingleIntentString(commands: CommandHandlerMetadata[]): number {
+    if (commands.length === 0) {
+        return 0;
+    }
     const winner = commands.reduce((a, b) => {
         const alen = longestIntentStringLength(a);
         const blen = longestIntentStringLength(b);
