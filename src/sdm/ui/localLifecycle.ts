@@ -59,7 +59,7 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
     sdm.addGoalsSetListener(async gsi => {
         const msg = `${pushIdentification(gsi.push)}
 \t▶ Goals
-\t${gsi.goalSet.goals.map(g => `⏦ ${chalk.italic(g.name)}`).join("\n\t")}`;
+\t${gsi.goalSet.goals.map(g => `⏦ ${chalk.italic(g.requestedDescription)}`).join("\n\t")}`;
         return gsi.addressChannels(msg);
     });
     sdm.addGoalExecutionListener(async gci => {
