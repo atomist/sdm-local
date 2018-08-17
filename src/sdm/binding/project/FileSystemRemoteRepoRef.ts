@@ -19,13 +19,13 @@ import {
     successOn,
 } from "@atomist/automation-client/action/ActionResult";
 import { AbstractRemoteRepoRef } from "@atomist/automation-client/operations/common/AbstractRemoteRepoRef";
+import { Configurable } from "@atomist/automation-client/project/git/Configurable";
 import { logger } from "@atomist/sdm";
 import { ProjectOperationCredentials } from "@atomist/sdm";
 import {
     RemoteRepoRef,
     RepoRef,
 } from "@atomist/sdm";
-import { Configurable } from "../../../../node_modules/@atomist/automation-client/project/git/Configurable";
 import {
     dirFor,
     parseOwnerAndRepo,
@@ -66,7 +66,7 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
     public static implied(repositoryOwnerParentDirectory: string,
                           owner: string, repo: string): RemoteRepoRef {
         const baseDir = dirFor(repositoryOwnerParentDirectory, owner, repo);
-        return this.fromDirectory({ repositoryOwnerParentDirectory, baseDir});
+        return this.fromDirectory({ repositoryOwnerParentDirectory, baseDir });
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility: any): Promise<ActionResult<this>> {
