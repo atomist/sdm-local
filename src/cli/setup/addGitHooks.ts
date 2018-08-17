@@ -153,20 +153,21 @@ function scriptFragments(): { [key: string]: string } {
     // TODO why does the hook need to be verbose?
     return {
         "pre-receive": `
-export ATOMIST_GITHOOK_VERBOSE="true"
-
 read oldrev newrev refname
-atomist-githook pre-receive \${PWD} $refname $newrev &
+cwd=$(pwd)
+atomist git-hook pre-receive "$cwd" $refname $newrev &
 `,
         "post-commit": `
 sha=$(git rev-parse HEAD)
 branch=$(git rev-parse --abbrev-ref HEAD)
-atomist-githook post-commit \${PWD} $branch $sha &
+cwd=$(pwd)
+atomist git-hook post-commit "$cwd" $branch $sha &
 `,
         "post-merge": `
 sha=$(git rev-parse HEAD)
 branch=$(git rev-parse --abbrev-ref HEAD)
-atomist-githook post-merge \${PWD} $branch $sha &
+cwd=$(pwd)
+atomist git-hook post-merge "$cwd" $branch $sha &
 `,
     };
 }
@@ -182,5 +183,3 @@ const AtomistEndComment = "######## Atomist end #########";
 function markAsAtomistContent(toAppend: string) {
     return `\n${AtomistStartComment}\n${toAppend}\n${AtomistEndComment}\n`;
 }
-
-
