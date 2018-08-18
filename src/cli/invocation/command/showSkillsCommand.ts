@@ -22,6 +22,7 @@ import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { YargBuilder } from "./support/yargBuilder";
+import { toStringArray } from "../../../../node_modules/@atomist/automation-client/internal/util/string";
 
 const MaxColumnWidth = 30;
 
@@ -53,7 +54,7 @@ function printSkillsToConsole(clients: AutomationClientInfo[]) {
         clients.length === 1 ? "" : "s");
     const padLength = Math.max(longestSingleIntentString(commands), MaxColumnWidth);
     const longestCommandNameLength = Math.max(
-        commands.map(c => c.name).reduce((a, b) => a.length > b.length ? a : b).length + 5,
+        commands.length === 0 ? 0 : commands.map(c => c.name).reduce((a, b) => a.length > b.length ? a : b).length + 5,
         MaxColumnWidth);
     const separatorLength = 2 * padLength + longestCommandNameLength;
     infoMessage("%s%s%s\n",
@@ -70,17 +71,6 @@ function printSkillsToConsole(clients: AutomationClientInfo[]) {
         ));
     const separator = sprintf("%s\n", chalk.gray("-".repeat(separatorLength)));
     infoMessage(commandChunks.join(separator));
-}
-
-/**
- * To intent string broken
- * @param {CommandHandlerMetadata} md
- * @return {string}
- */
-function toIntentString(md: CommandHandlerMetadata): string {
-    return !!md.intent && md.intent.length > 0 ?
-        md.intent.join("\n") :
-        "";
 }
 
 function paddedIntentString(md: CommandHandlerMetadata, n: number): string {
@@ -105,7 +95,8 @@ function longestSingleIntentString(commands: CommandHandlerMetadata[]): number {
 }
 
 function longestIntentStringLength(command: CommandHandlerMetadata): number {
-    return toIntentString(command)
-        .split("\n")
-        .reduce((a, b) => a.length > b.length ? a : b).length;
+    const intents = toStringArray(command.intent || []);
+    return intents.length > 0 ?
+        intents.reduce((a, b) => a.length > b.length ? a : b).length :
+        0;
 }
