@@ -18,11 +18,11 @@ import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/auto
 import chalk from "chalk";
 import * as _ from "lodash";
 import { sprintf } from "sprintf-js";
+import { toStringArray } from "../../../../node_modules/@atomist/automation-client/internal/util/string";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { YargBuilder } from "./support/yargBuilder";
-import { toStringArray } from "../../../../node_modules/@atomist/automation-client/internal/util/string";
 
 const MaxColumnWidth = 30;
 
