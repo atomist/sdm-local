@@ -29,7 +29,7 @@ export function renderCommandHandlerForm(parameters: any,
             <table>
             ${command.parameters.filter(p => p.displayable).map(p => {
                 return `<tr><td>${p.display_name}${p.required ? "*" : ""}:</td><td>
-                    <input type="text" name="${p.name}" value="${ parameters[p.name] ? parameters[p.name] : 
+                    <input type="text" name="${p.name}" value="${ parameters[p.name] ? parameters[p.name] :
                     (p.default_value ? p.default_value : "") }" />
                     <br/>${p.description ? p.description : ""}</td></tr>`;
             }).join("\n")}
