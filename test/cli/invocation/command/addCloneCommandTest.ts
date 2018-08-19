@@ -45,11 +45,19 @@ describe("GitRemoteParser", () => {
         assert.equal(parsed.repo, "david1");
     });
 
-    it("should parse BitBucket ur; ending with .git", () => {
+    it("should parse GitHub url after flags", () => {
+        const url = "--depth=1 https://github.com/spring-team/david1";
+        const parsed = GitRemoteParser.firstMatch(url);
+        assert(parsed, `Must have matched on [${url}]`);
+        assert.equal(parsed.owner, "spring-team");
+        assert.equal(parsed.repo, "david1");
+    });
+
+    it("should parse BitBucket url ending with .git", () => {
         const url = "https://username@bitbucket.org/teamsinspace/documentation-tests.git";
         const parsed = GitRemoteParser.firstMatch(url);
         assert(parsed, `Must have matched on [${url}]`);
-        // TODO parse out the username bit
+        // TODO parse out the username bit, but this is not urgent
         assert.equal(parsed.base, "https://username@bitbucket.org");
         assert.equal(parsed.owner, "teamsinspace");
         assert.equal(parsed.repo, "documentation-tests");

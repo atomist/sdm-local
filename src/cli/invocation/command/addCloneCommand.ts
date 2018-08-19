@@ -1,3 +1,4 @@
+
 /*
  * Copyright © 2018 Atomist, Inc.
  *
@@ -24,9 +25,46 @@ import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspace
 import { sendChannelLinkEvent, sendRepoOnboardingEvent } from "../../../sdm/binding/event/repoOnboardingEvents";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { addGitHooks } from "../../setup/addGitHooks";
-import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
+import { infoMessage, logExceptionsToConsole, warningMessage } from "../../ui/consoleOutput";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
 import { YargBuilder } from "./support/yargBuilder";
+
+/*
+ * Args we'll simply pass through without examining
+ * git clone [--template=<template_directory>]
+	  [-l] [-s] [--no-hardlinks] [-q] [-n] [--bare] [--mirror]
+	  [-o <name>] [-b <name>] [-u <upload-pack>] [--reference <repository>]
+	  [--dissociate] [--separate-git-dir <git dir>]
+	  [--depth <depth>] [--[no-]single-branch] [--no-tags]
+	  [--recurse-submodules[=<pathspec>]] [--[no-]shallow-submodules]
+	  [--jobs <n>] [--] <repository> [<directory>]
+ */
+const GitCloneArgs = [
+    "b",
+    "bare",
+    "depth",
+    "directory",
+    "dissocate",
+    "jobs",
+    "l",
+    "mirror",
+    "n",
+    "no-hardlinks",
+    "no-shallow-submodules",
+    "no-single-branch",
+    "no-tags",
+    "o",
+    "q",
+    "recurse-submodules",
+    "reference",
+    "repository",
+    "s",
+    "separate-git-dir",
+    "shallow-submodules",
+    "single-branch",
+    "template",
+    "upload-pack",
+];
 
 /**
  * Takes the same arguments as Git clone but onboards the repo with Atomist
@@ -39,9 +77,24 @@ export function addCloneCommand(clients: AutomationClientInfo[],
     yargs.command({
         command: "clone <args>",
         describe: "Like git clone but onboards the repo with Atomist",
+        builder: a => {
+            GitCloneArgs.forEach(arg => {
+                a.option(arg, {
+                    required: false,
+                });
+            });
+            return a;
+        },
         handler: argv => {
+            if (process.argv.length < 3) {
+                warningMessage("Not enough arguments to git or atomist clone\n");
+                return undefined;
+            }
+            const argsToGitClone = process.argv.slice(3).join(" ");
             return logExceptionsToConsole(async () => {
-                await superclone(clients, argv.args, workspaceContextResolver.workspaceContext);
+                await superclone(clients,
+                     argsToGitClone,
+                     workspaceContextResolver.workspaceContext);
             }, true);
         },
     });
@@ -50,9 +103,15 @@ export function addCloneCommand(clients: AutomationClientInfo[],
 async function superclone(clients: AutomationClientInfo[],
                           args: string,
                           workspaceContext: LocalWorkspaceContext): Promise<any> {
-    infoMessage(`Importing Git remote project ${args}\n`);
     const repositoryOwnerDirectory = determineDefaultRepositoryOwnerParentDirectory();
-    const { owner, repo } = GitRemoteParser.firstMatch(args);
+    const repoInfo = GitRemoteParser.firstMatch(args);
+    if (!repoInfo) {
+        warningMessage("Cannot parse repo info from %s\n", args);
+        return;
+    }
+    const { base, owner, repo } = repoInfo;
+    infoMessage(`Cloning git remote project from ${base}: args to git clone were ${args}\n`);
+
     const orgDir = repositoryOwnerDirectory + "/" + owner;
     if (!fs.existsSync(orgDir)) {
         fs.mkdirSync(orgDir);
