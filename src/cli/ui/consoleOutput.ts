@@ -30,7 +30,8 @@ export async function logExceptionsToConsole(what: () => Promise<any>,
                                              showStack: boolean) {
     try {
         await what();
-        process.exit(0);
+        // TODO this prevented waiting, but causes feed command to die immediately
+        // process.exit(0);
     } catch (err) {
         const msg = (showStack ? err.stack : `Error: ${err.message}`) + "\n";
         errorMessage(msg);
