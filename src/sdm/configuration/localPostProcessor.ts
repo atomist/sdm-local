@@ -15,6 +15,7 @@
  */
 
 import {
+    automationClientInstance,
     Configuration,
     HandlerResult,
     logger,
@@ -49,6 +50,7 @@ import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventFo
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
 import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
 import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandlerInProcess";
+import { renderCommandHandlerForm } from "../invocation/renderCommandHandlerFromForm";
 import { createSdmOptions } from "./createSdmOptions";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 
@@ -118,10 +120,20 @@ function configureWebEndpoints(configuration: Configuration, localModeConfigurat
             exp.get("/local/configuration", async (req, res) => {
                 res.json(localModeConfiguration);
             });
+            const bodyParser = require("body-parser");
+            exp.use(bodyParser.urlencoded({ extended: false }));
+            exp.use(bodyParser.json());
             // Add a GET route for convenient links to command handler invocation, as a normal automation client doesn't expose one
             exp.get("/command/:name", async (req, res) => {
-                // TODO this should really forward to a page exposing the parameters, which populates from the query
                 const payload = req.query;
+                const command = automationClientInstance().automations.automations.commands.find(c => c.name === req.params.name);
+                if (!command) {
+                    return res.status(404).send(`Command '${req.params.name}' not found`);
+                }
+                return res.status(200).send(renderCommandHandlerForm(payload, command));
+            });
+            exp.post("/command/:name", async (req, res) => {
+                const payload = req.body;
                 const invocation: CommandHandlerInvocation = {
                     name: req.params.name,
                     parameters: payload,
