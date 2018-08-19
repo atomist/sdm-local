@@ -28,7 +28,6 @@ import { invokeEventHandlerUsingHttpOnAll } from "../../../cli/invocation/http/i
 import { addGitHooksToProject } from "../../../cli/setup/addGitHooks";
 import { handlePushBasedEventOnRepo } from "../../../common/git/handlePushBasedEventOnRepo";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
-import { invokeEventHandlerInProcess } from "../../invocation/invokeEventHandlerInProcess";
 import { lastSha } from "../../util/git";
 import { runAndLog } from "../../util/runAndLog";
 import { sendChannelLinkEvent, sendRepoCreationEvent, sendRepoOnboardingEvent } from "../event/repoOnboardingEvents";
@@ -86,14 +85,14 @@ async function emitEventsForNewProject(workspaceContext: LocalWorkspaceContext,
     const sha = await lastSha(createdProject as GitProject);
     const branch = "master";
 
-    await handlePushBasedEventOnRepo(workspaceContext.workspaceId, invokeEventHandlerInProcess(workspaceContext), lc, {
+    await handlePushBasedEventOnRepo(workspaceContext.workspaceId, eventSender, lc, {
         baseDir: createdProject.baseDir,
         sha,
         branch,
     }, "OnFirstPushToRepo");
 
     // This is the first push
-    await handlePushBasedEventOnRepo(workspaceContext.workspaceId, invokeEventHandlerInProcess(workspaceContext), lc, {
+    await handlePushBasedEventOnRepo(workspaceContext.workspaceId, eventSender, lc, {
         baseDir: createdProject.baseDir,
         sha,
         branch,

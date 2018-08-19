@@ -22,6 +22,7 @@ import chalk from "chalk";
 import Push = OnPushToAnyBranch.Push;
 import { DefaultWorkspaceContextResolver } from "../../common/binding/defaultWorkspaceContextResolver";
 import { HttpBuildStatusUpdater } from "../binding/HttpBuildStatusUpdater";
+import { isFileSystemRemoteRepoRef } from "../binding/project/FileSystemRemoteRepoRef";
 
 /**
  * Add Local IO to the given SDM.
@@ -33,12 +34,21 @@ export const LocalLifecycle: ExtensionPack = {
     configure: sdm => {
         if (isInLocalMode()) {
             addLocalLifecycle(sdm);
+            addShowLocalRepo(sdm);
             const bu = sdm as any as BuildStatusUpdater;
             const buu = new HttpBuildStatusUpdater(DefaultWorkspaceContextResolver.workspaceContext);
             bu.updateBuildStatus = buu.updateBuildStatus.bind(buu);
         }
     },
 };
+
+function addShowLocalRepo(sdm: SoftwareDeliveryMachine) {
+    sdm.addChannelLinkListener(async i => {
+        if (isFileSystemRemoteRepoRef(i.id)) {
+            return i.addressChannels(`🏛  Your new local repo is available at **${i.id.fileSystemLocation}**`);
+        }
+    });
+}
 
 function pushIdentification(pu: Push) {
     let msg = pu.commits[0].message;
@@ -74,9 +84,9 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
             //     return gci.addressChannels(chalk.red(`✖︎︎ ${gci.goalEvent.description}\n`));
             // waiting_for_approval = "waiting_for_approval",
             // planned = "planned",
-//             case SdmGoalState.in_process:
-//                 return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
-// \t${chalk.yellow(`⚙︎ ${gci.goalEvent.description}`)}`);
+            //             case SdmGoalState.in_process:
+            //                 return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
+            // \t${chalk.yellow(`⚙︎ ${gci.goalEvent.description}`)}`);
             case SdmGoalState.skipped:
                 return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
 \t${chalk.yellow(`?︎ ${gci.goalEvent.description}`)}`);
