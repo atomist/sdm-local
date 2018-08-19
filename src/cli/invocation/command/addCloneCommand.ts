@@ -41,7 +41,7 @@ import { YargBuilder } from "./support/yargBuilder";
  */
 const GitCloneArgs = [
     "b",
-    "bare",
+    // "bare", -- We don't support this as it's impossible to install git hooks on a bare repo
     "depth",
     "directory",
     "dissocate",
@@ -67,7 +67,9 @@ const GitCloneArgs = [
 ];
 
 /**
- * Takes the same arguments as Git clone but onboards the repo with Atomist
+ * Takes the same arguments as Git clone but onboards the repo with Atomist.
+ * We suppress certain flags like 'bare' as they don't make sense when we need
+ * to install Atomist git hooks.
  * @param {AutomationClientInfo[]} clients
  * @param {YargBuilder} yargs
  */
@@ -76,10 +78,14 @@ export function addCloneCommand(clients: AutomationClientInfo[],
                                 workspaceContextResolver: WorkspaceContextResolver) {
     yargs.command({
         command: "clone <args>",
-        describe: "Like git clone but onboards the repo with Atomist",
+        describe: "Like git clone but also onboards the repo with Atomist " +
+            `under the Atomist root at ${determineDefaultRepositoryOwnerParentDirectory()}`,
         builder: a => {
             GitCloneArgs.forEach(arg => {
                 a.option(arg, {
+                    // TODO might be nice to split these into options and flags
+                    // but we are letting git clone do the validation
+                    boolean: true,
                     required: false,
                 });
             });
