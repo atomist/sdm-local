@@ -138,6 +138,7 @@ export class YargCommandWord implements YargCommand {
                     command: self.commandName,
                     describe: condenseDescriptions(childDescriptions, myDescription),
                     builder: y => {
+                        y.version(false);
                         nestedCommandSavers.forEach(c => c.save(yarg));
                         if (!self.runnableCommand && self.nestedCommands.length > 0) {
                             y.demandCommand();
