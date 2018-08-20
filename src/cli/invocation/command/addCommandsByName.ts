@@ -33,7 +33,8 @@ export function addCommandsByName(ai: AutomationClientInfo,
                                   workspaceResolver: WorkspaceContextResolver,
                                   allowUserInput: boolean = true) {
     yargs.command({
-        command: "run", describe: "Run a command",
+        command: "run",
+        describe: "Run a command by name",
         builder: args => {
             ai.client.commands.forEach(hi => {
                 args.withSubcommand({
