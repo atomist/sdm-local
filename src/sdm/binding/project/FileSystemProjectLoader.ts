@@ -84,7 +84,7 @@ function changeToPushToAtomistBranch(localConfig: LocalModeConfiguration): (p: G
             try {
                 // First try to push this branch. If it's the checked out branch
                 // we'll get an error
-                logAndSend(`Trying to push to branch ${p.branch} on ${p.id.owner}:${p.id.repo} in ${p.baseDir}`);
+                await logAndSend(`Trying to push to branch ${p.branch} on ${p.id.owner}:${p.id.repo} in ${p.baseDir}`);
                 await runAndLog(`git push --force --set-upstream origin ${p.branch}`, {
                     cwd: p.baseDir,
                 });
@@ -93,7 +93,7 @@ function changeToPushToAtomistBranch(localConfig: LocalModeConfiguration): (p: G
                 // Autofix will attempt to do this.
                 // So we create a new branch, push that, and then go to the original directory and merge it.
                 const newBranch = atomistTemporaryBranchFor(p.branch);
-                logAndSend(`Pushing to new local branch ${newBranch} after error`);
+                await logAndSend(`Pushing to new local branch ${newBranch} after error`);
                 await p.createBranch(newBranch);
                 // We disable verify to stop our git hooks running on this
                 await runAndLog(`git push --force --no-verify --set-upstream origin ${p.branch}`, { cwd: p.baseDir });
