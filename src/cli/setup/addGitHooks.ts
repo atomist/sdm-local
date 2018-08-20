@@ -152,7 +152,7 @@ function scriptFragments(): { [key: string]: string } {
 
     // TODO why does the hook need to be verbose?
     return {
-        "pre-receive": `
+        "post-receive": `
 export ATOMIST_GITHOOK_VERBOSE="true"
 
 read oldrev newrev refname

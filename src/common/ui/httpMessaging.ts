@@ -15,9 +15,11 @@
  */
 
 import { Destination, MessageOptions } from "@atomist/automation-client/spi/message/MessageClient";
+import { logger } from "@atomist/sdm";
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import * as boxen from "boxen";
+import { sprintf } from "sprintf-js";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionRequest";
 import { defaultHostUrlAliaser } from "../util/http/defaultLocalHostUrlAliaser";
 
@@ -45,12 +47,23 @@ export interface StreamedMessage {
  * @param {string} message
  * @return {Promise<void>}
  */
-export async function postToListener(message: string) {
+export async function sendDiagnosticMessageToAllMessagesListener(message: string, ...args: any[]) {
     const url = `http://${defaultHostUrlAliaser().alias()}:${AllMessagesPort}/write`;
-    const boxed = boxen(message, { padding: 1 }) + "\n";
+    const boxed = boxen(sprintf(message, args), { padding: 1 }) + "\n";
     try {
         await axios.post(url, { message: boxed });
     } catch (err) {
         // Ignore any error
     }
+}
+
+/**
+ * Convenient functino to log in the present process and send a message
+ * to the all messages listener, which will be displayed if it's in verbose mode.
+ * Typically used when we want to send information about events within the
+ * SDM process to a user debugging sdm-local.
+ */
+export async function logAndSend(msg: string, ...args: any[]) {
+    logger.info(msg, args);
+    return sendDiagnosticMessageToAllMessagesListener(msg, args);
 }
