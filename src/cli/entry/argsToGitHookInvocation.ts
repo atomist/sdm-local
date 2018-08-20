@@ -32,7 +32,11 @@ export function argsToGitHookInvocation(argv: string[],
         process.exit(0);
     }
 
-    const args = argv.slice(2);
+    const args = argv.slice(2); // removes `node` and `atomist`
+    if (args[0] === "git-hook") {
+        // this was run with the subcommand. Remove that too.
+        args.shift();
+    }
     const event: string = args[0];
     // We can be invoked in the .git/hooks directory or from the git binary itself
     const baseDir = args[1].replace(/.git[\/hooks]?$/, "")

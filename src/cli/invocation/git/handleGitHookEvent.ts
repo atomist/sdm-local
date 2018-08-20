@@ -53,7 +53,7 @@ export async function handleGitHookEvent(cc: AutomationClientConnectionRequest,
         return errorMessage("Invalid git hook invocation payload. Event is required: %j", payload);
     }
     if (!Object.values(HookEvent).includes(payload.event)) {
-        return errorMessage("Unknown git hook event '%s'", event);
+        return errorMessage("Unknown git hook event '%s'", payload.event);
     }
     if (!lc) {
         return errorMessage("LocalModeConfiguration must be supplied");

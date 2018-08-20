@@ -156,17 +156,17 @@ function scriptFragments(): { [key: string]: string } {
 export ATOMIST_GITHOOK_VERBOSE="true"
 
 read oldrev newrev refname
-atomist-githook pre-receive \${PWD} $refname $newrev &
+atomist git-hook pre-receive \${PWD} $refname $newrev &
 `,
         "post-commit": `
 sha=$(git rev-parse HEAD)
 branch=$(git rev-parse --abbrev-ref HEAD)
-atomist-githook post-commit \${PWD} $branch $sha &
+atomist git-hook post-commit \${PWD} $branch $sha &
 `,
         "post-merge": `
 sha=$(git rev-parse HEAD)
 branch=$(git rev-parse --abbrev-ref HEAD)
-atomist-githook post-merge \${PWD} $branch $sha &
+atomist git-hook post-merge \${PWD} $branch $sha &
 `,
     };
 }
