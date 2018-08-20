@@ -39,7 +39,7 @@ export async function addGitHooks(projectBaseDir: string) {
 
 export async function addGitHooksToProject(p: LocalProject) {
     for (const event of Object.values(HookEvent)) {
-        const atomistContent = scriptFragments()[event];
+        const atomistContent = posixScriptFragments()[event];
         if (!atomistContent) {
             errorMessage("Unable to create git script content for event '%s'", event);
             process.exit(1);
@@ -148,7 +148,7 @@ async function deatomizeScript(p: LocalProject, scriptPath: string) {
  * Indexed templates fragments for use in git hooks
  * @return {{"pre-receive": string}}
  */
-function scriptFragments(): { [key: string]: string } {
+function posixScriptFragments(): { [key: string]: string } {
 
     // TODO why does the hook need to be verbose?
     return {
@@ -156,22 +156,22 @@ function scriptFragments(): { [key: string]: string } {
 export ATOMIST_GITHOOK_VERBOSE="true"
 
 read oldrev newrev refname
-atomist-githook pre-receive \${PWD} $refname $newrev &
+atomist git-hook pre-receive \${PWD} $refname $newrev &
 `,
         "post-commit": `
 sha=$(git rev-parse HEAD)
 branch=$(git rev-parse --abbrev-ref HEAD)
-atomist-githook post-commit \${PWD} $branch $sha &
+atomist git-hook post-commit \${PWD} $branch $sha &
 `,
         "post-merge": `
 sha=$(git rev-parse HEAD)
 branch=$(git rev-parse --abbrev-ref HEAD)
-atomist-githook post-merge \${PWD} $branch $sha &
+atomist git-hook post-merge \${PWD} $branch $sha &
 `,
     };
 }
 
-const AtomistStartComment = "######## Atomist start #######";
+const AtomistStartComment = "#!/bin/sh\n######## Atomist start #######";
 const AtomistEndComment = "######## Atomist end #########";
 
 /**
