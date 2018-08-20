@@ -16,7 +16,7 @@
 
 import { sprintf } from "sprintf-js";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
-import { postToListener } from "../../../common/ui/httpMessaging";
+import { sendDiagnosticMessageToAllMessagesListener } from "../../../common/ui/httpMessaging";
 import {
     infoMessage,
     logExceptionsToConsole,
@@ -57,7 +57,7 @@ export function addReplayCommand(yargs: YargBuilder,
                     ya.event,
                     clients.length);
                 infoMessage(msg);
-                await postToListener(msg);
+                await sendDiagnosticMessageToAllMessagesListener(msg);
                 await triggerGitEvents(clients, ya.event, ya.depth, teamContextResolver);
                 return suggestStartingAllMessagesListener();
             },

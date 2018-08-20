@@ -15,7 +15,7 @@
  */
 
 import chalk from "chalk";
-import { postToListener } from "../../../../common/ui/httpMessaging";
+import { sendDiagnosticMessageToAllMessagesListener } from "../../../../common/ui/httpMessaging";
 import { infoMessage } from "../../../ui/consoleOutput";
 import { CommandInvocationListener } from "./runCommandOnColocatedAutomationClient";
 
@@ -38,6 +38,6 @@ export const ShowDescriptionListener: CommandInvocationListener = {
 export const PostToAtomistListenerListener: CommandInvocationListener = {
     onDispatch: async chm => {
         const message = `Starting execution of command ${chalk.bold(chm.name)}`;
-        return postToListener(message);
+        return sendDiagnosticMessageToAllMessagesListener(message);
     },
 };
