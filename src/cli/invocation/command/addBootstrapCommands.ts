@@ -17,10 +17,19 @@
 import { GitHubRepoRef } from "@atomist/sdm";
 import * as inquirer from "inquirer";
 import { Question } from "inquirer";
-import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
-import { sdmGenerator, superforkGenerator } from "./generator/bootstrapGenerators";
+import {
+    adviceDoc,
+    infoMessage,
+} from "../../ui/consoleOutput";
+import {
+    sdmGenerator,
+    superforkGenerator,
+} from "./generator/bootstrapGenerators";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
-import { verifyJDK, verifyMaven } from "./support/javaVerification";
+import {
+    verifyJDK,
+    verifyMaven,
+} from "./support/javaVerification";
 import { YargBuilder } from "./support/yargBuilder";
 import { AddLocalMode } from "./transform/addLocalModeTransform";
 

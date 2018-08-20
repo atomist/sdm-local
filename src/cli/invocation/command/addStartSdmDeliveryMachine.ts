@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-import { sdmCd } from "../../../pack/sdm-cd/support/SdmCd";
-import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
-import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
-
 import chalk from "chalk";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
+import { sdmCd } from "../../../pack/sdm-cd/support/SdmCd";
+import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
+import {
+    infoMessage,
+    logExceptionsToConsole,
+} from "../../ui/consoleOutput";
 import { renderClientInfo } from "../../ui/renderClientInfo";
 import { YargBuilder } from "./support/yargBuilder";
 

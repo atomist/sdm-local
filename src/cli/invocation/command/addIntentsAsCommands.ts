@@ -20,7 +20,10 @@ import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceConte
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
-import { PostToAtomistListenerListener, ShowDescriptionListener } from "./support/commandInvocationListeners";
+import {
+    PostToAtomistListenerListener,
+    ShowDescriptionListener,
+} from "./support/commandInvocationListeners";
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
 import { YargBuilder } from "./support/yargBuilder";

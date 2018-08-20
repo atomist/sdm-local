@@ -16,8 +16,15 @@
 
 import { toStringArray } from "@atomist/automation-client/internal/util/string";
 import { AllMessagesPort } from "../../../common/ui/httpMessaging";
-import { HttpMessageListener, isFeedListenerRunning } from "../../../sdm/ui/HttpMessageListener";
-import { adviceDoc, infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
+import {
+    HttpMessageListener,
+    isFeedListenerRunning,
+} from "../../../sdm/ui/HttpMessageListener";
+import {
+    adviceDoc,
+    infoMessage,
+    logExceptionsToConsole,
+} from "../../ui/consoleOutput";
 import { YargBuilder } from "./support/yargBuilder";
 
 /**

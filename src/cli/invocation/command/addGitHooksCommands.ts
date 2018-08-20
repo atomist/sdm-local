@@ -17,7 +17,10 @@
 import { expandedTreeRepoFinder } from "../../../sdm/binding/project/expandedTreeRepoFinder";
 import { determineCwd } from "../../../sdm/binding/project/expandedTreeUtils";
 import { isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
-import { addGitHooks, removeGitHooks } from "../../setup/addGitHooks";
+import {
+    addGitHooks,
+    removeGitHooks,
+} from "../../setup/addGitHooks";
 import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { YargBuilder } from "./support/yargBuilder";
 

@@ -17,12 +17,18 @@
 import { sprintf } from "sprintf-js";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { postToListener } from "../../../common/ui/httpMessaging";
-import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
+import {
+    infoMessage,
+    logExceptionsToConsole,
+} from "../../ui/consoleOutput";
 import { HookEvent } from "../git/handleGitHookEvent";
 import { triggerGitEvents } from "../git/triggerGitEvents";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
-import { YargBuilder, yargCommandWithPositionalArguments } from "./support/yargBuilder";
+import {
+    YargBuilder,
+    yargCommandWithPositionalArguments,
+} from "./support/yargBuilder";
 
 /**
  * Add a command to replay execution following a git event

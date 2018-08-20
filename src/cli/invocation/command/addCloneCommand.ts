@@ -1,4 +1,3 @@
-
 /*
  * Copyright © 2018 Atomist, Inc.
  *
@@ -15,17 +14,27 @@
  * limitations under the License.
  */
 
-import { Microgrammar, optional } from "@atomist/microgrammar";
+import {
+    Microgrammar,
+    optional,
+} from "@atomist/microgrammar";
 import { exec } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
-import { sendChannelLinkEvent, sendRepoOnboardingEvent } from "../../../sdm/binding/event/repoOnboardingEvents";
+import {
+    sendChannelLinkEvent,
+    sendRepoOnboardingEvent,
+} from "../../../sdm/binding/event/repoOnboardingEvents";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { addGitHooks } from "../../setup/addGitHooks";
-import { infoMessage, logExceptionsToConsole, warningMessage } from "../../ui/consoleOutput";
+import {
+    infoMessage,
+    logExceptionsToConsole,
+    warningMessage,
+} from "../../ui/consoleOutput";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
 import { YargBuilder } from "./support/yargBuilder";
 

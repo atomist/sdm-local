@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
+import { toStringArray } from "@atomist/automation-client/internal/util/string";
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
 import chalk from "chalk";
 import * as _ from "lodash";
 import { sprintf } from "sprintf-js";
-import { toStringArray } from "../../../../node_modules/@atomist/automation-client/internal/util/string";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
+import {
+    infoMessage,
+    logExceptionsToConsole,
+} from "../../ui/consoleOutput";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { YargBuilder } from "./support/yargBuilder";
 

@@ -15,7 +15,10 @@
  */
 
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
+import {
+    infoMessage,
+    logExceptionsToConsole,
+} from "../../ui/consoleOutput";
 import { renderClientsInfo } from "../../ui/renderClientInfo";
 import { suggestStartingAllMessagesListener } from "./support/suggestStartingAllMessagesListener";
 import { YargBuilder } from "./support/yargBuilder";
