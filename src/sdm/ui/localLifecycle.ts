@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ExtensionPack, OnPushToAnyBranch, SdmGoalState, SoftwareDeliveryMachine } from "@atomist/sdm";
+import { ExtensionPack, OnPushToAnyBranch, ReviewComment, SdmGoalState, SoftwareDeliveryMachine } from "@atomist/sdm";
 import { isInLocalMode } from "@atomist/sdm-core";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
 import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
@@ -34,7 +34,8 @@ export const LocalLifecycle: ExtensionPack = {
     configure: sdm => {
         if (isInLocalMode()) {
             addLocalLifecycle(sdm);
-            addShowLocalRepo(sdm);
+            addShowCreatedLocalRepo(sdm);
+            addShowReviewResults(sdm);
             const bu = sdm as any as BuildStatusUpdater;
             const buu = new HttpBuildStatusUpdater(DefaultWorkspaceContextResolver.workspaceContext);
             bu.updateBuildStatus = buu.updateBuildStatus.bind(buu);
@@ -42,7 +43,7 @@ export const LocalLifecycle: ExtensionPack = {
     },
 };
 
-function addShowLocalRepo(sdm: SoftwareDeliveryMachine) {
+function addShowCreatedLocalRepo(sdm: SoftwareDeliveryMachine) {
     sdm.addChannelLinkListener(async i => {
         if (isFileSystemRemoteRepoRef(i.id)) {
             return i.addressChannels(`🏛  Your new local repo is available at **${i.id.fileSystemLocation}**`);
@@ -94,4 +95,32 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
                 break;
         }
     });
+}
+
+function addShowReviewResults(sdm: SoftwareDeliveryMachine) {
+    sdm.addReviewListenerRegistration({
+        name: "consoleListener",
+        listener: async l => {
+            await l.addressChannels(`${l.review.comments.length} review comments`);
+            for (const c of l.review.comments) {
+                await l.addressChannels(renderReviewComment(c));
+            }
+        },
+    });
+}
+
+function renderReviewComment(rc: ReviewComment) {
+    let s = "";
+    switch (rc.severity) {
+        case "error" :
+        s += "✘ " + chalk.red(rc.severity);
+        break;
+        case "warn" :
+        s += "⚠︎ " + chalk.yellow(rc.severity);
+        break;
+        case "info" :
+        s += "☞ " + chalk.cyan(rc.severity);
+        break;
+    }
+    return `${s}: ${rc.category} - ${rc.detail} ${JSON.stringify(rc.sourceLocation)}`;
 }
