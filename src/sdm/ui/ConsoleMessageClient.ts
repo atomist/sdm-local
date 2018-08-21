@@ -79,7 +79,6 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
                 }
                 (msg.attachments || []).forEach(async att => {
                     if (!!att.text) {
-                        process.stdout.write("I AM HERE");
                         await this.writeToChannel(channel, att.text);
                     }
                     (att.actions || []).forEach(async (action, index) => {
@@ -105,8 +104,8 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
     }
 
     private async renderAction(channel: string,
-        action: slack.Action,
-        actionKey: string) {
+                               action: slack.Action,
+                               actionKey: string) {
         if (action.type === "button") {
             const url = `${this.connectionConfig.baseEndpoint}${ActionRoute}/${actionDescription(action)}?key=${actionKey}`;
             await this.writeToChannel(channel, `${action.text} - ${url}`);
@@ -121,7 +120,10 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
      * @param {string} markdown
      */
     private writeToChannel(channels: string[] | string, markdown: string) {
-        return this.sender(chalk.gray("#") + marked(` **${channels}** ${this.dateString()} ` + markdown, this.markedOptions));
+        const outputText = withinRenderableSize(markdown) ?
+            marked(` **${channels}** ${this.dateString()} ` + markdown, this.markedOptions) :
+            markdown;
+        return this.sender(chalk.gray("#") + outputText);
     }
 
     private dateString() {
@@ -137,11 +139,23 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
      * @param {marked.MarkedOptions} markedOptions
      */
     constructor(private readonly linkedChannel: string,
-        private readonly sender: Sender,
-        private readonly connectionConfig: AutomationClientConnectionRequest,
-        public readonly markedOptions: MarkedOptions = {
+                private readonly sender: Sender,
+                private readonly connectionConfig: AutomationClientConnectionRequest,
+                public readonly markedOptions: MarkedOptions = {
             breaks: false,
         }) {
     }
 
+}
+
+/**
+ * Make a guess whether the `marked` program can render this in markdown in a reasonable amount of time.
+ * We have observed that it can take 60s to render a twelve-item list of sufficient interestingness.
+ * See: https://github.com/atomist/sdm-local/issues/123
+ */
+function withinRenderableSize(markdown: string): boolean {
+    if (!markdown) {
+        return true;
+    }
+    return (markdown.length < 1000) && (markdown.split("\n").length < 12);
 }
