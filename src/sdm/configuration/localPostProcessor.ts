@@ -20,6 +20,7 @@ import {
     HandlerResult,
     logger,
 } from "@atomist/automation-client";
+import { eventStore } from "@atomist/automation-client/globals";
 import { guid } from "@atomist/automation-client/internal/util/string";
 import {
     isInLocalMode,
@@ -33,6 +34,7 @@ import { newCliCorrelationId } from "../../cli/invocation/http/support/newCorrel
 import { EnvConfigWorkspaceContextResolver } from "../../common/binding/EnvConfigWorkspaceContextResolver";
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
 import { CommandHandlerInvocation } from "../../common/invocation/CommandHandlerInvocation";
+import { EventHandlerInvocation } from "../../common/invocation/EventHandlerInvocation";
 import { LocalWorkspaceContext } from "../../common/invocation/LocalWorkspaceContext";
 import {
     parseChannel,
@@ -50,6 +52,7 @@ import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessag
 import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
 import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandlerInProcess";
+import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInProcess";
 import { renderCommandHandlerForm } from "../invocation/renderCommandHandlerFromForm";
 import { createSdmOptions } from "./createSdmOptions";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
@@ -107,12 +110,15 @@ export function configureLocal(
     };
 }
 
-function configureWebEndpoints(configuration: Configuration, localModeConfiguration: LocalModeConfiguration,
+function configureWebEndpoints(configuration: Configuration,
+                               localModeConfiguration: LocalModeConfiguration,
                                teamContext: LocalWorkspaceContext,
                                actionStore: ActionStore) {
     // Disable auth as we're only expecting local clients
     // TODO what if not basic
     _.set(configuration, "http.auth.basic.enabled", false);
+
+    process.env.ATOMIST_WEBHOOK_BASEURL = `http://${defaultHostUrlAliaser().alias()}:${configuration.http.port}`;
 
     configuration.http.customizers = [
         exp => {
@@ -142,6 +148,40 @@ function configureWebEndpoints(configuration: Configuration, localModeConfigurat
                     workspaceId: teamContext.workspaceId,
                 };
                 const r = await invokeCommandHandlerInProcess()(invocation)
+                    .then(resp => res.json(decircle(resp)),
+                        boo => res.status(500).send(boo.message));
+                return res.json(r);
+            });
+            exp.post("/atomist/link-image/teams/:team", async (req, res) => {
+                const payload = req.body;
+                const invocation: EventHandlerInvocation = {
+                    name: "FindArtifactOnImageLinked",
+                    payload: {
+                        ImageLinked: [{
+                            commit: {
+                                sha: payload.git.sha,
+                                repo: {
+                                    owner: payload.git.owner,
+                                    name: payload.git.repo,
+                                    org: {
+                                        provider: {
+                                            providerId: "n/a",
+                                        },
+                                    },
+                                },
+                            },
+                            image: {
+                                image: payload.docker.image,
+                                imageName: payload.docker.image,
+                            },
+                        }],
+                    },
+                };
+                // TODO Hack to get image into the Push
+                eventStore().messages().filter(m => m.value.sha === payload.git.sha && m.value.goalSet && m.value.goalSetId)
+                    .forEach(m => _.set(m.value, "push.after.image.imageName", payload.docker.image));
+                const r = await invokeEventHandlerInProcess(
+                    { workspaceId: req.params.team, workspaceName: req.params.team })(invocation)
                     .then(resp => res.json(decircle(resp)),
                         boo => res.status(500).send(boo.message));
                 return res.json(r);
@@ -210,7 +250,7 @@ function setMessageClient(configuration: Configuration,
                           actionStore: ActionStore) {
     configuration.http.messageClientFactory =
         aca => {
-            // TODo parameterize this - can use multicast
+            // TODO parameterize this - can use multicast
             const machineAddress: AutomationClientConnectionRequest = {
                 baseEndpoint: `http://${defaultHostUrlAliaser().alias()}:2866`,
             };
