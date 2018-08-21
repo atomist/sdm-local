@@ -374,26 +374,36 @@ echo "Goodbye, World!"
 
 sha=\`git rev-parse HEAD\`
 branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook ${h} "$PWD" $branch $sha &
+atomist git-hook ${h} "$PWD" "$branch" "$sha" &
 
 ######### Atomist end #########
 `;
                 assert.strictEqual(n, e);
             }
+            for (const h of ["post-receive"]) {
+                const s = path.join(".git", "hooks", h);
+                const f = await p.findFile(s);
+                const n = await f.getContent();
+                const e = `#!/bin/sh
 
+######## Atomist start ########
+
+ATOMIST_GITHOOK_VERBOSE=true
+export ATOMIST_GITHOOK_VERBOSE
+read oldrev newrev refname
+atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
+
+######### Atomist end #########
+`;
+                assert.strictEqual(n, e);
+            }
         });
 
         it("should add content to project hooks", async () => {
-            const p = InMemoryProject.of(
-                {
-                    path: path.join(".git", "hooks", "post-commit"),
-                    content: "#!/bin/sh\necho post-commit\n",
-                },
-                {
-                    path: path.join(".git", "hooks", "post-merge"),
-                    content: "#!/bin/sh\necho post-merge\n",
-                },
-            );
+            const p = InMemoryProject.of(...hooks.map(h => ({
+                path: path.join(".git", "hooks", h),
+                content: `#!/bin/sh\necho ${h}\n`,
+            })));
             (p as any).baseDir = process.cwd();
             (p as any).makeExecutable = (pth: string) => Promise.resolve(p);
             await addGitHooksToProject(p as any as LocalProject);
@@ -408,16 +418,35 @@ echo ${h}
 
 sha=\`git rev-parse HEAD\`
 branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook ${h} "$PWD" $branch $sha &
+atomist git-hook ${h} "$PWD" "$branch" "$sha" &
 
 ######### Atomist end #########
 `;
                 assert.strictEqual(n, e);
             }
+            for (const h of ["post-receive"]) {
+                const s = path.join(".git", "hooks", h);
+                const f = await p.findFile(s);
+                const n = await f.getContent();
+                const e = `#!/bin/sh
+echo ${h}
 
+######## Atomist start ########
+
+ATOMIST_GITHOOK_VERBOSE=true
+export ATOMIST_GITHOOK_VERBOSE
+read oldrev newrev refname
+atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
+
+######### Atomist end #########
+`;
+                assert.strictEqual(n, e);
+            }
         });
 
     });
+
+    const hooks = ["post-commit", "post-merge", "post-receive"];
 
     describe("removeGitHooksFromProject", () => {
 
@@ -425,56 +454,39 @@ atomist git-hook ${h} "$PWD" $branch $sha &
             const p = InMemoryProject.of();
             (p as any).baseDir = process.cwd();
             await removeGitHooksFromProject(p as any as LocalProject);
-            ["post-commit", "post-merge"].forEach(h => {
+            hooks.forEach(h => {
                 const s = path.join(".git", "hooks", h);
                 assert(!p.fileExistsSync(s));
             });
-
         });
 
         it("should remove hooks from project", async () => {
-            const p = InMemoryProject.of(
-                {
-                    path: path.join(".git", "hooks", "post-commit"),
-                    content: "#!/bin/sh\n# Atomist start #\natomist git-hook post-commit\n# Atomist end #\n",
-                },
-                {
-                    path: path.join(".git", "hooks", "post-merge"),
-                    content: "#!/bin/sh\n\n# Atomist start #\natomist git-hook post-commit\n# Atomist end #\n",
-                },
-            );
+            const p = InMemoryProject.of(...hooks.map(h => ({
+                path: path.join(".git", "hooks", h),
+                content: `#!/bin/sh\n# Atomist start #\natomist git-hook ${h}\n# Atomist end #\n`,
+            })));
             (p as any).baseDir = process.cwd();
             await removeGitHooksFromProject(p as any as LocalProject);
-            ["post-commit", "post-merge"].forEach(h => {
+            hooks.forEach(h => {
                 const s = path.join(".git", "hooks", h);
                 assert(!p.fileExistsSync(s));
             });
-
         });
 
         it("should retain non-Atomist chunks of hooks", async () => {
-            const p = InMemoryProject.of(
-                {
-                    path: path.join(".git", "hooks", "post-commit"),
-                    content: "#!/bin/sh\necho post-commit\n\n# Atomist start #\natomist git-hook post-commit\n# Atomist end #\n",
-                },
-                {
-                    path: path.join(".git", "hooks", "post-merge"),
-                    content: "#!/bin/sh\necho post-merge\n\n# Atomist start #\natomist git-hook post-commit\n# Atomist end #\n",
-                },
-            );
+            const p = InMemoryProject.of(...hooks.map(h => ({
+                path: path.join(".git", "hooks", h),
+                content: `#!/bin/sh\necho ${h}\n\n# Atomist start #\natomist git-hook ${h}\n# Atomist end #\n`,
+            })));
             (p as any).baseDir = process.cwd();
             await removeGitHooksFromProject(p as any as LocalProject);
-            for (const h of ["post-commit", "post-merge"]) {
+            for (const h of hooks) {
                 const s = path.join(".git", "hooks", h);
                 const f = await p.findFile(s);
                 const n = await f.getContent();
-                const e = `#!/bin/sh
-echo ${h}
-`;
+                const e = `#!/bin/sh\necho ${h}\n`;
                 assert.strictEqual(n, e);
             }
-
         });
 
     });
@@ -496,31 +508,41 @@ echo ${h}
 
 sha=\`git rev-parse HEAD\`
 branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook ${h} "$PWD" $branch $sha &
+atomist git-hook ${h} "$PWD" "$branch" "$sha" &
+
+######### Atomist end #########
+`;
+                assert.strictEqual(n, e);
+            }
+            for (const h of ["post-receive"]) {
+                const s = path.join(".git", "hooks", h);
+                const f = await p.findFile(s);
+                const n = await f.getContent();
+                const e = `#!/bin/sh
+
+######## Atomist start ########
+
+ATOMIST_GITHOOK_VERBOSE=true
+export ATOMIST_GITHOOK_VERBOSE
+read oldrev newrev refname
+atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
 
 ######### Atomist end #########
 `;
                 assert.strictEqual(n, e);
             }
             await removeGitHooksFromProject(p as any as LocalProject);
-            ["post-commit", "post-merge"].forEach(h => {
+            hooks.forEach(h => {
                 const s = path.join(".git", "hooks", h);
                 assert(!p.fileExistsSync(s));
             });
-
         });
 
         it("should add and remove content in project hooks", async () => {
-            const p = InMemoryProject.of(
-                {
-                    path: path.join(".git", "hooks", "post-commit"),
-                    content: "#!/bin/sh\necho something non-Atomist-y\n",
-                },
-                {
-                    path: path.join(".git", "hooks", "post-merge"),
-                    content: "#!/bin/sh\necho something non-Atomist-y\n",
-                },
-            );
+            const p = InMemoryProject.of(...hooks.map(h => ({
+                path: path.join(".git", "hooks", h),
+                content: `#!/bin/sh\necho some non-Atomist-y ${h}\n`,
+            })));
             (p as any).baseDir = process.cwd();
             (p as any).makeExecutable = (pth: string) => Promise.resolve(p);
             await addGitHooksToProject(p as any as LocalProject);
@@ -529,29 +551,44 @@ atomist git-hook ${h} "$PWD" $branch $sha &
                 const f = await p.findFile(s);
                 const n = await f.getContent();
                 const e = `#!/bin/sh
-echo something non-Atomist-y
+echo some non-Atomist-y ${h}
 
 ######## Atomist start ########
 
 sha=\`git rev-parse HEAD\`
 branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook ${h} "$PWD" $branch $sha &
+atomist git-hook ${h} "$PWD" "$branch" "$sha" &
+
+######### Atomist end #########
+`;
+                assert.strictEqual(n, e);
+            }
+            for (const h of ["post-receive"]) {
+                const s = path.join(".git", "hooks", h);
+                const f = await p.findFile(s);
+                const n = await f.getContent();
+                const e = `#!/bin/sh
+echo some non-Atomist-y ${h}
+
+######## Atomist start ########
+
+ATOMIST_GITHOOK_VERBOSE=true
+export ATOMIST_GITHOOK_VERBOSE
+read oldrev newrev refname
+atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
 
 ######### Atomist end #########
 `;
                 assert.strictEqual(n, e);
             }
             await removeGitHooksFromProject(p as any as LocalProject);
-            for (const h of ["post-commit", "post-merge"]) {
+            for (const h of hooks) {
                 const s = path.join(".git", "hooks", h);
                 const f = await p.findFile(s);
                 const n = await f.getContent();
-                const e = `#!/bin/sh
-echo something non-Atomist-y
-`;
+                const e = `#!/bin/sh\necho some non-Atomist-y ${h}\n`;
                 assert.strictEqual(n, e);
             }
-
         });
 
     });
