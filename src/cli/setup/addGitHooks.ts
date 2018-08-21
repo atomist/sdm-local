@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-import { LocalProject, NodeFsLocalProject } from "@atomist/sdm";
-import chalk from "chalk";
+import {
+    LocalProject,
+    NodeFsLocalProject,
+} from "@atomist/sdm";
 import * as fs from "fs";
-import { sprintf } from "sprintf-js";
+import * as path from "path";
+
 import { HookEvent } from "../invocation/git/handleGitHookEvent";
-import { errorMessage, infoMessage, warningMessage } from "../ui/consoleOutput";
+import {
+    errorMessage,
+    infoMessage,
+} from "../ui/consoleOutput";
 
 /**
  * Add Git hooks to the given repo
@@ -27,13 +33,11 @@ import { errorMessage, infoMessage, warningMessage } from "../ui/consoleOutput";
  * @return {Promise<void>}
  */
 export async function addGitHooks(projectBaseDir: string) {
-    if (fs.existsSync(`${projectBaseDir}/.git`)) {
+    if (fs.existsSync(path.join(projectBaseDir, ".git"))) {
         const p = await NodeFsLocalProject.fromExistingDirectory(undefined, projectBaseDir);
         return addGitHooksToProject(p);
     } else {
-        infoMessage(
-            chalk.gray(sprintf("Ignoring directory at %s as it is not a git project\n"),
-                projectBaseDir));
+        infoMessage("Ignoring directory at %s as it is not a git project\n", projectBaseDir);
     }
 }
 
@@ -44,61 +48,48 @@ export async function addGitHooksToProject(p: LocalProject) {
             errorMessage("Unable to create git script content for event '%s'", event);
             process.exit(1);
         }
-        await reatomizeScript(p, `.git/hooks/${event}`, markAsAtomistContent(atomistContent));
-        await p.makeExecutable(`.git/hooks/${event}`);
-        infoMessage(chalk.gray(sprintf(
-            `Adding git %s script to project at %s\n`,
-            event,
-            p.baseDir)));
+        await reatomizeScript(p, path.join(".git", "hooks", event), markAsAtomistContent(atomistContent));
+        await p.makeExecutable(path.join(".git", "hooks", event));
     }
 }
 
 export async function removeGitHooks(baseDir: string) {
-    if (fs.existsSync(`${baseDir}/.git`)) {
+    if (fs.existsSync(path.join(baseDir, ".git"))) {
         const p = await NodeFsLocalProject.fromExistingDirectory({ owner: "doesn't", repo: "matter" }, baseDir);
-        for (const hookFile of Object.values(HookEvent)) {
-            await deatomizeScript(p, `/.git/hooks/${hookFile}`);
-        }
+        await removeGitHooksFromProject(p);
     } else {
-        infoMessage(chalk.gray(sprintf(
-            "Ignoring directory at %s as it is not a git project",
-            baseDir)));
+        infoMessage("Ignoring directory at %s as it is not a git project", baseDir);
     }
 }
+
+export async function removeGitHooksFromProject(p: LocalProject) {
+    for (const hookFile of Object.values(HookEvent)) {
+        await deatomizeScript(p, path.join(".git", "hooks", hookFile));
+    }
+}
+
+const atomistContentRegExp = /\n#+\s+Atomist start\s+#+\n[\S\s]*?\n#+\s+Atomist end\s+#+\n/;
 
 /**
  * Update the Atomist script element if found
  */
-async function reatomizeScript(p: LocalProject, scriptPath: string, newContent: string): Promise<any> {
+export async function reatomizeScript(p: LocalProject, scriptPath: string, newContent: string): Promise<LocalProject> {
     const scriptFile = await p.getFile(scriptPath);
     if (!scriptFile) {
-        process.stdout.write(chalk.gray(sprintf(
-            "No git hook %s in project at %s: Adding one\n",
-            scriptPath,
-            p.baseDir)));
-        return p.addFile(scriptPath, newContent);
+        await p.addFile(scriptPath, `#!/bin/sh\n${newContent}`);
+        infoMessage("Added git hook %s in project at %s\n", scriptPath, p.baseDir);
     } else {
         const content = await scriptFile.getContent();
-        const start = content.indexOf(AtomistStartComment);
-        if (!start) {
-            return scriptFile.setContent(content + newContent);
+        if (atomistContentRegExp.test(content)) {
+            const updatedAtomist = content.replace(atomistContentRegExp, newContent);
+            await scriptFile.setContent(updatedAtomist);
+            infoMessage("Updated Atomist content in git hook %s in project at %s\n", scriptPath, p.baseDir);
+        } else {
+            await scriptFile.setContent(content + newContent);
+            infoMessage("Added Atomist content to git hook %s in project at %s\n", scriptPath, p.baseDir);
         }
-
-        const end = content.indexOf(AtomistEndComment);
-        if (start < 0 || end < 0) {
-            infoMessage("No Atomist content found in git hook %s in project at %s\n",
-                scriptPath,
-                p.baseDir,
-                chalk.gray(content));
-        }
-        const updatedAtomist = content.slice(0, start) + newContent + content.substr(end + AtomistEndComment.length);
-        await scriptFile.setContent(updatedAtomist);
-        infoMessage(chalk.gray(sprintf(
-            "Added Atomist content to git hook %s in project at %s\n",
-            scriptPath,
-            p.baseDir,
-            updatedAtomist)));
     }
+    return p;
 }
 
 /**
@@ -107,42 +98,26 @@ async function reatomizeScript(p: LocalProject, scriptPath: string, newContent: 
  * @param {string} scriptPath
  * @return {Promise<void>}
  */
-async function deatomizeScript(p: LocalProject, scriptPath: string) {
+export async function deatomizeScript(p: LocalProject, scriptPath: string): Promise<LocalProject> {
     const script = await p.getFile(scriptPath);
     if (!script) {
-        process.stdout.write(chalk.gray(sprintf(
-            "No git hook %s in project at %s\n",
-            scriptPath,
-            p.baseDir)));
+        infoMessage("No git hook %s in project at %s\n", scriptPath, p.baseDir);
     } else {
         const content = await script.getContent();
-        const start = content.indexOf(AtomistStartComment);
-        const end = content.indexOf(AtomistEndComment);
-        if (start < 0 || end < 0) {
-            warningMessage("remove-git-hooks: No Atomist content found in git hook %s in project at %s\n",
-                scriptPath,
-                p.baseDir,
-                chalk.gray(content));
-        }
-        const nonAtomist = content.slice(0, start) + content.substr(end + AtomistEndComment.length);
-        if (nonAtomist.trim().length > 0) {
-            await script.setContent(nonAtomist);
-            infoMessage(chalk.gray(sprintf(
-                "Removing Atomist content from git hook %s in project at %s\n",
-                scriptPath,
-                p.baseDir,
-                nonAtomist)));
-        } else {
+        const nonAtomist = content.replace(atomistContentRegExp, "");
+        if (nonAtomist === content) {
+            infoMessage("No Atomist content found in git hook %s in project at %s, ignoring\n",
+                scriptPath, p.baseDir);
+        } else if (/^(?:#!\/bin\/sh)?\s*$/.test(nonAtomist)) {
             await p.deleteFile(scriptPath);
-            infoMessage(chalk.gray(sprintf(
-                "Removing Atomist git hook %s in project at %s\n",
-                scriptPath,
-                p.baseDir)));
+            infoMessage("Deleted empty git hook %s in project at %s\n", scriptPath, p.baseDir);
+        } else {
+            await script.setContent(nonAtomist);
+            infoMessage("Removed Atomist content from git hook %s in project at %s\n", scriptPath, p.baseDir);
         }
     }
+    return p;
 }
-
-/* tslint:disable */
 
 /**
  * Indexed templates fragments for use in git hooks
@@ -150,37 +125,28 @@ async function deatomizeScript(p: LocalProject, scriptPath: string) {
  */
 function scriptFragments(): { [key: string]: string } {
 
-    // TODO why does the hook need to be verbose?
     return {
-        "post-receive": `
-export ATOMIST_GITHOOK_VERBOSE="true"
-
-read oldrev newrev refname
-atomist-githook pre-receive \${PWD} $refname $newrev &
-`,
         "post-commit": `
-sha=$(git rev-parse HEAD)
-branch=$(git rev-parse --abbrev-ref HEAD)
-atomist-githook post-commit \${PWD} $branch $sha &
+sha=\`git rev-parse HEAD\`
+branch=\`git rev-parse --abbrev-ref HEAD\`
+atomist git-hook post-commit "$PWD" $branch $sha &
 `,
         "post-merge": `
-sha=$(git rev-parse HEAD)
-branch=$(git rev-parse --abbrev-ref HEAD)
-atomist-githook post-merge \${PWD} $branch $sha &
+sha=\`git rev-parse HEAD\`
+branch=\`git rev-parse --abbrev-ref HEAD\`
+atomist git-hook post-merge "$PWD" $branch $sha &
 `,
     };
 }
 
-const AtomistStartComment = "######## Atomist start #######";
-const AtomistEndComment = "######## Atomist end #########";
+const AtomistStartComment = "\n######## Atomist start ########\n";
+const AtomistEndComment = "\n######### Atomist end #########\n";
 
 /**
  * Make it clear this is Atomist content. Makes it easy to remove later.
  * @param {string} toAppend
  * @return {string}
  */
-function markAsAtomistContent(toAppend: string) {
-    return `\n${AtomistStartComment}\n${toAppend}\n${AtomistEndComment}\n`;
+export function markAsAtomistContent(toAppend: string) {
+    return `${AtomistStartComment}${toAppend}${AtomistEndComment}`;
 }
-
-

@@ -25,18 +25,25 @@ import { GitHookInvocation } from "../invocation/git/handleGitHookEvent";
  * @param teamContextResolver resolver to find team id
  * @return {GitHookInvocation}
  */
-export function argsToGitHookInvocation(argv: string[],
-                                        teamContextResolver: WorkspaceContextResolver): GitHookInvocation {
+export function argsToGitHookInvocation(
+    argv: string[],
+    teamContextResolver: WorkspaceContextResolver,
+): GitHookInvocation {
+
     if (argv.length < 6) {
-        logger.info("Not enough args to run Git hook: All args to git hook invocation are %j", argv);
-        process.exit(0);
+        logger.error("Not enough arguments to run Git hook, command line: %j", argv);
+        process.exit(1);
     }
 
-    const args = argv.slice(2);
+    const args = (argv[2] === "git-hook") ? argv.slice(3) : argv.slice(2);
+    if (args.length < 4) {
+        logger.error("Not enough arguments to run Git hook, provided arguments: %j", args);
+        process.exit(1);
+    }
+
     const event: string = args[0];
     // We can be invoked in the .git/hooks directory or from the git binary itself
-    const baseDir = args[1].replace(/.git[\/hooks]?$/, "")
-        .replace(/\/$/, "");
+    const baseDir = args[1].replace(/\.git(?:\/hooks)?\/?$/, "").replace(/\/$/, "");
     const branch = args[2].replace("refs/heads/", "");
     const sha = args[3];
 
