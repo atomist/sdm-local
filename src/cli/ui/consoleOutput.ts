@@ -40,16 +40,27 @@ export async function logExceptionsToConsole(what: () => Promise<any>,
     }
 }
 
+/**
+ * Display an error message to the console, supporting sprintf style
+ * @param msg message
+ * @param args arguments
+ */
 export function errorMessage(msg: string, ...args: any[]) {
     process.stdout.write(chalk.red(sprintf("✘ " + msg, ...args)));
 }
 
+/**
+ * Display a warning message to the console, supporting sprintf style
+ * @param msg message
+ * @param args arguments
+ */
 export function warningMessage(msg: string, ...args: any[]) {
     process.stdout.write(chalk.yellowBright(sprintf("⚠︎ " + msg, ...args)));
 }
 
 /**
- * Get the user's attention without implying there's a problem
+ * Get the user's attention without implying there's a problem,
+ * supporting sprintf style
  * @param {string} msg
  * @param args
  */
@@ -57,13 +68,18 @@ export function adviceMessage(msg: string, ...args: any[]) {
     process.stdout.write(chalk.cyan(sprintf("⚠︎ " + msg, ...args)));
 }
 
+/**
+ * Display an info message to the console, supporting sprintf style
+ * @param msg message
+ * @param args arguments
+ */
 export function infoMessage(msg: string, ...args: any[]) {
     process.stdout.write(chalk.cyan(sprintf(msg, ...args)));
 }
 
 /**
  * Dynamically build an advice block from one or more documentation chunks
- * @param {string} relativePaths
+ * @param {string} relativePaths paths relative to the base of the current project
  */
 export function adviceDoc(...relativePaths: string[]) {
     const docChunk = relativePaths.map(renderProjectDocChunk).join("\n\n");

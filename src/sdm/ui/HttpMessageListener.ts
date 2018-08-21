@@ -153,6 +153,10 @@ export function messageListenerRoot(demonPort: number): string {
     return `http://${defaultHostUrlAliaser().alias()}:${demonPort}/`;
 }
 
+/**
+ * Is the all messages message listener running?
+ * @param demonPort port to check on
+ */
 export async function isFeedListenerRunning(demonPort: number = AllMessagesPort): Promise<boolean> {
     return canConnectTo(messageListenerRoot(demonPort));
 }

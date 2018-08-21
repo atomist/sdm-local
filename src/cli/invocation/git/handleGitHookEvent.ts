@@ -29,17 +29,33 @@ export interface GitHookInvocation extends EventOnRepo {
 }
 
 /**
- * Git hooks we support
+ * git hooks we support. All hooks are "post" hooks, meaning that
+ * Atomist will never prevent completion of a git operation, but
+ * will be invoked after it is complete.
  * @type {string[]}
  */
 export enum HookEvent {
+    /**
+     * Used to respond to commits. Main Atomist entry point.
+     */
     PostCommit = "post-commit",
+
+    /**
+     * Used when a branch has been merged
+     */
     PostMerge = "post-merge",
+
+    /**
+     * Server side hook. Atomist will clone local projects, using the
+     * file location as a remote. If it makes a transform or autofix,
+     * the push from the cloned repo will result in this server side hook
+     * firing on the original local repo.
+     */
     PostReceive = "post-receive",
 }
 
 /**
- * Invoking the target remote client for this push.
+ * Invoke an SDM to handle this event.
  * @param payload event data
  * @return {Promise<any>}
  */

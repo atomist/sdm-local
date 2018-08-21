@@ -31,7 +31,7 @@ import {
 } from "./support/yargBuilder";
 
 /**
- * Add a command to replay execution following a git event
+ * Add a command to replay Atomist processing of a git event.
  * @param {YargBuilder} yargs
  */
 export function addReplayCommand(yargs: YargBuilder,
