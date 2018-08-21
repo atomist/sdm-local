@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm/compare/0.1.8...HEAD)
 
+### Changed
+
+-   Migrate to atomist git-hook, fix bugs. [#119](https://github.com/atomist/sdm-local/issues/119)
+
 ## [0.1.8](https://github.com/atomist/sdm/compare/0.1.7...0.1.8) - 2018-08-20
 
 ## [0.1.7](https://github.com/atomist/sdm/compare/0.1.6...0.1.7) - 2018-08-19
