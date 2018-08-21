@@ -61,7 +61,6 @@ export async function handleGitHookEvent(cc: AutomationClientConnectionRequest,
 
     const target: InvocationTarget = {
         workspaceId: payload.workspaceId,
-        // TODO fix
         workspaceName: payload.workspaceId,
     };
 
