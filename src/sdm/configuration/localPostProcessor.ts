@@ -49,7 +49,6 @@ import {
 import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessageClient";
 import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
-import { SystemNotificationMessageClient } from "../binding/message/SystemNotificationMessageClient";
 import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandlerInProcess";
 import { renderCommandHandlerForm } from "../invocation/renderCommandHandlerFromForm";
 import { createSdmOptions } from "./createSdmOptions";
@@ -211,7 +210,7 @@ function setMessageClient(configuration: Configuration,
                           actionStore: ActionStore) {
     configuration.http.messageClientFactory =
         aca => {
-            // TOD parameterize this - can use multicast
+            // TODo parameterize this - can use multicast
             const machineAddress: AutomationClientConnectionRequest = {
                 baseEndpoint: `http://${defaultHostUrlAliaser().alias()}:2866`,
             };
@@ -237,7 +236,6 @@ function setMessageClient(configuration: Configuration,
                     actionStore,
                     transient: true,
                 }) : undefined,
-                localMachineConfig.useSystemNotifications ? new SystemNotificationMessageClient(channel) : undefined,
             );
         };
 }

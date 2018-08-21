@@ -22,7 +22,6 @@ export function defaultLocalLocalModeConfiguration(): LocalModeConfiguration {
     return {
         preferLocalSeeds: true,
         mergeAutofixes: true,
-        useSystemNotifications: false,
         repositoryOwnerParentDirectory: determineDefaultRepositoryOwnerParentDirectory(),
     };
 }
