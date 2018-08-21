@@ -15,6 +15,7 @@
  */
 
 import { logger } from "@atomist/automation-client";
+import { eventStore } from "@atomist/automation-client/globals";
 import {
     GraphClient,
     MutationOptions,
@@ -54,7 +55,24 @@ export class LocalGraphClient implements GraphClient {
         // TODO we are hard coding this to ensure that a particular query coming from automation-client is satisfied.
         // How do we do this in a better, more extensible way?
         const qo = optionsOrName as QueryOptions<any>;
-        if (!!qo.query && qo.query.trim().startsWith("query ChatTeam")) {
+        if (qo.name === "SdmGoalsForCommit" && qo.variables && qo.variables.offset === 0) {
+            const sha = qo.variables.sha;
+            const goals = eventStore().messages()
+                .filter(m => m.value.sha === sha && m.value.goalSet && m.value.goalSetId)
+                .map(m => m.value);
+            return {
+                SdmGoal: goals,
+            } as any;
+        } else if (qo.name === "PushForSdmGoal" && qo.variables) {
+            const sha = qo.variables.sha;
+            const goal = eventStore().messages()
+                .find(m => m.value.sha === sha && m.value.goalSet && m.value.goalSetId).value;
+            return {
+                Commit: [{
+                    pushes: [goal.push],
+                }],
+            } as any;
+        } else if (!!qo.query && qo.query.trim().startsWith("query ChatTeam")) {
             const ctr = {
                 ChatTeam: [{
                     id: "any",

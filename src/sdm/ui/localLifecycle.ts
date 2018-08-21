@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-import { ExtensionPack, OnPushToAnyBranch, ReviewComment, SdmGoalState, SoftwareDeliveryMachine } from "@atomist/sdm";
+import {
+    ExtensionPack,
+    OnPushToAnyBranch,
+    ReviewComment,
+    SdmGoalState,
+    SoftwareDeliveryMachine,
+} from "@atomist/sdm";
 import { isInLocalMode } from "@atomist/sdm-core";
 import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
 import { metadata } from "@atomist/sdm/api-helper/misc/extensionPack";
 import chalk from "chalk";
-import Push = OnPushToAnyBranch.Push;
 import { DefaultWorkspaceContextResolver } from "../../common/binding/defaultWorkspaceContextResolver";
 import { HttpBuildStatusUpdater } from "../binding/HttpBuildStatusUpdater";
 import { isFileSystemRemoteRepoRef } from "../binding/project/FileSystemRemoteRepoRef";
+import Push = OnPushToAnyBranch.Push;
 
 /**
  * Add Local IO to the given SDM.
