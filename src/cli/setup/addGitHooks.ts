@@ -124,12 +124,15 @@ export async function deatomizeScript(p: LocalProject, scriptPath: string): Prom
  * @return {{"pre-receive": string}}
  */
 function scriptFragments(): { [key: string]: string } {
-
     return {
+        "post-receive": `
+export ATOMIST_GITHOOK_VERBOSE="true"
+read oldrev newrev refname
+atomist-githook pre-receive \${PWD} $refname $newrev &
+`,
         "post-commit": `
 sha=\`git rev-parse HEAD\`
-branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook post-commit "$PWD" $branch $sha &
+    atomist git-hook post-commit "$PWD" $branch $sha &
 `,
         "post-merge": `
 sha=\`git rev-parse HEAD\`

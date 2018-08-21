@@ -35,6 +35,7 @@ export interface GitHookInvocation extends EventOnRepo {
 export enum HookEvent {
     PostCommit = "post-commit",
     PostMerge = "post-merge",
+    PostReceive = "post-receive",
 }
 
 /**
