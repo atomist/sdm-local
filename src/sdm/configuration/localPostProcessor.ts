@@ -29,6 +29,7 @@ import * as assert from "assert";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionRequest";
+import { newCliCorrelationId } from "../../cli/invocation/http/support/newCorrelationId";
 import { EnvConfigWorkspaceContextResolver } from "../../common/binding/EnvConfigWorkspaceContextResolver";
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
 import { CommandHandlerInvocation } from "../../common/invocation/CommandHandlerInvocation";
@@ -53,7 +54,6 @@ import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandle
 import { renderCommandHandlerForm } from "../invocation/renderCommandHandlerFromForm";
 import { createSdmOptions } from "./createSdmOptions";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
-import { newCliCorrelationId } from "../../cli/invocation/http/support/newCorrelationId";
 
 /**
  * Configures an automation client in local mode
@@ -172,8 +172,8 @@ function configureWebEndpoints(configuration: Configuration, localModeConfigurat
                 return invokeCommandHandlerInProcess()(command)
                     .then(r => res.json(decircle(r)),
                         boo => {
-                            logger.error("Failed to serve request %s: %s", req.url, boo.stack)
-                            res.status(500).send(boo.message)
+                            logger.error("Failed to serve request %s: %s", req.url, boo.stack);
+                            res.status(500).send(boo.message);
                         });
             });
         },
