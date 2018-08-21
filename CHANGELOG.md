@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Migrate to atomist git-hook, fix bugs. [#119](https://github.com/atomist/sdm-local/issues/119)
+-   Update dependencies, downgrade JavaScript. [#120](https://github.com/atomist/sdm-local/issues/120)
 
 ## [0.1.8](https://github.com/atomist/sdm/compare/0.1.7...0.1.8) - 2018-08-20
 
