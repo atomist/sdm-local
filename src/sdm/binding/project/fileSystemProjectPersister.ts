@@ -40,12 +40,12 @@ import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
  * @return {ProjectPersister}
  */
 export function fileSystemProjectPersister(teamContext: LocalWorkspaceContext,
-                                           localModeCofiguration: LocalModeConfiguration,
+                                           localModeConfiguration: LocalModeConfiguration,
                                            automationClientFinder: AutomationClientFinder): ProjectPersister {
     return async (p, _, id, params) => {
-        const baseDir = `${localModeCofiguration.repositoryOwnerParentDirectory}${path.sep}${id.owner}${path.sep}${id.repo}`;
+        const baseDir = `${localModeConfiguration.repositoryOwnerParentDirectory}${path.sep}${id.owner}${path.sep}${id.repo}`;
         const frr = FileSystemRemoteRepoRef.fromDirectory({
-            repositoryOwnerParentDirectory: localModeCofiguration.repositoryOwnerParentDirectory,
+            repositoryOwnerParentDirectory: localModeConfiguration.repositoryOwnerParentDirectory,
             baseDir,
         });
         // Override target repo to get file url
@@ -67,7 +67,7 @@ export function fileSystemProjectPersister(teamContext: LocalWorkspaceContext,
         await runAndLog(`git commit -a -m "Initial commit from Atomist"`, { cwd: baseDir });
         await addGitHooksToProject(createdProject);
 
-        await emitEventsForNewProject(teamContext, localModeCofiguration, createdProject, id, automationClientFinder);
+        await emitEventsForNewProject(teamContext, localModeConfiguration, createdProject, id, automationClientFinder);
         return successOn(createdProject);
     };
 }
