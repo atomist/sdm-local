@@ -83,7 +83,7 @@ function configurationFor(options: EmbeddedMachineOptions): Configuration {
     cfg.listeners = [];
 
     cfg.token = "not.your.token";
-    cfg.apiKey = "not.your.token";
+    cfg.apiKey = "not.your.apiKey";
 
     cfg.postProcessors = [
         configureLocal({
@@ -92,6 +92,10 @@ function configurationFor(options: EmbeddedMachineOptions): Configuration {
             preferLocalSeeds: false,
             forceLocal: true,
         }),
+        async config => {
+            delete process.env.ATOMIST_MODE;
+            return config;
+        },
         configureSdm(createMachine(options.configure), {}),
     ];
 
