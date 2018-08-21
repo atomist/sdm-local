@@ -18,7 +18,7 @@ import * as _ from "lodash";
 import * as yargs from "yargs";
 import { combine } from "./combining";
 import { commandLineAlias, dropFirstWord, parseCommandLine, verifyOneWord } from "./commandLine";
-import { DoNothing, handleFunctionFromInstructions, HandleInstructions, handleInstructionsFromFunction } from "./handleInstruction";
+import { doesSomething, DoNothing, handleFunctionFromInstructions, HandleInstructions, handleInstructionsFromFunction } from "./handleInstruction";
 import {
     CommandLineParameter, ConflictResolution, isYargCommand,
     ParameterOptions, SupportedSubsetOfYargsCommandMethod, YargBuilder, YargCommand, YargCommandWordSpec, YargRunnableCommandSpec,
@@ -42,8 +42,11 @@ export class YargCommandWord implements YargCommand {
 
     constructor(spec: YargCommandWordSpec) {
         this.nestedCommands = spec.nestedCommands || [];
-        this.runnableCommand = spec.runnableCommand;
-        if (this.runnableCommand) { verifyOneWord(this.runnableCommand.commandLine); }
+        if (spec.runnableCommand && doesSomething(spec.runnableCommand.handleInstructions)) {
+            this.runnableCommand = spec.runnableCommand;
+            verifyOneWord(this.runnableCommand.commandLine);
+            verifyEmpty(this.runnableCommand.positional);
+        }
         this.conflictResolution = spec.conflictResolution;
         this.description = spec.description;
         this.commandName = spec.commandName;
@@ -102,7 +105,8 @@ export class YargCommandWord implements YargCommand {
     }
 
     /**
-     * have they typed enough?
+     * if true, this command has a handler function
+     * if false, there are only subcommands
      */
     public get isRunnable(): boolean {
         return !!this.runnableCommand;
@@ -134,6 +138,7 @@ export class YargCommandWord implements YargCommand {
                     command: self.commandName,
                     describe: condenseDescriptions(childDescriptions, myDescription),
                     builder: y => {
+                        y.version(false);
                         nestedCommandSavers.forEach(c => c.save(yarg));
                         if (!self.runnableCommand && self.nestedCommands.length > 0) {
                             y.demandCommand();
@@ -185,6 +190,12 @@ export function imitateYargsCommandMethod(params: SupportedSubsetOfYargsCommandM
 
     return yargsSpecToMySpecs(params).map(spec =>
         multilevelCommand(spec, params.describe, conflictResolution, params.builder));
+}
+
+function verifyEmpty(positionalArgs: any[]) {
+    if (positionalArgs.length > 1) {
+        throw new Error("Positional arguments are only ok in a PositionalCommand");
+    }
 }
 
 function yargsSpecToMySpecs(params: SupportedSubsetOfYargsCommandMethod): YargRunnableCommandSpec[] {

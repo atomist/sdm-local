@@ -29,6 +29,7 @@ import * as assert from "assert";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionRequest";
+import { newCliCorrelationId } from "../../cli/invocation/http/support/newCorrelationId";
 import { EnvConfigWorkspaceContextResolver } from "../../common/binding/EnvConfigWorkspaceContextResolver";
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
 import { CommandHandlerInvocation } from "../../common/invocation/CommandHandlerInvocation";
@@ -147,7 +148,7 @@ function configureWebEndpoints(configuration: Configuration, localModeConfigurat
                 return res.json(r);
             });
             exp.get(ActionRoute + "/:description", async (req, res) => {
-                logger.debug("Action clicked:! params=%j; query=%j", req.params, req.query);
+                logger.debug("Action clicked: params=%j; query=%j", req.params, req.query);
                 const actionKey = req.query.key;
                 if (!actionKey) {
                     logger.error("No action key provided. Please include ?key=< actionKey that has been stored by this sdm >");
@@ -162,6 +163,7 @@ function configureWebEndpoints(configuration: Configuration, localModeConfigurat
                 const command = (storedAction as any).command;
                 command.workspaceName = teamContext.workspaceName;
                 command.workspaceId = teamContext.workspaceName;
+                command.correlationId = await newCliCorrelationId();
                 logger.debug("The parameters are: %j", command.parameters);
                 if (!command) {
                     logger.error("No command stored on action object: %j", storedAction);
@@ -169,7 +171,10 @@ function configureWebEndpoints(configuration: Configuration, localModeConfigurat
                 }
                 return invokeCommandHandlerInProcess()(command)
                     .then(r => res.json(decircle(r)),
-                        boo => res.status(500).send(boo.message));
+                        boo => {
+                            logger.error("Failed to serve request %s: %s", req.url, boo.stack);
+                            res.status(500).send(boo.message);
+                        });
             });
         },
     ];

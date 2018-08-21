@@ -55,11 +55,12 @@ function whyNotCombine(yss: YargCommand[]): ValidationError[] {
     if (yss.some(hasPositionalArguments)) {
         reasons.push({ complaint: "Cannot combine commands with positional arguments", contexts: [] });
     }
-    const yscws = yss; // as Array<YargSaverCommandWord | YargSaverPositionalCommand>;
+    const yscws = yss;
     const completeCommands = yscws.filter(ys => ys.isRunnable);
     if (completeCommands.length > 1) {
         reasons.push({
-            complaint: "There are two complete commands. Descriptions: " + completeCommands.map(c => c.description).join("; "),
+            complaint: `There are ${completeCommands.length} complete commands:\n` +
+                completeCommands.map(describeConflictingCommand).join("\n"),
             contexts: [],
         });
     }
@@ -72,6 +73,10 @@ function whyNotCombine(yss: YargCommand[]): ValidationError[] {
     }
 
     return reasons;
+}
+
+function describeConflictingCommand(yc: YargCommand): string {
+    return `    ${yc.commandName}\t${yc.description}`;
 }
 
 function thereIsConflict(yss: YargCommand[]): boolean {
