@@ -125,12 +125,12 @@ async function superclone(clients: AutomationClientInfo[],
         return;
     }
     const { base, owner, repo } = repoInfo;
-    infoMessage(`Cloning git remote project from ${base}: args to git clone were ${args}\n`);
 
     const orgDir = repositoryOwnerDirectory + "/" + owner;
     if (!fs.existsSync(orgDir)) {
         fs.mkdirSync(orgDir);
     }
+    infoMessage(`Cloning git remote project from ${base} into ${orgDir}: args to git clone were ${args}\n`);
     infoMessage("Owner=%s, repo=%s, cloning under %s\n", owner, repo, orgDir);
     await promisify(exec)(`git clone ${args}`,
         { cwd: orgDir });
