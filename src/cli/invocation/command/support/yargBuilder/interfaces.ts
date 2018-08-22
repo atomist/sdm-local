@@ -113,7 +113,8 @@ export function dropWithWarningsInHelp(commandDescription: string): ConflictReso
 /**
  * If more than one of this command appear, ask the user to choose between them.
  * The uniqueChoice will distinguish them.
- * If two of the same command with the same uniqueChoice conflict, fallback to drop with warning.
+ * If two of the same command with the same uniqueChoice conflict, or if one of the commands insists on failing everything
+ * in case of conflict, fallback to drop with warning.
  * @param commandDescription 
  * @param choice 
  */

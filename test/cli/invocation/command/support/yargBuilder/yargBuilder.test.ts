@@ -112,6 +112,7 @@ describe("yarg saver", () => {
         assert.deepEqual(tree, expected, JSON.stringify(tree, null, 2));
 
     });
+
 });
 
 function treeifyNested(c: any, tree: { [key: string]: any } = {}) {
