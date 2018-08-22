@@ -1,7 +1,10 @@
 #!/usr/bin/env ts-node
 
 import * as yargs from "yargs";
-import { freshYargBuilder, promptForAChoiceWhenNecessary } from "../../../../../../src/cli/invocation/command/support/yargBuilder";
+import {
+    freshYargBuilder,
+    promptForAChoiceWhenNecessary
+} from "../../../../../../src/cli/invocation/command/support/yargBuilder";
 
 const yb = freshYargBuilder();
 yb.withSubcommand({

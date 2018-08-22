@@ -50,24 +50,23 @@ function errorToString(ve: ValidationError): string {
     return prefix + ve.complaint;
 }
 
+/**
+ * Can we combine all of these commands into one, as they are, would it be a problem?
+ * @param yss 
+ */
 function whyNotCombine(yss: YargCommand[]): ValidationError[] {
+    if (yss.length <= 1) {
+        return [];
+    }
     const reasons: ValidationError[] = [];
     if (yss.some(hasPositionalArguments)) {
         reasons.push({ complaint: "Cannot combine commands with positional arguments", contexts: [] });
     }
-    const yscws = yss;
-    const completeCommands = yscws.filter(ys => ys.isRunnable);
+    const completeCommands = yss.filter(ys => ys.isRunnable);
     if (completeCommands.length > 1) {
         reasons.push({
             complaint: `There are ${completeCommands.length} complete commands:\n` +
                 completeCommands.map(describeConflictingCommand).join("\n"),
-            contexts: [],
-        });
-    }
-    const meaningfulInstructions = yscws.filter(ys => ys.isRunnable);
-    if (meaningfulInstructions.length > 1) {
-        reasons.push({
-            complaint: "There are two functions to respond to",
             contexts: [],
         });
     }
