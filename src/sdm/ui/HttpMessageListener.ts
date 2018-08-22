@@ -28,6 +28,9 @@ import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUr
 import { isFailureMessage } from "../configuration/support/NotifyOnCompletionAutomationEventListener";
 import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
 
+/**
+ * Construction arguments to HttpMessageListener
+ */
 export class HttpMessageListenerParameters {
 
     public readonly port: number;
@@ -52,7 +55,9 @@ export class HttpMessageListenerParameters {
 
 /**
  * Start process to listen to HTTP POSTs from HttpClientMessageClient
- * and display them to the console.
+ * and display them to the console. Supports both both structured
+ * messages coming from a MessageClient and raw output sent
+ * for diagnostic or other purposes.
  * The /message endpoint takes StreamedMessage
  * The /write endpoint takes a simple { message }
  */

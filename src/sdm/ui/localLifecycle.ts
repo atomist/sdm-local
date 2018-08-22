@@ -32,8 +32,8 @@ import Push = OnPushToAnyBranch.Push;
 
 /**
  * Add Local IO to the given SDM.
- * Analogous to Slack lifecycle.
- * Messages will be formatted for console output.
+ * Analogous to the Slack lifecycle provided by the Atomist bot.
+ * Messages sent are formatted for console output.
  */
 export const LocalLifecycle: ExtensionPack = {
     ...metadata("local-lifecycle"),

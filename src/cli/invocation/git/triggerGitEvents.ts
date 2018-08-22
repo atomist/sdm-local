@@ -26,7 +26,8 @@ import { renderEventDispatch } from "../../ui/renderClientInfo";
 import { handleGitHookEvent } from "./handleGitHookEvent";
 
 /**
- * Trigger git events to the given depth in the current project repo
+ * Trigger git events to the given depth in the current project repo,
+ * as determined by the current working directory.
  * @param clients clients to onDispatch to
  * @param {string} event
  * @param {number} depth

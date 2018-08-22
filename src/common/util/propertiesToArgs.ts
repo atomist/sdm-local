@@ -16,6 +16,11 @@
 
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 
+/**
+ * Read the properties of the given object and convert them to the
+ * Arg type used in the automation-client API.
+ * @param o object
+ */
 export function propertiesToArgs(o: any): Arg[] {
     if (Array.isArray(o)) {
         return o;

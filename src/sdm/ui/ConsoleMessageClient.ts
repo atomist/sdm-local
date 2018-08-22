@@ -41,8 +41,17 @@ marked.setOptions({
     renderer: new TerminalRenderer(),
 });
 
+/**
+ * Function used to send output. Useful for testing. Default implementation
+ * writes to stdout.
+ */
 export type Sender = (msg: string) => Promise<any>;
 
+/**
+ * Sender that writes to console using process.stdout.
+ * This works even if console out is rerouted to logging.
+ * @param msg message
+ */
 export const ProcessStdoutSender: Sender = msg => Promise.resolve(process.stdout.write(msg));
 
 /**
