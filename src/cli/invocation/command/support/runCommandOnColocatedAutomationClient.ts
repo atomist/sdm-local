@@ -17,15 +17,18 @@
 import { HandlerResult, logger } from "@atomist/automation-client";
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/metadata/automationMetadata";
+import { RepoId } from "@atomist/sdm";
 import chalk from "chalk";
 import * as inquirer from "inquirer";
 import * as _ from "lodash";
+import { determineDefaultRepositoryOwnerParentDirectory } from "../../../../common/configuration/defaultLocalModeConfiguration";
 import { CommandHandlerInvocation } from "../../../../common/invocation/CommandHandlerInvocation";
 import { InvocationTarget } from "../../../../common/invocation/InvocationTarget";
 import { ExtraParametersMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/CommandLineMappedParameterResolver";
 import { FromAnyMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/FromAnyMappedParameterResolver";
 import { MappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/MappedParameterResolver";
 import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/project/ExpandedTreeMappedParameterResolver";
+import { expandedTreeRepoFinder } from "../../../../sdm/binding/project/expandedTreeRepoFinder";
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
 import { HttpMessageListener } from "../../../../sdm/ui/HttpMessageListener";
 import { warningMessage } from "../../../ui/consoleOutput";
@@ -188,15 +191,55 @@ async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[
         });
 }
 
+/**
+ * Field handled specially for transform targets
+ */
+const TargetsOwnerField = "targets.owner";
+
+/**
+ * Field handled specially for transform targets
+ */
+const TargetsRepoField = "targets.repo";
+
+/**
+ * Gather missing mapped parameters from the command line and add them to args
+ * @param {CommandHandlerMetadata} hi
+ * @param mappedParameters mapped parameters we've already found
+ * @return {object}
+ */
 async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mappedParameters: Array<{ name: string; value: string }>): Promise<void> {
-    const questions =
+    const allRepos = await determineAvailableRepos();
+    const questions: inquirer.Question[] =
         mappedParameters
             .filter(mp => !mp.value)
             .map(p => {
                 const nameToUse = convertToDisplayable(p.name);
                 return {
                     name: nameToUse,
-                    message: `(mapped parameter) ${nameToUse}`,
+                    message: () => {
+                        switch (p.name) {
+                            case TargetsOwnerField :
+                                return "Org to target";
+                            case TargetsRepoField :
+                                return "Repos to target: .* for all";
+                            default :
+                                return `(mapped parameter) ${nameToUse}`;
+                        }
+                    },
+                    // Use a dropdown for orgs and repos
+                    type: [TargetsOwnerField, TargetsRepoField].includes(p.name) ? "list" : "string",
+                    // Choices will be undefined unless it's a list type
+                    choices: (answer: any) => {
+                        switch (p.name) {
+                            case TargetsOwnerField :
+                                return _.uniq(allRepos.map(r => r.owner));
+                            case TargetsRepoField :
+                                // Used the mapped name, which will be bound to the answer
+                                const owner = answer[convertToDisplayable(TargetsOwnerField)];
+                                return allRepos.filter(r => r.owner === owner).map(r => r.repo).concat(".*");
+                            default: return undefined;
+                        }
+                    },
                     validate: (value: any) => {
                         // We don't really know how to validate this,
                         // but make the user input something
@@ -215,6 +258,15 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
             _.remove(mappedParameters, arg => arg.name === enteredName);
             mappedParameters.push({ name: convertToUsable(enteredName), value: fromPrompt[enteredName] });
         });
+}
+
+/**
+ * Return all available repos
+ * @param repositoryOwnerParentDirectory base of expanded tree
+ */
+async function determineAvailableRepos(
+    repositoryOwnerParentDirectory: string = determineDefaultRepositoryOwnerParentDirectory()): Promise<RepoId[]> {
+    return expandedTreeRepoFinder(repositoryOwnerParentDirectory)(undefined);
 }
 
 /**
