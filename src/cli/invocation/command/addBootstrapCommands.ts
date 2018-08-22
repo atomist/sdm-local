@@ -45,7 +45,7 @@ export function addBootstrapCommands(yargs: YargBuilder) {
 }
 
 function addSdmGenerator(yargs: YargBuilder) {
-    const choices = ["spring", "blank", "sample"];
+    const choices = ["blank", "sample", "spring"];
     const typeDescription = "Type of SDM to create";
     const name = "newSdm";
     addEmbeddedCommand(yargs, {
