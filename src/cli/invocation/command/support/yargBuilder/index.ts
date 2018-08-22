@@ -22,5 +22,9 @@ export {
     YargBuilder,
     CommandLineParameter,
     ParameterOptions,
+    promptForAChoiceWhenNecessary,
+    dropWithWarningsInHelp,
+    failEverythingInCaseOfConflict,
 } from "./interfaces";
+
 export { yargCommandWithPositionalArguments } from "./positional";
