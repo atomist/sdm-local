@@ -146,11 +146,11 @@ function configureWebEndpoints(configuration: Configuration,
                     mappedParameters: [],
                     workspaceName: teamContext.workspaceName,
                     workspaceId: teamContext.workspaceId,
+                    correlationId: await newCliCorrelationId(),
                 };
-                const r = await invokeCommandHandlerInProcess()(invocation)
+                return invokeCommandHandlerInProcess()(invocation)
                     .then(resp => res.json(decircle(resp)),
                         boo => res.status(500).send(boo.message));
-                return res.json(r);
             });
             exp.post("/atomist/link-image/teams/:team", async (req, res) => {
                 const payload = req.body;
@@ -199,21 +199,20 @@ function configureWebEndpoints(configuration: Configuration,
                     return res.status(404).send("Action not stored. Did you restart the SDM?");
                 }
 
-                const command = (storedAction as any).command;
-                command.workspaceName = teamContext.workspaceName;
-                command.workspaceId = teamContext.workspaceName;
-                command.correlationId = await newCliCorrelationId();
-                logger.debug("The parameters are: %j", command.parameters);
-                if (!command) {
+                const storedCommand = (storedAction as any).command;
+                if (!storedCommand) {
                     logger.error("No command stored on action object: %j", storedAction);
                     return res.status(500).send("This will never work");
                 }
-                return invokeCommandHandlerInProcess()(command)
-                    .then(r => res.json(decircle(r)),
-                        boo => {
-                            logger.error("Failed to serve request %s: %s", req.url, boo.stack);
-                            res.status(500).send(boo.message);
-                        });
+                const command = automationClientInstance().automations.automations.commands.find(c => c.name === storedCommand.name);
+                if (!command) {
+                    return res.status(404).send(`Command '${req.params.name}' not found`);
+                }
+                logger.debug("The command name is: %s", storedCommand.name);
+                logger.debug("The parameters are: %j", command.parameters);
+                logger.debug("The stored parameters are: %j", storedCommand.parameters);
+                logger.debug("The command description is: %s", storedCommand.description);
+                return res.status(200).send(renderCommandHandlerForm(storedCommand.parameters, command));
             });
         },
     ];
