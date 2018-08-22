@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm/compare/0.1.11...HEAD)
 
+### Fixed
+
+-   Eliminate slow timeout threads for requests that already returned. [#129](https://github.com/atomist/sdm-local/issues/129)
+
 ## [0.1.11](https://github.com/atomist/sdm/compare/0.1.10...0.1.11) - 2018-08-22
 
 ## [0.1.10](https://github.com/atomist/sdm/compare/0.1.9...0.1.10) - 2018-08-21
