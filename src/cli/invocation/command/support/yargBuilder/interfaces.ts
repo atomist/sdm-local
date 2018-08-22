@@ -44,6 +44,11 @@ export { PositionalOptions, PositionalOptionsType, Choices, ParameterOptions, Ar
 
 export interface YargBuilder extends BuildYargs {
 
+    /**
+     * Add a subcommand. Pass in a yargs-style object, except you can also include
+     * conflictResolution and Parameters
+     * @param command A yargs-style object, or a YargCommand from this package.
+     */
     withSubcommand(command: YargCommand | SupportedSubsetOfYargsCommandMethod): void;
 
     withParameter(p: CommandLineParameter): void;
@@ -56,7 +61,7 @@ export interface YargBuilder extends BuildYargs {
      * @deprecated
      */
     option(parameterName: string,
-           params: ParameterOptions): YargBuilder;
+        params: ParameterOptions): YargBuilder;
 
     /**
      * This exists to be compatible with yargs syntax
@@ -80,9 +85,40 @@ export type CommandLineParameter = ParameterOptions & {
     parameterName: string;
 };
 
-export interface ConflictResolution {
+export type ConflictResolution = {
+    kind?: "expected to be unique" | "drop with warnings"
     failEverything: boolean;
     commandDescription: string;
+} | { kind: "prompt for a choice", commandDescription: string, uniqueChoice: string, failEverything: false, }
+
+/**
+ * If more than one of this command appear, then
+ * - if all the others resolve with "drop with warnings," fine, this one wins
+ * - otherwise, fail the whole program with an error, on startup, even if they didn't want to use this command.
+ * This is the default because the others are opt-in, but you probably don't want to use it on anything dynamically added.
+ * @param commandDescription 
+ */
+export function failEverythingInCaseOfConflict(commandDescription: string): ConflictResolution {
+    return { kind: "expected to be unique", failEverything: true, commandDescription };
+}
+/**
+ * If more than one of this command appear, drop this one. Put a warning in the help message that this happened.
+ * If all of this command resolve with "drop with warnings", none of them will be available.
+ * @param commandDescription 
+ */
+export function dropWithWarningsInHelp(commandDescription: string): ConflictResolution {
+    return { kind: "drop with warnings", failEverything: false, commandDescription };
+}
+
+/**
+ * If more than one of this command appear, ask the user to choose between them.
+ * The uniqueChoice will distinguish them.
+ * If two of the same command with the same uniqueChoice conflict, fallback to drop with warning.
+ * @param commandDescription 
+ * @param choice 
+ */
+export function promptForAChoiceWhenNecessary(commandDescription: string, uniqueChoice: string): ConflictResolution {
+    return { kind: "prompt for a choice", commandDescription, uniqueChoice, failEverything: false }
 }
 
 export interface YargCommand extends YargBuilder {
@@ -117,6 +153,14 @@ export interface SupportedSubsetOfYargsCommandMethod {
     handler?: (argObject: Arguments) => Promise<any>;
     parameters?: CommandLineParameter[]; // bonus; yargs doesn't include this
     positional?: PositionalParameter[];
+    /**
+     * Specify what to do if this command conflicts with another command built onto the same yargs.
+     * The default is to declare an error and exit, so you probably want something different.
+     * Construct with:
+     * - promptForAChoiceWhenNecessary (recommended)
+     * - dropWithWarningsInHelp (polite)
+     * - failEverythingInCaseOfConflict (default)
+     */
     conflictResolution?: ConflictResolution;
 }
 
