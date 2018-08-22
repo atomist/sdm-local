@@ -25,6 +25,10 @@ import {
 } from "./interfaces";
 import { positionalCommand } from "./positional";
 
+async function apologize() {
+    console.log("I'm sorry. I don't know how to do this. Try --help");
+}
+
 /**
  * This command might be runnable by itself, and might also have subcommands.
  *
@@ -66,7 +70,7 @@ export class YargCommandWord implements YargCommand {
     }
 
     public option(parameterName: string,
-                  opts: ParameterOptions): YargBuilder {
+        opts: ParameterOptions): YargBuilder {
         this.withParameter({
             parameterName,
             ...opts,
@@ -153,7 +157,7 @@ export class YargCommandWord implements YargCommand {
                         return y;
                     },
                     handler: self.runnableCommand ?
-                        handleFunctionFromInstructions(self.runnableCommand.handleInstructions) : undefined,
+                        handleFunctionFromInstructions(self.runnableCommand.handleInstructions) : apologize,
                 });
                 return yarg;
             },
@@ -223,9 +227,9 @@ function oneOrMany<T>(t: T | T[] | undefined): T[] {
  * @param params
  */
 function multilevelCommand(params: YargRunnableCommandSpec,
-                           description: string,
-                           conflictResolution: ConflictResolution,
-                           configureInner?: (ys: YargBuilder) => YargBuilder): YargCommand {
+    description: string,
+    conflictResolution: ConflictResolution,
+    configureInner?: (ys: YargBuilder) => YargBuilder): YargCommand {
 
     const { commandLine } = params;
     if (commandLine.words.length === 1) {
