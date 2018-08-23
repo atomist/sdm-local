@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm/compare/0.1.12...HEAD)
 
+### Fixed
+
+-   Show skills doesn’t exit. [#135](https://github.com/atomist/sdm-local/issues/135)
+
 ## [0.1.12](https://github.com/atomist/sdm/compare/0.1.11...0.1.12) - 2018-08-23
 
 ### Fixed
