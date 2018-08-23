@@ -81,12 +81,12 @@ function addSdmGenerator(yargs: YargBuilder) {
                 case "spring":
                     return sdm => {
                         sdm.addGeneratorCommand(sdmGenerator(name,
-                            new GitHubRepoRef("atomist", "seed-sdm"),
+                            new GitHubRepoRef("atomist", "spring-sdm-seed"),
                             "spring"));
                     };
                 case "blank":
                     return sdm => sdm.addGeneratorCommand(sdmGenerator(name,
-                        new GitHubRepoRef("atomist", "blank-sdm"),
+                        new GitHubRepoRef("atomist", "blank-sdm-seed"),
                         "blank"));
                 case "sample":
                     return sdm => sdm.addGeneratorCommand(sdmGenerator(name,
