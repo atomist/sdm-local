@@ -1,3 +1,5 @@
+import { YargRunnableCommandSpec } from './interfaces.d';
+import { ResolveConflictWithPrompt } from './interfaces';
 /*
  * Copyright © 2018 Atomist, Inc.
  *
@@ -16,7 +18,7 @@
 
 import * as _ from "lodash";
 import {
-    BuildYargs, YargCommand,
+    BuildYargs, YargCommand, isPromptForChoice,
 } from "./interfaces";
 import {
     hasPositionalArguments,
@@ -136,7 +138,38 @@ export function combine(commandName: string, yss: YargCommand[]): BuildYargs {
 }
 
 function combineIntoPrompt(ycs: YargCommand[]): [YargCommand[], string[]] {
-    return [ycs, []];
+    const [promptable, rest] = _.partition(ycs, yc => isPromptForChoice(yc.conflictResolution));
+
+    const [uniqueChoices, duplicatedChoices] = checkChoicesForUniqueness(promptable);
+    const warningsFromDuplicateChoices = duplicatedChoices.map(yc =>
+        `WARNING: Command '${yc.conflictResolution.commandDescription}' not available. Duplicate name: ${
+        yc.commandName} Duplicate choice: ${
+        (yc.conflictResolution as ResolveConflictWithPrompt).uniqueChoice}`);
+
+    const promptingCommand = constructPromptCommandFrom(uniqueChoices);
+    return [[promptingCommand, ...rest], warningsFromDuplicateChoices];
+}
+
+function checkChoicesForUniqueness(promptableCommands: YargCommand[] /* with conflictResolution of prompt for choice */): [YargCommand[], YargCommand[]] {
+    return [promptableCommands, []] // TODO: implement
+}
+
+function constructPromptCommandFrom(promptableCommands: YargCommand[] /* with conflictResolution of prompt for choice */): YargCommand {
+    return new YargCommandWord({
+        commandName: promptableCommands[0].commandName,
+        description: _.uniq(promptableCommands.map(y => y.description)).join(" or "),
+        runnableCommand: combineChoicesIntoRunnableCommand(promptableCommands),
+        nestedCommands: _.flatMap(promptableCommands.map(ys => (ys as YargCommandWord).nestedCommands)),
+        conflictResolution: {
+            failEverything: false,
+            commandDescription: `A choice of: ${promptableCommands.map(c => c.conflictResolution.commandDescription).join(" or ")}`,
+        },
+    })
+}
+
+function combineChoicesIntoRunnableCommand(promptableCommands: YargCommand[]): YargRunnableCommandSpec {
+
+
 }
 
 function contributeOnlyHelpMessages(formerCommandName: string, ms: string[]): BuildYargs {

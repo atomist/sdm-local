@@ -1,3 +1,4 @@
+import { ConflictResolution } from './interfaces';
 /*
  * Copyright © 2018 Atomist, Inc.
  *
@@ -85,11 +86,13 @@ export type CommandLineParameter = ParameterOptions & {
     parameterName: string;
 };
 
+export type ResolveConflictWithPrompt = { kind: "prompt for a choice", commandDescription: string, uniqueChoice: string, failEverything: false, }
+
 export type ConflictResolution = {
     kind?: "expected to be unique" | "drop with warnings"
     failEverything: boolean;
     commandDescription: string;
-} | { kind: "prompt for a choice", commandDescription: string, uniqueChoice: string, failEverything: false, }
+} | ResolveConflictWithPrompt;
 
 /**
  * If more than one of this command appear, then
@@ -120,6 +123,10 @@ export function dropWithWarningsInHelp(commandDescription: string): ConflictReso
  */
 export function promptForAChoiceWhenNecessary(commandDescription: string, uniqueChoice: string): ConflictResolution {
     return { kind: "prompt for a choice", commandDescription, uniqueChoice, failEverything: false }
+}
+
+export function isPromptForChoice(cr: ConflictResolution): cr is ResolveConflictWithPrompt {
+    return cr.kind === "prompt for a choice";
 }
 
 export interface YargCommand extends YargBuilder {
