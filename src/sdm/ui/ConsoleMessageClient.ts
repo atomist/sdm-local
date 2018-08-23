@@ -25,15 +25,19 @@ import {
     SlackMessageClient,
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
-
 import * as slack from "@atomist/slack-messages/SlackMessages";
 import chalk from "chalk";
+import * as formatDate from "format-date";
 import * as _ from "lodash";
 import * as marked from "marked";
 import { MarkedOptions } from "marked";
 import * as TerminalRenderer from "marked-terminal";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionRequest";
-import { actionDescription, actionKeyFor, ActionRoute } from "../binding/message/ActionStore";
+import {
+    actionDescription,
+    actionKeyFor,
+    ActionRoute,
+} from "../binding/message/ActionStore";
 import { isSdmGoalStoreOrUpdate } from "../binding/message/GoalEventForwardingMessageClient";
 
 marked.setOptions({

@@ -15,4 +15,5 @@
  */
 
 declare module "boxen";
+declare module "format-date";
 declare module "marked-terminal";
