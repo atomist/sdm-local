@@ -113,6 +113,40 @@ describe("yarg saver", () => {
 
     });
 
+    it("can combine a positional command with one that will drop out", () => {
+        const subject = freshYargBuilder();
+
+        subject.withSubcommand(
+            {
+                command: "show skills <and> <stuff>",
+                handler: async a => "whatever",
+                describe: "Command 1",
+                parameters: [],
+            },
+        );
+        subject.withSubcommand(
+            {
+                command: "show skills",
+                handler: async a => { "no "; },
+                describe: "Command 2",
+                parameters: [],
+                conflictResolution: { failEverything: false, commandDescription: "I am polite" },
+            },
+        );
+
+        const combined = subject.build();
+
+        const tree = treeifyNested(combined);
+
+        const expected = {
+            show: {
+                skills: {},
+            },
+        };
+
+        assert.deepEqual(tree, expected, JSON.stringify(tree, null, 2));
+    })
+
 });
 
 function treeifyNested(c: any, tree: { [key: string]: any } = {}) {

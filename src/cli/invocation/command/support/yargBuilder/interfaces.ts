@@ -127,6 +127,8 @@ export interface YargCommand extends YargBuilder {
     description: string;
     conflictResolution: ConflictResolution;
     isRunnable: boolean;
+    handleInstructions: HandleInstructions;
+    addHelpMessages(s: string[]): void;
 }
 
 export function isYargCommand(yc: YargCommand | SupportedSubsetOfYargsCommandMethod): yc is YargCommand {
