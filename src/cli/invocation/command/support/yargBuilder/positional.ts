@@ -88,8 +88,12 @@ class YargSaverPositionalCommand implements YargCommand {
         return this;
     }
 
+    public addHelpMessages(strs: string[]) {
+        strs.forEach(s => this.helpMessages.push(s));
+    }
+
     public option(parameterName: string,
-                  opts: ParameterOptions): YargBuilder {
+        opts: ParameterOptions): YargBuilder {
         this.withParameter({
             parameterName,
             ...opts,

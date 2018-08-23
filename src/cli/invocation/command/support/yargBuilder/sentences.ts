@@ -69,6 +69,11 @@ export class YargCommandWord implements YargCommand {
         return this;
     }
 
+
+    public addHelpMessages(strs: string[]) {
+        strs.forEach(s => this.warnings.push(s));
+    }
+
     public option(parameterName: string,
         opts: ParameterOptions): YargBuilder {
         this.withParameter({

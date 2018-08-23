@@ -90,29 +90,42 @@ function dropNonessentialCommands(yss: YargCommand[]): [YargCommand[], string[]]
 }
 
 export function combine(commandName: string, yss: YargCommand[]): BuildYargs {
-    if (yss.length === 1) {
-        return yss[0];
-    }
-    const [combineThese, warnings] = thereIsConflict(yss) ? dropNonessentialCommands(yss) : [yss, []];
 
-    if (thereIsConflict(combineThese)) {
+    const [combineThese1, warnings1] = thereIsConflict(yss) ? dropNonessentialCommands(yss) : [yss, []];
+
+    const [combineThese2, warnings2] = thereIsConflict(combineThese1) ? combineIntoPrompt(combineThese1) : [combineThese1, []];
+
+    if (thereIsConflict(combineThese2)) {
         // still??
-        throw new Error("Unresolvable conflict between commands: " + whyNotCombine(combineThese).map(errorToString).join("\n"));
+        throw new Error("Unresolvable conflict between commands: " + whyNotCombine(combineThese2).map(errorToString).join("\n"));
     }
+
+    const combineThese = combineThese2;
+    const warnings = [...warnings1, ...warnings2];
 
     if (combineThese.length === 0) {
         return contributeOnlyHelpMessages(commandName, warnings);
     }
 
-    const yswcs = combineThese as YargCommandWord[]; // positional wouldju cause conflict
+    if (combineThese.length === 1) {
+        // This might be positional
+        const output = combineThese[0];
+        output.addHelpMessages(warnings);
+        return output;
+    }
 
-    const realCommand = yswcs.find(ys => ys.isRunnable);
+    // ok. If we got here, we now have multiple commands;
+    // none are positional;
+    // all may have children
+    // but at most one is runnable by itself
+    const ycws = combineThese as YargCommandWord[];
+    const realCommand = ycws.find(ys => ys.isRunnable);
 
     return new YargCommandWord({
         commandName,
-        description: _.uniq(yswcs.map(y => y.description)).join("; or, "),
+        description: _.uniq(ycws.map(y => y.description)).join("; or, "),
         runnableCommand: realCommand ? realCommand.runnableCommand : undefined,
-        nestedCommands: _.flatMap(yswcs.map(ys => ys.nestedCommands)),
+        nestedCommands: _.flatMap(ycws.map(ys => ys.nestedCommands)),
         conflictResolution: {
             failEverything: true,
             commandDescription: "This is already a combined command. Don't call build() twice",
@@ -120,6 +133,10 @@ export function combine(commandName: string, yss: YargCommand[]): BuildYargs {
         warnings,
     });
 
+}
+
+function combineIntoPrompt(ycs: YargCommand[]): [YargCommand[], string[]] {
+    return [ycs, []];
 }
 
 function contributeOnlyHelpMessages(formerCommandName: string, ms: string[]): BuildYargs {
