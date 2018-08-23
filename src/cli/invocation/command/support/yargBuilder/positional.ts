@@ -25,6 +25,7 @@ import {
     YargBuilder,
     YargCommand,
     YargRunnableCommandSpec,
+    isPromptForChoice,
 } from "./interfaces";
 
 export function yargCommandWithPositionalArguments(
@@ -81,6 +82,9 @@ class YargSaverPositionalCommand implements YargCommand {
         this.positionalArguments = spec.positional || [];
         this.conflictResolution = spec.conflictResolution;
         this.parameters = spec.parameters;
+        if (isPromptForChoice(this.conflictResolution)) {
+            throw new Error("Can't prompt for which positional command you want");
+        }
     }
 
     public withParameter(p: CommandLineParameter) {
