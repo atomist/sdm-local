@@ -140,7 +140,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
     }
 
     private dateString() {
-        return chalk.dim(formatDate("{year}{month}{day} {hours}:{minutes}:{seconds}", Date.now()));
+        return chalk.dim(formatDate("{year}{month}{day} {hours}:{minutes}:{seconds}", new Date()));
     }
 
     /**
