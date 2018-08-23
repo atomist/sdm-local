@@ -17,18 +17,21 @@
 import { HandlerResult, logger } from "@atomist/automation-client";
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/metadata/automationMetadata";
+import { RepoId } from "@atomist/sdm";
 import chalk from "chalk";
 import * as inquirer from "inquirer";
 import * as _ from "lodash";
+import { determineDefaultRepositoryOwnerParentDirectory } from "../../../../common/configuration/defaultLocalModeConfiguration";
 import { CommandHandlerInvocation } from "../../../../common/invocation/CommandHandlerInvocation";
 import { InvocationTarget } from "../../../../common/invocation/InvocationTarget";
 import { ExtraParametersMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/CommandLineMappedParameterResolver";
 import { FromAnyMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/FromAnyMappedParameterResolver";
 import { MappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/MappedParameterResolver";
 import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/project/ExpandedTreeMappedParameterResolver";
+import { expandedTreeRepoFinder } from "../../../../sdm/binding/project/expandedTreeRepoFinder";
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
 import { HttpMessageListener } from "../../../../sdm/ui/HttpMessageListener";
-import { warningMessage } from "../../../ui/consoleOutput";
+import { infoMessage, warningMessage } from "../../../ui/consoleOutput";
 import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionRequest";
 import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUsingHttp";
 import { newCliCorrelationId } from "../../http/support/newCorrelationId";
@@ -102,8 +105,10 @@ export async function runCommandOnColocatedAutomationClient(connectionConfig: Au
 
     const invocation: CommandHandlerInvocation = {
         name: hm.name,
-        parameters: args,
-        mappedParameters: mappedParameters.filter(mp => !!mp.value),
+        // targets.repos is gathered through the mapped parameters query flow, but
+        // is actually a normal parameter
+        parameters: args.concat(mappedParameters.filter(mp => mp.name === "targets.repos")),
+        mappedParameters: mappedParameters.filter(mp => !!mp.value).filter(mp => mp.name !== "targets.repos"),
         ...target,
         correlationId,
     };
@@ -188,15 +193,68 @@ async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[
         });
 }
 
+/**
+ * Field handled specially for transform targets
+ */
+const TargetsOwnerField = "targets.owner";
+
+/**
+ * Field handled specially for transform targets
+ */
+const TargetsRepoField = "targets.repo";
+
+/**
+ * Pattern to match all repos
+ */
+const AllPattern = "all repos";
+
+/**
+ * Pattern for a custom regular expression
+ */
+const RegexPattern = "custom regex";
+
+/**
+ * Gather missing mapped parameters from the command line and add them to args
+ * @param {CommandHandlerMetadata} hi
+ * @param mappedParameters mapped parameters we've already found
+ * @return {object}
+ */
 async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mappedParameters: Array<{ name: string; value: string }>): Promise<void> {
-    const questions =
+    const allRepos = await determineAvailableRepos();
+    const questions: inquirer.Question[] =
         mappedParameters
             .filter(mp => !mp.value)
             .map(p => {
                 const nameToUse = convertToDisplayable(p.name);
                 return {
                     name: nameToUse,
-                    message: `(mapped parameter) ${nameToUse}`,
+                    message: () => {
+                        switch (p.name) {
+                            case TargetsOwnerField :
+                                return "Org to target";
+                            case TargetsRepoField :
+                                return "Repos to target";
+                            default :
+                                return `(mapped parameter) ${nameToUse}`;
+                        }
+                    },
+                    // Use a dropdown for orgs and repos
+                    type: [TargetsOwnerField, TargetsRepoField].includes(p.name) ? "list" : "string",
+                    // Choices will be undefined unless it's a list type
+                    choices: (answer: any) => {
+                        switch (p.name) {
+                            case TargetsOwnerField :
+                                return _.uniq(allRepos.map(r => r.owner));
+                            case TargetsRepoField :
+                                // Used the mapped name, which will be bound to the answer
+                                const owner = answer[convertToDisplayable(TargetsOwnerField)];
+                                return (allRepos.filter(r => r.owner === owner).map(r => r.repo) as any[])
+                                    .concat(new inquirer.Separator(),
+                                    chalk.italic(AllPattern),
+                                    chalk.italic(RegexPattern));
+                            default: return undefined;
+                        }
+                    },
                     validate: (value: any) => {
                         // We don't really know how to validate this,
                         // but make the user input something
@@ -209,12 +267,45 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
                 };
             });
     const fromPrompt = await inquirer.prompt(questions) as any;
+
     Object.getOwnPropertyNames(fromPrompt)
         .forEach(enteredName => {
-            // Replace any existing argument with this name that yargs has
-            _.remove(mappedParameters, arg => arg.name === enteredName);
-            mappedParameters.push({ name: convertToUsable(enteredName), value: fromPrompt[enteredName] });
+            replaceMappedParameter(mappedParameters, convertToUsable(enteredName), fromPrompt[enteredName]);
         });
+
+    if (fromPrompt[convertToDisplayable(TargetsRepoField)].includes(AllPattern)) {
+        replaceMappedParameter(mappedParameters, "targets.repo");
+        replaceMappedParameter(mappedParameters, "targets.repos", ".*");
+    } else if (fromPrompt[convertToDisplayable(TargetsRepoField)].includes(RegexPattern)) {
+        // Ask extra question to clarify regex if we need to
+        const filter = await inquirer.prompt<{regex: string}>([{
+            name: "regex",
+            message: "Regex to filter repos by name: Considering including anchors",
+        }]);
+        infoMessage("Using regex pattern /%s/\n", filter.regex);
+        replaceMappedParameter(mappedParameters, "targets.repo");
+        replaceMappedParameter(mappedParameters, "targets.repos", filter.regex);
+    }
+    logger.debug("Mapped parameters after prompt are %j", mappedParameters);
+}
+
+/**
+ * If value is undefined, delete it
+ */
+function replaceMappedParameter(mappedParameters: Array<{name: string, value: string}>, name: string, value?: string) {
+    _.remove(mappedParameters, arg => arg.name === name);
+    if (!!value) {
+        mappedParameters.push({name, value});
+    }
+}
+
+/**
+ * Return all available repos
+ * @param repositoryOwnerParentDirectory base of expanded tree
+ */
+async function determineAvailableRepos(
+    repositoryOwnerParentDirectory: string = determineDefaultRepositoryOwnerParentDirectory()): Promise<RepoId[]> {
+    return expandedTreeRepoFinder(repositoryOwnerParentDirectory)(undefined);
 }
 
 /**
