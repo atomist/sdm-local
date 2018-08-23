@@ -273,10 +273,11 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
             replaceMappedParameter(mappedParameters, convertToUsable(enteredName), fromPrompt[enteredName]);
         });
 
-    if (fromPrompt[convertToDisplayable(TargetsRepoField)].includes(AllPattern)) {
+    const trReposField = fromPrompt[convertToDisplayable(TargetsRepoField)];
+    if (!!trReposField && trReposField.includes(AllPattern)) {
         replaceMappedParameter(mappedParameters, "targets.repo");
         replaceMappedParameter(mappedParameters, "targets.repos", ".*");
-    } else if (fromPrompt[convertToDisplayable(TargetsRepoField)].includes(RegexPattern)) {
+    } else if (!!trReposField && trReposField.includes(RegexPattern)) {
         // Ask extra question to clarify regex if we need to
         const filter = await inquirer.prompt<{regex: string}>([{
             name: "regex",
