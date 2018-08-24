@@ -17,18 +17,18 @@
 import { GitCommandGitProject, GitProject } from "@atomist/sdm";
 import { OnPushToAnyBranch } from "@atomist/sdm";
 import { LocalModeConfiguration } from "@atomist/sdm-core";
-import { errorMessage } from "../../cli/ui/consoleOutput";
+import { errorMessage, infoMessage } from "../../cli/ui/consoleOutput";
+import Push = OnPushToAnyBranch.Push;
+import { isWithin } from "../../sdm/binding/project/expandedTreeUtils";
 import { isAtomistTemporaryBranch } from "../../sdm/binding/project/FileSystemProjectLoader";
 import { FileSystemRemoteRepoRef } from "../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { EventSender } from "../invocation/EventHandlerInvocation";
 import { pushFromLastCommit } from "./pushFromLastCommit";
-import Push = OnPushToAnyBranch.Push;
 
 /**
  * Any event on a local repo
  */
 export interface EventOnRepo {
-
     baseDir: string;
     branch: string;
     sha: string;
@@ -67,13 +67,13 @@ export function isValidSHA1(s: string): boolean {
  * Perform push-based event handling on this repo
  */
 export async function handlePushBasedEventOnRepo(workspaceId: string,
-                                                 sender: EventSender,
-                                                 lc: LocalModeConfiguration,
-                                                 payload: EventOnRepo,
-                                                 eventHandlerName: string,
-                                                 pushToPayload: (p: Push) => object = p => ({
-                                                     Push: [p],
-                                                 })) {
+    sender: EventSender,
+    lc: LocalModeConfiguration,
+    payload: EventOnRepo,
+    eventHandlerName: string,
+    pushToPayload: (p: Push) => object = p => ({
+        Push: [p],
+    })) {
 
     // This git hook may be invoked from another git hook. This will cause these values to
     // be incorrect, so we need to delete them to have git work them out again from the directory we're passing via cwd
@@ -83,6 +83,11 @@ export async function handlePushBasedEventOnRepo(workspaceId: string,
 
     if (!validateEventOnRepo(payload)) {
         return undefined;
+    }
+
+    if (!isWithin(lc.repositoryOwnerParentDirectory, payload.baseDir)) {
+        // I would rather send this to the atomist feed
+        return infoMessage(`SDM: skipping push because it is not inside ${lc.repositoryOwnerParentDirectory}\n`);
     }
 
     const push = await createPush(workspaceId, lc.repositoryOwnerParentDirectory, payload);
@@ -101,10 +106,10 @@ async function createPush(workspaceId: string, repositoryOwnerParentDirectory: s
 }
 
 async function doWithProjectUnderExpandedDirectoryTree(baseDir: string,
-                                                       branch: string,
-                                                       sha: string,
-                                                       repositoryOwnerParentDirectory: string,
-                                                       action: (p: GitProject) => Promise<any>) {
+    branch: string,
+    sha: string,
+    repositoryOwnerParentDirectory: string,
+    action: (p: GitProject) => Promise<any>) {
     const p = GitCommandGitProject.fromBaseDir(
         FileSystemRemoteRepoRef.fromDirectory({
             repositoryOwnerParentDirectory,
