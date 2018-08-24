@@ -1,3 +1,4 @@
+#!/usr/bin/env ts-node
 /*
  * Copyright © 2018 Atomist, Inc.
  *
@@ -14,7 +15,6 @@
  * limitations under the License.
  */
 
-#!/usr/bin/env ts-node
 // tslint:disable:no-console
 import * as yargs from "yargs";
 import {
