@@ -53,7 +53,7 @@ describe("message formatting", () => {
     });
 
     it("", async () => {
-        const text = `**test some 
+        const text = `**test some
 bold text**`;
 
         let output = "";
