@@ -17,7 +17,7 @@
 import { Configuration } from "@atomist/automation-client";
 import { automationClient } from "@atomist/automation-client/automationClient";
 import { defaultConfiguration, invokePostProcessors } from "@atomist/automation-client/configuration";
-import { SoftwareDeliveryMachine } from "@atomist/sdm";
+import { ExtensionPack, SoftwareDeliveryMachine } from "@atomist/sdm";
 import { configureSdm, createSoftwareDeliveryMachine } from "@atomist/sdm-core";
 import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
@@ -41,9 +41,16 @@ export const DefaultEmbeddedMachinePort = 2900;
  * Options for starting an embedded machine.
  */
 export interface EmbeddedMachineOptions {
+
+    /**
+     * Machine name if we choose to customize it
+     */
     name?: string;
+
     repositoryOwnerParentDirectory?: string;
+
     configure: ConfigureMachine;
+
     port?: number;
 
     /**
@@ -51,16 +58,22 @@ export interface EmbeddedMachineOptions {
      * be routed to the console.
      */
     suppressConsoleLog?: boolean;
+
+    /**
+     * Extension packs to add if we choose to control it directly.
+     * Default will be local lifecycle to console
+     */
+    extensionPacks?: ExtensionPack[];
 }
 
-const createMachine = (configure: ConfigureMachine) => (config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine => {
+const createMachine = (options: EmbeddedMachineOptions) => (config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine => {
     const sdm: SoftwareDeliveryMachine = createSoftwareDeliveryMachine(
         {
-            name: "Local bootstrap SDM",
+            name: options.name || "Local bootstrap SDM",
             configuration: config,
         });
-    sdm.addExtensionPacks(LocalLifecycle, LocalSdmConfig);
-    configure(sdm);
+    sdm.addExtensionPacks(...(options.extensionPacks || [LocalLifecycle]), LocalSdmConfig);
+    options.configure(sdm);
     return sdm;
 };
 
@@ -96,7 +109,7 @@ function configurationFor(options: EmbeddedMachineOptions): Configuration {
             delete process.env.ATOMIST_MODE;
             return config;
         },
-        configureSdm(createMachine(options.configure), {}),
+        configureSdm(createMachine(options), {}),
     ];
 
     return cfg;
@@ -118,8 +131,7 @@ export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Pro
         process.env.ATOMIST_DISABLE_LOGGING = "false";
     }
     process.env.ATOMIST_MODE = "local";
-    const config = await invokePostProcessors(
-        configurationFor(optsToUse));
+    const config = await invokePostProcessors(configurationFor(optsToUse));
 
     const client = automationClient(config);
     await client.run();
