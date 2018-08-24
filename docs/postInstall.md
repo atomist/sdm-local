@@ -1,4 +1,3 @@
+🙌 `@atomist/cli` is now installed.
 
-Thanks for installing `@atomist/cli`.
-
-Please see [here](https://github.com/atomist/sdm) for next steps.
+Head to [the sdm repo](https://github.com/atomist/sdm) for more info.
