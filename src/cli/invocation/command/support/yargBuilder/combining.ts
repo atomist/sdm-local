@@ -1,5 +1,3 @@
-import { YargRunnableCommandSpec } from './interfaces.d';
-import { ResolveConflictWithPrompt } from './interfaces';
 /*
  * Copyright © 2018 Atomist, Inc.
  *
@@ -18,12 +16,14 @@ import { ResolveConflictWithPrompt } from './interfaces';
 
 import * as _ from "lodash";
 import {
-    BuildYargs, YargCommand, isPromptForChoice,
+    BuildYargs, YargCommand, isPromptForChoice, ResolveConflictWithPrompt, YargRunnableCommandSpec,
 } from "./interfaces";
 import {
     hasPositionalArguments,
 } from "./positional";
 import { YargCommandWord } from "./sentences";
+import * as inquirer from "inquirer";
+import { HandleInstructions, handleFunctionFromInstructions } from "./handleInstruction";
 
 interface ValidationError {
     complaint: string;
@@ -31,15 +31,6 @@ interface ValidationError {
      * command names that this is nested within
      */
     contexts: string[];
-}
-
-/**
- * Some commands, we should fail miserably if they're going to conflict.
- * Others will politely yield.
- * @param ysc
- */
-function conflictBlocksStartup(ysc: YargCommand): boolean {
-    return ysc.conflictResolution.failEverything;
 }
 
 function descriptionForConflictWarning(ysc: YargCommand): string {
@@ -85,7 +76,7 @@ function thereIsConflict(yss: YargCommand[]): boolean {
 }
 
 function dropNonessentialCommands(yss: YargCommand[]): [YargCommand[], string[]] {
-    const [essential, nonessential] = _.partition(yss, conflictBlocksStartup);
+    const [essential, nonessential] = _.partition(yss, yc => yc.conflictResolution.kind !== "drop with warnings");
     const warnings = nonessential.map(ys =>
         `Warning: ${descriptionForConflictWarning(ys)} is not available because it conflicts with another command`);
     return [essential, warnings];
@@ -168,8 +159,30 @@ function constructPromptCommandFrom(promptableCommands: YargCommand[] /* with co
 }
 
 function combineChoicesIntoRunnableCommand(promptableCommands: YargCommand[]): YargRunnableCommandSpec {
+    const runnableOnes = promptableCommands.filter(pc => pc.isRunnable).map(pc => pc as YargCommandWord);
+    return {
+        description: "Choice of: " + runnableOnes.map(r => r.runnableCommand.description).join(" or "),
+        commandLine: runnableOnes[0].runnableCommand.commandLine,
+        handleInstructions: promptAndRun(runnableOnes),
+        parameters: _.flatMap(runnableOnes, rc => rc.runnableCommand.parameters),
+        positional: [],
+    }
+}
 
-
+function promptAndRun(runnableOnes: YargCommandWord[]): HandleInstructions {
+    return {
+        fn: async (args) => {
+            const question: inquirer.Question<{ selection: string }> = {
+                type: "list",
+                name: "selection",
+                message: "There is more than one way to do that. Choose one:",
+                choices: runnableOnes.map(rc => (rc.conflictResolution as ResolveConflictWithPrompt).uniqueChoice)
+            };
+            const answer = await inquirer.prompt<{ selection: string }>([question]);
+            const winner = runnableOnes.find(r => (r.conflictResolution as ResolveConflictWithPrompt).uniqueChoice === answer.selection);
+            return handleFunctionFromInstructions(winner.runnableCommand.handleInstructions)(args);
+        }
+    }
 }
 
 function contributeOnlyHelpMessages(formerCommandName: string, ms: string[]): BuildYargs {
