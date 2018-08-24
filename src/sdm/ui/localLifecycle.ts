@@ -73,6 +73,18 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
     sdm.addPushImpactListener(async pu => {
         return pu.addressChannels(`Push to ${pushIdentification(pu.push)}`);
     });
+    sdm.addGoalCompletionListener(async gcl => {
+        switch (gcl.completedGoal.state) {
+            case SdmGoalState.success:
+                return gcl.addressChannels(`${pushIdentification(gcl.completedGoal.push)}
+\t${chalk.green(`✔ ${gcl.completedGoal.description}`)}${gcl.completedGoal.externalUrl ?
+                    ` > ${gcl.completedGoal.externalUrl}` : ""}${gcl.completedGoal.url ? ` > ${gcl.completedGoal.url}` : ""}`);
+            case SdmGoalState.failure:
+                return gcl.addressChannels(`${pushIdentification(gcl.completedGoal.push)}
+\t${chalk.red(`✖︎︎ ${gcl.completedGoal.description}`)}${gcl.completedGoal.externalUrl ?
+                    ` > ${gcl.completedGoal.externalUrl}` : ""}${gcl.completedGoal.url ? ` > ${gcl.completedGoal.url}` : ""}`);
+        }
+    });
     sdm.addGoalsSetListener(async gsi => {
         const msg = `${pushIdentification(gsi.push)}
 \t▶ Goals
@@ -81,12 +93,13 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
     });
     sdm.addGoalExecutionListener(async gci => {
         switch (gci.goalEvent.state) {
-            case SdmGoalState.success:
-                return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
-\t${chalk.green(`✔ ${gci.goalEvent.description}`)}`);
-            case SdmGoalState.failure:
-                return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
-\t${chalk.red(`✖︎︎ ${gci.goalEvent.description}`)}`);
+//             case SdmGoalState.success:
+//                 return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
+// \t${chalk.green(`✔ ${gci.goalEvent.description}`)}${gci.goalEvent.externalUrl ?
+//                     `\n\t[Link](${gci.goalEvent.externalUrl})` : ""}${gci.goalEvent.url ? `\n\t[Link](${gci.goalEvent.url})` : ""}`);
+//             case SdmGoalState.failure:
+//                 return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
+// \t${chalk.red(`✖︎︎ ${gci.goalEvent.description}`)}`);
             // case SdmGoalState.requested:
             //     return gci.addressChannels(chalk.red(`✖︎︎ ${gci.goalEvent.description}\n`));
             // waiting_for_approval = "waiting_for_approval",
