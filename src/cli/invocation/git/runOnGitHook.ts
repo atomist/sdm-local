@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+import { setLogLevel } from "@atomist/automation-client/internal/util/logger";
+setLogLevel("warn");
+
 import { logger } from "@atomist/sdm";
 import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";
 import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSystemProjectLoader";
