@@ -147,7 +147,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
     private writeToChannel(channels: string[] | string, markdown: string) {
         const outputText = ` ${marked(`**${channels}**`, this.markedOptions).trim()} ${this.dateString()} ${
             marked(markdown, this.markedOptions).trim()}`;
-        return this.sender(chalk.gray("#") + outputText.split("\n").join("\n\t") + "\n");
+        return this.sender(chalk.gray("#") + outputText.split("\n").join("\n  ") + "\n");
     }
 
     public dateString() {

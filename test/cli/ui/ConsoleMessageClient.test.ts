@@ -60,7 +60,7 @@ bold text**`;
 
         await subject.addressChannels({ text }, "general");
         assert(output.includes(`test some
-bold text`));
+  bold text`));
     });
 
 });
