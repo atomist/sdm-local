@@ -62,7 +62,7 @@ export interface YargBuilder extends BuildYargs {
      * @deprecated
      */
     option(parameterName: string,
-        params: ParameterOptions): YargBuilder;
+           params: ParameterOptions): YargBuilder;
 
     /**
      * This exists to be compatible with yargs syntax

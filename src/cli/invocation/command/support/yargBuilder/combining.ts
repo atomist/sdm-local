@@ -18,7 +18,7 @@ import * as inquirer from "inquirer";
 import * as _ from "lodash";
 import { handleFunctionFromInstructions, HandleInstructions } from "./handleInstruction";
 import {
-    BuildYargs, isPromptForChoice, ResolveConflictWithPrompt, YargCommand, YargRunnableCommandSpec, dropWithWarningsInHelp,
+    BuildYargs, dropWithWarningsInHelp, isPromptForChoice, ResolveConflictWithPrompt, YargCommand, YargRunnableCommandSpec,
 } from "./interfaces";
 import {
     hasPositionalArguments,
@@ -154,7 +154,7 @@ function combineIntoPrompt(ycs: YargCommand[]): [YargCommand[], string[]] {
         return [rest, warnings];
     }
     if (uniqueChoices.length === 1) {
-        return [[uniqueChoices[0], ...rest], warnings]
+        return [[uniqueChoices[0], ...rest], warnings];
     }
 
     return [[constructPromptCommandFrom(uniqueChoices), ...rest], warnings];
@@ -179,7 +179,8 @@ function constructPromptCommandFrom(promptableCommands: YargCommand[] /* with co
         description: _.uniq(promptableCommands.map(y => y.description)).join(" or "),
         runnableCommand: combineChoicesIntoRunnableCommand(promptableCommands),
         nestedCommands: _.flatMap(promptableCommands.map(ys => (ys as YargCommandWord).nestedCommands)),
-        conflictResolution: dropWithWarningsInHelp(`Choice: ${_.uniq(promptableCommands.map(c => c.conflictResolution.commandDescription)).join(" or ")}`),
+        conflictResolution: dropWithWarningsInHelp(`Choice: ${
+            _.uniq(promptableCommands.map(c => c.conflictResolution.commandDescription)).join(" or ")}`),
     });
 }
 
