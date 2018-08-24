@@ -62,7 +62,7 @@ function pushIdentification(pu: Push) {
     if (msg.length > 50) {
         msg = msg.slice(0, 47) + "...";
     }
-    return `\`${pu.repo.owner}/${pu.repo.name}/${pu.branch}\` \`${pu.commits[0].sha.slice(0, 7)}\` _${msg}_`;
+    return `\`${pu.repo.owner}/${pu.repo.name}/${pu.branch}\` - \`${pu.commits[0].sha.slice(0, 7)}\` _${msg}_`;
 }
 
 /**
