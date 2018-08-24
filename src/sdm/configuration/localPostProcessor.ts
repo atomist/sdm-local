@@ -27,8 +27,10 @@ import {
     LocalModeConfiguration,
 } from "@atomist/sdm-core";
 import * as assert from "assert";
+import * as exphbs from "express-handlebars";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
+import * as path from "path";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionRequest";
 import { newCliCorrelationId } from "../../cli/invocation/http/support/newCorrelationId";
 import { EnvConfigWorkspaceContextResolver } from "../../common/binding/EnvConfigWorkspaceContextResolver";
@@ -126,9 +128,16 @@ function configureWebEndpoints(configuration: Configuration,
             exp.get("/local/configuration", async (req, res) => {
                 res.json(localModeConfiguration);
             });
+
             const bodyParser = require("body-parser");
             exp.use(bodyParser.urlencoded({ extended: false }));
             exp.use(bodyParser.json());
+
+            // Handlebars setup
+            exp.set("view engine", "handlebars");
+            exp.set("views", path.join(__dirname, "..", "..", "views"));
+            exp.engine("handlebars", exphbs({ defaultLayout: "main", layoutsDir: path.join(__dirname, "..", "..", "views", "layouts") }));
+
             // Add a GET route for convenient links to command handler invocation, as a normal automation client doesn't expose one
             exp.get("/command/:name", async (req, res) => {
                 const payload = req.query;
@@ -136,7 +145,8 @@ function configureWebEndpoints(configuration: Configuration,
                 if (!command) {
                     return res.status(404).send(`Command '${req.params.name}' not found`);
                 }
-                return res.status(200).send(renderCommandHandlerForm(payload, command));
+
+                return res.render("command", { payload, command, configuration: automationClientInstance().configuration });
             });
             exp.post("/command/:name", async (req, res) => {
                 const payload = req.body;
