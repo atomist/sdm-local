@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Integer, Microgrammar } from "@atomist/microgrammar";
 import { infoMessage } from "../../../ui/consoleOutput";
 import { CommandResult, verifyCommandResult } from "./verifyCommandResult";
 
@@ -21,11 +22,10 @@ import { CommandResult, verifyCommandResult } from "./verifyCommandResult";
  * Verify that the correct version of the JDK is present
  * @return {Promise<void>}
  */
-// TODO add version check
 export async function verifyJDK() {
     await verifyCommandResult({
         command: "java -version",
-        outputTest: verifyJavaTest(),
+        outputTest: verifyJavaTest,
         onFailure: () => infoMessage("Please install Java\n"),
         onWrongVersion: () => infoMessage("Please update your Java version\n"),
     });
@@ -35,20 +35,46 @@ export async function verifyJDK() {
  * Verify that the correct version of Maven is present
  * @return {Promise<void>}
  */
-// TODO add version check
 export async function verifyMaven() {
     await verifyCommandResult({
         command: "mvn --version",
-        outputTest: () => true,
+        outputTest: verifyMavenTest,
         onFailure: () => infoMessage("Please install Maven\n"),
         onWrongVersion: () => infoMessage("Please update your Maven version\n"),
     });
 }
 
-export function verifyJavaTest() {
-    return (r: CommandResult) => true;
+export function verifyJavaTest(r: CommandResult) {
+    if (!r.stdout) {
+        return false;
+    }
+    const parsed = JavaVersionGrammar.firstMatch(r.stdout);
+    return !!parsed && parsed.minor >= 8;
 }
 
-export function verifyMavenTest() {
-    return (r: CommandResult) => true;
+const JavaVersionGrammar = Microgrammar.fromString<{major: number, minor: number, b1: number, b2: number}>(
+    "java version \"${major}.${minor}.${b1}_${b2}\"",
+    {
+        major: Integer,
+        minor: Integer,
+        b1: Integer,
+        b2: Integer,
+    },
+);
+
+export function verifyMavenTest(r: CommandResult) {
+    if (!r.stdout) {
+        return false;
+    }
+    const parsed = MavenVersionGrammar.firstMatch(r.stdout);
+    return !!parsed && parsed.major >= 3;
 }
+
+const MavenVersionGrammar = Microgrammar.fromString<{major: number, minor: number, point: number}>(
+    "Apache Maven ${major}.${minor}.${point}",
+    {
+        major: Integer,
+        minor: Integer,
+        point: Integer,
+    },
+);
