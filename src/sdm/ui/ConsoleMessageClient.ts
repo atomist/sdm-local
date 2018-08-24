@@ -129,8 +129,8 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
     }
 
     private renderAction(channel: string,
-                               action: slack.Action,
-                               actionKey: string): string {
+                         action: slack.Action,
+                         actionKey: string): string {
         if (action.type === "button") {
             const url = `${this.connectionConfig.baseEndpoint}${ActionRoute}/${actionDescription(action)}?key=${actionKey}`;
             return `${action.text} - ${url}`;
