@@ -58,7 +58,7 @@ function addShowCreatedLocalRepo(sdm: SoftwareDeliveryMachine) {
 }
 
 function pushIdentification(pu: Push) {
-    let msg = pu.commits[0].message;
+    let msg = pu.commits[0].message.split("\n")[0];
     if (msg.length > 50) {
         msg = msg.slice(0, 47) + "...";
     }
