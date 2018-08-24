@@ -26,16 +26,16 @@ import {
 } from "./support/commandInvocationListeners";
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
-import { YargBuilder } from "./support/yargBuilder";
+import { YargBuilder, dropWithWarningsInHelp } from "./support/yargBuilder";
 
 /**
  * Add commands for all intents
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
 export function addIntentsAsCommands(ai: AutomationClientInfo,
-                                     yargBuilder: YargBuilder,
-                                     workSpaceContextResolver: WorkspaceContextResolver,
-                                     allowUserInput: boolean = true) {
+    yargBuilder: YargBuilder,
+    workSpaceContextResolver: WorkspaceContextResolver,
+    allowUserInput: boolean = true) {
     const handlers = ai.client.commands
         .filter(hm => !!hm.intent && hm.intent.length > 0);
 
@@ -51,17 +51,14 @@ export function addIntentsAsCommands(ai: AutomationClientInfo,
                         true);
                 },
                 parameters: commandLineParametersFromCommandHandlerMetadata(h, allowUserInput),
-                conflictResolution: {
-                    failEverything: false,
-                    commandDescription: `Intent '${intent}' on command ${h.name}`,
-                },
+                conflictResolution: dropWithWarningsInHelp(`Intent '${intent}' on command ${h.name}`),
             })));
 }
 
 async function runByIntent(ai: AutomationClientInfo,
-                           hm: CommandHandlerMetadata,
-                           command: any,
-                           workspaceContext: LocalWorkspaceContext): Promise<any> {
+    hm: CommandHandlerMetadata,
+    command: any,
+    workspaceContext: LocalWorkspaceContext): Promise<any> {
     return runCommandOnColocatedAutomationClient(ai.location,
         ai.localConfig.repositoryOwnerParentDirectory,
         {
