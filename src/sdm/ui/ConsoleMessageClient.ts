@@ -133,10 +133,9 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
      * @param {string} markdown
      */
     private writeToChannel(channels: string[] | string, markdown: string) {
-        const outputText = withinRenderableSize(markdown) ?
-            marked(` **${channels}** ${this.dateString()} ` + markdown, this.markedOptions) :
-            markdown;
-        return this.sender(chalk.gray("#") + outputText);
+        const outputText = ` ${marked(`**${channels}**`, this.markedOptions).trim()} ${this.dateString()} ${
+            marked(markdown, this.markedOptions).trim()}`;
+        return this.sender(chalk.gray("#") + outputText + "\n");
     }
 
     public dateString() {
@@ -159,16 +158,4 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
         }) {
     }
 
-}
-
-/**
- * Make a guess whether the `marked` program can render this in markdown in a reasonable amount of time.
- * We have observed that it can take 60s to render a twelve-item list of sufficient interestingness.
- * See: https://github.com/atomist/sdm-local/issues/123
- */
-function withinRenderableSize(markdown: string): boolean {
-    if (!markdown) {
-        return true;
-    }
-    return (markdown.length < 1000) && (markdown.split("\n").length < 12);
 }
