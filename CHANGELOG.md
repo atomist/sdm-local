@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm/compare/0.1.14...HEAD)
 
+### Added
+
+-   Actionable messages. [#4](https://github.com/atomist/sdm-local/issues/4)
+
 ## [0.1.14](https://github.com/atomist/sdm/compare/0.1.13...0.1.14) - 2018-08-24
 
 ## [0.1.13](https://github.com/atomist/sdm/compare/0.1.12...0.1.13) - 2018-08-23
