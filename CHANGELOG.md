@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm/compare/0.1.18...HEAD)
 
+### Fixed
+
+-   Do not create log/ directories in every repo. [#138](https://github.com/atomist/sdm-local/issues/138)
+
 ## [0.1.18](https://github.com/atomist/sdm/compare/0.1.17...0.1.18) - 2018-08-24
 
 ## [0.1.17](https://github.com/atomist/sdm/compare/0.1.16...0.1.17) - 2018-08-24
