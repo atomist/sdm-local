@@ -90,7 +90,8 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
                 if (!!msg.text) {
                     await this.writeToChannel(channel, msg.text);
                 }
-                (msg.attachments || []).forEach(async att => {
+                const blocks: string[] = [];
+                (msg.attachments || []).forEach(att => {
                     let text = "";
                     if (!!att.author_name) {
                         text += `__${att.author_name}__\n`;
@@ -102,12 +103,13 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
                         text += att.text;
                     }
                     if (!!text) {
-                        await this.writeToChannel(channel, text);
+                        blocks.push(text);
                     }
                     (att.actions || []).forEach(async (action, index) => {
-                        await this.renderAction(channel, action, actionKeyFor(msg, index));
+                        blocks.push(this.renderAction(channel, action, actionKeyFor(msg, index)));
                     });
                 });
+                await this.writeToChannel(channel, blocks.join("\n"));
             } else if (typeof msg === "string") {
                 await this.writeToChannel(channel, msg);
             } else {
@@ -126,14 +128,14 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
         return this.sender(`#${users} ${this.dateString()} ${msg}\n`);
     }
 
-    private async renderAction(channel: string,
+    private renderAction(channel: string,
                                action: slack.Action,
-                               actionKey: string) {
+                               actionKey: string): string {
         if (action.type === "button") {
             const url = `${this.connectionConfig.baseEndpoint}${ActionRoute}/${actionDescription(action)}?key=${actionKey}`;
-            await this.writeToChannel(channel, `${action.text} - ${url}`);
+            return `${action.text} - ${url}`;
         } else {
-            return this.sender(JSON.stringify(action) + "\n");
+            return JSON.stringify(action);
         }
     }
 
@@ -145,7 +147,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
     private writeToChannel(channels: string[] | string, markdown: string) {
         const outputText = ` ${marked(`**${channels}**`, this.markedOptions).trim()} ${this.dateString()} ${
             marked(markdown, this.markedOptions).trim()}`;
-        return this.sender(chalk.gray("#") + outputText + "\n");
+        return this.sender(chalk.gray("#") + outputText.split("\n").join("\n\t") + "\n");
     }
 
     public dateString() {

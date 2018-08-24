@@ -77,18 +77,18 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
         switch (gcl.completedGoal.state) {
             case SdmGoalState.success:
                 return gcl.addressChannels(`${pushIdentification(gcl.completedGoal.push)}
-\t${chalk.green(`✔ ${gcl.completedGoal.description}`)}${gcl.completedGoal.externalUrl ?
+${chalk.green(`✔ ${gcl.completedGoal.description}`)}${gcl.completedGoal.externalUrl ?
                     ` > ${gcl.completedGoal.externalUrl}` : ""}${gcl.completedGoal.url ? ` > ${gcl.completedGoal.url}` : ""}`);
             case SdmGoalState.failure:
                 return gcl.addressChannels(`${pushIdentification(gcl.completedGoal.push)}
-\t${chalk.red(`✖︎︎ ${gcl.completedGoal.description}`)}${gcl.completedGoal.externalUrl ?
+${chalk.red(`✖︎︎ ${gcl.completedGoal.description}`)}${gcl.completedGoal.externalUrl ?
                     ` > ${gcl.completedGoal.externalUrl}` : ""}${gcl.completedGoal.url ? ` > ${gcl.completedGoal.url}` : ""}`);
         }
     });
     sdm.addGoalsSetListener(async gsi => {
         const msg = `${pushIdentification(gsi.push)}
-\t▶ Goals
-\t${gsi.goalSet.goals.map(g => `⏦ ${chalk.italic(g.requestedDescription)}`).join("\n\t")}`;
+▶ Goals
+${gsi.goalSet.goals.map(g => `⏦ ${chalk.italic(g.requestedDescription)}`).join("\n")}`;
         return gsi.addressChannels(msg);
     });
     sdm.addGoalExecutionListener(async gci => {
@@ -109,7 +109,7 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
             // \t${chalk.yellow(`⚙︎ ${gci.goalEvent.description}`)}`);
             case SdmGoalState.skipped:
                 return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
-\t${chalk.yellow(`?︎ ${gci.goalEvent.description}`)}`);
+${chalk.yellow(`?︎ ${gci.goalEvent.description}`)}`);
             default:
                 break;
         }
