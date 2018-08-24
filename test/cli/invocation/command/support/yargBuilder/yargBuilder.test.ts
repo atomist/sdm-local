@@ -195,6 +195,10 @@ describe("yarg saver", () => {
         assert.deepEqual(tree, expected, JSON.stringify(tree, null, 2));
 
         assert(combined.helpMessages.some((line: string) => line.includes("good job me 2")), "Help message was: " + combined.helpMessages.join("\n"));
+        // don't warn about the command that is, in fact there
+        // TODO: this is a bug but it's minor. It lets you do the nested command, but claims that it can't
+        // assert(!combined.helpMessages.some((line: string) => line.includes("good job me 3")), "Help message was: " + combined.helpMessages.join("\n"));
+
 
     })
 

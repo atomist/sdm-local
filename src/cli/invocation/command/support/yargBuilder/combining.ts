@@ -77,9 +77,24 @@ function thereIsConflict(yss: YargCommand[]): boolean {
 
 function dropNonessentialCommands(yss: YargCommand[]): [YargCommand[], string[]] {
     const [essential, nonessential] = _.partition(yss, yc => yc.conflictResolution.kind !== "drop with warnings");
+    const nonessentialChildren = nonessential
+        .map(yc => yc as YargCommandWord)
+        .filter(yc => yc.nestedCommands && yc.nestedCommands.length > 0)
+        .map(wrapChildren);
+
     const warnings = nonessential.map(ys =>
         `Warning: ${descriptionForConflictWarning(ys)} is not available because it conflicts with another command`);
-    return [essential, warnings];
+    return [[...essential, ...nonessentialChildren], warnings];
+}
+
+function wrapChildren(yc: YargCommandWord): YargCommandWord {
+    return new YargCommandWord({
+        commandName: yc.commandName,
+        description: yc.description,
+        conflictResolution: yc.conflictResolution,
+        nestedCommands: yc.nestedCommands,
+        // NOT the runnable command
+    });
 }
 
 export function combine(commandName: string, yss: YargCommand[]): BuildYargs {
@@ -165,7 +180,6 @@ function constructPromptCommandFrom(promptableCommands: YargCommand[] /* with co
         runnableCommand: combineChoicesIntoRunnableCommand(promptableCommands),
         nestedCommands: _.flatMap(promptableCommands.map(ys => (ys as YargCommandWord).nestedCommands)),
         conflictResolution: dropWithWarningsInHelp(`A choice of: ${promptableCommands.map(c => c.conflictResolution.commandDescription).join(" or ")}`),
-        },
     });
 }
 
