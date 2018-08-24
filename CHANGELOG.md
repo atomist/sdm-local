@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Actionable messages. [#4](https://github.com/atomist/sdm-local/issues/4)
 
+### Fixed
+
+-   Markdown rendering on the terminal is limited by performance. [#123](https://github.com/atomist/sdm-local/issues/123)
+
 ## [0.1.14](https://github.com/atomist/sdm/compare/0.1.13...0.1.14) - 2018-08-24
 
 ## [0.1.13](https://github.com/atomist/sdm/compare/0.1.12...0.1.13) - 2018-08-23
