@@ -39,7 +39,7 @@ export function renderProjectDocChunk(relativePath: string): string | undefined 
 export function renderDocChunk(location: string): string | undefined {
     try {
         const chunk = fs.readFileSync(location).toString();
-        return marked(chunk);
+        return marked(chunk).trim();
     } catch (e) {
         logger.warn("Error reading doc file at %s : %s", location, e.message);
         return "Failed to resolve doc chunk at " + location;
