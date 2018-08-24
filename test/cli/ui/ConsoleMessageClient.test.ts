@@ -21,11 +21,6 @@ import { ConsoleMessageClient } from "./../../../src/sdm/ui/ConsoleMessageClient
 describe("message formatting", () => {
     it("doesn't freeze on this dangerous string", async () => {
 
-        // This attachment once caused the printing programs to freeze forever.
-        // 3s for 12
-        // 10s for 13
-        // 50s for 14
-        // 16 never returns within our span of patiences
         const suspiciousAttachment: Attachment = {
             author_name: "Commands",
             fallback: "Commands",
@@ -53,6 +48,19 @@ describe("message formatting", () => {
         const subject = new ConsoleMessageClient("general", async s => { output = output + s; }, {} as any);
 
         await subject.addressChannels({ text: "I am safe", attachments: [suspiciousAttachment] }, "general");
-        assert(output.includes("WhereAmI"), "It's OK if it didn't render it in markdown, but it should display the whole attachment");
+        assert(output.includes("WhereAmI"), "it should display the whole attachment");
     });
+
+    it("render multi line markdown correct", async () => {
+        const text = `**test some
+bold text**`;
+
+        let output = "";
+        const subject = new ConsoleMessageClient("general", async s => { output = output + s; }, {} as any);
+
+        await subject.addressChannels({ text }, "general");
+        assert(output.includes(`test some
+bold text`));
+    });
+
 });
