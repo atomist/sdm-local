@@ -97,7 +97,7 @@ class YargSaverPositionalCommand implements YargCommand {
     }
 
     public option(parameterName: string,
-        opts: ParameterOptions): YargBuilder {
+                  opts: ParameterOptions): YargBuilder {
         this.withParameter({
             parameterName,
             ...opts,

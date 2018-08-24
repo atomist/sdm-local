@@ -75,7 +75,7 @@ export class YargCommandWord implements YargCommand {
     }
 
     public option(parameterName: string,
-        opts: ParameterOptions): YargBuilder {
+                  opts: ParameterOptions): YargBuilder {
         this.withParameter({
             parameterName,
             ...opts,
@@ -232,9 +232,9 @@ function oneOrMany<T>(t: T | T[] | undefined): T[] {
  * @param params
  */
 function multilevelCommand(params: YargRunnableCommandSpec,
-    description: string,
-    conflictResolution: ConflictResolution,
-    configureInner?: (ys: YargBuilder) => YargBuilder): YargCommand {
+                           description: string,
+                           conflictResolution: ConflictResolution,
+                           configureInner?: (ys: YargBuilder) => YargBuilder): YargCommand {
 
     const { commandLine } = params;
     if (commandLine.words.length === 1) {

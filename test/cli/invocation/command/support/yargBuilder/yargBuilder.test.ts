@@ -16,7 +16,7 @@
 
 import * as assert from "assert";
 import {
-    freshYargBuilder, dropWithWarningsInHelp,
+    dropWithWarningsInHelp, freshYargBuilder,
 } from "../../../../../../src/cli/invocation/command/support/yargBuilder";
 
 describe("yarg saver", () => {
@@ -186,8 +186,8 @@ describe("yarg saver", () => {
             show: {
                 skills: {
                     and: {
-                        stuff: {}
-                    }
+                        stuff: {},
+                    },
                 },
             },
         };
@@ -196,11 +196,12 @@ describe("yarg saver", () => {
 
         assert(combined.helpMessages.some((line: string) => line.includes("good job me 2")), "Help message was: " + combined.helpMessages.join("\n"));
         // don't warn about the command that is, in fact there
-        // TODO: this is a bug but it's minor. It lets you do the nested command, but claims that it can't
-        // assert(!combined.helpMessages.some((line: string) => line.includes("good job me 3")), "Help message was: " + combined.helpMessages.join("\n"));
+        /* TODO: this is a bug but it's minor. It lets you do the nested command, but claims that it can't
+         * assert(!combined.helpMessages.some((line: string) =>
+         *     line.includes("good job me 3")), "Help message was: " + combined.helpMessages.join("\n"));
+         */
 
-
-    })
+    });
 
 });
 
