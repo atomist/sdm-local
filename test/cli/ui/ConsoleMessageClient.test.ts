@@ -48,8 +48,7 @@ describe("message formatting", () => {
         const subject = new ConsoleMessageClient("general", async s => { output = output + s; }, {} as any);
 
         await subject.addressChannels({ text: "I am safe", attachments: [suspiciousAttachment] }, "general");
-        assert(output.includes("WhereAmI"), "It's OK if it didn't render it in markdown, but it should display the whole attachment");
-        process.stdout.write(output);
+        assert(output.includes("WhereAmI"), "it should display the whole attachment");
     });
 
     it("render multi line markdown correct", async () => {
@@ -62,7 +61,6 @@ bold text**`;
         await subject.addressChannels({ text }, "general");
         assert(output.includes(`test some
 bold text`));
-        process.stdout.write(output);
     });
 
 });
