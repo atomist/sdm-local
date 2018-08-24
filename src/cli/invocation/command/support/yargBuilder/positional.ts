@@ -20,12 +20,12 @@ import { handleFunctionFromInstructions, HandleInstructions } from "./handleInst
 import {
     CommandLineParameter,
     ConflictResolution,
+    isPromptForChoice,
     ParameterOptions,
     PositionalOptions,
     YargBuilder,
     YargCommand,
     YargRunnableCommandSpec,
-    isPromptForChoice,
 } from "./interfaces";
 
 export function yargCommandWithPositionalArguments(
@@ -44,7 +44,7 @@ export function yargCommandWithPositionalArguments(
         handleInstructions: { fn: params.handler },
         parameters: params.parameters || [],
         positional: params.positional,
-        conflictResolution: params.conflictResolution || { failEverything: true, commandDescription: params.command },
+        conflictResolution: params.conflictResolution || { kind: "expected to be unique", failEverything: true, commandDescription: params.command },
     });
 }
 

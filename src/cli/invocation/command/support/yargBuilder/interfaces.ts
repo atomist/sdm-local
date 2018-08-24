@@ -1,4 +1,4 @@
-import { ConflictResolution } from './interfaces';
+import { ConflictResolution } from "./interfaces";
 /*
  * Copyright © 2018 Atomist, Inc.
  *
@@ -86,10 +86,10 @@ export type CommandLineParameter = ParameterOptions & {
     parameterName: string;
 };
 
-export type ResolveConflictWithPrompt = { kind: "prompt for a choice", commandDescription: string, uniqueChoice: string, failEverything: false, }
+export interface ResolveConflictWithPrompt { kind: "prompt for a choice"; commandDescription: string; uniqueChoice: string; failEverything: false; }
 
 export type ConflictResolution = {
-    kind?: "expected to be unique" | "drop with warnings"
+    kind: "expected to be unique" | "drop with warnings"
     failEverything: boolean;
     commandDescription: string;
 } | ResolveConflictWithPrompt;
@@ -99,7 +99,7 @@ export type ConflictResolution = {
  * - if all the others resolve with "drop with warnings," fine, this one wins
  * - otherwise, fail the whole program with an error, on startup, even if they didn't want to use this command.
  * This is the default because the others are opt-in, but you probably don't want to use it on anything dynamically added.
- * @param commandDescription 
+ * @param commandDescription
  */
 export function failEverythingInCaseOfConflict(commandDescription: string): ConflictResolution {
     return { kind: "expected to be unique", failEverything: true, commandDescription };
@@ -107,7 +107,7 @@ export function failEverythingInCaseOfConflict(commandDescription: string): Conf
 /**
  * If more than one of this command appear, drop this one. Put a warning in the help message that this happened.
  * If all of this command resolve with "drop with warnings", none of them will be available.
- * @param commandDescription 
+ * @param commandDescription
  */
 export function dropWithWarningsInHelp(commandDescription: string): ConflictResolution {
     return { kind: "drop with warnings", failEverything: false, commandDescription };
@@ -118,11 +118,11 @@ export function dropWithWarningsInHelp(commandDescription: string): ConflictReso
  * The uniqueChoice will distinguish them.
  * If two of the same command with the same uniqueChoice conflict, or if one of the commands insists on failing everything
  * in case of conflict, fallback to drop with warning.
- * @param commandDescription 
- * @param choice 
+ * @param commandDescription
+ * @param choice
  */
 export function promptForAChoiceWhenNecessary(commandDescription: string, uniqueChoice: string): ConflictResolution {
-    return { kind: "prompt for a choice", commandDescription, uniqueChoice, failEverything: false }
+    return { kind: "prompt for a choice", commandDescription, uniqueChoice, failEverything: false };
 }
 
 export function isPromptForChoice(cr: ConflictResolution): cr is ResolveConflictWithPrompt {

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
+import * as inquirer from "inquirer";
 import * as _ from "lodash";
+import { handleFunctionFromInstructions, HandleInstructions } from "./handleInstruction";
 import {
-    BuildYargs, YargCommand, isPromptForChoice, ResolveConflictWithPrompt, YargRunnableCommandSpec,
+    BuildYargs, isPromptForChoice, ResolveConflictWithPrompt, YargCommand, YargRunnableCommandSpec, dropWithWarningsInHelp,
 } from "./interfaces";
 import {
     hasPositionalArguments,
 } from "./positional";
 import { YargCommandWord } from "./sentences";
-import * as inquirer from "inquirer";
-import { HandleInstructions, handleFunctionFromInstructions } from "./handleInstruction";
 
 interface ValidationError {
     complaint: string;
@@ -45,7 +45,7 @@ function errorToString(ve: ValidationError): string {
 
 /**
  * Can we combine all of these commands into one, as they are, would it be a problem?
- * @param yss 
+ * @param yss
  */
 function whyNotCombine(yss: YargCommand[]): ValidationError[] {
     if (yss.length <= 1) {
@@ -120,6 +120,7 @@ export function combine(commandName: string, yss: YargCommand[]): BuildYargs {
         runnableCommand: realCommand ? realCommand.runnableCommand : undefined,
         nestedCommands: _.flatMap(ycws.map(ys => ys.nestedCommands)),
         conflictResolution: {
+            kind: "expected to be unique",
             failEverything: true,
             commandDescription: "This is already a combined command. Don't call build() twice",
         },
@@ -132,17 +133,29 @@ function combineIntoPrompt(ycs: YargCommand[]): [YargCommand[], string[]] {
     const [promptable, rest] = _.partition(ycs, yc => isPromptForChoice(yc.conflictResolution));
 
     const [uniqueChoices, duplicatedChoices] = checkChoicesForUniqueness(promptable);
-    const warningsFromDuplicateChoices = duplicatedChoices.map(yc =>
+    const warnings = warningsFromDuplicateChoices(duplicatedChoices);
+
+    if (uniqueChoices.length === 0) {
+        return [rest, warnings];
+    }
+    if (uniqueChoices.length === 1) {
+        return [[uniqueChoices[0], ...rest], warnings]
+    }
+
+    return [[constructPromptCommandFrom(uniqueChoices), ...rest], warnings];
+}
+
+function warningsFromDuplicateChoices(duplicatedChoices: YargCommand[]) {
+    return duplicatedChoices.map(yc =>
         `WARNING: Command '${yc.conflictResolution.commandDescription}' not available. Duplicate name: ${
         yc.commandName} Duplicate choice: ${
         (yc.conflictResolution as ResolveConflictWithPrompt).uniqueChoice}`);
 
-    const promptingCommand = constructPromptCommandFrom(uniqueChoices);
-    return [[promptingCommand, ...rest], warningsFromDuplicateChoices];
 }
 
-function checkChoicesForUniqueness(promptableCommands: YargCommand[] /* with conflictResolution of prompt for choice */): [YargCommand[], YargCommand[]] {
-    return [promptableCommands, []] // TODO: implement
+function checkChoicesForUniqueness(
+    promptableCommands: YargCommand[] /* with conflictResolution of prompt for choice */): [YargCommand[], YargCommand[]] {
+    return [promptableCommands, []]; // TODO: implement
 }
 
 function constructPromptCommandFrom(promptableCommands: YargCommand[] /* with conflictResolution of prompt for choice */): YargCommand {
@@ -151,11 +164,9 @@ function constructPromptCommandFrom(promptableCommands: YargCommand[] /* with co
         description: _.uniq(promptableCommands.map(y => y.description)).join(" or "),
         runnableCommand: combineChoicesIntoRunnableCommand(promptableCommands),
         nestedCommands: _.flatMap(promptableCommands.map(ys => (ys as YargCommandWord).nestedCommands)),
-        conflictResolution: {
-            failEverything: false,
-            commandDescription: `A choice of: ${promptableCommands.map(c => c.conflictResolution.commandDescription).join(" or ")}`,
+        conflictResolution: dropWithWarningsInHelp(`A choice of: ${promptableCommands.map(c => c.conflictResolution.commandDescription).join(" or ")}`),
         },
-    })
+    });
 }
 
 function combineChoicesIntoRunnableCommand(promptableCommands: YargCommand[]): YargRunnableCommandSpec {
@@ -166,23 +177,23 @@ function combineChoicesIntoRunnableCommand(promptableCommands: YargCommand[]): Y
         handleInstructions: promptAndRun(runnableOnes),
         parameters: _.flatMap(runnableOnes, rc => rc.runnableCommand.parameters),
         positional: [],
-    }
+    };
 }
 
 function promptAndRun(runnableOnes: YargCommandWord[]): HandleInstructions {
     return {
-        fn: async (args) => {
+        fn: async args => {
             const question: inquirer.Question<{ selection: string }> = {
                 type: "list",
                 name: "selection",
                 message: "There is more than one way to do that. Choose one:",
-                choices: runnableOnes.map(rc => (rc.conflictResolution as ResolveConflictWithPrompt).uniqueChoice)
+                choices: runnableOnes.map(rc => (rc.conflictResolution as ResolveConflictWithPrompt).uniqueChoice),
             };
             const answer = await inquirer.prompt<{ selection: string }>([question]);
             const winner = runnableOnes.find(r => (r.conflictResolution as ResolveConflictWithPrompt).uniqueChoice === answer.selection);
             return handleFunctionFromInstructions(winner.runnableCommand.handleInstructions)(args);
-        }
-    }
+        },
+    };
 }
 
 function contributeOnlyHelpMessages(formerCommandName: string, ms: string[]): BuildYargs {
