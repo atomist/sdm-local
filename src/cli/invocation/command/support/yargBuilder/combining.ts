@@ -179,14 +179,14 @@ function constructPromptCommandFrom(promptableCommands: YargCommand[] /* with co
         description: _.uniq(promptableCommands.map(y => y.description)).join(" or "),
         runnableCommand: combineChoicesIntoRunnableCommand(promptableCommands),
         nestedCommands: _.flatMap(promptableCommands.map(ys => (ys as YargCommandWord).nestedCommands)),
-        conflictResolution: dropWithWarningsInHelp(`A choice of: ${promptableCommands.map(c => c.conflictResolution.commandDescription).join(" or ")}`),
+        conflictResolution: dropWithWarningsInHelp(`Choice: ${_.uniq(promptableCommands.map(c => c.conflictResolution.commandDescription)).join(" or ")}`),
     });
 }
 
 function combineChoicesIntoRunnableCommand(promptableCommands: YargCommand[]): YargRunnableCommandSpec {
     const runnableOnes = promptableCommands.filter(pc => pc.isRunnable).map(pc => pc as YargCommandWord);
     return {
-        description: "Choice of: " + runnableOnes.map(r => r.runnableCommand.description).join(" or "),
+        description: "Choice: " + _.uniq(runnableOnes.map(r => r.runnableCommand.description)).join(" or "),
         commandLine: runnableOnes[0].runnableCommand.commandLine,
         handleInstructions: promptAndRun(runnableOnes),
         parameters: _.flatMap(runnableOnes, rc => rc.runnableCommand.parameters),
