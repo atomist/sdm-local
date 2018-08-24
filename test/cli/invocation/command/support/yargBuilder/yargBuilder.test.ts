@@ -16,7 +16,7 @@
 
 import * as assert from "assert";
 import {
-    freshYargBuilder,
+    freshYargBuilder, dropWithWarningsInHelp,
 } from "../../../../../../src/cli/invocation/command/support/yargBuilder";
 
 describe("yarg saver", () => {
@@ -66,7 +66,7 @@ describe("yarg saver", () => {
                 handler: async () => "I am showing the mad skillz",
                 describe: "Command 2",
                 parameters: [],
-                conflictResolution: { failEverything: false, commandDescription: "good job me" },
+                conflictResolution: dropWithWarningsInHelp("good job me"),
             },
         );
 
@@ -94,7 +94,7 @@ describe("yarg saver", () => {
                 handler: async a => { "no "; },
                 describe: "Command 2",
                 parameters: [],
-                conflictResolution: { failEverything: false, commandDescription: "good job me" },
+                conflictResolution: dropWithWarningsInHelp("good job me"),
             },
         );
 
@@ -130,7 +130,7 @@ describe("yarg saver", () => {
                 handler: async a => { "no "; },
                 describe: "Command 2",
                 parameters: [],
-                conflictResolution: { failEverything: false, commandDescription: "I am polite" },
+                conflictResolution: dropWithWarningsInHelp("I am polite"),
             },
         );
 
@@ -145,6 +145,57 @@ describe("yarg saver", () => {
         };
 
         assert.deepEqual(tree, expected, JSON.stringify(tree, null, 2));
+    });
+
+    it("Retains the children of commands that dropped out for being conflicting", () => {
+        const subject = freshYargBuilder();
+
+        subject.withSubcommand(
+            {
+                command: "show skills",
+                handler: async () => "I am showing the skills",
+                describe: "Command 1",
+                parameters: [],
+                conflictResolution: dropWithWarningsInHelp("good job me 1"),
+            },
+        );
+        subject.withSubcommand(
+            {
+                command: "show skills and stuff",
+                handler: async () => "I am showing the skills and stuff",
+                describe: "Command 3",
+                parameters: [],
+                conflictResolution: dropWithWarningsInHelp("good job me 3"),
+            },
+        );
+        subject.withSubcommand(
+            {
+                command: "show skills",
+                handler: async () => "I am showing the mad skillz",
+                describe: "Command 2",
+                parameters: [],
+                conflictResolution: dropWithWarningsInHelp("good job me 2"),
+            },
+        );
+
+        const combined = subject.build();
+
+        const tree = treeifyNested(combined);
+
+        const expected = {
+            show: {
+                skills: {
+                    and: {
+                        stuff: {}
+                    }
+                },
+            },
+        };
+
+        assert.deepEqual(tree, expected, JSON.stringify(tree, null, 2));
+
+        assert(combined.helpMessages.some((line: string) => line.includes("good job me 2")), "Help message was: " + combined.helpMessages.join("\n"));
+
     })
 
 });
