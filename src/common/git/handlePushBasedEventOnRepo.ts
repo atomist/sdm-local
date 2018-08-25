@@ -17,18 +17,18 @@
 import { GitCommandGitProject, GitProject } from "@atomist/sdm";
 import { OnPushToAnyBranch } from "@atomist/sdm";
 import { LocalModeConfiguration } from "@atomist/sdm-core";
-import { errorMessage } from "../../cli/ui/consoleOutput";
+import { errorMessage, infoMessage } from "../../cli/ui/consoleOutput";
+import Push = OnPushToAnyBranch.Push;
+import { isWithin } from "../../sdm/binding/project/expandedTreeUtils";
 import { isAtomistTemporaryBranch } from "../../sdm/binding/project/FileSystemProjectLoader";
 import { FileSystemRemoteRepoRef } from "../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { EventSender } from "../invocation/EventHandlerInvocation";
 import { pushFromLastCommit } from "./pushFromLastCommit";
-import Push = OnPushToAnyBranch.Push;
 
 /**
  * Any event on a local repo
  */
 export interface EventOnRepo {
-
     baseDir: string;
     branch: string;
     sha: string;
@@ -72,8 +72,8 @@ export async function handlePushBasedEventOnRepo(workspaceId: string,
                                                  payload: EventOnRepo,
                                                  eventHandlerName: string,
                                                  pushToPayload: (p: Push) => object = p => ({
-                                                     Push: [p],
-                                                 })) {
+        Push: [p],
+    })) {
 
     // This git hook may be invoked from another git hook. This will cause these values to
     // be incorrect, so we need to delete them to have git work them out again from the directory we're passing via cwd
@@ -83,6 +83,11 @@ export async function handlePushBasedEventOnRepo(workspaceId: string,
 
     if (!validateEventOnRepo(payload)) {
         return undefined;
+    }
+
+    if (!isWithin(lc.repositoryOwnerParentDirectory, payload.baseDir)) {
+        // I would rather send this to the atomist feed
+        return infoMessage(`SDM: skipping push because it is not inside ${lc.repositoryOwnerParentDirectory}\n`);
     }
 
     const push = await createPush(workspaceId, lc.repositoryOwnerParentDirectory, payload);

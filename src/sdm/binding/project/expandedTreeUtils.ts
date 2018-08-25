@@ -36,6 +36,11 @@ function trimTrailingSlash(dir: string): string {
     return dir.replace(/[\/\\]$/, "");
 }
 
+export function isWithin(repositoryOwnerParentDirectory: string,
+                         baseDir: string): boolean {
+    return baseDir.startsWith(repositoryOwnerParentDirectory);
+}
+
 /**
  * Find the owner and repo from the given directory, returning the empty
  * object if it isn't within our expanded directory structure
@@ -45,7 +50,7 @@ function trimTrailingSlash(dir: string): string {
  */
 export function parseOwnerAndRepo(repositoryOwnerParentDirectory: string,
                                   baseDir: string = determineCwd()): { owner?: string, repo?: string } {
-    if (!repositoryOwnerParentDirectory || !baseDir.startsWith(repositoryOwnerParentDirectory)) {
+    if (!repositoryOwnerParentDirectory || !isWithin(repositoryOwnerParentDirectory, baseDir)) {
         return {};
     }
     const pathUnder = trimTrailingSlash(baseDir
