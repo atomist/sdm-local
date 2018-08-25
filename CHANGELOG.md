@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm/compare/0.1.20...HEAD)
 
+### Fixed
+
+-   Fail gracefully when in a directory other than the atomist root. [#143](https://github.com/atomist/sdm-local/issues/143)
+
 ## [0.1.20](https://github.com/atomist/sdm/compare/0.1.19...0.1.20) - 2018-08-25
 
 ## [0.1.19](https://github.com/atomist/sdm/compare/0.1.18...0.1.19) - 2018-08-25
