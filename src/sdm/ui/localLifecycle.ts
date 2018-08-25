@@ -87,7 +87,7 @@ ${chalk.green(`✔ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedG
                     ` > ${gcl.completedGoal.externalUrl}` : ""}${gcl.completedGoal.url ? ` > ${gcl.completedGoal.url}` : ""}`);
             case SdmGoalState.failure:
                 return gcl.addressChannels(`${pushIdentification(gcl.completedGoal.push)}
-${chalk.red(`✖︎︎ ${goalIndentification(gcl.completedGoal)}}`)} ${gcl.completedGoal.description}${gcl.completedGoal.externalUrl ?
+${chalk.red(`✖︎︎ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${gcl.completedGoal.externalUrl ?
                     ` > ${gcl.completedGoal.externalUrl}` : ""}${gcl.completedGoal.url ? ` > ${gcl.completedGoal.url}` : ""}`);
         }
     });
