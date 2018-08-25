@@ -94,7 +94,7 @@ ${chalk.red(`✖︎︎ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.comple
     sdm.addGoalsSetListener(async gsi => {
         const msg = `${pushIdentification(gsi.push)}
 ▸ Goals
-${gsi.goalSet.goals.map(g => `⏦ ${chalk.italic(goalIndentification(g))}`).join("\n")}`;
+${gsi.goalSet.goals.map(g => `⏦ ${chalk.italic(goalIndentification(g as any))}`).join("\n")}`;
         return gsi.addressChannels(msg);
     });
     sdm.addGoalExecutionListener(async gci => {
