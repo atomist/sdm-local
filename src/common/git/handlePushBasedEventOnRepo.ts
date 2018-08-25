@@ -67,11 +67,11 @@ export function isValidSHA1(s: string): boolean {
  * Perform push-based event handling on this repo
  */
 export async function handlePushBasedEventOnRepo(workspaceId: string,
-    sender: EventSender,
-    lc: LocalModeConfiguration,
-    payload: EventOnRepo,
-    eventHandlerName: string,
-    pushToPayload: (p: Push) => object = p => ({
+                                                 sender: EventSender,
+                                                 lc: LocalModeConfiguration,
+                                                 payload: EventOnRepo,
+                                                 eventHandlerName: string,
+                                                 pushToPayload: (p: Push) => object = p => ({
         Push: [p],
     })) {
 
@@ -106,10 +106,10 @@ async function createPush(workspaceId: string, repositoryOwnerParentDirectory: s
 }
 
 async function doWithProjectUnderExpandedDirectoryTree(baseDir: string,
-    branch: string,
-    sha: string,
-    repositoryOwnerParentDirectory: string,
-    action: (p: GitProject) => Promise<any>) {
+                                                       branch: string,
+                                                       sha: string,
+                                                       repositoryOwnerParentDirectory: string,
+                                                       action: (p: GitProject) => Promise<any>) {
     const p = GitCommandGitProject.fromBaseDir(
         FileSystemRemoteRepoRef.fromDirectory({
             repositoryOwnerParentDirectory,
