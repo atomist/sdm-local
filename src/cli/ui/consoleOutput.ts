@@ -84,7 +84,13 @@ export function infoMessage(msg: string, ...args: any[]) {
 export function adviceDoc(...relativePaths: string[]) {
     const docChunk = relativePaths.map(renderProjectDocChunk).join("\n\n");
     if (docChunk) {
-        process.stdout.write("\n" + boxen(docChunk, { padding: 1 }) + "\n\n");
+        // Some times you want to draw boxes manually (eg emoji use)
+        // box characters is at pos 4; before is the terminal markdown
+        if (docChunk.charAt(4) === "┌") {
+            process.stdout.write("\n" + docChunk + "\n\n");
+        } else {
+            process.stdout.write("\n" + boxen(docChunk, { padding: 1 }) + "\n\n");
+        }
     } else {
         warningMessage("Internal error: Document at '%s' not found");
     }
