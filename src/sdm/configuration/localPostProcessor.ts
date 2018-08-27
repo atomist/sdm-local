@@ -29,9 +29,7 @@ import {
 import * as assert from "assert";
 import * as exphbs from "express-handlebars";
 import * as stringify from "json-stringify-safe";
-import * as _ from "lodash";
 import * as path from "path";
-import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionRequest";
 import { newCliCorrelationId } from "../../cli/invocation/http/support/newCorrelationId";
 import { EnvConfigWorkspaceContextResolver } from "../../common/binding/EnvConfigWorkspaceContextResolver";
 import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
@@ -58,6 +56,8 @@ import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInP
 import { renderCommandHandlerForm } from "../invocation/renderCommandHandlerFromForm";
 import { createSdmOptions } from "./createSdmOptions";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
+
+import * as _ from "lodash";
 
 /**
  * Configures an automation client in local mode
@@ -96,7 +96,7 @@ export function configureLocal(
 
         configureWebEndpoints(configuration, localModeConfiguration, workspaceContext, globalActionStore);
 
-        setMessageClient(configuration, localModeConfiguration, workspaceContext, globalActionStore);
+        setMessageClientFactory(configuration, localModeConfiguration, workspaceContext, globalActionStore);
         setGraphClient(configuration);
 
         addListeners(configuration);
@@ -252,35 +252,30 @@ function decircle(result: HandlerResult) {
  * @param {Configuration} configuration
  * @param {LocalModeConfiguration} localMachineConfig
  */
-function setMessageClient(configuration: Configuration,
-                          localMachineConfig: LocalModeConfiguration,
-                          teamContext: LocalWorkspaceContext,
-                          actionStore: ActionStore) {
+function setMessageClientFactory(
+    configuration: Configuration,
+    localMachineConfig: LocalModeConfiguration,
+    teamContext: LocalWorkspaceContext,
+    actionStore: ActionStore) {
     configuration.http.messageClientFactory =
         aca => {
-            // TODO parameterize this - can use multicast
-            const machineAddress: AutomationClientConnectionRequest = {
-                baseEndpoint: `http://${defaultHostUrlAliaser().alias()}:2866`,
-            };
-
             assert(!!aca.context.correlationId);
             const channel = parseChannel(aca.context.correlationId);
-            const port = parsePort(aca.context.correlationId);
+            const portToCommunicateToListenerOn = parsePort(aca.context.correlationId);
             return new BroadcastingMessageClient(
                 new HttpClientMessageClient({
                     workspaceId: teamContext.workspaceId,
                     channel,
                     port: AllMessagesPort,
-                    machineAddress,
                     actionStore,
                     transient: false,
                 }),
                 new GoalEventForwardingMessageClient(),
                 // Communicate back to client if possible
-                !!port ? new HttpClientMessageClient({
+                !!portToCommunicateToListenerOn ? new HttpClientMessageClient({
                     workspaceId: teamContext.workspaceId,
-                    channel, port,
-                    machineAddress,
+                    channel,
+                    port: portToCommunicateToListenerOn,
                     actionStore,
                     transient: true,
                 }) : undefined,

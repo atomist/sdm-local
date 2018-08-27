@@ -25,9 +25,9 @@ import {
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
-import { AutomationClientConnectionRequest } from "../../../cli/invocation/http/AutomationClientConnectionRequest";
 import { StreamedMessage } from "../../../common/ui/httpMessaging";
 import { messageListenerEndpoint } from "../../ui/HttpMessageListener";
+import { currentMachineAddress } from "../../util/currentMachineAddress";
 import { ActionStore } from "./ActionStore";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 
@@ -52,31 +52,38 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
             return;
         }
         const dests = Array.isArray(destinations) ? destinations : [destinations];
-        return this.stream({
-            message: msg,
-            machineAddress: this.options.machineAddress,
-            options,
-            destinations: dests,
-        });
+        return this.sendInternal(msg, dests, options);
     }
 
     public async addressChannels(message: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
+        if (isSlackMessage(message)) {
+            logger.info("Storing any actions for message %j", message);
+            await this.options.actionStore.storeActions(message);
+        }
+        const destinations = [{
+                team: this.options.workspaceId,
+                channels,
+            } as SlackDestination];
+        return this.sendInternal(message, destinations, options);
+    }
+
+    public async addressUsers(message: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
+        return this.addressChannels(message, users, options);
+    }
+
+    /**
+     * Send the message, storing if necessary. Called by other methods.
+     */
+    private async sendInternal(message: string | SlackMessage, destinations: Destination[], options?: MessageOptions): Promise<any> {
         if (isSlackMessage(message)) {
             await this.options.actionStore.storeActions(message);
         }
         return this.stream({
             message,
             options,
-            machineAddress: this.options.machineAddress,
-            destinations: [{
-                team: this.options.workspaceId,
-                channels,
-            } as SlackDestination],
+            machineAddress: currentMachineAddress(),
+            destinations,
         });
-    }
-
-    public async addressUsers(message: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
-        return this.addressChannels(message, users, options);
     }
 
     /**
@@ -105,7 +112,6 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
         channel: string,
         port: number,
         transient: boolean,
-        machineAddress: AutomationClientConnectionRequest,
         actionStore: ActionStore,
     }) {
         this.url = messageListenerEndpoint(options.port);
