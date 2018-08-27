@@ -113,9 +113,9 @@ export function configureLocal(
 }
 
 function configureWebEndpoints(configuration: Configuration,
-                               localModeConfiguration: LocalModeConfiguration,
-                               teamContext: LocalWorkspaceContext,
-                               actionStore: ActionStore) {
+    localModeConfiguration: LocalModeConfiguration,
+    teamContext: LocalWorkspaceContext,
+    actionStore: ActionStore) {
     // Disable auth as we're only expecting local clients
     // TODO what if not basic
     _.set(configuration, "http.auth.basic.enabled", false);
@@ -190,11 +190,10 @@ function configureWebEndpoints(configuration: Configuration,
                 // TODO Hack to get image into the Push
                 eventStore().messages().filter(m => m.value.sha === payload.git.sha && m.value.goalSet && m.value.goalSetId)
                     .forEach(m => _.set(m.value, "push.after.image.imageName", payload.docker.image));
-                const r = await invokeEventHandlerInProcess(
+                return invokeEventHandlerInProcess(
                     { workspaceId: req.params.team, workspaceName: req.params.team })(invocation)
                     .then(resp => res.json(decircle(resp)),
                         boo => res.status(500).send(boo.message));
-                return res.json(r);
             });
             exp.get(ActionRoute + "/:description", async (req, res) => {
                 logger.debug("Action clicked: params=%j; query=%j", req.params, req.query);
@@ -254,9 +253,9 @@ function decircle(result: HandlerResult) {
  * @param {LocalModeConfiguration} localMachineConfig
  */
 function setMessageClient(configuration: Configuration,
-                          localMachineConfig: LocalModeConfiguration,
-                          teamContext: LocalWorkspaceContext,
-                          actionStore: ActionStore) {
+    localMachineConfig: LocalModeConfiguration,
+    teamContext: LocalWorkspaceContext,
+    actionStore: ActionStore) {
     configuration.http.messageClientFactory =
         aca => {
             // TODO parameterize this - can use multicast
