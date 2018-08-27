@@ -16,9 +16,9 @@
 
 import { logger } from "@atomist/automation-client";
 import { LocalModeConfiguration } from "@atomist/sdm-core";
+import * as fs from "fs-extra";
 import * as os from "os";
 import * as path from "path";
-import * as fs from "fs-extra";
 
 export function defaultLocalLocalModeConfiguration(): LocalModeConfiguration {
     return {
