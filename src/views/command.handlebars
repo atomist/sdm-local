@@ -1,26 +1,51 @@
     <h3>{{command.name}}</h3>
     <h4>{{command.description}}</h4>
-
     <form action="/command/{{command.name}}" method="post" class="needs-validation" novalidate>
-            {{#each command.parameters}}
+        {{#if command.parameters}}
+            <p>&nbsp;</p>
+            <h5>Parameters</h5>
+            <hr/>
+        {{/if}}
+        {{#each command.parameters}}
             {{#if displayable}}
+                <div class="form-group">
+                    <label for="{{name}}">{{display_name}}{{#if required}}*{{/if}}</label>
+                    <input type="text"
+                           class="form-control"
+                           id="{{name}}"
+                           name="{{name}}"
+                           aria-describedby="{{name}}Help"
+                           value="{{#if (lookup ../payload name)}}{{lookup ../payload name}}{{else}}{{default_value}}{{/if}}"
+                           {{#if pattern}}pattern="{{pattern}}"{{/if}}
+                           {{#if required}}required{{/if}} />
+                    <small id="{{name}}Help" class="form-text text-muted">{{description}}</small>
+                    <div class="invalid-feedback">
+                        Please provide a valid '{{display_name}}'.
+                    </div>
+                </div>
+            {{/if}}
+        {{/each}}
+        {{#if command.mapped_parameters}}
+            <p>&nbsp;</p>
+            <h5>Mapped Parameters</h5>
+            <hr/>
+        {{/if}}
+        {{#each command.mapped_parameters}}
             <div class="form-group">
-                <label for="{{name}}">{{display_name}}{{#if required}}*{{/if}}</label>
+                <label for="{{name}}">{{name}}</label>
                 <input type="text"
                        class="form-control"
                        id="{{name}}"
                        name="{{name}}"
                        aria-describedby="{{name}}Help"
-                       value="{{#if (lookup ../payload name)}}{{lookup ../payload name}}{{else}}{{default_value}}{{/if}}"
-                       {{#if pattern}}pattern="{{pattern}}"{{/if}}
+                       value="{{#if (lookup ../payload name)}}{{lookup ../payload name}}{{/if}}"
                        {{#if required}}required{{/if}} />
-                <small id="{{name}}Help" class="form-text text-muted">{{description}}</small>
+                <small id="{{name}}Help" class="form-text text-muted">{{uri}}</small>
                 <div class="invalid-feedback">
-                    Please provide a valid '{{display_name}}'.
+                    Please provide a valid '{{name}}'.
                 </div>
             </div>
-            {{/if}}
-            {{/each}}
+        {{/each}}
 
         <button type="submit" class="btn btn-primary">Run</button>
     </form>

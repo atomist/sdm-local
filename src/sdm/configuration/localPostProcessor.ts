@@ -153,14 +153,15 @@ function configureWebEndpoints(configuration: Configuration,
                 const invocation: CommandHandlerInvocation = {
                     name: req.params.name,
                     parameters: payload,
-                    mappedParameters: [],
+                    mappedParameters: payload,
                     workspaceName: teamContext.workspaceName,
                     workspaceId: teamContext.workspaceId,
                     correlationId: await newCliCorrelationId(),
                 };
-                return invokeCommandHandlerInProcess()(invocation)
-                    .then(resp => res.json(decircle(resp)),
-                        boo => res.status(500).send(boo.message));
+                return invokeCommandHandlerInProcess(async result => {
+                    const r = await result;
+                    return res.render("result", { result: r, configuration: automationClientInstance().configuration });
+                })(invocation);
             });
             exp.post("/atomist/link-image/teams/:team", async (req, res) => {
                 const payload = req.body;
@@ -221,7 +222,7 @@ function configureWebEndpoints(configuration: Configuration,
                 logger.debug("The parameters are: %j", command.parameters);
                 logger.debug("The stored parameters are: %j", storedCommand.parameters);
                 logger.debug("The command description is: %s", storedCommand.description);
-                return res.status(200).send(renderCommandHandlerForm(storedCommand.parameters, command));
+                return res.render("command", { payload: storedCommand.parameters, command, configuration: automationClientInstance().configuration });
             });
         },
     ];

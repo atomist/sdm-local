@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-import { automationClientInstance, logger } from "@atomist/automation-client";
+import {
+    automationClientInstance,
+    HandlerResult,
+} from "@atomist/automation-client";
 import { CommandIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import { CommandHandlerInvoker } from "../../common/invocation/CommandHandlerInvocation";
 import { propertiesToArgs } from "../../common/util/propertiesToArgs";
 
-export function invokeCommandHandlerInProcess(): CommandHandlerInvoker {
+export function invokeCommandHandlerInProcess(callback: (result: Promise<HandlerResult>) => void = () => {}): CommandHandlerInvoker {
     return async invocation => {
         const parameters = propertiesToArgs(invocation.parameters);
         const data = {
@@ -41,17 +44,6 @@ export function invokeCommandHandlerInProcess(): CommandHandlerInvoker {
             },
         };
 
-        if (!automationClientInstance()) {
-            throw new Error("This function must be invoked inside an automation client locally");
-        } else {
-            logger.debug("Invoking command %s using %j", invocation.name, data);
-            return automationClientInstance().processCommand(data as CommandIncoming, async result => {
-                const r = await result;
-                if (r.code !== 0) {
-                    logger.error("Command handler did not succeed. Returned: " + JSON.stringify(r, null, 2));
-                }
-                return r;
-            });
-        }
+        return automationClientInstance().processCommand(data as CommandIncoming, callback);
     };
 }
