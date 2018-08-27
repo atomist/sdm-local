@@ -22,7 +22,10 @@ import { CommandIncoming } from "@atomist/automation-client/internal/transport/R
 import { CommandHandlerInvoker } from "../../common/invocation/CommandHandlerInvocation";
 import { propertiesToArgs } from "../../common/util/propertiesToArgs";
 
-export function invokeCommandHandlerInProcess(callback: (result: Promise<HandlerResult>) => void = () => {}): CommandHandlerInvoker {
+export type CommandHandlerCallback = (result: Promise<HandlerResult>) => void;
+const DefaultCommandHandlerCallback = () => { /* intentionally left empty */ };
+
+export function invokeCommandHandlerInProcess(callback: CommandHandlerCallback = DefaultCommandHandlerCallback): CommandHandlerInvoker {
     return async invocation => {
         const parameters = propertiesToArgs(invocation.parameters);
         const data = {
