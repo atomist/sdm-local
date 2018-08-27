@@ -53,7 +53,6 @@ import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventFo
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
 import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandlerInProcess";
 import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInProcess";
-import { renderCommandHandlerForm } from "../invocation/renderCommandHandlerFromForm";
 import { createSdmOptions } from "./createSdmOptions";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 
