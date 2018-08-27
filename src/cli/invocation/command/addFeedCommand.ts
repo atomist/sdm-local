@@ -42,6 +42,10 @@ export function addFeedCommand(yargs: YargBuilder) {
                 type: "boolean",
                 description: "Show information about command invocation",
                 default: false,
+            }).option("goals", {
+                type: "boolean",
+                description: "Show only goal executions",
+                default: false,
             });
             return argv;
         },
@@ -57,6 +61,7 @@ export function addFeedCommand(yargs: YargBuilder) {
                         transient: false,
                         channels,
                         verbose: argv.verbose,
+                        goals: argv.goals,
                     }).start();
                     if (channels.length > 0) {
                         infoMessage("Atomist feed from all local SDM activity concerning channels [%s] will appear here\n",
