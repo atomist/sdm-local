@@ -20,6 +20,7 @@ import { handleFunctionFromInstructions, HandleInstructions } from "./handleInst
 import {
     CommandLineParameter,
     ConflictResolution,
+    isPromptForChoice,
     ParameterOptions,
     PositionalOptions,
     YargBuilder,
@@ -43,7 +44,7 @@ export function yargCommandWithPositionalArguments(
         handleInstructions: { fn: params.handler },
         parameters: params.parameters || [],
         positional: params.positional,
-        conflictResolution: params.conflictResolution || { failEverything: true, commandDescription: params.command },
+        conflictResolution: params.conflictResolution || { kind: "expected to be unique", failEverything: true, commandDescription: params.command },
     });
 }
 
@@ -81,11 +82,18 @@ class YargSaverPositionalCommand implements YargCommand {
         this.positionalArguments = spec.positional || [];
         this.conflictResolution = spec.conflictResolution;
         this.parameters = spec.parameters;
+        if (isPromptForChoice(this.conflictResolution)) {
+            throw new Error("Can't prompt for which positional command you want");
+        }
     }
 
     public withParameter(p: CommandLineParameter) {
         this.parameters.push(p);
         return this;
+    }
+
+    public addHelpMessages(strs: string[]) {
+        strs.forEach(s => this.helpMessages.push(s));
     }
 
     public option(parameterName: string,

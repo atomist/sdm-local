@@ -26,7 +26,7 @@ import {
 } from "./support/commandInvocationListeners";
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
-import { YargBuilder } from "./support/yargBuilder";
+import { promptForAChoiceWhenNecessary, YargBuilder } from "./support/yargBuilder";
 
 /**
  * Add commands for all intents
@@ -51,10 +51,7 @@ export function addIntentsAsCommands(ai: AutomationClientInfo,
                         true);
                 },
                 parameters: commandLineParametersFromCommandHandlerMetadata(h, allowUserInput),
-                conflictResolution: {
-                    failEverything: false,
-                    commandDescription: `Intent '${intent}' on command ${h.name}`,
-                },
+                conflictResolution: promptForAChoiceWhenNecessary(`Intent '${intent}' on command ${h.name}`, ai.client.name),
             })));
 }
 

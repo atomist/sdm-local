@@ -25,6 +25,11 @@ import {
 } from "./interfaces";
 import { positionalCommand } from "./positional";
 
+async function apologize() {
+    // tslint:disable-next-line:no-console
+    console.log("I'm sorry. I don't know how to do this. Try --help");
+}
+
 /**
  * This command might be runnable by itself, and might also have subcommands.
  *
@@ -63,6 +68,10 @@ export class YargCommandWord implements YargCommand {
             this.command(c);
         }
         return this;
+    }
+
+    public addHelpMessages(strs: string[]) {
+        strs.forEach(s => this.warnings.push(s));
     }
 
     public option(parameterName: string,
@@ -153,7 +162,7 @@ export class YargCommandWord implements YargCommand {
                         return y;
                     },
                     handler: self.runnableCommand ?
-                        handleFunctionFromInstructions(self.runnableCommand.handleInstructions) : undefined,
+                        handleFunctionFromInstructions(self.runnableCommand.handleInstructions) : apologize,
                 });
                 return yarg;
             },
@@ -186,7 +195,7 @@ export function condenseDescriptions(allChildDescriptions: string[], myDescripti
 
 export function imitateYargsCommandMethod(params: SupportedSubsetOfYargsCommandMethod) {
     const conflictResolution: ConflictResolution = params.conflictResolution ||
-        { failEverything: true, commandDescription: params.command };
+        { kind: "expected to be unique", failEverything: true, commandDescription: params.command };
 
     return yargsSpecToMySpecs(params).map(spec =>
         multilevelCommand(spec, params.describe, conflictResolution, params.builder));
