@@ -23,10 +23,12 @@ import {
     SlackDestination,
     SlackMessageClient,
 } from "@atomist/automation-client/spi/message/MessageClient";
-import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import { StreamedMessage } from "../../../common/ui/httpMessaging";
-import { messageListenerEndpoint } from "../../ui/HttpMessageListener";
+import {
+    goalListenerEndpoint,
+    messageListenerEndpoint,
+} from "../../ui/HttpMessageListener";
 import { currentMachineAddress } from "../../util/currentMachineAddress";
 import { ActionStore } from "./ActionStore";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
@@ -39,6 +41,7 @@ import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
 export class HttpClientMessageClient implements MessageClient, SlackMessageClient {
 
     private readonly url: string;
+    private readonly goalUrl: string;
 
     private dead: boolean;
 
@@ -46,16 +49,20 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
         return this.addressChannels(message, this.options.channel, options);
     }
 
-    public async send(msg: string | SlackMessage, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
-        if (isSdmGoalStoreOrUpdate(msg)) {
-            // We don't need to do anything about this
-            return;
-        }
+    public async send(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
         const dests = Array.isArray(destinations) ? destinations : [destinations];
+        if (isSdmGoalStoreOrUpdate(msg) || (msg.goals && msg.push && msg.goalSetId)) {
+            return this.stream({
+               message: msg,
+               options,
+               machineAddress: currentMachineAddress(),
+               destinations: dests,
+            }, this.goalUrl);
+        }
         return this.sendInternal(msg, dests, options);
     }
 
-    public async addressChannels(message: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
+    public async addressChannels(message: any, channels: string | string[], options?: MessageOptions): Promise<any> {
         if (isSlackMessage(message)) {
             logger.info("Storing any actions for message %j", message);
             await this.options.actionStore.storeActions(message);
@@ -67,14 +74,14 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
         return this.sendInternal(message, destinations, options);
     }
 
-    public async addressUsers(message: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
+    public async addressUsers(message: any, users: string | string[], options?: MessageOptions): Promise<any> {
         return this.addressChannels(message, users, options);
     }
 
     /**
      * Send the message, storing if necessary. Called by other methods.
      */
-    private async sendInternal(message: string | SlackMessage, destinations: Destination[], options?: MessageOptions): Promise<any> {
+    private async sendInternal(message: any, destinations: Destination[], options?: MessageOptions): Promise<any> {
         if (isSlackMessage(message)) {
             await this.options.actionStore.storeActions(message);
         }
@@ -83,7 +90,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
             options,
             machineAddress: currentMachineAddress(),
             destinations,
-        });
+        }, this.url);
     }
 
     /**
@@ -91,11 +98,11 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
      * @param {StreamedMessage} sm
      * @return {Promise<any>}
      */
-    private async stream(sm: StreamedMessage) {
+    private async stream(sm: StreamedMessage, url: string) {
         try {
             if (!this.dead) {
                 logger.debug(`Write to url ${this.url}: ${JSON.stringify(sm)}`);
-                await axios.post(this.url, sm);
+                await axios.post(url, sm);
                 logger.debug(`Wrote to url ${this.url}: ${JSON.stringify(sm)}`);
             }
         } catch (err) {
@@ -115,5 +122,6 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
         actionStore: ActionStore,
     }) {
         this.url = messageListenerEndpoint(options.port);
+        this.goalUrl = goalListenerEndpoint(options.port);
     }
 }
