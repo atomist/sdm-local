@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-import { Destination, MessageOptions } from "@atomist/automation-client/spi/message/MessageClient";
+import {
+    Destination,
+    MessageOptions,
+} from "@atomist/automation-client/spi/message/MessageClient";
 import { logger } from "@atomist/sdm";
-import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import * as boxen from "boxen";
 import { sprintf } from "sprintf-js";
@@ -24,6 +26,7 @@ import { AutomationClientConnectionRequest } from "../../cli/invocation/http/Aut
 import { defaultHostUrlAliaser } from "../util/http/defaultLocalHostUrlAliaser";
 
 export const MessageRoute = "/message";
+export const GoalRoute = "/goal";
 
 export const AllMessagesPort = 6660;
 
@@ -33,7 +36,7 @@ export const AllMessagesPort = 6660;
  */
 export interface StreamedMessage {
 
-    message: string | SlackMessage;
+    message: any;
 
     destinations: Destination[];
 
