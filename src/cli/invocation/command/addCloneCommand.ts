@@ -83,8 +83,8 @@ const GitCloneArgs = [
  * @param {YargBuilder} yargs
  */
 export function addCloneCommand(clients: AutomationClientInfo[],
-    yargs: YargBuilder,
-    workspaceContextResolver: WorkspaceContextResolver) {
+                                yargs: YargBuilder,
+                                workspaceContextResolver: WorkspaceContextResolver) {
     yargs.command({
         command: "clone <args>",
         describe: "Like git clone but also onboards the repo with Atomist " +
@@ -116,8 +116,8 @@ export function addCloneCommand(clients: AutomationClientInfo[],
 }
 
 async function superclone(clients: AutomationClientInfo[],
-    args: string,
-    workspaceContext: LocalWorkspaceContext): Promise<any> {
+                          args: string,
+                          workspaceContext: LocalWorkspaceContext): Promise<any> {
     const repositoryOwnerDirectory = determineDefaultRepositoryOwnerParentDirectory();
     const repoInfo = GitRemoteParser.firstMatch(args);
     if (!repoInfo) {

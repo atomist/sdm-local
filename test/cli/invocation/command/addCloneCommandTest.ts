@@ -79,5 +79,5 @@ describe("GitRemoteParser", () => {
         assert.equal(parsed.base, "git@github.com");
         assert.equal(parsed.owner, "atomist");
         assert.equal(parsed.repo, "cli");
-    })
+    });
 });
