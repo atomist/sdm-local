@@ -62,9 +62,9 @@
     "@atomist/sdm-core": "*"
   },
   "devDependencies": {
-    "@atomist/automation-client": "^0.21.7",
-    "@atomist/sdm": "^0.4.7",
-    "@atomist/sdm-core": "^0.4.9",
+    "@atomist/automation-client": "^0.21.8",
+    "@atomist/sdm": "^0.4.8",
+    "@atomist/sdm-core": "^0.4.10",
     "@types/mocha": "^5.2.5",
     "@types/power-assert": "^1.5.0",
     "axios-mock-adapter": "^1.15.0",
