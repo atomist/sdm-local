@@ -152,12 +152,12 @@ export class HttpMessageListener {
 
             const body = req.body.message;
             if (isSdmGoalStoreOrUpdate(body.message)) {
-                this.goalRenderer.updateGoal(body.messageClient as SdmGoalEvent);
-            } else if (body.message.goals && body.message.push && body.message.goalSetId) {
-                const push = body.message.push as PushFields.Fragment;
+                this.goalRenderer.updateGoal(body.message as SdmGoalEvent);
+            } else if (body.goals && body.push && body.goalSetId) {
+                const push = body.push as PushFields.Fragment;
                 this.goalRenderer.addGoals(
-                    body.message.goalSetId,
-                    body.message.goals.map((g: SdmGoalEvent) => g.name),
+                    body.goalSetId,
+                    body.goals.goals.map((g: SdmGoalEvent) => g.name),
                     {
                         owner: push.repo.owner,
                         repo: push.repo.name,
@@ -206,11 +206,11 @@ export class HttpMessageListener {
  * @return {string}
  */
 export function messageListenerEndpoint(demonPort: number): string {
-    return `${messageListenerRoot(demonPort)}${MessageRoute}`;
+    return `http://${defaultHostUrlAliaser().alias()}:${demonPort}${MessageRoute}`;
 }
 
 export function goalListenerEndpoint(demonPort: number): string {
-    return `${messageListenerRoot(demonPort)}${GoalRoute}`;
+    return `http://${defaultHostUrlAliaser().alias()}:${demonPort}${GoalRoute}`;
 }
 
 export function messageListenerRoot(demonPort: number): string {
