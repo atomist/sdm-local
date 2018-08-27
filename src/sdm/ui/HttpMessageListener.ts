@@ -84,7 +84,7 @@ export class HttpMessageListener {
     private seenCompletion: boolean;
 
     private server: http.Server;
-    private goalRenderer: ConsoleGoalRendering;
+    private readonly goalRenderer: ConsoleGoalRendering;
 
     private readonly channels: string[];
 

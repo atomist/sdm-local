@@ -22,7 +22,9 @@ import chalk from "chalk";
 import * as formatDate from "format-date";
 import * as _ from "lodash";
 
+// tslint:disable-next-line:no-var-requires
 const ProgressBar = require("node-progress-bars");
+// tslint:disable-next-line:no-var-requires
 const term = require("terminal-kit").terminal;
 
 term.options.crlf = true;
@@ -32,7 +34,7 @@ const SchemaSuccess = ":icon :name :bar :description :link";
 
 export class ConsoleGoalRendering {
 
-    private goalSets: GoalSet[] = [];
+    private readonly goalSets: GoalSet[] = [];
 
     constructor() {
         term.windowTitle("Atomist - SDM Goals");
@@ -85,22 +87,22 @@ export class ConsoleGoalRendering {
     }
 
     public updateGoal(goal: SdmGoalEvent) {
-        const gs = this.goalSets.find(gs => gs.goalSetId === goal.goalSetId);
-        if (gs) {
-            const g = gs.goals.find(g => g.name.trim() === goal.name);
-            if (g) {
-                g.goal.url = goal.externalUrl || "";
-                g.goal.description = goal.description || "";
+        const goalSet = this.goalSets.find(gs => gs.goalSetId === goal.goalSetId);
+        if (goalSet) {
+            const gtu = goalSet.goals.find(g => g.name.trim() === goal.name);
+            if (gtu) {
+                gtu.goal.url = goal.externalUrl || "";
+                gtu.goal.description = goal.description || "";
                 if (goal.phase) {
-                    g.goal.description += chalk.gray(` ${goal.phase}`);
+                    gtu.goal.description += chalk.gray(` ${goal.phase}`);
                 }
-                g.goal.state = goal.state;
+                gtu.goal.state = goal.state;
                 // Update the bar
-                g.bar.update(mapStateToRatio(goal.state), {
-                    name: mapStateToColor(g.name, g.goal.state),
-                    description: g.goal.description,
-                    link: g.goal.url,
-                    icon: mapStateToIcon(g.goal.state)
+                gtu.bar.update(mapStateToRatio(goal.state), {
+                    name: mapStateToColor(gtu.name, gtu.goal.state),
+                    description: gtu.goal.description,
+                    link: gtu.goal.url,
+                    icon: mapStateToIcon(gtu.goal.state),
                 });
             }
         }
@@ -185,7 +187,8 @@ function date() {
 }
 
 function push(p: Push) {
-    return `${chalk.grey("#")} ${chalk.bold(p.repo)} ${date()} ${chalk.yellow(`${p.owner}/${p.repo}/${p.branch}`)} - ${chalk.yellow(p.sha)} ${p.message}`;
+    return `${chalk.grey("#")} ${chalk.bold(p.repo)} ${date()} ${chalk.yellow(
+        `${p.owner}/${p.repo}/${p.branch}`)} - ${chalk.yellow(p.sha)} ${p.message}`;
 }
 
 interface GoalSet {
