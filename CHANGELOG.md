@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased](https://github.com/atomist/sdm-local/compare/1.0.0-M.2...HEAD)
+
+### Fixed
+
+-   Pass mapped parameters along through form in action button. [#148](https://github.com/atomist/sdm-local/issues/148)
+
 ## [1.0.0-M.2](https://github.com/atomist/sdm-local/compare/1.0.0-M.1...1.0.0-M.2) - 2018-08-27
 
 ### Fixed
