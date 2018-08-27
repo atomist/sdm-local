@@ -29,6 +29,7 @@ import {
 import * as assert from "assert";
 import * as exphbs from "express-handlebars";
 import * as stringify from "json-stringify-safe";
+import * as _ from "lodash";
 import * as path from "path";
 import { newCliCorrelationId } from "../../cli/invocation/http/support/newCorrelationId";
 import { EnvConfigWorkspaceContextResolver } from "../../common/binding/EnvConfigWorkspaceContextResolver";
@@ -55,8 +56,6 @@ import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandle
 import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInProcess";
 import { createSdmOptions } from "./createSdmOptions";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
-
-import * as _ from "lodash";
 
 /**
  * Configures an automation client in local mode
@@ -144,10 +143,19 @@ function configureWebEndpoints(configuration: Configuration,
                 if (!command) {
                     return res.status(404).send(`Command '${req.params.name}' not found`);
                 }
-
-                return res.render("command", { payload, command, configuration: automationClientInstance().configuration });
+                return res.render(
+                    "command",
+                    {
+                        payload,
+                        command,
+                        configuration: automationClientInstance().configuration,
+                    });
             });
             exp.post("/command/:name", async (req, res) => {
+                const command = automationClientInstance().automations.automations.commands.find(c => c.name === req.params.name);
+                if (!command) {
+                    return res.status(404).send(`Command '${req.params.name}' not found`);
+                }
                 const payload = req.body;
                 const invocation: CommandHandlerInvocation = {
                     name: req.params.name,
@@ -159,7 +167,13 @@ function configureWebEndpoints(configuration: Configuration,
                 };
                 return invokeCommandHandlerInProcess(async result => {
                     const r = await result;
-                    return res.render("result", { result: r, configuration: automationClientInstance().configuration });
+                    return res.render(
+                        "result",
+                        {
+                            result: JSON.stringify(decircle(r), null, 2),
+                            command,
+                            configuration: automationClientInstance().configuration,
+                        });
                 })(invocation);
             });
             exp.post("/atomist/link-image/teams/:team", async (req, res) => {
@@ -221,7 +235,13 @@ function configureWebEndpoints(configuration: Configuration,
                 logger.debug("The parameters are: %j", command.parameters);
                 logger.debug("The stored parameters are: %j", storedCommand.parameters);
                 logger.debug("The command description is: %s", storedCommand.description);
-                return res.render("command", { payload: storedCommand.parameters, command, configuration: automationClientInstance().configuration });
+                return res.render(
+                    "command",
+                    {
+                        payload: storedCommand.parameters,
+                        command,
+                        configuration: automationClientInstance().configuration,
+                    });
             });
         },
     ];
