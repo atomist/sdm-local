@@ -83,8 +83,8 @@ const GitCloneArgs = [
  * @param {YargBuilder} yargs
  */
 export function addCloneCommand(clients: AutomationClientInfo[],
-                                yargs: YargBuilder,
-                                workspaceContextResolver: WorkspaceContextResolver) {
+    yargs: YargBuilder,
+    workspaceContextResolver: WorkspaceContextResolver) {
     yargs.command({
         command: "clone <args>",
         describe: "Like git clone but also onboards the repo with Atomist " +
@@ -108,16 +108,16 @@ export function addCloneCommand(clients: AutomationClientInfo[],
             const argsToGitClone = process.argv.slice(3).join(" ");
             return logExceptionsToConsole(async () => {
                 await superclone(clients,
-                     argsToGitClone,
-                     workspaceContextResolver.workspaceContext);
+                    argsToGitClone,
+                    workspaceContextResolver.workspaceContext);
             }, true);
         },
     });
 }
 
 async function superclone(clients: AutomationClientInfo[],
-                          args: string,
-                          workspaceContext: LocalWorkspaceContext): Promise<any> {
+    args: string,
+    workspaceContext: LocalWorkspaceContext): Promise<any> {
     const repositoryOwnerDirectory = determineDefaultRepositoryOwnerParentDirectory();
     const repoInfo = GitRemoteParser.firstMatch(args);
     if (!repoInfo) {
@@ -145,8 +145,9 @@ async function superclone(clients: AutomationClientInfo[],
 }
 
 export const GitRemoteParser = Microgrammar.fromString<{ base: string, owner: string, repo: string }>(
-    "${base}/${owner}/${repo}${dotgit}", {
-        base: /http[s]:\/\/[^\/]+/,
+    "${base}${sep}${owner}/${repo}${dotgit}", {
+        base: /(git@|https?:\/\/)[^:\/]+/,
+        sep: /[:\/]/,
         repo: /[^\s^\.]+/,
         dotgit: optional(".git"),
     },

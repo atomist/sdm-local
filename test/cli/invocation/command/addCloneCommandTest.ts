@@ -28,6 +28,15 @@ describe("GitRemoteParser", () => {
         assert.equal(parsed.repo, "david1");
     });
 
+    it("should parse GitHub url with http", () => {
+        const url = "http://github.com/spring-team/david1";
+        const parsed = GitRemoteParser.firstMatch(url);
+        assert(parsed, `Must have matched on [${url}]`);
+        assert.equal(parsed.base, "http://github.com");
+        assert.equal(parsed.owner, "spring-team");
+        assert.equal(parsed.repo, "david1");
+    });
+
     it("should parse GitHub url ending with .git", () => {
         const url = "https://github.com/spring-team/david1.git";
         const parsed = GitRemoteParser.firstMatch(url);
@@ -62,4 +71,13 @@ describe("GitRemoteParser", () => {
         assert.equal(parsed.owner, "teamsinspace");
         assert.equal(parsed.repo, "documentation-tests");
     });
+
+    it("should parse git protocol", () => {
+        const url = "git@github.com:atomist/cli.git";
+        const parsed = GitRemoteParser.firstMatch(url);
+        assert(parsed, `Must have matched on [${url}]`);
+        assert.equal(parsed.base, "git@github.com");
+        assert.equal(parsed.owner, "atomist");
+        assert.equal(parsed.repo, "cli");
+    })
 });
