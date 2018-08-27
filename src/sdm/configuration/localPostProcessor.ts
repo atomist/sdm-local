@@ -113,9 +113,9 @@ export function configureLocal(
 }
 
 function configureWebEndpoints(configuration: Configuration,
-    localModeConfiguration: LocalModeConfiguration,
-    teamContext: LocalWorkspaceContext,
-    actionStore: ActionStore) {
+                               localModeConfiguration: LocalModeConfiguration,
+                               teamContext: LocalWorkspaceContext,
+                               actionStore: ActionStore) {
     // Disable auth as we're only expecting local clients
     // TODO what if not basic
     _.set(configuration, "http.auth.basic.enabled", false);
@@ -253,9 +253,9 @@ function decircle(result: HandlerResult) {
  * @param {LocalModeConfiguration} localMachineConfig
  */
 function setMessageClient(configuration: Configuration,
-    localMachineConfig: LocalModeConfiguration,
-    teamContext: LocalWorkspaceContext,
-    actionStore: ActionStore) {
+                          localMachineConfig: LocalModeConfiguration,
+                          teamContext: LocalWorkspaceContext,
+                          actionStore: ActionStore) {
     configuration.http.messageClientFactory =
         aca => {
             // TODO parameterize this - can use multicast
