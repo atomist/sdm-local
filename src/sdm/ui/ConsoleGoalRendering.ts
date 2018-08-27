@@ -1,4 +1,3 @@
-import { guid } from "@atomist/automation-client/internal/util/string";
 import {
     SdmGoalEvent,
     SdmGoalState,
@@ -197,6 +196,7 @@ interface Goal {
     bar: any;
 }
 
+/*
 const c = new ConsoleGoalRendering();
 const id = guid();
 c.addGoals(id, ["autofix", "code review", "code reaction", "build", "deploy locally"], {
@@ -260,4 +260,4 @@ setTimeout(() => {
         state: SdmGoalState.success,
         phase: "tsc"
     } as SdmGoalEvent);
-}, 8000);
+}, 8000);*/
