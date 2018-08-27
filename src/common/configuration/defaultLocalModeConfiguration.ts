@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+import { logger } from "@atomist/automation-client";
 import { LocalModeConfiguration } from "@atomist/sdm-core";
 import * as os from "os";
 import * as path from "path";
+import * as fs from "fs-extra";
 
 export function defaultLocalLocalModeConfiguration(): LocalModeConfiguration {
     return {
@@ -29,5 +31,10 @@ export function defaultLocalLocalModeConfiguration(): LocalModeConfiguration {
 const DefaultAtomistRoot = "atomist";
 
 export function determineDefaultRepositoryOwnerParentDirectory() {
-    return process.env.ATOMIST_ROOT || path.join(os.homedir(), DefaultAtomistRoot);
+    const root = process.env.ATOMIST_ROOT || path.join(os.homedir(), DefaultAtomistRoot);
+    if (!fs.existsSync(root)) {
+        logger.info(`Creating Atomist repository owner directory at '${root}'`);
+        fs.mkdirSync(root, "0744");
+    }
+    return root;
 }
