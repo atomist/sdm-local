@@ -190,11 +190,10 @@ function configureWebEndpoints(configuration: Configuration,
                 // TODO Hack to get image into the Push
                 eventStore().messages().filter(m => m.value.sha === payload.git.sha && m.value.goalSet && m.value.goalSetId)
                     .forEach(m => _.set(m.value, "push.after.image.imageName", payload.docker.image));
-                const r = await invokeEventHandlerInProcess(
+                return invokeEventHandlerInProcess(
                     { workspaceId: req.params.team, workspaceName: req.params.team })(invocation)
                     .then(resp => res.json(decircle(resp)),
                         boo => res.status(500).send(boo.message));
-                return res.json(r);
             });
             exp.get(ActionRoute + "/:description", async (req, res) => {
                 logger.debug("Action clicked: params=%j; query=%j", req.params, req.query);
