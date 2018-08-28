@@ -19,7 +19,7 @@ import {
     GitProject,
     OnPushToAnyBranch,
 } from "@atomist/sdm";
-import { LocalModeConfiguration } from "@atomist/sdm-core";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import {
     errorMessage,
     infoMessage,
@@ -74,7 +74,7 @@ export function isValidSHA1(s: string): boolean {
  */
 export async function handlePushBasedEventOnRepo(workspaceId: string,
                                                  sender: EventSender,
-                                                 lc: LocalModeConfiguration,
+                                                 lc: LocalSoftwareDeliveryMachineOptions,
                                                  payload: EventOnRepo,
                                                  eventHandlerName: string,
                                                  pushToPayload: (p: Push) => object = p => ({

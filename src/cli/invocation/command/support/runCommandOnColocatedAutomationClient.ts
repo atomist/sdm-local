@@ -21,7 +21,6 @@ import { RepoId } from "@atomist/sdm";
 import chalk from "chalk";
 import * as inquirer from "inquirer";
 import * as _ from "lodash";
-import { determineDefaultRepositoryOwnerParentDirectory } from "../../../../common/configuration/defaultLocalModeConfiguration";
 import { CommandHandlerInvocation } from "../../../../common/invocation/CommandHandlerInvocation";
 import { InvocationTarget } from "../../../../common/invocation/InvocationTarget";
 import { ExtraParametersMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/CommandLineMappedParameterResolver";
@@ -30,6 +29,7 @@ import { MappedParameterResolver } from "../../../../sdm/binding/mapped-paramete
 import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/project/ExpandedTreeMappedParameterResolver";
 import { expandedTreeRepoFinder } from "../../../../sdm/binding/project/expandedTreeRepoFinder";
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
+import { determineDefaultRepositoryOwnerParentDirectory } from "../../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
 import { HttpMessageListener } from "../../../../sdm/ui/HttpMessageListener";
 import { infoMessage, warningMessage } from "../../../ui/consoleOutput";
 import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionRequest";

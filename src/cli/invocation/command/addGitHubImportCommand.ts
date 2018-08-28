@@ -1,3 +1,4 @@
+import { GitHubDotComBase } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 /*
  * Copyright © 2018 Atomist, Inc.
  *
@@ -14,13 +15,15 @@
  * limitations under the License.
  */
 import axios, { AxiosRequestConfig } from "axios";
-
-import { GitHubDotComBase } from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
-import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
+import { determineDefaultRepositoryOwnerParentDirectory } from "../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { infoMessage, logExceptionsToConsole, warningMessage } from "../../ui/consoleOutput";
+import {
+    infoMessage,
+    logExceptionsToConsole,
+    warningMessage,
+} from "../../ui/consoleOutput";
 import { cloneAndAtomize } from "./support/cloneAndAtomize";
 import { YargBuilder } from "./support/yargBuilder";
 

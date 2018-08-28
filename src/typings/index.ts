@@ -15,5 +15,7 @@
  */
 
 declare module "boxen";
+declare module "file-url";
 declare module "format-date";
 declare module "marked-terminal";
+declare module "simple-node-logger";

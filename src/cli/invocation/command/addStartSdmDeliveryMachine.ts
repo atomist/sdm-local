@@ -15,8 +15,8 @@
  */
 
 import chalk from "chalk";
-import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
 import { sdmCd } from "../../../pack/sdm-cd/support/SdmCd";
+import { determineDefaultRepositoryOwnerParentDirectory } from "../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
 import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
 import {
     infoMessage,
@@ -62,12 +62,14 @@ export function addStartSdmDeliveryMachine(yargs: YargBuilder) {
     });
 }
 
-async function startSdmMachine(port: number, repositoryOwnerParentDirectory?: string) {
+async function startSdmMachine(host: string,
+                               port: number,
+                               repositoryOwnerParentDirectory?: string) {
     return startEmbeddedMachine({
         repositoryOwnerParentDirectory,
         port,
         configure: sdm => {
-            sdm.addExtensionPacks(sdmCd({ port }));
+            sdm.addExtensionPacks(sdmCd({ host: sdm.configuration.local.hostname, port }));
         },
     });
 }
