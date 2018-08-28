@@ -29,8 +29,20 @@ const term = require("terminal-kit").terminal;
 
 term.options.crlf = true;
 
-const SchemaRequested = ":icon :name :bar :description :link";
-const SchemaSuccess = ":icon :name :bar :description :link";
+const SchemaRequested = ":spinner :icon :name :bar :description :link";
+const SchemaSuccess = "  :icon :name :bar :description :link";
+const Frames = [
+    "⠋",
+    "⠙",
+    "⠹",
+    "⠸",
+    "⠼",
+    "⠴",
+    "⠦",
+    "⠧",
+    "⠇",
+    "⠏",
+];
 
 export class ConsoleGoalRendering {
 
@@ -49,8 +61,24 @@ export class ConsoleGoalRendering {
                         description: g.goal.description,
                         link: g.goal.url,
                         icon: mapStateToIcon(g.goal.state),
+                        spinner: " ",
                     });
                     bar.archived = true;
+                } else if (g.goal.state === SdmGoalState.in_process) {
+                    let tick = g.tick;
+                    if (tick + 1 === Frames.length) {
+                        tick = 0;
+                    } else {
+                        tick++;
+                    }
+                    bar.setSchema(SchemaRequested, {
+                        name: mapStateToColor(g.name, g.goal.state),
+                        description: g.goal.description,
+                        link: g.goal.url,
+                        icon: mapStateToIcon(g.goal.state),
+                        spinner: chalk.grey(Frames[g.tick]),
+                    });
+                    g.tick = tick;
                 }
             }));
 
@@ -87,6 +115,7 @@ export class ConsoleGoalRendering {
                     ug ? ug.description : `Planned: ${g}`,
                     (ug ? ug.url : "") || "",
                     ug ? ug.state : SdmGoalState.planned),
+                tick: 0,
             };
         });
         this.goalSets.push({
@@ -113,6 +142,7 @@ export class ConsoleGoalRendering {
                     description: gtu.goal.description,
                     link: gtu.goal.url,
                     icon: mapStateToIcon(gtu.goal.state),
+                    spinner: " ",
                 });
             }
         } else {
@@ -133,8 +163,15 @@ export class ConsoleGoalRendering {
             width: 5,
             filled: ".",
             blank: " ",
+            spinner: " ",
         });
-        bar.update(mapStateToRatio(state), { name: mapStateToColor(name, state), description, link, icon: mapStateToIcon(state) });
+        bar.update(mapStateToRatio(state), {
+            name: mapStateToColor(name, state),
+            description,
+            link,
+            icon: mapStateToIcon(state),
+            spinner: " ",
+        });
         return bar;
     }
 
@@ -230,6 +267,7 @@ interface Goal {
         state: SdmGoalState;
     };
     bar: any;
+    tick: number;
 }
 
 /*
