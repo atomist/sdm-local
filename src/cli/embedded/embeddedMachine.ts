@@ -16,16 +16,23 @@
 
 import { Configuration } from "@atomist/automation-client";
 import { automationClient } from "@atomist/automation-client/automationClient";
-import { defaultConfiguration, invokePostProcessors } from "@atomist/automation-client/configuration";
-import { ExtensionPack, SoftwareDeliveryMachine } from "@atomist/sdm";
-import { configureSdm, createSoftwareDeliveryMachine } from "@atomist/sdm-core";
+import {
+    defaultConfiguration,
+    invokePostProcessors,
+} from "@atomist/automation-client/configuration";
+import {
+    ExtensionPack,
+    SoftwareDeliveryMachine,
+} from "@atomist/sdm";
+import {
+    configureSdm,
+    createSoftwareDeliveryMachine,
+    LocalSoftwareDeliveryMachineConfiguration,
+} from "@atomist/sdm-core";
 import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
 import { DefaultWorkspaceId } from "../../common/binding/defaultWorkspaceContextResolver";
-
-import { determineDefaultRepositoryOwnerParentDirectory } from "../../common/configuration/defaultLocalModeConfiguration";
-import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
-import { configureLocal } from "../../sdm/configuration/localPostProcessor";
+import { configureLocal } from "../../sdm/configuration/configureLocal";
 import { LocalSdmConfig } from "../../sdm/configuration/localSdmConfig";
 import { LocalLifecycle } from "../../sdm/ui/localLifecycle";
 import { AutomationClientInfo } from "../AutomationClientInfo";
@@ -78,7 +85,7 @@ const createMachine = (options: EmbeddedMachineOptions) => (config: SoftwareDeli
 };
 
 function configurationFor(options: EmbeddedMachineOptions): Configuration {
-    const cfg = defaultConfiguration();
+    const cfg = defaultConfiguration() as LocalSoftwareDeliveryMachineConfiguration;
     cfg.name = options.name || "bootstrap";
     cfg.teamIds = [DefaultWorkspaceId];
     cfg.workspaceIds = [DefaultWorkspaceId];
@@ -98,13 +105,14 @@ function configurationFor(options: EmbeddedMachineOptions): Configuration {
     cfg.token = "not.your.token";
     cfg.apiKey = "not.your.apiKey";
 
+    cfg.local = {
+        repositoryOwnerParentDirectory: options.repositoryOwnerParentDirectory,
+        mergeAutofixes: true,
+        preferLocalSeeds: false,
+    };
+
     cfg.postProcessors = [
-        configureLocal({
-            repositoryOwnerParentDirectory: options.repositoryOwnerParentDirectory,
-            mergeAutofixes: true,
-            preferLocalSeeds: false,
-            forceLocal: true,
-        }),
+        configureLocal({ forceLocal: true }),
         configureSdm(createMachine(options), {}),
     ];
 
@@ -120,19 +128,19 @@ export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Pro
     const optsToUse: EmbeddedMachineOptions = {
         port: DefaultEmbeddedMachinePort,
         ...options,
-        repositoryOwnerParentDirectory: options.repositoryOwnerParentDirectory || determineDefaultRepositoryOwnerParentDirectory(),
+        repositoryOwnerParentDirectory: options.repositoryOwnerParentDirectory,
     };
 
     if (!options.suppressConsoleLog) {
         process.env.ATOMIST_DISABLE_LOGGING = "false";
     }
     process.env.ATOMIST_MODE = "local";
-    const config = await invokePostProcessors(configurationFor(optsToUse));
+    const config = await invokePostProcessors(configurationFor(optsToUse)) as LocalSoftwareDeliveryMachineConfiguration;
 
     const client = automationClient(config);
     await client.run();
     const coords = {
-        baseEndpoint: `http://${defaultHostUrlAliaser().alias()}:${optsToUse.port}`,
+        baseEndpoint: `http://${config.local.hostname}:${optsToUse.port}`,
     };
     return fetchMetadataFromAutomationClient(coords);
 }

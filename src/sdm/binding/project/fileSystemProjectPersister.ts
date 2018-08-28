@@ -16,10 +16,14 @@
 
 import { successOn } from "@atomist/automation-client/action/ActionResult";
 import { ProjectPersister } from "@atomist/automation-client/operations/generate/generatorUtils";
-import { logger } from "@atomist/sdm";
-import { RepoRef } from "@atomist/sdm";
-import { GitProject, LocalProject, NodeFsLocalProject } from "@atomist/sdm";
-import { LocalModeConfiguration } from "@atomist/sdm-core";
+import {
+    GitProject,
+    LocalProject,
+    logger,
+    NodeFsLocalProject,
+    RepoRef,
+} from "@atomist/sdm";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import * as fs from "fs-extra";
 import * as path from "path";
 import { AutomationClientFinder } from "../../../cli/invocation/http/AutomationClientFinder";
@@ -29,7 +33,11 @@ import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspace
 import { invokeEventHandlerInProcess } from "../../invocation/invokeEventHandlerInProcess";
 import { lastSha } from "../../util/git";
 import { runAndLog } from "../../util/runAndLog";
-import { sendChannelLinkEvent, sendRepoCreationEvent, sendRepoOnboardingEvent } from "../event/repoOnboardingEvents";
+import {
+    sendChannelLinkEvent,
+    sendRepoCreationEvent,
+    sendRepoOnboardingEvent,
+} from "../event/repoOnboardingEvents";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
 const InitialCommitMessage = "Initial commit from Atomist";
@@ -42,7 +50,7 @@ const InitialCommitMessage = "Initial commit from Atomist";
  * @return {ProjectPersister}
  */
 export function fileSystemProjectPersister(teamContext: LocalWorkspaceContext,
-                                           localModeConfiguration: LocalModeConfiguration,
+                                           localModeConfiguration: LocalSoftwareDeliveryMachineOptions,
                                            automationClientFinder: AutomationClientFinder): ProjectPersister {
     return async (p, _, id, params) => {
         const baseDir = `${localModeConfiguration.repositoryOwnerParentDirectory}${path.sep}${id.owner}${path.sep}${id.repo}`;
@@ -77,7 +85,7 @@ export function fileSystemProjectPersister(teamContext: LocalWorkspaceContext,
  * Send events that should apply to a new project
  */
 async function emitEventsForNewProject(workspaceContext: LocalWorkspaceContext,
-                                       lc: LocalModeConfiguration,
+                                       lc: LocalSoftwareDeliveryMachineOptions,
                                        createdProject: LocalProject,
                                        id: RepoRef,
                                        automationClientFinder: AutomationClientFinder) {

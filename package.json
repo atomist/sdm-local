@@ -43,6 +43,7 @@
     "chalk": "^2.4.1",
     "express": "^4.16.3",
     "express-handlebars": "^3.0.0",
+    "file-url": "^2.0.2",
     "format-date": "^1.0.0",
     "fs-extra": "^7.0.0",
     "inquirer": "^6.0.0",
@@ -62,9 +63,9 @@
     "@atomist/sdm-core": "*"
   },
   "devDependencies": {
-    "@atomist/automation-client": "1.0.0-M.2",
+    "@atomist/automation-client": "1.0.0-master.20180829070856",
     "@atomist/sdm": "1.0.0-M.1",
-    "@atomist/sdm-core": "1.0.0-M.1",
+    "@atomist/sdm-core": "1.0.0-local-configuration.20180829093544",
     "@types/mocha": "^5.2.5",
     "@types/power-assert": "^1.5.0",
     "axios-mock-adapter": "^1.15.0",

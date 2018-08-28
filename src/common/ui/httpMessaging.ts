@@ -21,7 +21,7 @@ import axios from "axios";
 import * as boxen from "boxen";
 import { sprintf } from "sprintf-js";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionRequest";
-import { defaultHostUrlAliaser } from "../util/http/defaultLocalHostUrlAliaser";
+import { determineDefaultHostUrl } from "../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
 
 export const MessageRoute = "/message";
 
@@ -48,7 +48,7 @@ export interface StreamedMessage {
  * @return {Promise<void>}
  */
 export async function sendDiagnosticMessageToAllMessagesListener(message: string, ...args: any[]) {
-    const url = `http://${defaultHostUrlAliaser().alias()}:${AllMessagesPort}/write`;
+    const url = `http://${determineDefaultHostUrl()}:${AllMessagesPort}/write`;
     const boxed = boxen(sprintf(message, args), { padding: 1 }) + "\n";
     try {
         await axios.post(url, { message: boxed });
