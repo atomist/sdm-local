@@ -93,11 +93,9 @@ export function configureLocal(
         const globalActionStore = freshActionStore();
 
         configureWebEndpoints(configuration, localModeConfiguration, workspaceContext, globalActionStore);
-
-        setMessageClientFactory(configuration, localModeConfiguration, workspaceContext, globalActionStore);
-        setGraphClient(configuration);
-
-        addListeners(configuration);
+        configureMessageClientFactory(configuration, localModeConfiguration, workspaceContext, globalActionStore);
+        configureGraphClient(configuration);
+        configureListeners(configuration);
 
         const localModeSdmConfigurationElements = createSdmOptions(localModeConfiguration);
 
@@ -247,7 +245,7 @@ function configureWebEndpoints(configuration: Configuration,
     ];
 }
 
-function addListeners(configuration: Configuration) {
+function configureListeners(configuration: Configuration) {
     if (!configuration.listeners) {
         configuration.listeners = [];
     }
@@ -272,7 +270,7 @@ function decircle(result: HandlerResult) {
  * @param {Configuration} configuration
  * @param {LocalModeConfiguration} localMachineConfig
  */
-function setMessageClientFactory(
+function configureMessageClientFactory(
     configuration: Configuration,
     localMachineConfig: LocalModeConfiguration,
     teamContext: LocalWorkspaceContext,
@@ -303,7 +301,7 @@ function setMessageClientFactory(
         };
 }
 
-function setGraphClient(configuration: Configuration) {
+function configureGraphClient(configuration: Configuration) {
     configuration.http.graphClientFactory =
         () => new LocalGraphClient(false);
 }
