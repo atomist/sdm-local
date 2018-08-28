@@ -36,7 +36,7 @@ export class SimpleNodeLoggerProgressLog implements ProgressLog {
     constructor(public readonly name: string, public readonly sdmRoot: string) {
         this.logger = snLogger.createRollingFileLogger({
             logDirectory: sdmRoot,
-            fileNamePattern: `${LogFile}-<DATE>.log`,
+                fileNamePattern: `${LogFile}-<DATE>.log`,
         });
     }
 

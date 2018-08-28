@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
+import { determineDefaultHostUrl } from "../../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
 import { AutomationClientFinder } from "../AutomationClientFinder";
 import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
-
-import { defaultHostUrlAliaser } from "../../../../common/util/http/defaultLocalHostUrlAliaser";
 
 /**
  * Connect to the single local default automation client
@@ -25,5 +24,5 @@ import { defaultHostUrlAliaser } from "../../../../common/util/http/defaultLocal
  */
 export const SingleDefaultAutomationClientFinder: AutomationClientFinder =
     new FixedAutomationClientFinder({
-        baseEndpoint: `http://${defaultHostUrlAliaser().alias()}::2866`,
+        baseEndpoint: `http://${determineDefaultHostUrl()}::2866`,
     });

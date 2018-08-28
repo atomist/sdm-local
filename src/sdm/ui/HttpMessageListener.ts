@@ -20,13 +20,22 @@ import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as core from "express-serve-static-core";
 import * as http from "http";
-import { errorMessage, infoMessage } from "../../cli/ui/consoleOutput";
+import {
+    errorMessage,
+    infoMessage,
+} from "../../cli/ui/consoleOutput";
 import { CommandCompletionDestination } from "../../common/ui/CommandCompletionDestination";
-import { AllMessagesPort, MessageRoute } from "../../common/ui/httpMessaging";
+import {
+    AllMessagesPort,
+    MessageRoute,
+} from "../../common/ui/httpMessaging";
 import { canConnectTo } from "../../common/util/http/canConnectTo";
-import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
+import { determineDefaultHostUrl } from "../configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
 import { isFailureMessage } from "../configuration/support/NotifyOnCompletionAutomationEventListener";
-import { ConsoleMessageClient, ProcessStdoutSender } from "./ConsoleMessageClient";
+import {
+    ConsoleMessageClient,
+    ProcessStdoutSender,
+} from "./ConsoleMessageClient";
 
 /**
  * Construction arguments to HttpMessageListener
@@ -151,11 +160,11 @@ export class HttpMessageListener {
  * @return {string}
  */
 export function messageListenerEndpoint(demonPort: number): string {
-    return `http://${defaultHostUrlAliaser().alias()}:${demonPort}${MessageRoute}`;
+    return `http://${determineDefaultHostUrl()}:${demonPort}${MessageRoute}`;
 }
 
 export function messageListenerRoot(demonPort: number): string {
-    return `http://${defaultHostUrlAliaser().alias()}:${demonPort}/`;
+    return `http://${determineDefaultHostUrl()}:${demonPort}/`;
 }
 
 /**

@@ -15,7 +15,7 @@
  */
 
 import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
-import { LocalModeConfiguration } from "@atomist/sdm-core";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import { AutomationClientConnectionRequest } from "./invocation/http/AutomationClientConnectionRequest";
 
 /**
@@ -52,6 +52,6 @@ export interface AutomationClientInfo {
      * If this is a local SDM, include information about its local configuration
      * so we know what expanded directory it uses etc
      */
-    localConfig?: LocalModeConfiguration;
+    localConfig?: LocalSoftwareDeliveryMachineOptions;
 
 }

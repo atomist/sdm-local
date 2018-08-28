@@ -22,12 +22,12 @@ import { exec } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
-import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 import {
     sendChannelLinkEvent,
     sendRepoOnboardingEvent,
 } from "../../../sdm/binding/event/repoOnboardingEvents";
+import { determineDefaultRepositoryOwnerParentDirectory } from "../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { addGitHooks } from "../../setup/addGitHooks";
 import {

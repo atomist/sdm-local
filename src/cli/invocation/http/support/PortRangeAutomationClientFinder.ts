@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import { AutomationClientInfo } from "../../../AutomationClientInfo";
-import { AutomationClientFinder } from "../AutomationClientFinder";
-
 import * as _ from "lodash";
-import { defaultHostUrlAliaser } from "../../../../common/util/http/defaultLocalHostUrlAliaser";
+import { determineDefaultHostUrl } from "../../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
+import { AutomationClientInfo } from "../../../AutomationClientInfo";
 import { AutomationClientConnectionRequest } from "../AutomationClientConnectionRequest";
+import { AutomationClientFinder } from "../AutomationClientFinder";
 import { FixedAutomationClientFinder } from "./FixedAutomationClientFinder";
 
 export interface PortRangeOptions {
@@ -50,7 +49,7 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
             _.range(this.options.lowerPort, this.options.lowerPort + this.options.checkRange)
                 .concat(this.options.additionalPorts || [])
                 .map(port => ({
-                    baseEndpoint: `http://${defaultHostUrlAliaser().alias()}:${port}`,
+                    baseEndpoint: `http://${determineDefaultHostUrl()}:${port}`,
                 }));
         return new FixedAutomationClientFinder(...requests).findAutomationClients();
        }

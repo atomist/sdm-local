@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-import { LocalModeConfiguration } from "@atomist/sdm-core";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import axios from "axios";
-import { AutomationClientInfo, ConnectedClient } from "../../AutomationClientInfo";
+import {
+    AutomationClientInfo,
+    ConnectedClient,
+} from "../../AutomationClientInfo";
 import { AutomationClientConnectionRequest } from "./AutomationClientConnectionRequest";
 
 /**
@@ -28,7 +31,7 @@ export async function fetchMetadataFromAutomationClient(location: AutomationClie
         const resp = await axios.get(location.baseEndpoint + "/registration", {
             timeout: 5 * 1000,
         });
-        let localConfig: LocalModeConfiguration;
+        let localConfig: LocalSoftwareDeliveryMachineOptions;
         try {
             localConfig = (await axios.get(location.baseEndpoint + "/local/configuration")).data;
         } catch {
