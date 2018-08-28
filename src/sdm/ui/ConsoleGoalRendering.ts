@@ -51,7 +51,7 @@ export class ConsoleGoalRendering {
                         icon: mapStateToIcon(g.goal.state),
                     });
                     bar.archived = true;
-                } 
+                }
             }));
 
             this.goalSets.filter(gs => !gs.goals.some(g => !g.bar.completed))
@@ -70,7 +70,7 @@ export class ConsoleGoalRendering {
         const ugs = this.unkownGoals.filter(g => g.goalSetId === id);
 
         const bars = gs.map(g => {
-            const ug = ugs.find(_ug => _ug.name === g.trim());
+            const ug = ugs.find(tug => tug.name === g.trim());
             if (ug) {
                 this.unkownGoals.slice(this.unkownGoals.indexOf(ug), 1);
             }
