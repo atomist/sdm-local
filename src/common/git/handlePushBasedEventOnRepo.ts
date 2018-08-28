@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-import { GitCommandGitProject, GitProject } from "@atomist/sdm";
-import { OnPushToAnyBranch } from "@atomist/sdm";
+import {
+    GitCommandGitProject,
+    GitProject,
+    OnPushToAnyBranch,
+} from "@atomist/sdm";
 import { LocalModeConfiguration } from "@atomist/sdm-core";
-import { errorMessage, infoMessage } from "../../cli/ui/consoleOutput";
-import Push = OnPushToAnyBranch.Push;
+import {
+    errorMessage,
+    infoMessage,
+} from "../../cli/ui/consoleOutput";
 import { isWithin } from "../../sdm/binding/project/expandedTreeUtils";
 import { isAtomistTemporaryBranch } from "../../sdm/binding/project/FileSystemProjectLoader";
 import { FileSystemRemoteRepoRef } from "../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { EventSender } from "../invocation/EventHandlerInvocation";
 import { pushFromLastCommit } from "./pushFromLastCommit";
+import Push = OnPushToAnyBranch.Push;
 
 /**
  * Any event on a local repo
@@ -72,8 +78,8 @@ export async function handlePushBasedEventOnRepo(workspaceId: string,
                                                  payload: EventOnRepo,
                                                  eventHandlerName: string,
                                                  pushToPayload: (p: Push) => object = p => ({
-        Push: [p],
-    })) {
+                                                     Push: [p],
+                                                 })) {
 
     // This git hook may be invoked from another git hook. This will cause these values to
     // be incorrect, so we need to delete them to have git work them out again from the directory we're passing via cwd
@@ -97,11 +103,13 @@ export async function handlePushBasedEventOnRepo(workspaceId: string,
     });
 }
 
-async function createPush(workspaceId: string, repositoryOwnerParentDirectory: string, payload: EventOnRepo): Promise<OnPushToAnyBranch.Push> {
+async function createPush(workspaceId: string,
+                          repositoryOwnerParentDirectory: string,
+                          payload: EventOnRepo): Promise<OnPushToAnyBranch.Push> {
     const { baseDir, branch, sha } = payload;
     return doWithProjectUnderExpandedDirectoryTree(baseDir, branch, sha, repositoryOwnerParentDirectory,
         async p => {
-            return pushFromLastCommit(workspaceId, p);
+            return pushFromLastCommit(workspaceId, branch, sha, p);
         });
 }
 

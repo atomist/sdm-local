@@ -71,6 +71,37 @@ async function authorFromCommit(sha: string, project: LocalProject): Promise<Aut
     };
 }
 
+/**
+ * Make a push to send to the Atomist event endpoint from the last commit to this local git project.
+ * @param workspaceId id of current team
+ * @param branch of the commit to process
+ * @param sha sha of the commit to process
+ * @param {GitProject} project
+ * @return {OnPushToAnyBranch.Push}
+ */
+export async function pushFromLastCommit(workspaceId: string,
+                                         branch: string,
+                                         sha: string,
+                                         project: GitProject): Promise<OnPushToAnyBranch.Push> {
+    const repo = repoFieldsFromProject(workspaceId, project.id);
+    const lastCommit = await buildCommitFromSha(sha, project);
+    const lastShas = await shaHistory(project);
+    const penultimateCommit = (!!lastShas && lastShas.length >= 2) ?
+        await buildCommitFromSha(lastShas[1], project) :
+        undefined;
+    return {
+        id: Date.now() + "_",
+        branch,
+        repo,
+        commits: [
+            lastCommit,
+        ],
+        after: lastCommit,
+        before: penultimateCommit,
+        timestamp: lastCommit.timestamp,
+    };
+}
+
 async function committerFromCommit(sha: string, project: GitProject): Promise<Committer> {
     const result = await retrieveLogDataForSha(sha , project.baseDir, "cn", "cN", "ce");
     return {
@@ -105,32 +136,5 @@ async function buildCommitFromSha(sha: string, project: GitProject): Promise<Pus
         committer: await committerFromCommit(sha, project),
         author: await authorFromCommit(sha, project),
         timestamp: await timestampFromCommit(sha, project),
-    };
-}
-
-/**
- * Make a push to send to the Atomist event endpoint from the last commit to this local git project.
- * @param workspaceId id of current team
- * @param {GitProject} project
- * @return {OnPushToAnyBranch.Push}
- */
-export async function pushFromLastCommit(workspaceId: string, project: GitProject): Promise<OnPushToAnyBranch.Push> {
-    const status = await project.gitStatus();
-    const repo = repoFieldsFromProject(workspaceId, project.id);
-    const lastCommit = await buildCommitFromSha(status.sha, project);
-    const lastShas = await shaHistory(project);
-    const penultimateCommit = (!!lastShas && lastShas.length >= 2) ?
-        await buildCommitFromSha(lastShas[1], project) :
-        undefined;
-    return {
-        id: new Date().getTime() + "_",
-        branch: project.id.branch,
-        repo,
-        commits: [
-            lastCommit,
-        ],
-        after: lastCommit,
-        before: penultimateCommit,
-        timestamp: lastCommit.timestamp,
     };
 }
