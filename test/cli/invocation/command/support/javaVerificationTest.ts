@@ -57,5 +57,19 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.111-b14, mixed mode)
 `}));
         });
 
+        it("should parse Java 10 Oracle Java version", () => {
+            assert(verifyJavaTest({stdout: `java version "10.0.1" 2018-04-17
+Java(TM) SE Runtime Environment 18.3 (build 10.0.1+10)
+Java HotSpot(TM) 64-Bit Server VM 18.3 (build 10.0.1+10, mixed mode)
+`}));
+        });
+
+        it("should parse Java 9 Oracle Java version", () => {
+            assert(verifyJavaTest({stdout: `java version "9"
+Java(TM) SE Runtime Environment (build 9+181)
+Java HotSpot(TM) 64-Bit Server VM (build 9+181, mixed mode)
+`}));
+        });
+
     });
 });

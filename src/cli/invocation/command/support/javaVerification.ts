@@ -44,21 +44,40 @@ export async function verifyMaven() {
     });
 }
 
+/**
+ * The Java version string format keeps changing -
+ * https://www.journaldev.com/20930/check-java-version
+ * @param {CommandResult} r
+ * @return {boolean}
+ */
 export function verifyJavaTest(r: CommandResult) {
     if (!r.stdout) {
         return false;
     }
-    const parsed = JavaVersionGrammar.firstMatch(r.stdout);
-    return !!parsed && parsed.minor >= 8;
+    let parsed = ThreePointJavaVersionGrammar.firstMatch(r.stdout);
+    if (!parsed) {
+        parsed = OnePointJavaVersionGrammar.firstMatch(r.stdout);
+    }
+    if (!parsed) {
+        return false;
+    }
+    return parsed.major >= 9 || (parsed.major === 1 && parsed.minor >= 8);
 }
 
-const JavaVersionGrammar = Microgrammar.fromString<{major: number, minor: number, b1: number, b2: number}>(
-    "java version \"${major}.${minor}.${b1}_${b2}\"",
+const ThreePointJavaVersionGrammar = Microgrammar.fromString<{major: number, minor?: number, b1?: number}>(
+    "java version \"${major}.${minor}.${b1}",
     {
         major: Integer,
         minor: Integer,
         b1: Integer,
-        b2: Integer,
+    },
+);
+
+// Java version output changed in 9, so this is valid
+const OnePointJavaVersionGrammar = Microgrammar.fromString<{major: number}>(
+    "java version \"${major}",
+    {
+        major: Integer,
     },
 );
 
