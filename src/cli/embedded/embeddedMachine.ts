@@ -105,10 +105,6 @@ function configurationFor(options: EmbeddedMachineOptions): Configuration {
             preferLocalSeeds: false,
             forceLocal: true,
         }),
-        async config => {
-            delete process.env.ATOMIST_MODE;
-            return config;
-        },
         configureSdm(createMachine(options), {}),
     ];
 
