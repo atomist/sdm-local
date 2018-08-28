@@ -57,8 +57,12 @@ export class LocalGraphClient implements GraphClient {
         const qo = optionsOrName as QueryOptions<any>;
         if (qo.name === "SdmGoalsForCommit" && qo.variables && qo.variables.offset === 0) {
             const sha = qo.variables.sha;
+            const goalSetId = qo.variables.goalSetId;
             const goals = eventStore().messages()
-                .filter(m => m.value.sha === sha && m.value.goalSet && m.value.goalSetId)
+                .filter(m => m.value.sha === sha
+                    && m.value.goalSet
+                    && m.value.goalSetId
+                    && (!goalSetId || m.value.goalSetId === goalSetId))
                 .map(m => m.value);
             return {
                 SdmGoal: goals,
