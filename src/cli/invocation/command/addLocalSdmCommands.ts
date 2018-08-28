@@ -25,13 +25,20 @@ import { addBootstrapCommands } from "./addBootstrapCommands";
 import { addCloneCommand } from "./addCloneCommand";
 import { addCommandsByName } from "./addCommandsByName";
 import { addFeedCommand } from "./addFeedCommand";
-import { addAddGitHooksCommand, addRemoveGitHooksCommand } from "./addGitHooksCommands";
+import {
+    addAddGitHooksCommand,
+    addRemoveGitHooksCommand,
+} from "./addGitHooksCommands";
 import { addIntentsAsCommands } from "./addIntentsAsCommands";
 import { addReplayCommand } from "./addReplayCommand";
 import { addShowSdmsCommand } from "./addShowSdmsCommand";
 import { addStartSdmDeliveryMachine } from "./addStartSdmDeliveryMachine";
 import { addShowSkillsCommand } from "./showSkillsCommand";
-import { freshYargBuilder, isYargBuilder, YargBuilder } from "./support/yargBuilder";
+import {
+    freshYargBuilder,
+    isYargBuilder,
+    YargBuilder,
+} from "./support/yargBuilder";
 
 /**
  * Given a yargs instance, add commands based on local SDMs we can connect to
@@ -85,13 +92,11 @@ async function addCommandsToConnectTo(client: AutomationClientInfo,
     }
 }
 
-function verifyLocalSdm(automationClientInfo: AutomationClientInfo) {
-    if (!!automationClientInfo.location && !automationClientInfo.localConfig) {
-        process.stderr.write("ERROR: SDM detected, but it is not running in local mode.\nPlease set ATOMIST_MODE=local when starting your SDM.\n");
-        process.exit(1);
-    }
-    if (!automationClientInfo.localConfig) {
-        // no SDM at all
-        infoMessage("Fewer commands will be available\n");
+function verifyLocalSdm(client: AutomationClientInfo) {
+    if (!!client.location && !client.localConfig) {
+        infoMessage(`Detected non-local SDM '${client.client.name}:${client.client.version}'.
+To make commands available here please restart this SDM with 'atomist start --local'.
+
+`);
     }
 }
