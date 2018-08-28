@@ -76,9 +76,11 @@ The instructions here will take you through
    * Running a command, then making your own commands
 
 Later, when they've proven useful, you can elevate your push reactions, generators, editors, 
-and commands into the cloud for your whole team to use with [Atomist](www.atomist.com).
+and commands into the cloud for your whole team to use with [Atomist](https://www.atomist.com).
 
-Here is an [architecture diagram](https://github.com/atomisthq/sdm-local/blob/master/docs/local-sdm.png)  (TEMPORARY: linking to the raw image of files doesn't work in private repos)
+Here is an architecture diagram:
+
+![architecture diagram](docs/local-sdm.png)
 
 ### Setup
 
