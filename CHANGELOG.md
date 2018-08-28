@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Pass mapped parameters along through form in action button. [#148](https://github.com/atomist/sdm-local/issues/148)
 -   Creating a new blank SDM results in HTTP 500 errors in log. [#155](https://github.com/atomist/sdm-local/issues/155)
 -   Fix architecture picture and atomist.com link. [#157](https://github.com/atomist/sdm-local/issues/157)
+-   Post-receive hook sends wrong commit data for branch commit. [#158](https://github.com/atomist/sdm-local/issues/158)
 
 ## [1.0.0-M.2](https://github.com/atomist/sdm-local/compare/1.0.0-M.1...1.0.0-M.2) - 2018-08-27
 
