@@ -23,14 +23,16 @@ import { LocalModeConfiguration } from "@atomist/sdm-core";
 import * as fs from "fs-extra";
 import * as path from "path";
 import { AutomationClientFinder } from "../../../cli/invocation/http/AutomationClientFinder";
-import { invokeEventHandlerUsingHttpOnAll } from "../../../cli/invocation/http/invokeEventHandlerUsingHttp";
 import { addGitHooksToProject } from "../../../cli/setup/addGitHooks";
 import { handlePushBasedEventOnRepo } from "../../../common/git/handlePushBasedEventOnRepo";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
+import { invokeEventHandlerInProcess } from "../../invocation/invokeEventHandlerInProcess";
 import { lastSha } from "../../util/git";
 import { runAndLog } from "../../util/runAndLog";
 import { sendChannelLinkEvent, sendRepoCreationEvent, sendRepoOnboardingEvent } from "../event/repoOnboardingEvents";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
+
+const InitialCommitMessage = "Initial commit from Atomist";
 
 /**
  * Persist the project to the given local directory given expanded directory
@@ -49,7 +51,6 @@ export function fileSystemProjectPersister(teamContext: LocalWorkspaceContext,
             baseDir,
         });
         // Override target repo to get file url
-        // TODO this is a bit nasty
         Object.defineProperty((params as any).target, "repoRef", {
             get() {
                 return frr;
@@ -64,7 +65,7 @@ export function fileSystemProjectPersister(teamContext: LocalWorkspaceContext,
         const createdProject = await NodeFsLocalProject.copy(p, baseDir);
         await runAndLog("git init", { cwd: baseDir });
         await runAndLog("git add .", { cwd: baseDir });
-        await runAndLog(`git commit -a -m "Initial commit from Atomist"`, { cwd: baseDir });
+        await runAndLog(`git commit -a -m "${InitialCommitMessage}"`, { cwd: baseDir });
         await addGitHooksToProject(createdProject);
 
         await emitEventsForNewProject(teamContext, localModeConfiguration, createdProject, id, automationClientFinder);
@@ -80,7 +81,7 @@ async function emitEventsForNewProject(workspaceContext: LocalWorkspaceContext,
                                        createdProject: LocalProject,
                                        id: RepoRef,
                                        automationClientFinder: AutomationClientFinder) {
-    const eventSender = await invokeEventHandlerUsingHttpOnAll(automationClientFinder, workspaceContext);
+    const eventSender = invokeEventHandlerInProcess(workspaceContext);
     await sendRepoCreationEvent(workspaceContext, id, eventSender);
 
     const sha = await lastSha(createdProject as GitProject);
