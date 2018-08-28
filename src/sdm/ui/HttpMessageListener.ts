@@ -156,9 +156,13 @@ export class HttpMessageListener {
                 }
             }
 
+            if (!this.parameters.goals) {
+                return next();
+            }
+
             const body = req.body.message;
-            if (isSdmGoalStoreOrUpdate(body.message)) {
-                this.goalRenderer.updateGoal(body.message as SdmGoalEvent);
+            if (isSdmGoalStoreOrUpdate(body)) {
+                this.goalRenderer.updateGoal(body as SdmGoalEvent);
             } else if (body.goals && body.push && body.goalSetId) {
                 const push = body.push as PushFields.Fragment;
                 this.goalRenderer.addGoals(

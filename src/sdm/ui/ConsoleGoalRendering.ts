@@ -35,6 +35,7 @@ const SchemaSuccess = ":icon :name :bar :description :link";
 export class ConsoleGoalRendering {
 
     private readonly goalSets: GoalSet[] = [];
+    private readonly unkownGoals: SdmGoalEvent[] = [];
 
     constructor() {
         term.windowTitle("Atomist - SDM Goals");
@@ -50,7 +51,7 @@ export class ConsoleGoalRendering {
                         icon: mapStateToIcon(g.goal.state),
                     });
                     bar.archived = true;
-                }
+                } 
             }));
 
             this.goalSets.filter(gs => !gs.goals.some(g => !g.bar.completed))
@@ -58,7 +59,7 @@ export class ConsoleGoalRendering {
                     this.goalSets.splice(this.goalSets.indexOf(gs), 1);
                 });
 
-        }, 200);
+        }, 100);
     }
 
     public addGoals(id: string, goals: string[], p: Push) {
@@ -66,17 +67,26 @@ export class ConsoleGoalRendering {
 
         const ml = _.maxBy(goals, "length");
         const gs = goals.map(g => _.padEnd(g, ml.length, " "));
+        const ugs = this.unkownGoals.filter(g => g.goalSetId === id);
 
         const bars = gs.map(g => {
+            const ug = ugs.find(_ug => _ug.name === g.trim());
+            if (ug) {
+                this.unkownGoals.slice(this.unkownGoals.indexOf(ug), 1);
+            }
             return {
                 name: g,
                 goal: {
-                    description: "",
-                    url: "",
-                    stage: "",
-                    state: SdmGoalState.planned,
+                    description: (ug ? ug.description : "") || "",
+                    url: (ug ? ug.url : "") || "",
+                    stage: (ug ? ug.phase : "") || "",
+                    state: ug ? ug.state : SdmGoalState.planned,
                 },
-                bar: this.createBar(g),
+                bar: this.createBar(
+                    g,
+                    ug ? ug.description : `Planned: ${g}`,
+                    (ug ? ug.url : "") || "",
+                    ug ? ug.state : SdmGoalState.planned),
             };
         });
         this.goalSets.push({
@@ -93,7 +103,7 @@ export class ConsoleGoalRendering {
             if (gtu) {
                 gtu.goal.url = goal.externalUrl || "";
                 gtu.goal.description = goal.description || "";
-                if (goal.phase) {
+                if (goal.phase && goal.state !== SdmGoalState.success) {
                     gtu.goal.description += chalk.gray(` ${goal.phase}`);
                 }
                 gtu.goal.state = goal.state;
@@ -105,10 +115,17 @@ export class ConsoleGoalRendering {
                     icon: mapStateToIcon(gtu.goal.state),
                 });
             }
+        } else {
+            const ix = this.unkownGoals.findIndex(g => g.name === goal.name && g.goalSetId === goal.goalSetId);
+            if (ix >= 0) {
+                this.unkownGoals[ix] = goal;
+            } else {
+                this.unkownGoals.push(goal);
+            }
         }
     }
 
-    private createBar(name: string): any {
+    private createBar(name: string, description: string, link: string, state: SdmGoalState): any {
         const bar = new ProgressBar({
             schema: SchemaRequested,
             total: 5,
@@ -117,7 +134,7 @@ export class ConsoleGoalRendering {
             filled: ".",
             blank: " ",
         });
-        bar.tick(0, { name: chalk.grey(name), description: `Planned: ${name}`, link: "", icon: chalk.grey("⏦") });
+        bar.update(mapStateToRatio(state), { name: mapStateToColor(name, state), description, link, icon: mapStateToIcon(state) });
         return bar;
     }
 
@@ -188,7 +205,7 @@ function date() {
 
 function push(p: Push) {
     return `${chalk.grey("#")} ${chalk.bold(p.repo)} ${date()} ${chalk.yellow(
-        `${p.owner}/${p.repo}/${p.branch}`)} - ${chalk.yellow(p.sha)} ${p.message}`;
+        `${p.owner}/${p.repo}/${p.branch}`)} - ${chalk.yellow(p.sha.slice(0, 7))} ${p.message.split("\n")[0]}`;
 }
 
 interface GoalSet {
