@@ -27,7 +27,7 @@ export async function verifyJDK() {
         command: "java -version",
         outputTest: verifyJavaTest,
         onFailure: () => infoMessage("Please install Java\n"),
-        onWrongVersion: () => infoMessage("Please update your Java version\n"),
+        onWrongVersion: () => infoMessage("Java 8 or above is required\n"),
     });
 }
 
