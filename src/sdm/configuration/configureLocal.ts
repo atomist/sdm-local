@@ -28,6 +28,7 @@ import {
     LocalSoftwareDeliveryMachineConfiguration,
 } from "@atomist/sdm-core";
 import * as assert from "assert";
+import * as exp from "express";
 import * as exphbs from "express-handlebars";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
@@ -55,7 +56,6 @@ import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandle
 import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInProcess";
 import { defaultLocalSoftwareDeliveryMachineConfiguration } from "./defaultLocalSoftwareDeliveryMachineConfiguration";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
-import * as exp from "express";
 
 /**
  * Options that are used during configuration of an local SDM but don't get passed on to the
@@ -118,26 +118,26 @@ function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachineConfig
     process.env.ATOMIST_WEBHOOK_BASEURL = `http://${configuration.local.hostname}:${configuration.http.port}`;
 
     configuration.http.customizers = [
-        (exp: exp.Express) => {
+        (app: exp.Express) => {
             // TODO could use this to set local mode for a server - e.g. the name to send to
-            exp.get("/local/configuration", async (req, res) => {
+            app.get("/local/configuration", async (req, res) => {
                 res.json(configuration.localSdm);
             });
 
             const bodyParser = require("body-parser");
-            exp.use(bodyParser.urlencoded({ extended: false }));
-            exp.use(bodyParser.json());
+            app.use(bodyParser.urlencoded({ extended: false }));
+            app.use(bodyParser.json());
 
             // Handlebars setup
-            exp.set("view engine", "handlebars");
-            exp.set("views", path.join(__dirname, "..", "..", "views"));
-            exp.engine("handlebars", exphbs({
+            app.set("view engine", "handlebars");
+            app.set("views", path.join(__dirname, "..", "..", "views"));
+            app.engine("handlebars", exphbs({
                 defaultLayout: "main",
                 layoutsDir: path.join(__dirname, "..", "..", "views", "layouts"),
             }));
 
             // Add a GET route for convenient links to command handler invocation, as a normal automation client doesn't expose one
-            exp.get("/command/:name", async (req, res) => {
+            app.get("/command/:name", async (req, res) => {
                 const payload = req.query;
                 const command = automationClientInstance().automations.automations.commands.find(c => c.name === req.params.name);
                 if (!command) {
@@ -151,7 +151,7 @@ function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachineConfig
                         configuration: automationClientInstance().configuration,
                     });
             });
-            exp.post("/command/:name", async (req, res) => {
+            app.post("/command/:name", async (req, res) => {
                 const command = automationClientInstance().automations.automations.commands.find(c => c.name === req.params.name);
                 if (!command) {
                     return res.status(404).send(`Command '${req.params.name}' not found`);
@@ -176,7 +176,7 @@ function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachineConfig
                         });
                 })(invocation);
             });
-            exp.post("/atomist/link-image/teams/:team", async (req, res) => {
+            app.post("/atomist/link-image/teams/:team", async (req, res) => {
                 const payload = req.body;
                 const invocation: EventHandlerInvocation = {
                     name: "FindArtifactOnImageLinked",
@@ -209,7 +209,7 @@ function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachineConfig
                     .then(resp => res.json(decircle(resp)),
                         boo => res.status(500).send(boo.message));
             });
-            exp.get(ActionRoute + "/:description", async (req, res) => {
+            app.get(ActionRoute + "/:description", async (req, res) => {
                 logger.debug("Action clicked: params=%j; query=%j", req.params, req.query);
                 const actionKey = req.query.key;
                 if (!actionKey) {
