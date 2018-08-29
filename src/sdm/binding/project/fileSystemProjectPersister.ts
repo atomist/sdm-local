@@ -67,9 +67,7 @@ export function fileSystemProjectPersister(teamContext: LocalWorkspaceContext,
         logger.info("Persisting to [%s]", baseDir);
         if (await fs.pathExists(baseDir)) {
             throw new Error(`Cannot write new project to [${baseDir}] as this directory already exists`);
-        } else {
-            logger.info("The world makes no sense at all");
-        }
+        } 
         const createdProject = await NodeFsLocalProject.copy(p, baseDir);
         await runAndLog("git init", { cwd: baseDir });
         await runAndLog("git add .", { cwd: baseDir });
