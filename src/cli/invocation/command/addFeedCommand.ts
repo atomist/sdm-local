@@ -15,6 +15,7 @@
  */
 
 import { toStringArray } from "@atomist/automation-client/internal/util/string";
+import * as os from "os";
 import { AllMessagesPort } from "../../../common/ui/httpMessaging";
 import {
     HttpMessageListener,
@@ -22,6 +23,7 @@ import {
 } from "../../../sdm/ui/HttpMessageListener";
 import {
     adviceDoc,
+    errorMessage,
     infoMessage,
     logExceptionsToConsole,
 } from "../../ui/consoleOutput";
@@ -42,6 +44,10 @@ export function addFeedCommand(yargs: YargBuilder) {
                 type: "boolean",
                 description: "Show information about command invocation",
                 default: false,
+            }).option("goals", {
+                type: "boolean",
+                description: "Show only goal executions",
+                default: false,
             });
             return argv;
         },
@@ -49,14 +55,18 @@ export function addFeedCommand(yargs: YargBuilder) {
             const channels = toStringArray(argv.channel || []);
             return logExceptionsToConsole(async () => {
                 const alreadyRunning = await isFeedListenerRunning();
+                const isWindows = os.platform() === "win32";
                 if (alreadyRunning) {
                     infoMessage("Lifecycle listener is already running\n");
+                } else if (isWindows) {
+                    errorMessage("--goals is not support on your platform\n");
                 } else {
                     new HttpMessageListener({
                         port: AllMessagesPort,
                         transient: false,
                         channels,
                         verbose: argv.verbose,
+                        goals: argv.goals,
                     }).start();
                     if (channels.length > 0) {
                         infoMessage("Atomist feed from all local SDM activity concerning channels [%s] will appear here\n",
