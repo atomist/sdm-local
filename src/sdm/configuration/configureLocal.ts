@@ -84,7 +84,7 @@ export function configureLocal(options: LocalConfigureOptions = { forceLocal: fa
 
         const workspaceContext: LocalWorkspaceContext = new EnvConfigWorkspaceContextResolver().workspaceContext;
 
-        const defaultSdmConfiguration = defaultLocalSoftwareDeliveryMachineConfiguration(workspaceContext);
+        const defaultSdmConfiguration = defaultLocalSoftwareDeliveryMachineConfiguration(config, workspaceContext);
         const mergedConfig = _.merge(defaultSdmConfiguration, config) as LocalSoftwareDeliveryMachineConfiguration;
 
         // Set up workspaceIds and apiKey
