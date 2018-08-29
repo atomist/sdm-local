@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   `atomist clone` only works with http addresses. [#152](https://github.com/atomist/sdm-local/issues/152)
+-   Add additional _experimental_ view for goals with `atomist feed --goals`. [#163](https://github.com/atomist/sdm-local/issues/163)
 
 ### Fixed
 
