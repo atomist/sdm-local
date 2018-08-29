@@ -61,6 +61,15 @@ export function addFeedCommand(yargs: YargBuilder) {
                 } else if (isWindows) {
                     errorMessage("--goals is not support on your platform\n");
                 } else {
+                    if (!argv.goals) {
+                        if (channels.length > 0) {
+                            infoMessage("Atomist feed from all local SDM activity concerning channels [%s] will appear here\n",
+                                channels);
+                        } else {
+                            infoMessage("Atomist feed from all local SDM activity will appear here\n");
+                            adviceDoc("docs/onStartListener.md");
+                        }
+                    } 
                     new HttpMessageListener({
                         port: AllMessagesPort,
                         transient: false,
@@ -68,13 +77,6 @@ export function addFeedCommand(yargs: YargBuilder) {
                         verbose: argv.verbose,
                         goals: argv.goals,
                     }).start();
-                    if (channels.length > 0) {
-                        infoMessage("Atomist feed from all local SDM activity concerning channels [%s] will appear here\n",
-                            channels);
-                    } else {
-                        infoMessage("Atomist feed from all local SDM activity will appear here\n");
-                        adviceDoc("docs/onStartListener.md");
-                    }
                 }
             },
                 true);

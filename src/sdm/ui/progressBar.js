@@ -11,6 +11,7 @@ var placeholder = '\uFFFC';
 var rendering = false;
 var instances = [];
 var cursorRow;
+var existing = false;
 
 function beginUpdate() {
     rendering = true;
@@ -31,9 +32,11 @@ function init(cursorPosition) {
 stream.on('before:newlines', function (count) {
     updateRows(count);
 
-    cursorRow = cursorRow + count;
-    if (stream.rows < cursorRow) {
-        cursorRow = stream.rows;
+    if (!existing) {
+        cursorRow = cursorRow + count;
+        if (stream.rows < cursorRow) {
+            cursorRow = stream.rows;
+        }
     }
 });
 
@@ -145,7 +148,9 @@ ProgressBar.prototype.setSchema = function (schema, refresh) {
     this.schema = schema || ' [:bar] :current/:total :percent :elapseds :etas';
 
     if (refresh) {
+        existing = true;
         this.compile(refresh);
+        existing = false;
     }
 };
 
@@ -178,12 +183,13 @@ ProgressBar.prototype.tick = function (delta, tokens) {
     this.snoop();
 };
 
-ProgressBar.prototype.update = function (ratio, tokens) {
-
+ProgressBar.prototype.update = function (ratio, tokens, created) {
+    existing = !created;
     var completed = Math.floor(ratio * this.total);
     var delta = completed - this.current;
 
     this.tick(delta, tokens);
+    existing = false;
 };
 
 ProgressBar.prototype.compile = function (tokens) {

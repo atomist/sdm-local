@@ -21,6 +21,7 @@ import {
 import chalk from "chalk";
 import * as formatDate from "format-date";
 import * as _ from "lodash";
+import { infoMessage } from "../../cli/ui/consoleOutput";
 import {
     init,
     ProgressBar,
@@ -53,7 +54,6 @@ export class ConsoleGoalRendering {
 
     constructor() {
         term.windowTitle("Atomist - SDM Goals");
-        term.hideCursor();
 
         [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach(eventType => {
             process.on(eventType as Signals, () => {
@@ -63,10 +63,12 @@ export class ConsoleGoalRendering {
         });
 
         term.getCursorLocation((cb: any, x: number, y: number) => {
-
+            infoMessage("Waiting for SDM goals...");
+            term.moveTo(x, y);
             init({ row: y, col: x });
+            term.hideCursor();
 
-            setInterval(() => {
+           setInterval(() => {
                 this.goalSets.forEach(gs => gs.goals.forEach(g => {
                     const bar = g.bar;
                     if (bar.completed) {
@@ -146,7 +148,7 @@ export class ConsoleGoalRendering {
             const gtu = goalSet.goals.find(g => g.name.trim() === goal.name);
             if (gtu) {
                 gtu.goal.url = goal.externalUrl || "";
-                if (goal.state === SdmGoalState.failure) {
+                if (goal.state === SdmGoalState.failure || goal.state === SdmGoalState.in_process) {
                     gtu.goal.url = goal.url || "";
                 }
                 gtu.goal.description = goal.description || "";
@@ -161,7 +163,7 @@ export class ConsoleGoalRendering {
                     link: formatLink(gtu.goal.url),
                     icon: mapStateToIcon(gtu.goal.state),
                     spinner: " ",
-                });
+                }, false);
             }
         } else {
             const ix = this.unkownGoals.findIndex(g => g.name === goal.name && g.goalSetId === goal.goalSetId);
@@ -182,6 +184,7 @@ export class ConsoleGoalRendering {
             filled: ".",
             blank: " ",
             spinner: " ",
+            fixedWidth: true,
         });
         bar.update(mapStateToRatio(state), {
             name: mapStateToColor(name, state),
@@ -189,7 +192,7 @@ export class ConsoleGoalRendering {
             link: formatLink(link),
             icon: mapStateToIcon(state),
             spinner: " ",
-        });
+        }, true);
         return bar;
     }
 
@@ -197,7 +200,7 @@ export class ConsoleGoalRendering {
 
 function formatLink(url: string): string {
     if (url && url.length > 0) {
-        return `> ${chalk.grey(url)}`;
+        return `∞ ${chalk.grey(url)}`;
     }
     return "";
 }
@@ -224,19 +227,20 @@ function mapStateToRatio(state: SdmGoalState): number {
 function mapStateToIcon(state: SdmGoalState): string {
     switch (state) {
         case SdmGoalState.planned:
+            return chalk.gray("▫");
         case SdmGoalState.requested:
-            return chalk.gray("⏦");
+            return chalk.gray("▹");
         case SdmGoalState.in_process:
             return chalk.yellow("▸");
         case SdmGoalState.waiting_for_approval:
         case SdmGoalState.approved:
             return chalk.yellow("॥");
         case SdmGoalState.failure:
-            return chalk.red("✖");
+            return chalk.red("✗");
         case SdmGoalState.success:
-            return chalk.green("✔");
+            return chalk.green("✓");
         case SdmGoalState.skipped:
-            return chalk.yellow("॥");
+            return chalk.yellow("▪");
     }
     return "";
 }
@@ -295,10 +299,14 @@ interface Goal {
     tick: number;
 }
 
-/*
-const c = new ConsoleGoalRendering();
 
+const c = new ConsoleGoalRendering();
+let counter = 0;
 setInterval(() => {
+    counter++;
+    if (counter > 3) {
+        return 
+    }
     const id = Date.now().toString();
     c.addGoals(id, ["autofix", "code review", "code reaction", "build", "deploy locally"], {
         branch: "master",
@@ -323,6 +331,7 @@ setInterval(() => {
             name: "autofix",
             description: "Running autofix",
             state: SdmGoalState.in_process,
+            url: "http://google.com",
         } as SdmGoalEvent);
     }, 2500);
 
@@ -357,11 +366,40 @@ setInterval(() => {
         c.updateGoal({
             goalSetId: id,
             name: "build",
-            description: "Build succussful",
+            description: "Build successful",
             state: SdmGoalState.success,
             phase: "tsc",
         } as SdmGoalEvent);
     }, 8000);
 
+    setTimeout(() => {
+        c.updateGoal({
+            goalSetId: id,
+            name: "deploy locally",
+            description: "Ready to deploy",
+            state: SdmGoalState.requested,
+        } as SdmGoalEvent);
+    }, 8500);
+
+    setTimeout(() => {
+        c.updateGoal({
+            goalSetId: id,
+            name: "deploy locally",
+            description: "Deploying",
+            state: SdmGoalState.in_process,
+        } as SdmGoalEvent);
+    }, 10000);
+
+    setTimeout(() => {
+        c.updateGoal({
+            goalSetId: id,
+            name: "deploy locally",
+            description: "Deploy failed",
+            state: SdmGoalState.failure,
+            phase: "tsc",
+            url: "https://google.com",
+        } as SdmGoalEvent);
+    }, 11000);
+
 }, 2000);
-*/
+
