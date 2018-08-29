@@ -69,7 +69,7 @@ export function addFeedCommand(yargs: YargBuilder) {
                             infoMessage("Atomist feed from all local SDM activity will appear here\n");
                             adviceDoc("docs/onStartListener.md");
                         }
-                    } 
+                    }
                     new HttpMessageListener({
                         port: AllMessagesPort,
                         transient: false,

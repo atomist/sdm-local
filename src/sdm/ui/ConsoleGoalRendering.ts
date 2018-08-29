@@ -68,7 +68,7 @@ export class ConsoleGoalRendering {
             init({ row: y, col: x });
             term.hideCursor();
 
-           setInterval(() => {
+            setInterval(() => {
                 this.goalSets.forEach(gs => gs.goals.forEach(g => {
                     const bar = g.bar;
                     if (bar.completed) {
@@ -299,13 +299,12 @@ interface Goal {
     tick: number;
 }
 
-
 const c = new ConsoleGoalRendering();
 let counter = 0;
 setInterval(() => {
     counter++;
     if (counter > 3) {
-        return 
+        return;
     }
     const id = Date.now().toString();
     c.addGoals(id, ["autofix", "code review", "code reaction", "build", "deploy locally"], {
@@ -402,4 +401,3 @@ setInterval(() => {
     }, 11000);
 
 }, 2000);
-
