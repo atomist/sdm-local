@@ -56,7 +56,7 @@ export class ConsoleGoalRendering {
         term.windowTitle("Atomist - SDM Goals");
         term.hideCursor();
 
-        [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach((eventType) => {
+        [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach(eventType => {
             process.on(eventType as Signals, () => {
                 term.hideCursor(false);
                 process.exit(0);
@@ -287,7 +287,6 @@ interface Goal {
 }
 
 const c = new ConsoleGoalRendering();
-
 
 setInterval(() => {
     const id = Date.now().toString();
