@@ -20,6 +20,7 @@ import {
     HandlerResult,
     logger,
 } from "@atomist/automation-client";
+import { ConfigurationPostProcessor } from "@atomist/automation-client/configuration";
 import { eventStore } from "@atomist/automation-client/globals";
 import { guid } from "@atomist/automation-client/internal/util/string";
 import {
@@ -54,14 +55,27 @@ import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandle
 import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInProcess";
 import { defaultLocalSoftwareDeliveryMachineConfiguration } from "./defaultLocalSoftwareDeliveryMachineConfiguration";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
+import * as exp from "express";
+
+/**
+ * Options that are used during configuration of an local SDM but don't get passed on to the
+ * running SDM instance
+ */
+export interface LocalConfigureOptions {
+
+    /**
+     * Force startup in local mode
+     */
+    forceLocal?: boolean;
+}
 
 /**
  * Configures an automation client in local mode
  * @param {LocalModeConfiguration} localModeConfiguration
- * @return {(configuration: Configuration) => Promise<Configuration>}
+ * @return {ConfigurationPostProcessor}
  */
-export function configureLocal(options?: { forceLocal?: boolean }): (configuration: Configuration) => Promise<Configuration> {
-    return async config => {
+export function configureLocal(options: LocalConfigureOptions = { forceLocal: false }): ConfigurationPostProcessor {
+    return async (config: Configuration) => {
 
         // Don't mess with a non local SDM
         if (!(options.forceLocal || isInLocalMode())) {
@@ -104,7 +118,7 @@ function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachineConfig
     process.env.ATOMIST_WEBHOOK_BASEURL = `http://${configuration.local.hostname}:${configuration.http.port}`;
 
     configuration.http.customizers = [
-        exp => {
+        (exp: exp.Express) => {
             // TODO could use this to set local mode for a server - e.g. the name to send to
             exp.get("/local/configuration", async (req, res) => {
                 res.json(configuration.localSdm);
