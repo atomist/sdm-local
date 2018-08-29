@@ -60,7 +60,7 @@ export function addFeedCommand(yargs: YargBuilder) {
                     infoMessage("Lifecycle listener is already running\n");
                 } else if (isWindows) {
                     errorMessage("--goals is not support on your platform\n");
-                }else {
+                } else {
                     new HttpMessageListener({
                         port: AllMessagesPort,
                         transient: false,
