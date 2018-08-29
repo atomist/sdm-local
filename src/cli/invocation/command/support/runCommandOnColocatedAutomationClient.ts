@@ -251,7 +251,8 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
                                 return (allRepos.filter(r => r.owner === owner).map(r => r.repo) as any[])
                                     .concat(new inquirer.Separator(),
                                     chalk.italic(AllPattern),
-                                    chalk.italic(RegexPattern));
+                                    // chalk.italic(RegexPattern)
+                            );
                             default: return undefined;
                         }
                     },
