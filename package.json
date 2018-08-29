@@ -43,6 +43,7 @@
     "chalk": "^2.4.1",
     "express": "^4.16.3",
     "express-handlebars": "^3.0.0",
+    "file-url": "^2.0.2",
     "format-date": "^1.0.0",
     "fs-extra": "^7.0.0",
     "inquirer": "^6.0.0",
