@@ -15,7 +15,7 @@
  */
 
 import * as assert from "assert";
-import { GitRemoteParser } from "../../../../src/cli/invocation/command/addCloneCommand";
+import { GitRemoteParser } from "../../../../lib/cli/invocation/command/addCloneCommand";
 
 describe("GitRemoteParser", () => {
 

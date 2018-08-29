@@ -17,7 +17,7 @@
 import * as assert from "assert";
 import {
     dropWithWarningsInHelp, freshYargBuilder,
-} from "../../../../../../src/cli/invocation/command/support/yargBuilder";
+} from "../../../../../../lib/cli/invocation/command/support/yargBuilder";
 
 describe("yarg saver", () => {
 
