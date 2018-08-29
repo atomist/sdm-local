@@ -2,7 +2,11 @@
   "name": "@atomist/sdm-local",
   "version": "1.0.0",
   "description": "Atomist Local Software Delivery Machine",
-  "author": "Atomist, Inc.",
+  "author": {
+    "name": "Atomist",
+    "email": "support@atomist.com",
+    "url": "https://atomist.com/"
+  },
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
