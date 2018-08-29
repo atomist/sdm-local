@@ -15,6 +15,7 @@
  */
 
 import {
+    Configuration,
     getUserConfig,
     logger,
 } from "@atomist/automation-client";
@@ -46,6 +47,7 @@ const DefaultAtomistRoot = "atomist";
  * Defaults for local-SDM configuration
  */
 export function defaultLocalSoftwareDeliveryMachineConfiguration(
+    configuration: Configuration,
     workspaceContext: LocalWorkspaceContext = DefaultWorkspaceContextResolver.workspaceContext): LocalSoftwareDeliveryMachineConfiguration {
     const automationClientFinder = defaultAutomationClientFinder();
 
@@ -63,8 +65,7 @@ export function defaultLocalSoftwareDeliveryMachineConfiguration(
             new CachingProjectLoader(),
             localSdmConfiguration),
         logFactory: async (context, goal) =>
-            new SimpleNodeLoggerProgressLog(goal.name, localSdmConfiguration.repositoryOwnerParentDirectory),
-            // new LoggingProgressLog(goal.name, "info"),
+            new SimpleNodeLoggerProgressLog(configuration.name, goal.name, path.join(os.homedir(), ".atomist", "log")),
         credentialsResolver: new EnvironmentTokenCredentialsResolver(),
         repoRefResolver,
         repoFinder: expandedTreeRepoFinder(localSdmConfiguration.repositoryOwnerParentDirectory),

@@ -15,11 +15,10 @@
  */
 
 import { ProgressLog } from "@atomist/sdm";
+import * as fs from "fs-extra";
 
 // tslint:disable-next-line:no-var-requires
 const snLogger = require("simple-node-logger");
-
-const LogFile = "atomist.log";
 
 /**
  * Write log to a file using simple-node-logger in the repository
@@ -33,10 +32,14 @@ export class SimpleNodeLoggerProgressLog implements ProgressLog {
 
     private readonly logger: any;
 
-    constructor(public readonly name: string, public readonly sdmRoot: string) {
+    constructor(public readonly name: string, public readonly goalName: string, public readonly sdmRoot: string) {
+        if (!fs.existsSync(sdmRoot)) {
+            fs.mkdirsSync(sdmRoot);
+        }
         this.logger = snLogger.createRollingFileLogger({
             logDirectory: sdmRoot,
-                fileNamePattern: `${LogFile}-<DATE>.log`,
+            fileNamePattern: `${this.name.replace(/^.*\//, "")}-goals.log`,
+            dateFormat: "YYYYMMDD",
         });
     }
 
@@ -49,8 +52,12 @@ export class SimpleNodeLoggerProgressLog implements ProgressLog {
         if (what.endsWith("\n")) {
             what = what.slice(0, -1);
         }
-        this.logger.info(`(${this.name}): ${what}`);
+        this.logger.info(`(${this.goalName}): ${what}`);
 
+    }
+
+    get url() {
+        return this.logger.currentFile;
     }
 
     public async isAvailable() {
@@ -66,3 +73,4 @@ export class SimpleNodeLoggerProgressLog implements ProgressLog {
     }
 
 }
+
