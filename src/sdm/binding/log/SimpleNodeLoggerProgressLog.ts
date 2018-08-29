@@ -73,4 +73,3 @@ export class SimpleNodeLoggerProgressLog implements ProgressLog {
     }
 
 }
-
