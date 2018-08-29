@@ -206,7 +206,7 @@ const TargetsRepoField = "targets.repo";
 /**
  * Pattern to match all repos
  */
-const AllPattern = "all repos";
+const AllReposPattern = "all repos";
 
 /**
  * Pattern for a custom regular expression
@@ -221,6 +221,11 @@ const RegexPattern = "custom regex";
  */
 async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mappedParameters: Array<{ name: string; value: string }>): Promise<void> {
     const allRepos = await determineAvailableRepos();
+    // Don't ask for repo filter if we have an owner
+    if (mappedParameters.some(mp => mp.name === TargetsOwnerField && !!mp.value) &&
+        !mappedParameters.some(mp => mp.name === TargetsRepoField && !!mp.value)) {
+        addOrReplaceMappedParameter(mappedParameters, TargetsRepoField, AllReposPattern);
+    }
     const questions: inquirer.Question[] =
         mappedParameters
             .filter(mp => !mp.value)
@@ -250,7 +255,7 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
                                 const owner = answer[convertToDisplayable(TargetsOwnerField)];
                                 return (allRepos.filter(r => r.owner === owner).map(r => r.repo) as any[])
                                     .concat(new inquirer.Separator(),
-                                    chalk.italic(AllPattern),
+                                    chalk.italic(AllReposPattern),
                                     // chalk.italic(RegexPattern)
                             );
                             default: return undefined;
@@ -271,13 +276,13 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
 
     Object.getOwnPropertyNames(fromPrompt)
         .forEach(enteredName => {
-            replaceMappedParameter(mappedParameters, convertToUsable(enteredName), fromPrompt[enteredName]);
+            addOrReplaceMappedParameter(mappedParameters, convertToUsable(enteredName), fromPrompt[enteredName]);
         });
 
     const trReposField = fromPrompt[convertToDisplayable(TargetsRepoField)];
-    if (!!trReposField && trReposField.includes(AllPattern)) {
-        replaceMappedParameter(mappedParameters, "targets.repo");
-        replaceMappedParameter(mappedParameters, "targets.repos", ".*");
+    if (!!trReposField && trReposField.includes(AllReposPattern)) {
+        addOrReplaceMappedParameter(mappedParameters, "targets.repo");
+        addOrReplaceMappedParameter(mappedParameters, "targets.repos", ".*");
     } else if (!!trReposField && trReposField.includes(RegexPattern)) {
         // Ask extra question to clarify regex if we need to
         const filter = await inquirer.prompt<{regex: string}>([{
@@ -285,8 +290,8 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
             message: "Regex to filter repos by name: Considering including anchors",
         }]);
         infoMessage("Using regex pattern /%s/\n", filter.regex);
-        replaceMappedParameter(mappedParameters, "targets.repo");
-        replaceMappedParameter(mappedParameters, "targets.repos", filter.regex);
+        addOrReplaceMappedParameter(mappedParameters, "targets.repo");
+        addOrReplaceMappedParameter(mappedParameters, "targets.repos", filter.regex);
     }
     logger.debug("Mapped parameters after prompt are %j", mappedParameters);
 }
@@ -294,7 +299,7 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
 /**
  * If value is undefined, delete it
  */
-function replaceMappedParameter(mappedParameters: Array<{name: string, value: string}>, name: string, value?: string) {
+function addOrReplaceMappedParameter(mappedParameters: Array<{name: string, value: string}>, name: string, value?: string) {
     _.remove(mappedParameters, arg => arg.name === name);
     if (!!value) {
         mappedParameters.push({name, value});
