@@ -59,8 +59,7 @@ bold text**`;
         const subject = new ConsoleMessageClient("general", async s => { output = output + s; }, {} as any);
 
         await subject.addressChannels({ text }, "general");
-        assert(output.includes(`test some
-  bold text`));
+        assert(/test some.*[\r\n]+.*bold text/gm.test(output));
     });
 
 });
