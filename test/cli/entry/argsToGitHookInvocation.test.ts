@@ -23,8 +23,8 @@ import {
 LoggingConfig.format = "cli";
 (logger as any).level = process.env.LOG_LEVEL || "info";
 
-import { argsToGitHookInvocation } from "../../../src/cli/entry/argsToGitHookInvocation";
-import { WorkspaceContextResolver } from "../../../src/common/binding/WorkspaceContextResolver";
+import { argsToGitHookInvocation } from "../../../lib/cli/entry/argsToGitHookInvocation";
+import { WorkspaceContextResolver } from "../../../lib/common/binding/WorkspaceContextResolver";
 
 describe("argsToGitHookInvocation", () => {
 

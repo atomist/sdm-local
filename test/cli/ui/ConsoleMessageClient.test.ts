@@ -16,7 +16,7 @@
 
 import { Attachment } from "@atomist/slack-messages";
 import * as assert from "assert";
-import { ConsoleMessageClient } from "./../../../src/sdm/ui/ConsoleMessageClient";
+import { ConsoleMessageClient } from "./../../../lib/sdm/ui/ConsoleMessageClient";
 
 describe("message formatting", () => {
     it("doesn't freeze on this dangerous string", async () => {

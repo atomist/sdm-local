@@ -92,7 +92,7 @@
     "test": "test"
   },
   "scripts": {
-    "autotest": "supervisor --watch index.ts,src,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
+    "autotest": "supervisor --watch index.ts,lib,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
     "build": "run-s compile test lint doc",
     "clean": "run-p clean:compile clean:doc clean:run",
     "clean:compile": "rimraf git-info.json \"index.{d.ts,js{,.map}}\" \"{lib,test}/**/*.{d.ts,js{,.map}}\" lib/typings/types.ts",
@@ -102,7 +102,7 @@
     "clean:run": "rimraf *-v8.log profile.txt log",
     "compile": "run-s compile:ts",
     "compile:ts": "tsc --project .",
-    "doc": "typedoc --mode modules --ignoreCompilerErrors --exclude \"**/*.d.ts\" --out doc index.ts src",
+    "doc": "typedoc --mode modules --ignoreCompilerErrors --exclude \"**/*.d.ts\" --out doc index.ts lib",
     "fmt": "tsfmt --replace",
     "lint": "tslint --format verbose --project . --exclude \"node_modules/**\" --exclude \"**/*.d.ts\" \"**/*.ts\"",
     "lint:fix": "npm run lint -- --fix",

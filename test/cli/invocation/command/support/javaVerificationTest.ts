@@ -15,18 +15,19 @@
  */
 
 import * as assert from "assert";
-import { verifyJavaTest, verifyMavenTest } from "../../../../../src/cli/invocation/command/support/javaVerification";
+import { verifyJavaTest, verifyMavenTest } from "../../../../../lib/cli/invocation/command/support/javaVerification";
 
 describe("javaVerification", () => {
 
     describe("mavenVerification", () => {
 
         it("should reject invalid", () => {
-            assert(!verifyMavenTest({ stdout: "woeiruowieur"}));
+            assert(!verifyMavenTest({ stdout: "woeiruowieur" }));
         });
 
         it("should parse valid Maven version", () => {
-            assert(verifyMavenTest({ stdout: `Apache Maven 3.5.0 (ff8f5e7444045639af65f6095c62210b5713f426; 2017-04-03T12:39:06-07:00)
+            assert(verifyMavenTest({
+                stdout: `Apache Maven 3.5.0 (ff8f5e7444045639af65f6095c62210b5713f426; 2017-04-03T12:39:06-07:00)
 Maven home: /usr/local/Cellar/maven/3.5.0/libexec
 Java version: 1.8.0_111, vendor: Oracle Corporation
 Java home: /Library/Java/JavaVirtualMachines/jdk1.8.0_111.jdk/Contents/Home/jre
@@ -40,32 +41,36 @@ OS name: "mac os x", version: "10.13.3", arch: "x86_64", family: "mac"
     describe("javaVerification", () => {
 
         it("should reject invalid Java version", () => {
-            assert(!verifyJavaTest({stdout: "woeiruowieur"}));
+            assert(!verifyJavaTest({ stdout: "woeiruowieur" }));
         });
 
         it("should parse valid Oracle Java version", () => {
-            assert(verifyJavaTest({stdout: `java version "1.8.0_111"
+            assert(verifyJavaTest({
+                stdout: `java version "1.8.0_111"
 Java(TM) SE Runtime Environment (build 1.8.0_111-b14)
 Java HotSpot(TM) 64-Bit Server VM (build 25.111-b14, mixed mode)
 `}));
         });
 
         it("should parse obsolete Oracle Java version", () => {
-            assert(!verifyJavaTest({stdout: `java version "1.7.0_111"
+            assert(!verifyJavaTest({
+                stdout: `java version "1.7.0_111"
 Java(TM) SE Runtime Environment (build 1.7.0_111-b14)
 Java HotSpot(TM) 64-Bit Server VM (build 25.111-b14, mixed mode)
 `}));
         });
 
         it("should parse Java 10 Oracle Java version", () => {
-            assert(verifyJavaTest({stdout: `java version "10.0.1" 2018-04-17
+            assert(verifyJavaTest({
+                stdout: `java version "10.0.1" 2018-04-17
 Java(TM) SE Runtime Environment 18.3 (build 10.0.1+10)
 Java HotSpot(TM) 64-Bit Server VM 18.3 (build 10.0.1+10, mixed mode)
 `}));
         });
 
         it("should parse Java 9 Oracle Java version", () => {
-            assert(verifyJavaTest({stdout: `java version "9"
+            assert(verifyJavaTest({
+                stdout: `java version "9"
 Java(TM) SE Runtime Environment (build 9+181)
 Java HotSpot(TM) 64-Bit Server VM (build 9+181, mixed mode)
 `}));
