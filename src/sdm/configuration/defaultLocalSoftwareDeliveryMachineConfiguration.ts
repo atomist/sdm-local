@@ -16,6 +16,7 @@
 
 import {
     Configuration,
+    configurationValue,
     getUserConfig,
     logger,
 } from "@atomist/automation-client";
@@ -92,11 +93,15 @@ export function determineDefaultRepositoryOwnerParentDirectory() {
 const HostnamePath = "local.hostname";
 
 export function determineDefaultHostUrl() {
-    const config = getUserConfig();
-    if (config) {
-        const hostname = _.get(config, HostnamePath);
-        if (hostname) {
-            return hostname;
+    try {
+        return configurationValue<string>(HostnamePath);
+    } catch (err) {
+        const config = getUserConfig();
+        if (config) {
+            const hostname = _.get(config, HostnamePath);
+            if (hostname) {
+                return hostname;
+            }
         }
     }
     return "127.0.0.1";
