@@ -21,7 +21,6 @@ import {
 import chalk from "chalk";
 import * as formatDate from "format-date";
 import * as _ from "lodash";
-
 import {
     init,
     ProgressBar,
@@ -74,7 +73,7 @@ export class ConsoleGoalRendering {
                         bar.setSchema(SchemaSuccess, {
                             name: mapStateToColor(g.name, g.goal.state),
                             description: g.goal.description,
-                            link: chalk.grey(g.goal.url),
+                            link: formatLink(g.goal.url),
                             icon: mapStateToIcon(g.goal.state),
                             spinner: " ",
                         });
@@ -89,7 +88,7 @@ export class ConsoleGoalRendering {
                         bar.setSchema(SchemaRequested, {
                             name: mapStateToColor(g.name, g.goal.state),
                             description: g.goal.description,
-                            link: chalk.grey(g.goal.url),
+                            link: formatLink(g.goal.url),
                             icon: mapStateToIcon(g.goal.state),
                             spinner: chalk.grey(Frames[g.tick]),
                         });
@@ -159,7 +158,7 @@ export class ConsoleGoalRendering {
                 gtu.bar.update(mapStateToRatio(goal.state), {
                     name: mapStateToColor(gtu.name, gtu.goal.state),
                     description: gtu.goal.description,
-                    link: chalk.grey(gtu.goal.url),
+                    link: formatLink(gtu.goal.url),
                     icon: mapStateToIcon(gtu.goal.state),
                     spinner: " ",
                 });
@@ -187,13 +186,20 @@ export class ConsoleGoalRendering {
         bar.update(mapStateToRatio(state), {
             name: mapStateToColor(name, state),
             description,
-            link,
+            link: formatLink(link),
             icon: mapStateToIcon(state),
             spinner: " ",
         });
         return bar;
     }
 
+}
+
+function formatLink(url: string): string {
+    if (url && url.length > 0) {
+        return `> ${chalk.grey(url)}`;
+    }
+    return "";
 }
 
 function mapStateToRatio(state: SdmGoalState): number {
