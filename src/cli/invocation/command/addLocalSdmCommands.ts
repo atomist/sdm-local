@@ -29,6 +29,7 @@ import {
     addAddGitHooksCommand,
     addRemoveGitHooksCommand,
 } from "./addGitHooksCommands";
+import { addGitHubImportCommand } from "./addGitHubImportCommand";
 import { addIntentsAsCommands } from "./addIntentsAsCommands";
 import { addReplayCommand } from "./addReplayCommand";
 import { addShowSdmsCommand } from "./addShowSdmsCommand";
@@ -65,6 +66,7 @@ export async function addLocalSdmCommands(yargs: Argv | YargBuilder,
     addShowSkillsCommand(finder, yargBuilder);
 
     addCloneCommand(clients, yargBuilder, workspaceContextResolver);
+    addGitHubImportCommand(clients, yargBuilder, workspaceContextResolver);
 
     // TODO filter on working directories
     for (const client of clients) {

@@ -14,28 +14,13 @@
  * limitations under the License.
  */
 
-import {
-    Microgrammar,
-    optional,
-} from "@atomist/microgrammar";
-import { exec } from "child_process";
-import * as fs from "fs";
-import { promisify } from "util";
+import { Microgrammar, optional } from "@atomist/microgrammar";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
-import {
-    sendChannelLinkEvent,
-    sendRepoOnboardingEvent,
-} from "../../../sdm/binding/event/repoOnboardingEvents";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { addGitHooks } from "../../setup/addGitHooks";
-import {
-    infoMessage,
-    logExceptionsToConsole,
-    warningMessage,
-} from "../../ui/consoleOutput";
-import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
+import { logExceptionsToConsole, warningMessage } from "../../ui/consoleOutput";
+import { cloneAndAtomize } from "./support/cloneAndAtomize";
 import { YargBuilder } from "./support/yargBuilder";
 
 /*
@@ -81,6 +66,7 @@ const GitCloneArgs = [
  * to install Atomist git hooks.
  * @param {AutomationClientInfo[]} clients
  * @param {YargBuilder} yargs
+ * @param workspaceContextResolver
  */
 export function addCloneCommand(clients: AutomationClientInfo[],
                                 yargs: YargBuilder,
@@ -88,7 +74,7 @@ export function addCloneCommand(clients: AutomationClientInfo[],
     yargs.command({
         command: "clone <args>",
         describe: "Like git clone but also onboards the repo with Atomist " +
-            `under the Atomist root at ${determineDefaultRepositoryOwnerParentDirectory()}`,
+        `under the Atomist root at ${determineDefaultRepositoryOwnerParentDirectory()}`,
         builder: a => {
             GitCloneArgs.forEach(arg => {
                 a.option(arg, {
@@ -100,7 +86,7 @@ export function addCloneCommand(clients: AutomationClientInfo[],
             });
             return a;
         },
-        handler: argv => {
+        handler: () => {
             if (process.argv.length < 3) {
                 warningMessage("Not enough arguments to git or atomist clone\n");
                 return undefined;
@@ -124,26 +110,21 @@ async function superclone(clients: AutomationClientInfo[],
         warningMessage("Cannot parse repo info from %s\n", args);
         return;
     }
-    const { base, owner, repo } = repoInfo;
-
-    const orgDir = repositoryOwnerDirectory + "/" + owner;
-    if (!fs.existsSync(orgDir)) {
-        fs.mkdirSync(orgDir);
-    }
-    infoMessage(`Cloning git remote project from ${base} into ${orgDir}: args to git clone were ${args}\n`);
-    infoMessage("Owner=%s, repo=%s, cloning under %s\n", owner, repo, orgDir);
-    await promisify(exec)(`git clone ${args}`,
-        { cwd: orgDir });
-    await addGitHooks(`${repositoryOwnerDirectory}/${owner}/${repo}`);
-    for (const client of clients) {
-        const eventSender = invokeEventHandlerUsingHttp(
-            client.location,
-            workspaceContext);
-        await sendRepoOnboardingEvent(workspaceContext, { owner, repo }, eventSender);
-        await sendChannelLinkEvent(workspaceContext, { owner, repo }, eventSender);
-    }
+    const { owner, repo } = repoInfo;
+    return cloneAndAtomize({
+        repositoryOwnerDirectory,
+        owner,
+        repo,
+        cloneCommand: `git clone ${args}`,
+        clients,
+        workspaceContext,
+    });
 }
 
+/**
+ * Parse a command line to git clone, e.g. git clone https://github.com/owner/repo
+ * @type {Microgrammar<{base: string; owner: string; repo: string}>}
+ */
 export const GitRemoteParser = Microgrammar.fromString<{ base: string, owner: string, repo: string }>(
     "${base}${sep}${owner}/${repo}${dotgit}", {
         base: /(git@|https?:\/\/)[^:\/]+/,
