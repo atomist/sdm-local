@@ -121,7 +121,7 @@ function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachineConfig
         (app: exp.Express) => {
             // TODO could use this to set local mode for a server - e.g. the name to send to
             app.get("/local/configuration", async (req, res) => {
-                res.json(configuration.localSdm);
+                res.json(configuration.local);
             });
 
             const bodyParser = require("body-parser");

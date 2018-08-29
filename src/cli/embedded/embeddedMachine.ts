@@ -105,7 +105,7 @@ function configurationFor(options: EmbeddedMachineOptions): Configuration {
     cfg.token = "not.your.token";
     cfg.apiKey = "not.your.apiKey";
 
-    cfg.localSdm = {
+    cfg.local = {
         repositoryOwnerParentDirectory: options.repositoryOwnerParentDirectory,
         mergeAutofixes: true,
         preferLocalSeeds: false,
