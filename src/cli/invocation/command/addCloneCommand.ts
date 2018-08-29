@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-import { Microgrammar, optional } from "@atomist/microgrammar";
+import {
+    Microgrammar,
+    optional,
+} from "@atomist/microgrammar";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
-import { determineDefaultRepositoryOwnerParentDirectory } from "../../../common/configuration/defaultLocalModeConfiguration";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
+import { determineDefaultRepositoryOwnerParentDirectory } from "../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
-import { logExceptionsToConsole, warningMessage } from "../../ui/consoleOutput";
+import {
+    logExceptionsToConsole,
+    warningMessage,
+} from "../../ui/consoleOutput";
 import { cloneAndAtomize } from "./support/cloneAndAtomize";
 import { YargBuilder } from "./support/yargBuilder";
 

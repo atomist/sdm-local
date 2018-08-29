@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-import { LocalModeConfiguration } from "@atomist/sdm-core";
-import { EventOnRepo, handlePushBasedEventOnRepo } from "../../../common/git/handlePushBasedEventOnRepo";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
+import {
+    EventOnRepo,
+    handlePushBasedEventOnRepo,
+} from "../../../common/git/handlePushBasedEventOnRepo";
 import { InvocationTarget } from "../../../common/invocation/InvocationTarget";
 import { errorMessage } from "../../ui/consoleOutput";
 import { AutomationClientConnectionRequest } from "../http/AutomationClientConnectionRequest";
@@ -60,7 +63,7 @@ export enum HookEvent {
  * @return {Promise<any>}
  */
 export async function handleGitHookEvent(cc: AutomationClientConnectionRequest,
-                                         lc: LocalModeConfiguration,
+                                         lc: LocalSoftwareDeliveryMachineOptions,
                                          payload: GitHookInvocation) {
     if (!payload) {
         return errorMessage("Payload must be supplied");

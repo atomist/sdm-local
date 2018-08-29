@@ -20,20 +20,21 @@ import {
     HandlerResult,
     logger,
 } from "@atomist/automation-client";
+import { ConfigurationPostProcessor } from "@atomist/automation-client/configuration";
 import { eventStore } from "@atomist/automation-client/globals";
 import { guid } from "@atomist/automation-client/internal/util/string";
 import {
     isInLocalMode,
-    LocalModeConfiguration,
+    LocalSoftwareDeliveryMachineConfiguration,
 } from "@atomist/sdm-core";
 import * as assert from "assert";
+import * as exp from "express";
 import * as exphbs from "express-handlebars";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as path from "path";
 import { newCliCorrelationId } from "../../cli/invocation/http/support/newCorrelationId";
 import { EnvConfigWorkspaceContextResolver } from "../../common/binding/EnvConfigWorkspaceContextResolver";
-import { defaultLocalLocalModeConfiguration } from "../../common/configuration/defaultLocalModeConfiguration";
 import { CommandHandlerInvocation } from "../../common/invocation/CommandHandlerInvocation";
 import { EventHandlerInvocation } from "../../common/invocation/EventHandlerInvocation";
 import { LocalWorkspaceContext } from "../../common/invocation/LocalWorkspaceContext";
@@ -42,7 +43,6 @@ import {
     parsePort,
 } from "../../common/invocation/parseCorrelationId";
 import { AllMessagesPort } from "../../common/ui/httpMessaging";
-import { defaultHostUrlAliaser } from "../../common/util/http/defaultLocalHostUrlAliaser";
 import { LocalGraphClient } from "../binding/graph/LocalGraphClient";
 import {
     ActionRoute,
@@ -54,88 +54,90 @@ import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventFo
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
 import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandlerInProcess";
 import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInProcess";
-import { createSdmOptions } from "./createSdmOptions";
+import { defaultLocalSoftwareDeliveryMachineConfiguration } from "./defaultLocalSoftwareDeliveryMachineConfiguration";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
+
+/**
+ * Options that are used during configuration of an local SDM but don't get passed on to the
+ * running SDM instance
+ */
+export interface LocalConfigureOptions {
+
+    /**
+     * Force startup in local mode
+     */
+    forceLocal?: boolean;
+}
 
 /**
  * Configures an automation client in local mode
  * @param {LocalModeConfiguration} localModeConfiguration
- * @return {(configuration: Configuration) => Promise<Configuration>}
+ * @return {ConfigurationPostProcessor}
  */
-export function configureLocal(
-    localModeConf: LocalModeConfiguration & { forceLocal?: boolean }): (configuration: Configuration) => Promise<Configuration> {
-    return async configuration => {
+export function configureLocal(options: LocalConfigureOptions = { forceLocal: false }): ConfigurationPostProcessor {
+    return async (config: Configuration) => {
+
+        // Don't mess with a non local SDM
+        if (!(options.forceLocal || isInLocalMode())) {
+            return config;
+        }
 
         const workspaceContext: LocalWorkspaceContext = new EnvConfigWorkspaceContextResolver().workspaceContext;
 
-        // Don't mess with a non local SDM
-        if (!(localModeConf.forceLocal || isInLocalMode())) {
-            return configuration;
-        }
-
-        // Get sensible defaults
-        const localModeConfiguration = {
-            ...defaultLocalLocalModeConfiguration(),
-            ...localModeConf,
-        };
+        const defaultSdmConfiguration = defaultLocalSoftwareDeliveryMachineConfiguration(config, workspaceContext);
+        const mergedConfig = _.merge(defaultSdmConfiguration, config) as LocalSoftwareDeliveryMachineConfiguration;
 
         // Set up workspaceIds and apiKey
-        if (_.isEmpty(configuration.workspaceIds) && _.isEmpty(configuration.teamIds)) {
-            configuration.workspaceIds = [workspaceContext.workspaceId];
+        if (_.isEmpty(mergedConfig.workspaceIds) && _.isEmpty(mergedConfig.teamIds)) {
+            mergedConfig.workspaceIds = [workspaceContext.workspaceId];
         }
-        if (_.isEmpty(configuration.apiKey)) {
-            configuration.apiKey = guid();
+        if (_.isEmpty(config.apiKey)) {
+            mergedConfig.apiKey = guid();
         }
 
-        logger.info("Disable web socket connection");
-        configuration.ws.enabled = false;
+        mergedConfig.ws.enabled = false;
 
         const globalActionStore = freshActionStore();
 
-        configureWebEndpoints(configuration, localModeConfiguration, workspaceContext, globalActionStore);
-        configureMessageClientFactory(configuration, localModeConfiguration, workspaceContext, globalActionStore);
-        configureGraphClient(configuration);
-        configureListeners(configuration);
+        configureWebEndpoints(mergedConfig, workspaceContext, globalActionStore);
+        configureMessageClientFactory(mergedConfig, workspaceContext, globalActionStore);
+        configureGraphClient(mergedConfig);
+        configureListeners(mergedConfig);
 
-        const localModeSdmConfigurationElements = createSdmOptions(localModeConfiguration);
-
-        // Need extra config to know how to set things in the SDM
-        configuration.sdm = {
-            ...configuration.sdm,
-            ...localModeSdmConfigurationElements,
-        };
-        return configuration;
+        return mergedConfig;
     };
 }
 
-function configureWebEndpoints(configuration: Configuration,
-                               localModeConfiguration: LocalModeConfiguration,
+function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachineConfiguration,
                                teamContext: LocalWorkspaceContext,
                                actionStore: ActionStore) {
     // Disable auth as we're only expecting local clients
     // TODO what if not basic
     _.set(configuration, "http.auth.basic.enabled", false);
 
-    process.env.ATOMIST_WEBHOOK_BASEURL = `http://${defaultHostUrlAliaser().alias()}:${configuration.http.port}`;
+    process.env.ATOMIST_WEBHOOK_BASEURL = `http://${configuration.local.hostname}:${configuration.http.port}`;
 
     configuration.http.customizers = [
-        exp => {
+        (app: exp.Express) => {
             // TODO could use this to set local mode for a server - e.g. the name to send to
-            exp.get("/local/configuration", async (req, res) => {
-                res.json(localModeConfiguration);
+            app.get("/local/configuration", async (req, res) => {
+                res.json(configuration.local);
             });
 
             const bodyParser = require("body-parser");
-            exp.use(bodyParser.urlencoded({ extended: false }));
-            exp.use(bodyParser.json());
+            app.use(bodyParser.urlencoded({ extended: false }));
+            app.use(bodyParser.json());
 
             // Handlebars setup
-            exp.set("view engine", "handlebars");
-            exp.set("views", path.join(__dirname, "..", "..", "views"));
-            exp.engine("handlebars", exphbs({ defaultLayout: "main", layoutsDir: path.join(__dirname, "..", "..", "views", "layouts") }));
+            app.set("view engine", "handlebars");
+            app.set("views", path.join(__dirname, "..", "..", "views"));
+            app.engine("handlebars", exphbs({
+                defaultLayout: "main",
+                layoutsDir: path.join(__dirname, "..", "..", "views", "layouts"),
+            }));
 
             // Add a GET route for convenient links to command handler invocation, as a normal automation client doesn't expose one
-            exp.get("/command/:name", async (req, res) => {
+            app.get("/command/:name", async (req, res) => {
                 const payload = req.query;
                 const command = automationClientInstance().automations.automations.commands.find(c => c.name === req.params.name);
                 if (!command) {
@@ -149,7 +151,7 @@ function configureWebEndpoints(configuration: Configuration,
                         configuration: automationClientInstance().configuration,
                     });
             });
-            exp.post("/command/:name", async (req, res) => {
+            app.post("/command/:name", async (req, res) => {
                 const command = automationClientInstance().automations.automations.commands.find(c => c.name === req.params.name);
                 if (!command) {
                     return res.status(404).send(`Command '${req.params.name}' not found`);
@@ -174,7 +176,7 @@ function configureWebEndpoints(configuration: Configuration,
                         });
                 })(invocation);
             });
-            exp.post("/atomist/link-image/teams/:team", async (req, res) => {
+            app.post("/atomist/link-image/teams/:team", async (req, res) => {
                 const payload = req.body;
                 const invocation: EventHandlerInvocation = {
                     name: "FindArtifactOnImageLinked",
@@ -207,7 +209,7 @@ function configureWebEndpoints(configuration: Configuration,
                     .then(resp => res.json(decircle(resp)),
                         boo => res.status(500).send(boo.message));
             });
-            exp.get(ActionRoute + "/:description", async (req, res) => {
+            app.get(ActionRoute + "/:description", async (req, res) => {
                 logger.debug("Action clicked: params=%j; query=%j", req.params, req.query);
                 const actionKey = req.query.key;
                 if (!actionKey) {
@@ -270,11 +272,9 @@ function decircle(result: HandlerResult) {
  * @param {Configuration} configuration
  * @param {LocalModeConfiguration} localMachineConfig
  */
-function configureMessageClientFactory(
-    configuration: Configuration,
-    localMachineConfig: LocalModeConfiguration,
-    teamContext: LocalWorkspaceContext,
-    actionStore: ActionStore) {
+function configureMessageClientFactory(configuration: Configuration,
+                                       teamContext: LocalWorkspaceContext,
+                                       actionStore: ActionStore) {
     configuration.http.messageClientFactory =
         aca => {
             assert(!!aca.context.correlationId);
