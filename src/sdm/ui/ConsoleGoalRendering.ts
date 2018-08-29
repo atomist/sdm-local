@@ -74,7 +74,7 @@ export class ConsoleGoalRendering {
                         bar.setSchema(SchemaSuccess, {
                             name: mapStateToColor(g.name, g.goal.state),
                             description: g.goal.description,
-                            link: g.goal.url,
+                            link: chalk.grey(g.goal.url),
                             icon: mapStateToIcon(g.goal.state),
                             spinner: " ",
                         });
@@ -89,7 +89,7 @@ export class ConsoleGoalRendering {
                         bar.setSchema(SchemaRequested, {
                             name: mapStateToColor(g.name, g.goal.state),
                             description: g.goal.description,
-                            link: g.goal.url,
+                            link: chalk.grey(g.goal.url),
                             icon: mapStateToIcon(g.goal.state),
                             spinner: chalk.grey(Frames[g.tick]),
                         });
@@ -122,7 +122,7 @@ export class ConsoleGoalRendering {
                 name: g,
                 goal: {
                     description: (ug ? ug.description : "") || "",
-                    url: (ug ? ug.url : "") || "",
+                    url: (ug ? ug.externalUrl : "") || "",
                     stage: (ug ? ug.phase : "") || "",
                     state: ug ? ug.state : SdmGoalState.planned,
                 },
@@ -147,6 +147,9 @@ export class ConsoleGoalRendering {
             const gtu = goalSet.goals.find(g => g.name.trim() === goal.name);
             if (gtu) {
                 gtu.goal.url = goal.externalUrl || "";
+                if (goal.state === SdmGoalState.failure) {
+                    gtu.goal.url = goal.url || "";
+                }
                 gtu.goal.description = goal.description || "";
                 if (goal.phase && goal.state !== SdmGoalState.success) {
                     gtu.goal.description += chalk.gray(` ${goal.phase}`);
@@ -156,7 +159,7 @@ export class ConsoleGoalRendering {
                 gtu.bar.update(mapStateToRatio(goal.state), {
                     name: mapStateToColor(gtu.name, gtu.goal.state),
                     description: gtu.goal.description,
-                    link: gtu.goal.url,
+                    link: chalk.grey(gtu.goal.url),
                     icon: mapStateToIcon(gtu.goal.state),
                     spinner: " ",
                 });
