@@ -57,6 +57,6 @@ export class ExpandedTreeMappedParameterResolver implements MappedParameterResol
     }
 
     constructor(private readonly repositoryOwnerParentDirectory: string,
-        private readonly workspaceId: string = DefaultWorkspaceId) {
+                private readonly workspaceId: string = DefaultWorkspaceId) {
     }
 }

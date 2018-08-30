@@ -21,8 +21,8 @@ import {
 } from "@atomist/automation-client";
 import { CommandInvocation } from "@atomist/automation-client/internal/invoker/Payload";
 import { AutomationEventListenerSupport } from "@atomist/automation-client/server/AutomationEventListener";
-import { CommandCompletionDestination } from "../../../common/ui/CommandCompletionDestination";
 import * as serializeError from "serialize-error";
+import { CommandCompletionDestination } from "../../../common/ui/CommandCompletionDestination";
 
 /**
  * Event listener that sends an event on command termination
@@ -35,7 +35,7 @@ export class NotifyOnCompletionAutomationEventListener extends AutomationEventLi
 
     public commandFailed(payload: CommandInvocation, ctx: HandlerContext, error: any): Promise<void> {
         // Route the failure report to the client
-        logger.error("Sending error 'msg'", error.message, serializeError(error))
+        logger.error("Sending error 'msg'", error.message, serializeError(error));
         return ctx.messageClient.send({
             kind: FailureKind,
             error: serializeError(error),
