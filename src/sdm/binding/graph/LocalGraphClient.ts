@@ -21,6 +21,11 @@ import {
     MutationOptions,
     QueryOptions,
 } from "@atomist/automation-client/spi/graph/GraphClient";
+import {
+    PushForSdmGoal,
+    SdmGoalsForCommit,
+} from "@atomist/sdm";
+import { SdmVersionForCommit } from "@atomist/sdm-core/typings/types";
 
 /**
  * Local graph client. Returns empty result set or throws an
@@ -56,8 +61,9 @@ export class LocalGraphClient implements GraphClient {
         // How do we do this in a better, more extensible way?
         const qo = optionsOrName as QueryOptions<any>;
         if (qo.name === "SdmGoalsForCommit" && qo.variables && qo.variables.offset === 0) {
-            const sha = qo.variables.sha;
-            const goalSetId = qo.variables.goalSetId;
+            const v = qo.variables as SdmGoalsForCommit.Variables;
+            const sha = v.sha;
+            const goalSetId = v.goalSetId;
             const goals = eventStore().messages()
                 .filter(m => m.value.sha === sha
                     && m.value.goalSet
@@ -68,12 +74,24 @@ export class LocalGraphClient implements GraphClient {
                 SdmGoal: goals,
             } as any;
         } else if (qo.name === "PushForSdmGoal" && qo.variables) {
-            const sha = qo.variables.sha;
+            const v = qo.variables as PushForSdmGoal.Variables;
+            const sha = v.sha;
             const goal = eventStore().messages()
                 .find(m => m.value.sha === sha && m.value.goalSet && m.value.goalSetId).value;
             return {
                 Commit: [{
                     pushes: [goal.push],
+                }],
+            } as any;
+        } else if (qo.name === "SdmVersionForCommit" && qo.variables && qo.variables.sha) {
+            const v = qo.variables as SdmVersionForCommit.Variables;
+            const sha = v.sha[0];
+            const branch = v.branch[0];
+            const version = eventStore().messages()
+                .find(m => m.value.sha === sha && m.value.version && m.value.branch === branch).value;
+            return {
+                SdmVersion: [{
+                    version: version.version,
                 }],
             } as any;
         } else if (!!qo.query && qo.query.trim().startsWith("query ChatTeam")) {
