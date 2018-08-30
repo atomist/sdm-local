@@ -77,6 +77,8 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
                 case SdmGoalState.skipped :
                     logger.info("Skipped goal: %j", msg);
                     break;
+                case SdmGoalState.waiting_for_approval :
+                    break;
                 default:
                     throw new Error(`Unexpected SdmGoalState '${msg.state}'`);
             }
