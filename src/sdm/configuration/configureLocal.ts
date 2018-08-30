@@ -77,6 +77,11 @@ export interface LocalConfigureOptions {
 export function configureLocal(options: LocalConfigureOptions = { forceLocal: false }): ConfigurationPostProcessor {
     return async (config: Configuration) => {
 
+        if (_.isEmpty(config.groups) && _.isEmpty(config.workspaceIds) && _.isEmpty(config.teamIds) && !isInLocalMode()) {
+            throw new Error("No 'workspaceIds' provided in configuration. To start this SDM in local mode, run 'atomist start --local'. " +
+                "To connect to the Atomist API, please configure your 'workspaceIds' by running 'atomist config'");
+        }
+
         // Don't mess with a non local SDM
         if (!(options.forceLocal || isInLocalMode())) {
             return config;
