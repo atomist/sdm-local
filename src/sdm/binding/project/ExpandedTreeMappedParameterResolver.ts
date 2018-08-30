@@ -45,6 +45,8 @@ export class ExpandedTreeMappedParameterResolver implements MappedParameterResol
                 return "http://not.a.real.url";
             case MappedParameters.GitHubApiUrl:
                 return GitHubDotComBase;
+            case MappedParameters.GitHubRepositoryProvider:
+                return "not-a-real-provider";
             default:
                 logger.warn("Mapped parameter %s not resolvable", md.uri);
                 if (!md.required) {
@@ -55,6 +57,6 @@ export class ExpandedTreeMappedParameterResolver implements MappedParameterResol
     }
 
     constructor(private readonly repositoryOwnerParentDirectory: string,
-                private readonly workspaceId: string = DefaultWorkspaceId) {
+        private readonly workspaceId: string = DefaultWorkspaceId) {
     }
 }
