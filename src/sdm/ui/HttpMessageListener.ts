@@ -119,7 +119,7 @@ export class HttpMessageListener {
             // Shut down the listener
             if (this.parameters.transient && destinations.some((d: any) => d.rootType === CommandCompletionDestination.rootType)) {
                 if (isFailureMessage(req.body.message)) {
-                    errorMessage("Command failure\n%j\n", req.body.message);
+                    errorMessage("Command failure\n%s\n", req.body.message.error.message);
                 }
                 this.seenCompletion = true;
                 res.send({ terminating: true });
