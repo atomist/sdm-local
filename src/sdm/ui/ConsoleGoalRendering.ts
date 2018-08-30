@@ -21,11 +21,11 @@ import {
 import chalk from "chalk";
 import * as formatDate from "format-date";
 import * as _ from "lodash";
-import { infoMessage } from "../../cli/ui/consoleOutput";
 import {
     init,
     ProgressBar,
 } from "../../../bin/progressBar";
+import { infoMessage } from "../../cli/ui/consoleOutput";
 import Signals = NodeJS.Signals;
 
 // tslint:disable-next-line:no-var-requires
