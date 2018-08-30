@@ -55,11 +55,13 @@ export function addFeedCommand(yargs: YargBuilder) {
             const channels = toStringArray(argv.channel || []);
             return logExceptionsToConsole(async () => {
                 const alreadyRunning = await isFeedListenerRunning();
-                const isWindows = os.platform() === "win32";
+                const isGoalsOnWindows = argv.goals && os.platform() === "win32";
+                if (isGoalsOnWindows) {
+                    errorMessage("--goals is not support on your platform\n");
+                    return;
+                }
                 if (alreadyRunning) {
                     infoMessage("Lifecycle listener is already running\n");
-                } else if (isWindows) {
-                    errorMessage("--goals is not support on your platform\n");
                 } else {
                     if (!argv.goals) {
                         if (channels.length > 0) {

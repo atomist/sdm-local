@@ -299,6 +299,8 @@ interface Goal {
     tick: number;
 }
 
+/*
+>>>>>>> Fix error message and remove test data
 const c = new ConsoleGoalRendering();
 let counter = 0;
 setInterval(() => {
@@ -401,3 +403,4 @@ setInterval(() => {
     }, 11000);
 
 }, 2000);
+*/
