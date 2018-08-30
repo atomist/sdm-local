@@ -1,3 +1,7 @@
+/*
+ * Taken and modified from https://github.com/bubkoo/ascii-progress.
+ */
+
 var ansi = require('ansi.js');
 var newlineEvent = require('on-new-line');
 

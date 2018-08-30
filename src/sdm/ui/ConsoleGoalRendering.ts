@@ -25,8 +25,9 @@ import { infoMessage } from "../../cli/ui/consoleOutput";
 import {
     init,
     ProgressBar,
-} from "./progressBar";
+} from "../../../bin/progressBar";
 import Signals = NodeJS.Signals;
+
 // tslint:disable-next-line:no-var-requires
 const term = require("terminal-kit").terminal;
 
@@ -63,7 +64,7 @@ export class ConsoleGoalRendering {
         });
 
         term.getCursorLocation((cb: any, x: number, y: number) => {
-            infoMessage("Waiting for SDM goals...");
+            infoMessage("Listening for SDM goals...");
             term.moveTo(x, y);
             init({ row: y, col: x });
             term.hideCursor();
