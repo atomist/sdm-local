@@ -60,7 +60,7 @@ async function runByIntent(ai: AutomationClientInfo,
                            command: any,
                            workspaceContext: LocalWorkspaceContext): Promise<any> {
     return runCommandOnColocatedAutomationClient(ai.location,
-        ai.localConfig.repositoryOwnerParentDirectory,
+        ai.localConfig,
         {
             workspaceName: workspaceContext.workspaceName,
             workspaceId: workspaceContext.workspaceId,

@@ -79,11 +79,11 @@ async function removeHookOrHooks(repositoryOwnerParentDirectory: string) {
 }
 
 /**
- * * Install git hooks in all git projects under our expanded directory structure
+ * Install git hooks in all git projects under our expanded directory structure
  * @return {Promise<void>}
  */
 async function installAllGitHooks(repositoryOwnerParentDirectory: string) {
-    const repoFinder = expandedTreeRepoFinder(repositoryOwnerParentDirectory);
+    const repoFinder = expandedTreeRepoFinder( { repositoryOwnerParentDirectory });
     const allRepos = await repoFinder(undefined);
     for (const rr of allRepos) {
         if (!isFileSystemRemoteRepoRef(rr)) {
@@ -94,7 +94,7 @@ async function installAllGitHooks(repositoryOwnerParentDirectory: string) {
 }
 
 async function removeAllGitHooks(repositoryOwnerParentDirectory: string) {
-    const repoFinder = expandedTreeRepoFinder(repositoryOwnerParentDirectory);
+    const repoFinder = expandedTreeRepoFinder({ repositoryOwnerParentDirectory });
     const allRepos = await repoFinder(undefined);
     for (const rr of allRepos) {
         if (!isFileSystemRemoteRepoRef(rr)) {

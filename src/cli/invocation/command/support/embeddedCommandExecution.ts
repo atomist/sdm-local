@@ -129,7 +129,7 @@ async function runCommandOnEmbeddedMachine(repositoryOwnerParentDirectory: strin
     }
     return runCommandOnColocatedAutomationClient(
         aca.location,
-        aca.localConfig.repositoryOwnerParentDirectory,
+        aca.localConfig,
         {
             workspaceName: "embedded",
             workspaceId: "T0",

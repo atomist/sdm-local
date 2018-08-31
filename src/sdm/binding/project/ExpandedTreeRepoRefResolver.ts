@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import { RemoteRepoRef } from "@atomist/sdm";
 import {
     CoreRepoFieldsAndChannels,
     OnPushToAnyBranch,
+    RemoteRepoRef,
     RepoRefResolver,
     ScmProvider,
     SdmGoalEvent,
 } from "@atomist/sdm";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
 /**
@@ -29,27 +30,45 @@ import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
  */
 export class ExpandedTreeRepoRefResolver implements RepoRefResolver {
 
-    public providerIdFromPush(push: OnPushToAnyBranch.Push): string|null {
+    public providerIdFromPush(push: OnPushToAnyBranch.Push): string | null {
         return "local";
     }
 
     public repoRefFromPush(push: OnPushToAnyBranch.Push): RemoteRepoRef {
-        return new FileSystemRemoteRepoRef({ repositoryOwnerParentDirectory: this.repositoryOwnerParentDirectory,
-            owner: push.repo.owner, repo: push.repo.name, branch: push.branch, sha: push.commits[0].sha});
+        return new FileSystemRemoteRepoRef({
+            repositoryOwnerParentDirectory: this.opts.repositoryOwnerParentDirectory,
+            mergePullRequests: this.opts.mergePullRequests,
+            owner: push.repo.owner,
+            repo: push.repo.name,
+            branch: push.branch,
+            sha: push.commits[0].sha,
+        });
     }
 
     public repoRefFromSdmGoal(sdmGoal: SdmGoalEvent, provider: ScmProvider.ScmProvider): RemoteRepoRef {
         const repo = sdmGoal.repo;
-        return new FileSystemRemoteRepoRef({ repositoryOwnerParentDirectory: this.repositoryOwnerParentDirectory,
-            owner: repo.owner, repo: repo.name, branch: sdmGoal.branch, sha: sdmGoal.sha});
+        return new FileSystemRemoteRepoRef({
+            repositoryOwnerParentDirectory: this.opts.repositoryOwnerParentDirectory,
+            mergePullRequests: this.opts.mergePullRequests,
+            owner: repo.owner,
+            repo: repo.name,
+            branch: sdmGoal.branch,
+            sha: sdmGoal.sha,
+        });
     }
 
     public toRemoteRepoRef(repo: CoreRepoFieldsAndChannels.Fragment, opts: { sha?: string; branch?: string }): RemoteRepoRef {
-        return new FileSystemRemoteRepoRef({ repositoryOwnerParentDirectory: this.repositoryOwnerParentDirectory,
-            owner: repo.owner, repo: repo.name, branch: opts.branch, sha: opts.sha});
+        return new FileSystemRemoteRepoRef({
+            repositoryOwnerParentDirectory: this.opts.repositoryOwnerParentDirectory,
+            mergePullRequests: this.opts.mergePullRequests,
+            owner: repo.owner,
+            repo: repo.name,
+            branch: opts.branch,
+            sha: opts.sha,
+        });
     }
 
-    constructor(public readonly repositoryOwnerParentDirectory: string) {
+    constructor(public readonly opts: LocalSoftwareDeliveryMachineOptions) {
     }
 
 }

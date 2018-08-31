@@ -74,7 +74,7 @@ export function isValidSHA1(s: string): boolean {
  */
 export async function handlePushBasedEventOnRepo(workspaceId: string,
                                                  sender: EventSender,
-                                                 lc: LocalSoftwareDeliveryMachineOptions,
+                                                 opts: LocalSoftwareDeliveryMachineOptions,
                                                  payload: EventOnRepo,
                                                  eventHandlerName: string,
                                                  pushToPayload: (p: Push) => object = p => ({
@@ -91,12 +91,12 @@ export async function handlePushBasedEventOnRepo(workspaceId: string,
         return undefined;
     }
 
-    if (!isWithin(lc.repositoryOwnerParentDirectory, payload.baseDir)) {
+    if (!isWithin(opts.repositoryOwnerParentDirectory, payload.baseDir)) {
         // I would rather send this to the atomist feed
-        return infoMessage(`SDM: skipping push because it is not inside ${lc.repositoryOwnerParentDirectory}\n`);
+        return infoMessage(`SDM: skipping push because it is not inside ${opts.repositoryOwnerParentDirectory}\n`);
     }
 
-    const push = await createPush(workspaceId, lc.repositoryOwnerParentDirectory, payload);
+    const push = await createPush(workspaceId, opts, payload);
     return sender({
         name: eventHandlerName,
         payload: pushToPayload(push),
@@ -104,10 +104,14 @@ export async function handlePushBasedEventOnRepo(workspaceId: string,
 }
 
 async function createPush(workspaceId: string,
-                          repositoryOwnerParentDirectory: string,
+                          opts: LocalSoftwareDeliveryMachineOptions,
                           payload: EventOnRepo): Promise<OnPushToAnyBranch.Push> {
     const { baseDir, branch, sha } = payload;
-    return doWithProjectUnderExpandedDirectoryTree(baseDir, branch, sha, repositoryOwnerParentDirectory,
+    return doWithProjectUnderExpandedDirectoryTree(
+        baseDir,
+        branch,
+        sha,
+        opts,
         async p => {
             return pushFromLastCommit(workspaceId, branch, sha, p);
         });
@@ -116,12 +120,15 @@ async function createPush(workspaceId: string,
 async function doWithProjectUnderExpandedDirectoryTree(baseDir: string,
                                                        branch: string,
                                                        sha: string,
-                                                       repositoryOwnerParentDirectory: string,
+                                                       opts: LocalSoftwareDeliveryMachineOptions,
                                                        action: (p: GitProject) => Promise<any>) {
     const p = GitCommandGitProject.fromBaseDir(
         FileSystemRemoteRepoRef.fromDirectory({
-            repositoryOwnerParentDirectory,
-            baseDir, branch, sha,
+            repositoryOwnerParentDirectory: opts.repositoryOwnerParentDirectory,
+            mergePullRequests: opts.mergePullRequests,
+            baseDir,
+            branch,
+            sha,
         }),
         baseDir,
         {},
