@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   `atomist clone` only works with http addresses. [#152](https://github.com/atomist/sdm-local/issues/152)
 -   Add additional _experimental_ view for goals with `atomist feed --goals`. [#163](https://github.com/atomist/sdm-local/issues/163)
+-   Allow to merge local pull request branches. [#167](https://github.com/atomist/sdm-local/issues/167)
 
 ### Fixed
 
