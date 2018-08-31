@@ -30,7 +30,7 @@ import {
     markAsAtomistContent,
     reatomizeScript,
     removeGitHooksFromProject,
-} from "../../../src/cli/setup/addGitHooks";
+} from "../../../lib/cli/setup/addGitHooks";
 
 /* tslint:disable:max-file-line-count */
 

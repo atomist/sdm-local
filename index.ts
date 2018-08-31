@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-export { addLocalSdmCommands } from "./src/cli/invocation/command/addLocalSdmCommands";
-export { runOnGitHook } from "./src/cli/invocation/git/runOnGitHook";
-export { configureLocal } from "./src/sdm/configuration/configureLocal";
-export { LocalLifecycle } from "./src/sdm/ui/localLifecycle";
-export { infoMessage } from "./src/cli/ui/consoleOutput";
-export { sdmCd } from "./src/pack/sdm-cd/support/SdmCd";
-export { LocalSdmConfig } from "./src/sdm/configuration/localSdmConfig";
+export { addLocalSdmCommands } from "./lib/cli/invocation/command/addLocalSdmCommands";
+export { runOnGitHook } from "./lib/cli/invocation/git/runOnGitHook";
+export { configureLocal } from "./lib/sdm/configuration/configureLocal";
+export { LocalLifecycle } from "./lib/sdm/ui/localLifecycle";
+export { infoMessage } from "./lib/cli/ui/consoleOutput";
+export { sdmCd } from "./lib/pack/sdm-cd/support/SdmCd";
+export { LocalSdmConfig } from "./lib/sdm/configuration/localSdmConfig";
 export {
     YargBuilder,
     freshYargBuilder,
     yargCommandWithPositionalArguments,
     ParameterOptions,
     CommandLineParameter,
-} from "./src/cli/invocation/command/support/yargBuilder";
+} from "./lib/cli/invocation/command/support/yargBuilder";

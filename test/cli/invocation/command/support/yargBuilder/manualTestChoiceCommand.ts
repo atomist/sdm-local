@@ -20,7 +20,7 @@ import * as yargs from "yargs";
 import {
     freshYargBuilder,
     promptForAChoiceWhenNecessary,
-} from "../../../../../../src/cli/invocation/command/support/yargBuilder";
+} from "../../../../../../lib/cli/invocation/command/support/yargBuilder";
 
 const yb = freshYargBuilder();
 yb.withSubcommand({
