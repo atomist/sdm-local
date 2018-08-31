@@ -15,6 +15,7 @@
  */
 
 import { RepoFinder } from "@atomist/automation-client/operations/common/repoFinder";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import * as fs from "fs";
 import * as _ from "lodash";
 import * as path from "path";
@@ -26,16 +27,17 @@ import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
  * @param {string} repositoryOwnerParentDirectory
  * @return {RepoFinder}
  */
-export function expandedTreeRepoFinder(repositoryOwnerParentDirectory: string): RepoFinder {
+export function expandedTreeRepoFinder(opts: LocalSoftwareDeliveryMachineOptions): RepoFinder {
     return async () => {
-        const owners = await allDirectoriesUnder(repositoryOwnerParentDirectory);
+        const owners = await allDirectoriesUnder(opts.repositoryOwnerParentDirectory);
         const projects = await flatmapAsync(owners, allDirectoriesUnder);
         const gitProjects = await filterAsync(projects, containsDirectory(".git"));
         const eligibleDirectories = gitProjects;
 
         return eligibleDirectories.map(dir =>
             FileSystemRemoteRepoRef.fromDirectory({
-                repositoryOwnerParentDirectory,
+                repositoryOwnerParentDirectory: opts.repositoryOwnerParentDirectory,
+                mergePullRequests: opts.mergePullRequests,
                 baseDir: dir,
                 // TODO interesting question: Should this be checked out directory, or master
                 // branch: "master"

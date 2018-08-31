@@ -69,7 +69,7 @@ async function runByCommandName(ai: AutomationClientInfo,
     }
     return runCommandOnColocatedAutomationClient(
         ai.location,
-        ai.localConfig.repositoryOwnerParentDirectory,
+        ai.localConfig,
         {
             workspaceName: workspaceContext.workspaceName,
             workspaceId: workspaceContext.workspaceId,

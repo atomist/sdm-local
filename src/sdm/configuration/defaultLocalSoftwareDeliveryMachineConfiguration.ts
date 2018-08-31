@@ -52,14 +52,17 @@ export function defaultLocalSoftwareDeliveryMachineConfiguration(
     workspaceContext: LocalWorkspaceContext = DefaultWorkspaceContextResolver.workspaceContext): LocalSoftwareDeliveryMachineConfiguration {
     const automationClientFinder = defaultAutomationClientFinder();
 
-    const localSdmConfiguration: LocalSoftwareDeliveryMachineOptions = {
+    const defaultLocalSdmConfiguration: LocalSoftwareDeliveryMachineOptions = {
         preferLocalSeeds: true,
         mergeAutofixes: true,
+        mergePullRequests: false,
         repositoryOwnerParentDirectory: determineDefaultRepositoryOwnerParentDirectory(),
         hostname: determineDefaultHostUrl(),
     };
 
-    const repoRefResolver = new ExpandedTreeRepoRefResolver(localSdmConfiguration.repositoryOwnerParentDirectory);
+    const localSdmConfiguration = _.merge(defaultLocalSdmConfiguration, configuration.local);
+
+    const repoRefResolver = new ExpandedTreeRepoRefResolver(localSdmConfiguration);
     const sdmConfiguration: SoftwareDeliveryMachineOptions = {
         artifactStore: new EphemeralLocalArtifactStore(),
         projectLoader: new FileSystemProjectLoader(
@@ -69,9 +72,9 @@ export function defaultLocalSoftwareDeliveryMachineConfiguration(
             new SimpleNodeLoggerProgressLog(configuration.name, goal.name, path.join(os.homedir(), ".atomist", "log")),
         credentialsResolver: new EnvironmentTokenCredentialsResolver(),
         repoRefResolver,
-        repoFinder: expandedTreeRepoFinder(localSdmConfiguration.repositoryOwnerParentDirectory),
+        repoFinder: expandedTreeRepoFinder(localSdmConfiguration),
         projectPersister: fileSystemProjectPersister(workspaceContext, localSdmConfiguration, automationClientFinder),
-        targets: () => new LocalRepoTargets(localSdmConfiguration.repositoryOwnerParentDirectory),
+        targets: () => new LocalRepoTargets(localSdmConfiguration),
     };
 
     return {

@@ -50,6 +50,7 @@ async function triggerGitEventsOn(ai: AutomationClientInfo,
     if (withinExpandedTree(ai.localConfig.repositoryOwnerParentDirectory, currentDir)) {
         const p = GitCommandGitProject.fromBaseDir(FileSystemRemoteRepoRef.fromDirectory({
                 repositoryOwnerParentDirectory: ai.localConfig.repositoryOwnerParentDirectory,
+                mergePullRequests: ai.localConfig.mergePullRequests,
                 baseDir: currentDir,
             }),
             currentDir, null, () => null);

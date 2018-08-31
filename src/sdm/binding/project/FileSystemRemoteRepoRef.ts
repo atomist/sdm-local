@@ -20,12 +20,14 @@ import {
 } from "@atomist/automation-client/action/ActionResult";
 import { AbstractRemoteRepoRef } from "@atomist/automation-client/operations/common/AbstractRemoteRepoRef";
 import { Configurable } from "@atomist/automation-client/project/git/Configurable";
-import { logger } from "@atomist/sdm";
-import { ProjectOperationCredentials } from "@atomist/sdm";
 import {
+    logger,
+    ProjectOperationCredentials,
     RemoteRepoRef,
     RepoRef,
 } from "@atomist/sdm";
+import * as path from "path";
+import { runAndLog } from "../../util/runAndLog";
 import {
     dirFor,
     parseOwnerAndRepo,
@@ -39,6 +41,7 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
 
     public static fromDirectory(opts: {
         repositoryOwnerParentDirectory: string,
+        mergePullRequests: boolean,
         baseDir: string,
         branch?: string,
         sha?: string,
@@ -49,6 +52,7 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
         }
         return new FileSystemRemoteRepoRef({
             repositoryOwnerParentDirectory: opts.repositoryOwnerParentDirectory,
+            mergePullRequests: opts.mergePullRequests,
             branch: opts.branch,
             sha: opts.sha,
             owner, repo,
@@ -64,9 +68,11 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
      * @return {RemoteRepoRef}
      */
     public static implied(repositoryOwnerParentDirectory: string,
-                          owner: string, repo: string): RemoteRepoRef {
+                          mergePullRequests: boolean,
+                          owner: string,
+                          repo: string): RemoteRepoRef {
         const baseDir = dirFor(repositoryOwnerParentDirectory, owner, repo);
-        return this.fromDirectory({ repositoryOwnerParentDirectory, baseDir });
+        return this.fromDirectory({ repositoryOwnerParentDirectory, mergePullRequests, baseDir });
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility: any): Promise<ActionResult<this>> {
@@ -82,7 +88,24 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
                                   body: string,
                                   head: string,
                                   base: string): Promise<ActionResult<this>> {
-        logger.info("Pull request [%s] on %s:%s", title, this.owner, this.repo);
+        if (this.opts.mergePullRequests) {
+            const cwd = path.join(this.opts.repositoryOwnerParentDirectory, this.owner, this.repo);
+
+            // 1. Checkout branch
+            await runAndLog(`git checkout ${head}`, { cwd });
+
+            // 2. Rebase from master
+            await runAndLog(`git rebase ${base}`, { cwd });
+
+            // 3. Checkout master
+            await runAndLog(`git checkout ${base}`, { cwd });
+
+            // 4. Merge branch into master
+            await runAndLog(`git merge --ff-only ${head}`, { cwd });
+
+        } else {
+            logger.info(`Not merging local branch. Please set 'local.mergePullRequests' to enable merging of PR branches`);
+        }
         return successOn(this);
     }
 
@@ -117,6 +140,7 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
 
     constructor(private readonly opts: {
         repositoryOwnerParentDirectory: string,
+        mergePullRequests: boolean,
         owner: string,
         repo: string,
         branch: string,

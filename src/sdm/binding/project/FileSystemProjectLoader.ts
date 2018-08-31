@@ -39,11 +39,14 @@ export class FileSystemProjectLoader implements ProjectLoader {
 
     public doWithProject<T>(params: ProjectLoadingParameters, action: WithLoadedProject<T>): Promise<T> {
         // Use local seed as preference if possible
-        const localDir = dirFor(this.config.repositoryOwnerParentDirectory, params.id.owner, params.id.repo);
+        const localDir = dirFor(this.opts.repositoryOwnerParentDirectory, params.id.owner, params.id.repo);
         const foundLocally = fs.existsSync(localDir);
-        if (this.config.preferLocalSeeds && !isFileSystemRemoteRepoRef(params.id) && foundLocally) {
-            params.id = FileSystemRemoteRepoRef.implied(this.config.repositoryOwnerParentDirectory,
-                params.id.owner, params.id.repo);
+        if (this.opts.preferLocalSeeds && !isFileSystemRemoteRepoRef(params.id) && foundLocally) {
+            params.id = FileSystemRemoteRepoRef.implied(
+                this.opts.repositoryOwnerParentDirectory,
+                this.opts.mergePullRequests,
+                params.id.owner,
+                params.id.repo);
         }
         const decoratedAction: (p: GitProject) => Promise<T> = async p => {
             const p2 = await this.preprocess(p);
@@ -53,8 +56,8 @@ export class FileSystemProjectLoader implements ProjectLoader {
     }
 
     constructor(private readonly delegate: ProjectLoader,
-                private readonly config: LocalSoftwareDeliveryMachineOptions,
-                private readonly preprocess: (p: GitProject) => Promise<GitProject> = changeToPushToAtomistBranch(config)) {
+                private readonly opts: LocalSoftwareDeliveryMachineOptions,
+                private readonly preprocess: (p: GitProject) => Promise<GitProject> = changeToPushToAtomistBranch(opts)) {
     }
 
 }

@@ -50,12 +50,13 @@ const InitialCommitMessage = "Initial commit from Atomist";
  * @return {ProjectPersister}
  */
 export function fileSystemProjectPersister(teamContext: LocalWorkspaceContext,
-                                           localModeConfiguration: LocalSoftwareDeliveryMachineOptions,
+                                           opts: LocalSoftwareDeliveryMachineOptions,
                                            automationClientFinder: AutomationClientFinder): ProjectPersister {
     return async (p, _, id, params) => {
-        const baseDir = `${localModeConfiguration.repositoryOwnerParentDirectory}${path.sep}${id.owner}${path.sep}${id.repo}`;
+        const baseDir = `${opts.repositoryOwnerParentDirectory}${path.sep}${id.owner}${path.sep}${id.repo}`;
         const frr = FileSystemRemoteRepoRef.fromDirectory({
-            repositoryOwnerParentDirectory: localModeConfiguration.repositoryOwnerParentDirectory,
+            repositoryOwnerParentDirectory: opts.repositoryOwnerParentDirectory,
+            mergePullRequests: opts.mergePullRequests,
             baseDir,
         });
         // Override target repo to get file url
@@ -74,7 +75,7 @@ export function fileSystemProjectPersister(teamContext: LocalWorkspaceContext,
         await runAndLog(`git commit -a -m "${InitialCommitMessage}"`, { cwd: baseDir });
         await addGitHooksToProject(createdProject);
 
-        await emitEventsForNewProject(teamContext, localModeConfiguration, createdProject, id, automationClientFinder);
+        await emitEventsForNewProject(teamContext, opts, createdProject, id, automationClientFinder);
         return successOn(createdProject);
     };
 }

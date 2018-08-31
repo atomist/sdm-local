@@ -18,6 +18,7 @@ import { HandlerResult, logger } from "@atomist/automation-client";
 import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
 import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/metadata/automationMetadata";
 import { RepoId } from "@atomist/sdm";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import chalk from "chalk";
 import * as inquirer from "inquirer";
 import * as _ from "lodash";
@@ -29,7 +30,7 @@ import { MappedParameterResolver } from "../../../../sdm/binding/mapped-paramete
 import { ExpandedTreeMappedParameterResolver } from "../../../../sdm/binding/project/ExpandedTreeMappedParameterResolver";
 import { expandedTreeRepoFinder } from "../../../../sdm/binding/project/expandedTreeRepoFinder";
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
-import { determineDefaultRepositoryOwnerParentDirectory } from "../../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
+import { defaultLocalSoftwareDeliveryMachineConfiguration } from "../../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
 import { HttpMessageListener } from "../../../../sdm/ui/HttpMessageListener";
 import { infoMessage, warningMessage } from "../../../ui/consoleOutput";
 import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionRequest";
@@ -65,7 +66,7 @@ export interface CommandInvocationListener {
  * @return {Promise<any>}
  */
 export async function runCommandOnColocatedAutomationClient(connectionConfig: AutomationClientConnectionRequest,
-                                                            repositoryOwnerParentDirectory: string,
+                                                            opts: LocalSoftwareDeliveryMachineOptions,
                                                             target: InvocationTarget,
                                                             hm: CommandHandlerMetadata,
                                                             command: any,
@@ -89,7 +90,7 @@ export async function runCommandOnColocatedAutomationClient(connectionConfig: Au
     await promptForMissingParameters(hm, args);
     const mpr: MappedParameterResolver =
         new FromAnyMappedParameterResolver(
-            new ExpandedTreeMappedParameterResolver(repositoryOwnerParentDirectory),
+            new ExpandedTreeMappedParameterResolver(opts.repositoryOwnerParentDirectory),
             new ExtraParametersMappedParameterResolver(extraArgs),
         );
     const mappedParameters: Array<{ name: any; value: string | undefined }> = hm.mapped_parameters.map(mp => ({
@@ -99,7 +100,7 @@ export async function runCommandOnColocatedAutomationClient(connectionConfig: Au
     await promptForMissingMappedParameters(hm, mappedParameters);
 
     const correlationId = await newCliCorrelationId({
-        channel: parseOwnerAndRepo(repositoryOwnerParentDirectory).repo,
+        channel: parseOwnerAndRepo(opts.repositoryOwnerParentDirectory).repo,
         encodeListenerPort: true,
     });
 
@@ -310,9 +311,9 @@ function addOrReplaceMappedParameter(mappedParameters: Array<{name: string, valu
  * Return all available repos
  * @param repositoryOwnerParentDirectory base of expanded tree
  */
-async function determineAvailableRepos(
-    repositoryOwnerParentDirectory: string = determineDefaultRepositoryOwnerParentDirectory()): Promise<RepoId[]> {
-    return expandedTreeRepoFinder(repositoryOwnerParentDirectory)(undefined);
+async function determineAvailableRepos(opts: LocalSoftwareDeliveryMachineOptions =
+                                           defaultLocalSoftwareDeliveryMachineConfiguration({}).local): Promise<RepoId[]> {
+    return expandedTreeRepoFinder(opts)(undefined);
 }
 
 /**

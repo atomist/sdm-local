@@ -29,6 +29,7 @@ import {
 } from "@atomist/sdm";
 import { validationPatterns } from "@atomist/sdm";
 import { RepoTargets } from "@atomist/sdm";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
 /**
@@ -69,7 +70,8 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
     get repoRef(): FileSystemRemoteRepoRef {
         const rr = (!!this.owner && !!this.repo && !this.usesRegex) ?
             new FileSystemRemoteRepoRef({
-                repositoryOwnerParentDirectory: this.repositoryOwnerParentDirectory,
+                repositoryOwnerParentDirectory: this.opts.repositoryOwnerParentDirectory,
+                mergePullRequests: this.opts.mergePullRequests,
                 owner: this.owner,
                 repo: this.repo,
                 branch: this.branch,
@@ -84,7 +86,7 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
         // nothing to do
     }
 
-    constructor(private readonly repositoryOwnerParentDirectory: string) {
+    constructor(private readonly opts: LocalSoftwareDeliveryMachineOptions) {
         super();
         const orgFilter: RepoFilter = rr => !!this.owner ? rr.owner === this.owner : true;
         this.test = andFilter(orgFilter, super.test);
