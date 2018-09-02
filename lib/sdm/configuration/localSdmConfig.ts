@@ -39,7 +39,7 @@ const NoOp = () => Promise.resolve();
  * @param {SoftwareDeliveryMachine} sdm
  */
 function registerNoOpListeners(sdm: SoftwareDeliveryMachine) {
-    sdm.addNewRepoWithCodeListener(NoOp)
+    sdm.addFirstPushListener(NoOp)
         .addRepoCreationListener(NoOp)
         .addRepoOnboardingListener(NoOp)
         .addBuildListener(NoOp)
