@@ -167,7 +167,7 @@ export class HttpMessageListener {
                 const push = body.push as PushFields.Fragment;
                 this.goalRenderer.addGoals(
                     body.goalSetId,
-                    body.goals.goals.map((g: SdmGoalEvent) => g.name),
+                    body.goals,
                     {
                         owner: push.repo.owner,
                         repo: push.repo.name,
