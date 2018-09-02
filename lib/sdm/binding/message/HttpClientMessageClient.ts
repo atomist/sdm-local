@@ -101,9 +101,9 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
     private async stream(sm: StreamedMessage, url: string) {
         try {
             if (!this.dead) {
-                logger.debug(`Write to url ${this.url}: ${JSON.stringify(sm)}`);
+                // logger.debug(`Write to url ${url}: ${JSON.stringify(sm)}`);
                 await axios.post(url, sm);
-                logger.debug(`Wrote to url ${this.url}: ${JSON.stringify(sm)}`);
+                // logger.debug(`Wrote to url ${url}: ${JSON.stringify(sm)}`);
             }
         } catch (err) {
             if (this.options.transient) {
