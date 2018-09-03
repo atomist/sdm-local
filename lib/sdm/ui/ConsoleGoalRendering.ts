@@ -74,7 +74,7 @@ export class ConsoleGoalRendering {
                     const bar = g.bar;
                     if (bar.completed) {
                         bar.setSchema(SchemaSuccess, {
-                            name: mapStateToColor(g.name, g.goal.state),
+                            name: mapStateToColor(g.displayName, g.goal.state),
                             description: g.goal.description,
                             link: formatLink(g.goal.url),
                             icon: mapStateToIcon(g.goal.state),
@@ -89,7 +89,7 @@ export class ConsoleGoalRendering {
                             tick++;
                         }
                         bar.setSchema(SchemaRequested, {
-                            name: mapStateToColor(g.name, g.goal.state),
+                            name: mapStateToColor(g.displayName, g.goal.state),
                             description: g.goal.description,
                             link: formatLink(g.goal.url),
                             icon: mapStateToIcon(g.goal.state),
@@ -110,18 +110,26 @@ export class ConsoleGoalRendering {
 
     public addGoals(id: string, goals: string[], p: Push) {
         process.stdout.write(push(p) + "\n");
+        const gss = goals.map(g => ({
+            name: g,
+            displayName: g.split("#")[0],
+        }));
 
-        const ml = _.maxBy(goals, "length");
-        const gs = goals.map(g => _.padEnd(g, ml.length, " "));
+        const ml = _.maxBy(gss, "displayName.length");
+        const gs = gss.map(g => ({
+            displayName: _.padEnd(g.displayName, ml.name.length, " "),
+            name: g.name,
+        }));
         const ugs = this.unkownGoals.filter(g => g.goalSetId === id);
 
         const bars = gs.map(g => {
-            const ug = ugs.find(tug => tug.name === g.trim());
+            const ug = ugs.find(tug => tug.name === g.name);
             if (ug) {
                 this.unkownGoals.slice(this.unkownGoals.indexOf(ug), 1);
             }
             return {
-                name: g,
+                name: g.name,
+                displayName: g.displayName,
                 goal: {
                     description: (ug ? ug.description : "") || "",
                     url: (ug ? ug.externalUrl : "") || "",
@@ -129,8 +137,8 @@ export class ConsoleGoalRendering {
                     state: ug ? ug.state : SdmGoalState.planned,
                 },
                 bar: this.createBar(
-                    g,
-                    ug ? ug.description : `Planned: ${g}`,
+                    g.displayName,
+                    ug ? ug.description : `Planned: ${g.displayName}`,
                     (ug ? ug.url : "") || "",
                     ug ? ug.state : SdmGoalState.planned),
                 tick: 0,
@@ -146,7 +154,7 @@ export class ConsoleGoalRendering {
     public updateGoal(goal: SdmGoalEvent) {
         const goalSet = this.goalSets.find(gs => gs.goalSetId === goal.goalSetId);
         if (goalSet) {
-            const gtu = goalSet.goals.find(g => g.name.trim() === goal.name);
+            const gtu = goalSet.goals.find(g => g.name === goal.name);
             if (gtu) {
                 gtu.goal.url = goal.externalUrl || "";
                 if (goal.state === SdmGoalState.failure || goal.state === SdmGoalState.in_process) {
@@ -159,7 +167,7 @@ export class ConsoleGoalRendering {
                 gtu.goal.state = goal.state;
                 // Update the bar
                 gtu.bar.update(mapStateToRatio(goal.state), {
-                    name: mapStateToColor(gtu.name, gtu.goal.state),
+                    name: mapStateToColor(gtu.displayName, gtu.goal.state),
                     description: gtu.goal.description,
                     link: formatLink(gtu.goal.url),
                     icon: mapStateToIcon(gtu.goal.state),
@@ -291,6 +299,7 @@ interface Push {
 
 interface Goal {
     name: string;
+    displayName: string;
     goal: {
         description: string;
         url: string;
@@ -300,8 +309,6 @@ interface Goal {
     tick: number;
 }
 
-/*
->>>>>>> Fix error message and remove test data
 const c = new ConsoleGoalRendering();
 let counter = 0;
 setInterval(() => {
@@ -310,7 +317,7 @@ setInterval(() => {
         return;
     }
     const id = Date.now().toString();
-    c.addGoals(id, ["autofix", "code review", "code reaction", "build", "deploy locally"], {
+    c.addGoals(id, ["autofix#Test.ts:14", "code review", "code reaction", "build", "deploy locally"], {
         branch: "master",
         repo: "cli",
         owner: "atomist",
@@ -321,7 +328,7 @@ setInterval(() => {
     setTimeout(() => {
         c.updateGoal({
             goalSetId: id,
-            name: "autofix",
+            name: "autofix#Test.ts:14",
             description: "Ready to autofix",
             state: SdmGoalState.requested,
         } as SdmGoalEvent);
@@ -330,17 +337,17 @@ setInterval(() => {
     setTimeout(() => {
         c.updateGoal({
             goalSetId: id,
-            name: "autofix",
+            name: "autofix#Test.ts:14",
             description: "Running autofix",
             state: SdmGoalState.in_process,
-            url: "http://google.com",
+            url: "https://app.atomist.com/workspace/T29E48P34/logs/atomist/sdm-local/adf25354cdbbde523e39c8c318821dca6a9e7674/0-code/review/d19bcdd0-4e12-4d65-9b9e-5096703ddbc1/5b64acdf-cac4-42a4-a7a7-1adeb549bf82",
         } as SdmGoalEvent);
     }, 2500);
 
     setTimeout(() => {
         c.updateGoal({
             goalSetId: id,
-            name: "autofix",
+            name: "autofix#Test.ts:14",
             description: "Autofixed",
             state: SdmGoalState.success,
         } as SdmGoalEvent);
@@ -399,9 +406,9 @@ setInterval(() => {
             description: "Deploy failed",
             state: SdmGoalState.failure,
             phase: "tsc",
-            url: "https://google.com",
+            url: "https://app.atomist.com/workspace/T29E48P34/logs/atomist/sdm-local/adf25354cdbbde523e39c8c318821dca6a9e7674/0-code/review/d19bcdd0-4e12-4d65-9b9e-5096703ddbc1/5b64acdf-cac4-42a4-a7a7-1adeb549bf82",
         } as SdmGoalEvent);
     }, 11000);
 
 }, 2000);
-*/
+
