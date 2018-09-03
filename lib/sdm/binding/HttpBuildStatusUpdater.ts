@@ -50,7 +50,7 @@ export class HttpBuildStatusUpdater implements BuildStatusUpdater {
                             name: goal.repo.name,
                             id: goal.repo.name,
                             team: {
-                                id: ctx.teamId,
+                                id: ctx.workspaceId,
                             },
                         }],
                     },

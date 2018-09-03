@@ -48,7 +48,7 @@ export async function cloneAndAtomize(args: {
         const eventSender = invokeEventHandlerUsingHttp(
             client.location,
             args.workspaceContext);
-        await sendRepoOnboardingEvent(args.workspaceContext, { owner, repo }, eventSender);
-        await sendChannelLinkEvent(args.workspaceContext, { owner, repo }, eventSender);
+        await sendRepoOnboardingEvent(args.workspaceContext, { owner, repo, url: undefined }, eventSender);
+        await sendChannelLinkEvent(args.workspaceContext, { owner, repo, url: undefined }, eventSender);
     }
 }

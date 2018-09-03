@@ -44,5 +44,5 @@ export const NodeProjectCreationParametersDefinition: ParametersObject = {
         order: 52,
         defaultValue: "0.1.0",
     },
-    screenName: { type: DeclarationType.mapped, uri: MappedParameters.SlackUserName},
+    screenName: { declarationType: DeclarationType.mapped, uri: MappedParameters.SlackUserName},
 };

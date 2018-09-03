@@ -70,9 +70,9 @@
     "@atomist/sdm-core": "*"
   },
   "devDependencies": {
-    "@atomist/automation-client": "1.0.0-master.20180829070856",
-    "@atomist/sdm": "1.0.0-nortissej.first-push.20180831225158",
-    "@atomist/sdm-core": "1.0.0-nortissej.first-push.20180831225656",
+    "@atomist/automation-client": "1.0.0-master.20180902163213",
+    "@atomist/sdm": "1.0.0-master.20180903173217",
+    "@atomist/sdm-core": "1.0.0-master.20180903173115",
     "@types/mocha": "^5.2.5",
     "@types/power-assert": "^1.5.0",
     "axios-mock-adapter": "^1.15.0",

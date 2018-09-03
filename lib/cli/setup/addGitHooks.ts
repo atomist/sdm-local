@@ -55,7 +55,7 @@ export async function addGitHooksToProject(p: LocalProject) {
 
 export async function removeGitHooks(baseDir: string) {
     if (fs.existsSync(path.join(baseDir, ".git"))) {
-        const p = await NodeFsLocalProject.fromExistingDirectory({ owner: "doesn't", repo: "matter" }, baseDir);
+        const p = await NodeFsLocalProject.fromExistingDirectory({ owner: "doesn't", repo: "matter", url: undefined }, baseDir);
         await removeGitHooksFromProject(p);
     } else {
         infoMessage("Ignoring directory at %s as it is not a git project", baseDir);
