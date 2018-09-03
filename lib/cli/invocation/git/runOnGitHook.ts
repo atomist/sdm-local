@@ -36,7 +36,7 @@ const verbose = process.env.ATOMIST_GITHOOK_VERBOSE === "true";
  * Usage command <git hook name> <directory> <branch> <sha>
  */
 export async function runOnGitHook(argv: string[],
-    clientFinder: AutomationClientFinder = defaultAutomationClientFinder(),
+                                   clientFinder: AutomationClientFinder = defaultAutomationClientFinder(),
 ) {
     const invocation = argsToGitHookInvocation(argv, DefaultWorkspaceContextResolver);
     if (isAtomistTemporaryBranch(invocation.branch)) {
