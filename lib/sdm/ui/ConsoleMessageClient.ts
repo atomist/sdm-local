@@ -24,8 +24,10 @@ import {
     SlackDestination,
     SlackMessageClient,
 } from "@atomist/automation-client/spi/message/MessageClient";
-import { SlackMessage } from "@atomist/slack-messages";
-import * as slack from "@atomist/slack-messages/SlackMessages";
+import {
+    Action,
+    SlackMessage,
+} from "@atomist/slack-messages";
 import chalk from "chalk";
 import * as formatDate from "format-date";
 import * as _ from "lodash";
@@ -129,7 +131,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
     }
 
     private renderAction(channel: string,
-                         action: slack.Action,
+                         action: Action,
                          actionKey: string): string {
         if (action.type === "button") {
             const url = `${this.connectionConfig.baseEndpoint}${ActionRoute}/${actionDescription(action)}?key=${actionKey}`;
