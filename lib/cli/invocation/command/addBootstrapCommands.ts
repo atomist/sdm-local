@@ -22,7 +22,7 @@ import {
     infoMessage,
 } from "../../ui/consoleOutput";
 import {
-    sdmGenerator,
+    nodeGenerator,
     superforkGenerator,
 } from "./generator/bootstrapGenerators";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
@@ -32,6 +32,8 @@ import {
 } from "./support/javaVerification";
 import { YargBuilder } from "./support/yargBuilder";
 import { AddLocalMode } from "./transform/addLocalModeTransform";
+import { NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
+import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
 
 /**
  * Add bootstrap commands to generate a new SDM
@@ -40,8 +42,39 @@ import { AddLocalMode } from "./transform/addLocalModeTransform";
  */
 export function addBootstrapCommands(yargs: YargBuilder) {
     addSdmGenerator(yargs);
+    addExtensionPackGenerator(yargs);
     addSuperforkGenerator(yargs);
     addEnableLocalSupport(yargs);
+}
+
+function addExtensionPackGenerator(yargs: YargBuilder) {
+    const name = "extensionPack";
+    addEmbeddedCommand(yargs, {
+        name,
+        cliCommand: "create extension pack",
+        cliDescription: "Create an Atomist extension pack",
+        configurer: async () => sdm => sdm.addGeneratorCommand({
+            name,
+            startingPoint: new GitHubRepoRef("atomist-seeds", "sdm-pack-seed"),
+            parameters: {
+                ...NodeProjectCreationParametersDefinition,
+                "targets.repo": {
+                    pattern: /sdm-pack-[A-Za-z0-9\-_]+/,
+                    description: "Repo name. Must begin 'sdm-pack'",
+                    validInput: "Must begin with 'sdm-pack'",
+                },
+            },
+            transform: [
+                UpdatePackageJsonIdentification,
+            ],
+            tags: "sdm-pack",
+        }),
+        listeners: [{
+            after: async () => {
+                infoMessage("Add your new extension pack to any SDM you please!\n");
+            },
+        }],
+    });
 }
 
 function addSdmGenerator(yargs: YargBuilder) {
@@ -52,7 +85,7 @@ function addSdmGenerator(yargs: YargBuilder) {
         name,
         cliCommand: "create sdm",
         cliDescription: "Create an SDM",
-        parameters: sdmGenerator(name, undefined).parameters,
+        parameters: nodeGenerator(name, undefined).parameters,
         build: argv => {
             // Expose type parameter
             argv.option("type", {
@@ -80,16 +113,16 @@ function addSdmGenerator(yargs: YargBuilder) {
             switch (answers.type) {
                 case "spring":
                     return sdm => {
-                        sdm.addGeneratorCommand(sdmGenerator(name,
+                        sdm.addGeneratorCommand(nodeGenerator(name,
                             new GitHubRepoRef("atomist", "spring-sdm-seed"),
                             "spring"));
                     };
                 case "blank":
-                    return sdm => sdm.addGeneratorCommand(sdmGenerator(name,
+                    return sdm => sdm.addGeneratorCommand(nodeGenerator(name,
                         new GitHubRepoRef("atomist", "blank-sdm-seed"),
                         "blank"));
                 case "sample":
-                    return sdm => sdm.addGeneratorCommand(sdmGenerator(name,
+                    return sdm => sdm.addGeneratorCommand(nodeGenerator(name,
                         new GitHubRepoRef("atomist", "sample-sdm"),
                         "sample"));
                 default:

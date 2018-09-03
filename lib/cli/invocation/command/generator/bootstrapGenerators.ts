@@ -22,12 +22,12 @@ import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition 
 import { UpdatePackageJsonIdentification } from "./updatePackageJsonIdentification";
 
 /**
- * Generator that can create a new SDM. Parameterized
+ * Generator that can create a new Node project. Parameterized
  * by name, starting point and tags.
  */
-export function sdmGenerator(name: string,
-                             startingPoint: RemoteRepoRef,
-                             ...tags: string[]): GeneratorRegistration<NodeProjectCreationParameters> {
+export function nodeGenerator(name: string,
+                              startingPoint: RemoteRepoRef,
+                              ...tags: string[]): GeneratorRegistration<NodeProjectCreationParameters> {
     return {
         name,
         startingPoint,
