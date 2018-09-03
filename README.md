@@ -7,9 +7,7 @@
 [![atomist sdm goals](http://badge.atomist.com/T29E48P34/atomist/sdm-local/c9f93c3b-3cfb-4824-a590-15e7a5743a2d)](https://app.atomist.com/workspace/T29E48P34)
 [![npm version](https://img.shields.io/npm/v/@atomist/sdm-local.svg)](https://www.npmjs.com/package/@atomist/sdm-local)
 
-# sdm-local: Local Software Delivery Machine Support
-
-A **software delivery machine** (SDM) helps you write and deliver code that is up to your own standards, at scale.
+A **Software Delivery Machine** (SDM) helps you write and deliver code that is up to your own standards, at scale.
 This project runs a software delivery sdm.machine locally on your sdm.machine, responding to your commands and your commits.
 
 For instance:
