@@ -15,8 +15,8 @@
  */
 
 import { GitHubRepoRef } from "@atomist/sdm";
-import * as inquirer from "inquirer";
 import { Question } from "inquirer";
+import * as inquirer from "inquirer";
 import {
     adviceDoc,
     infoMessage,
@@ -25,6 +25,8 @@ import {
     nodeGenerator,
     superforkGenerator,
 } from "./generator/bootstrapGenerators";
+import { NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
+import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 import {
     verifyJDK,
@@ -32,8 +34,6 @@ import {
 } from "./support/javaVerification";
 import { YargBuilder } from "./support/yargBuilder";
 import { AddLocalMode } from "./transform/addLocalModeTransform";
-import { NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
-import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
 
 /**
  * Add bootstrap commands to generate a new SDM
