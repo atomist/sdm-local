@@ -4,6 +4,7 @@
 
 var ansi = require('ansi.js');
 var newlineEvent = require('on-new-line');
+var stripAnsi = require('strip-ansi');
 
 var stream = process.stdout;
 
@@ -306,8 +307,18 @@ ProgressBar.prototype.colorize = function (output) {
             return;
         }
 
-        cursor.write(chars.slice(0, charsLeft));
-        charsLeft = Math.max(0, charsLeft - chars.length);
+        if (stripAnsi(chars).length > charsLeft) {
+            var courser = 0;
+            var chunk = "";
+            while(stripAnsi(chunk).length <= charsLeft) {
+                chunk += chars.charAt(courser);
+                courser++;
+            }
+            cursor.write(chunk);
+        } else {
+            cursor.write(chars);
+        }
+        charsLeft = Math.max(0, charsLeft - stripAnsi(chars).length);
     }
 
     var cursor = this.cursor;
