@@ -21,12 +21,19 @@ import {
 import chalk from "chalk";
 import * as formatDate from "format-date";
 import * as _ from "lodash";
+import * as marked from "marked";
+import * as TerminalRenderer from "marked-terminal";
 import {
     init,
     ProgressBar,
 } from "../../../bin/progressBar";
 import { infoMessage } from "../../cli/ui/consoleOutput";
 import Signals = NodeJS.Signals;
+
+marked.setOptions({
+    // Define custom renderer
+    renderer: new TerminalRenderer(),
+});
 
 // tslint:disable-next-line:no-var-requires
 const term = require("terminal-kit").terminal;
@@ -75,7 +82,7 @@ export class ConsoleGoalRendering {
                     if (bar.completed) {
                         bar.setSchema(SchemaSuccess, {
                             name: mapStateToColor(g.displayName, g.goal.state),
-                            description: g.goal.description,
+                            description: formatDescription(g.goal.description),
                             link: formatLink(g.goal.url),
                             icon: mapStateToIcon(g.goal.state),
                             spinner: " ",
@@ -90,7 +97,7 @@ export class ConsoleGoalRendering {
                         }
                         bar.setSchema(SchemaRequested, {
                             name: mapStateToColor(g.displayName, g.goal.state),
-                            description: g.goal.description,
+                            description: formatDescription(g.goal.description),
                             link: formatLink(g.goal.url),
                             icon: mapStateToIcon(g.goal.state),
                             spinner: chalk.grey(Frames[g.tick]),
@@ -168,7 +175,7 @@ export class ConsoleGoalRendering {
                 // Update the bar
                 gtu.bar.update(mapStateToRatio(goal.state), {
                     name: mapStateToColor(gtu.displayName, gtu.goal.state),
-                    description: gtu.goal.description,
+                    description: formatDescription(gtu.goal.description),
                     link: formatLink(gtu.goal.url),
                     icon: mapStateToIcon(gtu.goal.state),
                     spinner: " ",
@@ -197,7 +204,7 @@ export class ConsoleGoalRendering {
         });
         bar.update(mapStateToRatio(state), {
             name: mapStateToColor(name, state),
-            description,
+            description: formatDescription(description),
             link: formatLink(link),
             icon: mapStateToIcon(state),
             spinner: " ",
@@ -205,6 +212,10 @@ export class ConsoleGoalRendering {
         return bar;
     }
 
+}
+
+function formatDescription(description: string): string {
+    return marked(description, { gfm: true, breaks: false }).trim();
 }
 
 function formatLink(url: string): string {
@@ -308,7 +319,8 @@ interface Goal {
     bar: any;
     tick: number;
 }
-
+// tslint:disable
+/*
 const c = new ConsoleGoalRendering();
 let counter = 0;
 setInterval(() => {
@@ -348,7 +360,7 @@ setInterval(() => {
         c.updateGoal({
             goalSetId: id,
             name: "autofix#Test.ts:14",
-            description: "Autofixed",
+            description: "Autofixed `bla`",
             state: SdmGoalState.success,
         } as SdmGoalEvent);
     }, 4500);
@@ -411,4 +423,4 @@ setInterval(() => {
     }, 11000);
 
 }, 2000);
-
+*/
