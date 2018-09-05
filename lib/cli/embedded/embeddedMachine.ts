@@ -87,7 +87,6 @@ const createMachine = (options: EmbeddedMachineOptions) => (config: SoftwareDeli
 function configurationFor(options: EmbeddedMachineOptions): Configuration {
     const cfg = defaultConfiguration() as LocalSoftwareDeliveryMachineConfiguration;
     cfg.name = options.name || "bootstrap";
-    cfg.teamIds = [DefaultWorkspaceId];
     cfg.workspaceIds = [DefaultWorkspaceId];
     cfg.http.port = options.port;
 
