@@ -110,7 +110,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
                 // Stop sending messages here. it must have gone away
                 this.dead = true;
             }
-            logger.info("Cannot POST to log service at [%s]: %s", this.url, err.message);
+            logger.debug("Cannot POST to log service at [%s]: %s", this.url, err.message);
         }
     }
 
