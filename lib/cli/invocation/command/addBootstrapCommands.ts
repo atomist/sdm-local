@@ -103,7 +103,7 @@ function addSdmGenerator(yargs: YargBuilder) {
                 message: typeDescription,
                 type: "list",
                 choices,
-                default: "spring",
+                default: "blank",
                 validate: input =>
                     choices.includes(input) ?
                         true :
