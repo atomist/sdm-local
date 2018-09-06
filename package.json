@@ -73,7 +73,7 @@
   },
   "devDependencies": {
     "@atomist/automation-client": "1.0.0-M.3",
-    "@atomist/sdm": "1.0.0-M.3",
+    "@atomist/sdm": "1.0.0-nortissej.default-transform-result.20180906223648",
     "@atomist/sdm-core": "1.0.0-M.3",
     "@types/mocha": "^5.2.5",
     "@types/power-assert": "^1.5.0",
