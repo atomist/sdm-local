@@ -15,10 +15,13 @@
  */
 
 import { ProgressLog } from "@atomist/sdm";
+import chalk from "chalk";
 import * as fileUrl from "file-url";
 import * as fs from "fs-extra";
+import * as os from "os";
 import * as path from "path";
 import * as snLogger from "simple-node-logger";
+import strip_ansi = require("strip-ansi");
 
 /**
  * Write log to a file using simple-node-logger in the repository
@@ -45,7 +48,7 @@ export class SimpleNodeLoggerProgressLog implements ProgressLog {
 
     public write(pWhat: string) {
         let what = pWhat || "";
-        this.log += what;
+        this.log += strip_ansi(what);
         if (what.endsWith("\n\r") || what.endsWith("\r\n")) {
             what = what.slice(0, -2);
         }

@@ -40,6 +40,7 @@
     "@types/node-notifier": "0.0.28",
     "@types/open": "0.0.29",
     "@types/sprintf-js": "^1.1.0",
+    "@types/strip-ansi": "^3.0.0",
     "@types/yargs": "^11.1.1",
     "ansi.js": "0.0.5",
     "axios": "^0.19.0-beta.1",
