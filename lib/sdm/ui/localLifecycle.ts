@@ -104,7 +104,7 @@ ${gsi.goalSet.goals.map(g => `⏦ ${chalk.italic(goalIndentification(g as any))}
         return gsi.addressChannels({
             goalSetId: gsi.goalSetId,
             goals: !gsi.goalSet ? [] : gsi.goalSet.goals.map(g => g.name),
-            push: gsi.push
+            push: gsi.push,
         } as any);
     });
     sdm.addGoalExecutionListener(async gci => {
