@@ -149,6 +149,7 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
         super(null, "http://not.a.real.remote",
             "http://not.a.real.apiBase",
             opts.owner, opts.repo, opts.sha);
+        this.branch = opts.branch;
     }
 
 }
