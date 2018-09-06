@@ -15,10 +15,8 @@
  */
 
 import { ProgressLog } from "@atomist/sdm";
-import chalk from "chalk";
 import * as fileUrl from "file-url";
 import * as fs from "fs-extra";
-import * as os from "os";
 import * as path from "path";
 import * as snLogger from "simple-node-logger";
 import strip_ansi = require("strip-ansi");
