@@ -31,13 +31,13 @@ import {
 } from "@atomist/sdm-core";
 import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
+import * as _ from "lodash";
 import { DefaultWorkspaceId } from "../../common/binding/defaultWorkspaceContextResolver";
 import { configureLocal } from "../../sdm/configuration/configureLocal";
 import { LocalSdmConfig } from "../../sdm/configuration/localSdmConfig";
 import { LocalLifecycle } from "../../sdm/ui/localLifecycle";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { fetchMetadataFromAutomationClient } from "../invocation/http/fetchMetadataFromAutomationClient";
-import * as _ from "lodash";
 
 /**
  * Default port on which to start an embedded machine.
