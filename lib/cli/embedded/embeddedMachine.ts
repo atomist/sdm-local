@@ -37,6 +37,7 @@ import { LocalSdmConfig } from "../../sdm/configuration/localSdmConfig";
 import { LocalLifecycle } from "../../sdm/ui/localLifecycle";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { fetchMetadataFromAutomationClient } from "../invocation/http/fetchMetadataFromAutomationClient";
+import * as _ from "lodash";
 
 /**
  * Default port on which to start an embedded machine.
@@ -135,6 +136,7 @@ export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Pro
     }
     process.env.ATOMIST_MODE = "local";
     const config = await invokePostProcessors(configurationFor(optsToUse)) as LocalSoftwareDeliveryMachineConfiguration;
+    _.set(config, "logging.level", "warn");
 
     const client = automationClient(config);
     await client.run();
