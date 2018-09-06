@@ -97,9 +97,9 @@ ${chalk.red(`✖︎︎ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.comple
         }
     });
     sdm.addGoalsSetListener(async gsi => {
-        const msg = `${pushIdentification(gsi.push)}
+        const msg = pushIdentification(gsi.push) + (!gsi.goalSet ? "\nNo goals" : `
 ▸ Goals
-${gsi.goalSet.goals.map(g => `⏦ ${chalk.italic(goalIndentification(g as any))}`).join("\n")}`;
+${gsi.goalSet.goals.map(g => `⏦ ${chalk.italic(goalIndentification(g as any))}`).join("\n")}`);
         await gsi.addressChannels(msg);
         return gsi.addressChannels({ goalSetId: gsi.goalSetId, goals: gsi.goalSet.goals.map(g => g.name), push: gsi.push } as any);
     });
@@ -133,15 +133,15 @@ function addShowReviewResults(sdm: SoftwareDeliveryMachine) {
 function renderReviewComment(rc: ReviewComment) {
     let s = "";
     switch (rc.severity) {
-        case "error" :
-        s += "✘ " + chalk.red(rc.severity);
-        break;
-        case "warn" :
-        s += "⚠︎ " + chalk.yellow(rc.severity);
-        break;
-        case "info" :
-        s += "☞ " + chalk.cyan(rc.severity);
-        break;
+        case "error":
+            s += "✘ " + chalk.red(rc.severity);
+            break;
+        case "warn":
+            s += "⚠︎ " + chalk.yellow(rc.severity);
+            break;
+        case "info":
+            s += "☞ " + chalk.cyan(rc.severity);
+            break;
     }
     return `${s}: ${rc.category} - ${rc.detail} ${JSON.stringify(rc.sourceLocation)}`;
 }
