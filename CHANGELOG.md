@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Use 'warn' log level in embedded SDM. [#176](https://github.com/atomist/sdm-local/issues/176)
+-   Error reporting. [#170](https://github.com/atomist/sdm-local/issues/170)
 
 ### Fixed
 
