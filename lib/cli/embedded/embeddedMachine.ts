@@ -31,6 +31,7 @@ import {
 } from "@atomist/sdm-core";
 import { ConfigureMachine } from "@atomist/sdm/api/machine/MachineConfigurer";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/api/machine/SoftwareDeliveryMachineOptions";
+import * as _ from "lodash";
 import { DefaultWorkspaceId } from "../../common/binding/defaultWorkspaceContextResolver";
 import { configureLocal } from "../../sdm/configuration/configureLocal";
 import { LocalSdmConfig } from "../../sdm/configuration/localSdmConfig";
@@ -135,6 +136,7 @@ export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Pro
     }
     process.env.ATOMIST_MODE = "local";
     const config = await invokePostProcessors(configurationFor(optsToUse)) as LocalSoftwareDeliveryMachineConfiguration;
+    _.set(config, "logging.level", "warn");
 
     const client = automationClient(config);
     await client.run();
