@@ -23,6 +23,7 @@ import {
 import { ConfigurationPostProcessor } from "@atomist/automation-client/configuration";
 import { eventStore } from "@atomist/automation-client/globals";
 import { guid } from "@atomist/automation-client/internal/util/string";
+import { scanFreePort } from "@atomist/automation-client/util/port";
 import {
     isInLocalMode,
     LocalSoftwareDeliveryMachineConfiguration,
@@ -104,7 +105,7 @@ export function configureLocal(options: LocalConfigureOptions = { forceLocal: fa
 
         const globalActionStore = freshActionStore();
 
-        configureWebEndpoints(mergedConfig, workspaceContext, globalActionStore);
+        await configureWebEndpoints(mergedConfig, workspaceContext, globalActionStore);
         configureMessageClientFactory(mergedConfig, workspaceContext, globalActionStore);
         configureGraphClient(mergedConfig);
         configureListeners(mergedConfig);
@@ -113,12 +114,20 @@ export function configureLocal(options: LocalConfigureOptions = { forceLocal: fa
     };
 }
 
-function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachineConfiguration,
+async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachineConfiguration,
                                teamContext: LocalWorkspaceContext,
                                actionStore: ActionStore) {
+    _.set(configuration, "http.enabled", true);
+
+    // Binding to localhost will prevent Express to be accessible from a different computer on the network
+    // which is good as we are disabling all security further down
+    _.set(configuration, "http.host", configuration.local.hostname);
+    _.set(configuration, "http.port", await scanFreePort());
+
     // Disable auth as we're only expecting local clients
-    // TODO what if not basic
     _.set(configuration, "http.auth.basic.enabled", false);
+    _.set(configuration, "http.auth.token.enabled", false);
+    _.set(configuration, "http.auth.bearer.enabled", false);
 
     process.env.ATOMIST_WEBHOOK_BASEURL = `http://${configuration.local.hostname}:${configuration.http.port}`;
 

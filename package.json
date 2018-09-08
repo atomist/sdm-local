@@ -74,7 +74,7 @@
     "@atomist/sdm-core": "*"
   },
   "devDependencies": {
-    "@atomist/automation-client": "1.0.0-M.3",
+    "@atomist/automation-client": "1.0.0-master.20180908143715",
     "@atomist/sdm": "1.0.0-M.3",
     "@atomist/sdm-core": "1.0.0-M.3",
     "@types/mocha": "^5.2.5",
