@@ -115,8 +115,8 @@ export function configureLocal(options: LocalConfigureOptions = { forceLocal: fa
 }
 
 async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachineConfiguration,
-                               teamContext: LocalWorkspaceContext,
-                               actionStore: ActionStore) {
+                                     teamContext: LocalWorkspaceContext,
+                                     actionStore: ActionStore) {
     _.set(configuration, "http.enabled", true);
 
     // Binding to localhost will prevent Express to be accessible from a different computer on the network
