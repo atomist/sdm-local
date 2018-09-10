@@ -78,7 +78,7 @@ function addExtensionPackGenerator(yargs: YargBuilder) {
 }
 
 function addSdmGenerator(yargs: YargBuilder) {
-    const choices = ["blank", "sample", "spring"];
+    const choices = ["blank", "sample", "spring", "spring to k8"];
     const typeDescription = "Type of SDM to create";
     const name = "newSdm";
     addEmbeddedCommand(yargs, {
@@ -114,12 +114,18 @@ function addSdmGenerator(yargs: YargBuilder) {
                 case "spring":
                     return sdm => {
                         sdm.addGeneratorCommand(nodeGenerator(name,
-                            new GitHubRepoRef("atomist", "spring-sdm-seed"),
+                            new GitHubRepoRef("atomist-seeds", "spring-sdm"),
+                            "spring"));
+                    };
+                case "spring to k8":
+                    return sdm => {
+                        sdm.addGeneratorCommand(nodeGenerator(name,
+                            GitHubRepoRef.from({ owner: "atomist-seeds", repo: "spring-sdm", branch: "kube" }),
                             "spring"));
                     };
                 case "blank":
                     return sdm => sdm.addGeneratorCommand(nodeGenerator(name,
-                        new GitHubRepoRef("atomist", "blank-sdm-seed"),
+                        new GitHubRepoRef("atomist-seeds", "empty-sdm"),
                         "blank"));
                 case "sample":
                     return sdm => sdm.addGeneratorCommand(nodeGenerator(name,
