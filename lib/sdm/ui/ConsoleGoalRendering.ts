@@ -23,13 +23,13 @@ import * as formatDate from "format-date";
 import * as _ from "lodash";
 import * as marked from "marked";
 import * as TerminalRenderer from "marked-terminal";
+import Signals = NodeJS.Signals;
+import strip_ansi = require("strip-ansi");
 import {
     init,
     ProgressBar,
 } from "../../../bin/progressBar";
 import { infoMessage } from "../../cli/ui/consoleOutput";
-import Signals = NodeJS.Signals;
-import strip_ansi = require("strip-ansi");
 
 marked.setOptions({
     // Define custom renderer
