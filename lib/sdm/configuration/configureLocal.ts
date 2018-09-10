@@ -122,7 +122,9 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
     // Binding to localhost will prevent Express to be accessible from a different computer on the network
     // which is good as we are disabling all security further down
     _.set(configuration, "http.host", configuration.local.hostname);
-    _.set(configuration, "http.port", await scanFreePort());
+    if (!_.get(configuration, "http.port")) {
+        _.set(configuration, "http.port", await scanFreePort());
+    }
 
     // Disable auth as we're only expecting local clients
     _.set(configuration, "http.auth.basic.enabled", false);
