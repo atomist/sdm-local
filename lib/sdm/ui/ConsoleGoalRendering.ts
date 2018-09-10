@@ -29,6 +29,7 @@ import {
 } from "../../../bin/progressBar";
 import { infoMessage } from "../../cli/ui/consoleOutput";
 import Signals = NodeJS.Signals;
+import strip_ansi = require("strip-ansi");
 
 marked.setOptions({
     // Define custom renderer
@@ -119,7 +120,7 @@ export class ConsoleGoalRendering {
         process.stdout.write(push(p) + "\n");
         const gss = goals.map(g => ({
             name: g,
-            displayName: g.split("#")[0],
+            displayName: strip_ansi(marked(g.split("#")[0]).trim()),
         }));
 
         const ml = _.maxBy(gss, "displayName.length");
