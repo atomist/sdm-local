@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-local/compare/1.0.0-M.3...HEAD)
 
+### Added
+
+-   Do not include SDMs not in local mode. [#180](https://github.com/atomist/sdm-local/issues/180)
+
 ### Changed
 
 -   Use 'warn' log level in embedded SDM. [#176](https://github.com/atomist/sdm-local/issues/176)
