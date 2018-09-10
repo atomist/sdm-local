@@ -24,7 +24,6 @@ import {
     infoMessage,
     logExceptionsToConsole,
 } from "../../ui/consoleOutput";
-import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { YargBuilder } from "./support/yargBuilder";
 
 const MaxColumnWidth = 30;
@@ -35,14 +34,13 @@ const MaxColumnWidth = 30;
  * @param clientFinder help find connected clients
  * @param {YargBuilder} yargs
  */
-export function addShowSkillsCommand(clientFinder: AutomationClientFinder,
+export function addShowSkillsCommand(clients: AutomationClientInfo[],
                                      yargs: YargBuilder) {
     yargs.command({
         command: "show skills",
         aliases: "s",
         describe: "Show skills",
         handler: async () => {
-            const clients = await clientFinder.findAutomationClients();
             return logExceptionsToConsole(
                 async () => printSkillsToConsole(clients), true);
         },

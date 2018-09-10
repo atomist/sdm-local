@@ -60,10 +60,11 @@ export async function addLocalSdmCommands(yargs: Argv | YargBuilder,
 
     addReplayCommand(yargBuilder, finder, workspaceContextResolver);
 
-    const clients = await finder.findAutomationClients();
+    const clients = (await finder.findAutomationClients())
+        .filter(client => !!client.localConfig);
 
     addShowSdmsCommand(clients, yargBuilder);
-    addShowSkillsCommand(finder, yargBuilder);
+    addShowSkillsCommand(clients, yargBuilder);
 
     addCloneCommand(clients, yargBuilder, workspaceContextResolver);
     addGitHubImportCommand(clients, yargBuilder, workspaceContextResolver);
