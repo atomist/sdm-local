@@ -22,6 +22,7 @@ import {
 } from "@atomist/sdm";
 import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import * as fs from "fs";
+import * as _ from "lodash";
 import { logAndSend } from "../../../common/ui/httpMessaging";
 import { runAndLog } from "../../util/runAndLog";
 import { dirFor } from "./expandedTreeUtils";
@@ -52,6 +53,9 @@ export class FileSystemProjectLoader implements ProjectLoader {
             const p2 = await this.preprocess(p);
             return action(p2);
         };
+        // It's trickier to clone a file:// repo with --depth, and that optimization is less impactful
+        // on the local filesystem anyway, so don't try to use it. Clone deeply.
+        _.set(params, "cloneOptions.alwaysDeep", true);
         return this.delegate.doWithProject(params, decoratedAction);
     }
 
