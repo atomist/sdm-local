@@ -29,6 +29,7 @@ import {
     FileSystemRemoteRepoRef,
     isFileSystemRemoteRepoRef,
 } from "./FileSystemRemoteRepoRef";
+import * as _ from "lodash";
 
 /**
  * Local project loader backed by expanded directory tree.
@@ -52,12 +53,15 @@ export class FileSystemProjectLoader implements ProjectLoader {
             const p2 = await this.preprocess(p);
             return action(p2);
         };
+        // It's trickier to clone a file:// repo with --depth, and that optimization is less impactful
+        // on the local filesystem anyway, so don't try to use it. Clone deeply.
+        _.set(params, "cloneOptions.alwaysDeep", true);
         return this.delegate.doWithProject(params, decoratedAction);
     }
 
     constructor(private readonly delegate: ProjectLoader,
-                private readonly opts: LocalSoftwareDeliveryMachineOptions,
-                private readonly preprocess: (p: GitProject) => Promise<GitProject> = changeToPushToAtomistBranch(opts)) {
+        private readonly opts: LocalSoftwareDeliveryMachineOptions,
+        private readonly preprocess: (p: GitProject) => Promise<GitProject> = changeToPushToAtomistBranch(opts)) {
     }
 
 }
