@@ -49,9 +49,10 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
 
     @Parameter({
         description: "Branch or ref. Defaults to current HEAD",
-        ...validationPatterns.GitBranchRegExp, required: false,
+        ...validationPatterns.GitBranchRegExp,
+        required: false,
     })
-    public branch: string = "origin/HEAD";
+    public branch: string;
 
     @Parameter({ description: "Sha", ...validationPatterns.GitShaRegExp, required: false })
     public sha: string;
