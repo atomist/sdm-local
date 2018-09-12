@@ -131,9 +131,6 @@ export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Pro
         repositoryOwnerParentDirectory: options.repositoryOwnerParentDirectory,
     };
 
-    if (!options.suppressConsoleLog) {
-        process.env.ATOMIST_DISABLE_LOGGING = "false";
-    }
     process.env.ATOMIST_MODE = "local";
     const config = await invokePostProcessors(configurationFor(optsToUse)) as LocalSoftwareDeliveryMachineConfiguration;
     _.set(config, "logging.level", "warn");

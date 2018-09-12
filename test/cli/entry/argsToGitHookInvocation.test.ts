@@ -15,14 +15,6 @@
  */
 
 import * as assert from "power-assert";
-
-import {
-    logger,
-    LoggingConfig,
-} from "@atomist/automation-client";
-LoggingConfig.format = "cli";
-(logger as any).level = process.env.LOG_LEVEL || "info";
-
 import { argsToGitHookInvocation } from "../../../lib/cli/entry/argsToGitHookInvocation";
 import { WorkspaceContextResolver } from "../../../lib/common/binding/WorkspaceContextResolver";
 

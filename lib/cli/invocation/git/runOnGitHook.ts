@@ -14,20 +14,41 @@
  * limitations under the License.
  */
 
-import { setLogLevel } from "@atomist/automation-client/internal/util/logger";
-setLogLevel("warn");
+import {
+    configureLogging,
+    logger,
+    LoggingConfiguration,
+    NoLoggingConfiguration,
+} from "@atomist/automation-client";
 
-import { logger } from "@atomist/sdm";
+const loggingConfiguration: LoggingConfiguration = {
+    console: {
+        ...NoLoggingConfiguration.console,
+        level: "warn",
+    },
+    file: {
+        enabled: false,
+    },
+};
+
+configureLogging(loggingConfiguration);
+
 import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";
 import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSystemProjectLoader";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { argsToGitHookInvocation } from "../../entry/argsToGitHookInvocation";
-import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
+import {
+    infoMessage,
+    logExceptionsToConsole,
+} from "../../ui/consoleOutput";
 import { renderEventDispatch } from "../../ui/renderClientInfo";
 import { suggestStartingAllMessagesListener } from "../command/support/suggestStartingAllMessagesListener";
 import { AutomationClientFinder } from "../http/AutomationClientFinder";
 import { defaultAutomationClientFinder } from "../http/support/defaultAutomationClientFinder";
-import { GitHookInvocation, handleGitHookEvent } from "./handleGitHookEvent";
+import {
+    GitHookInvocation,
+    handleGitHookEvent,
+} from "./handleGitHookEvent";
 
 const verbose = process.env.ATOMIST_GITHOOK_VERBOSE === "true";
 
@@ -62,7 +83,9 @@ export async function runOnGitHook(argv: string[],
  */
 async function sendTo(automationClientInfo: AutomationClientInfo, invocation: GitHookInvocation) {
     if (!automationClientInfo.localConfig) {
-        if (verbose) { infoMessage("Not a local machine; not delivering push event.\n"); }
+        if (verbose) {
+            infoMessage("Not a local machine; not delivering push event.\n");
+        }
         // process.exit(0); // This is a lot faster than just returning. I don't want to make your commit slow.
     } else {
         logger.debug("Executing git hook against project %j", invocation);
@@ -70,9 +93,9 @@ async function sendTo(automationClientInfo: AutomationClientInfo, invocation: Gi
             infoMessage(renderEventDispatch(automationClientInfo, invocation));
         }
         return logExceptionsToConsole(() =>
-            handleGitHookEvent(
-                automationClientInfo.location,
-                automationClientInfo.localConfig, invocation),
+                handleGitHookEvent(
+                    automationClientInfo.location,
+                    automationClientInfo.localConfig, invocation),
             true,
         );
     }
