@@ -22,6 +22,7 @@ import {
 } from "@atomist/sdm";
 import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import * as fs from "fs";
+import * as _ from "lodash";
 import { logAndSend } from "../../../common/ui/httpMessaging";
 import { runAndLog } from "../../util/runAndLog";
 import { dirFor } from "./expandedTreeUtils";
@@ -29,7 +30,6 @@ import {
     FileSystemRemoteRepoRef,
     isFileSystemRemoteRepoRef,
 } from "./FileSystemRemoteRepoRef";
-import * as _ from "lodash";
 
 /**
  * Local project loader backed by expanded directory tree.
@@ -60,8 +60,8 @@ export class FileSystemProjectLoader implements ProjectLoader {
     }
 
     constructor(private readonly delegate: ProjectLoader,
-        private readonly opts: LocalSoftwareDeliveryMachineOptions,
-        private readonly preprocess: (p: GitProject) => Promise<GitProject> = changeToPushToAtomistBranch(opts)) {
+                private readonly opts: LocalSoftwareDeliveryMachineOptions,
+                private readonly preprocess: (p: GitProject) => Promise<GitProject> = changeToPushToAtomistBranch(opts)) {
     }
 
 }
