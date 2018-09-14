@@ -9,14 +9,14 @@ This page details all runtime OSS dependencies of `@atomist/sdm-local`.
 | License | Count |
 |---------|-------|
 |[AFLv2.1](#aflv21)|1|
-|[Apache-2.0](#apache-20)|22|
+|[Apache-2.0](#apache-20)|21|
 |[Artistic-2.0](#artistic-20)|4|
 |[BSD-2-Clause](#bsd-2-clause)|18|
 |[BSD-3-Clause](#bsd-3-clause)|22|
 |[BSD](#bsd)|4|
 |[CC-BY-3.0](#cc-by-30)|1|
 |[CC0-1.0](#cc0-10)|2|
-|[GPL-3.0](#gpl-30)|5|
+|[GPL-3.0](#gpl-30)|3|
 |[ISC](#isc)|116|
 |[MIT](#mit)|659|
 |[Public Domain](#public-domain)|1|
@@ -34,9 +34,8 @@ Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apa
 
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
-|`@atomist/sdm-core`|`1.0.0-master.20180913110440`|Atomist|[https://github.com/atomist/sdm-core](https://github.com/atomist/sdm-core)|
-|`@atomist/sdm`|`1.0.0-master.20180913101258`|Atomist|[https://github.com/atomist/sdm](https://github.com/atomist/sdm)|
-|`@atomist/slack-messages`|`1.0.0`|Atomist|[https://github.com/atomist/slack-messages](https://github.com/atomist/slack-messages)|
+|`@atomist/sdm-core`|`1.0.0-master.20180914103207`|Atomist|[https://github.com/atomist/sdm-core](https://github.com/atomist/sdm-core)|
+|`@atomist/sdm`|`1.0.0-master.20180914101315`|Atomist|[https://github.com/atomist/sdm](https://github.com/atomist/sdm)|
 |`@atomist/slack-messages`|`1.0.1-master.20180830190736`|Atomist|[https://github.com/atomist/slack-messages](https://github.com/atomist/slack-messages)|
 |`JSONStream`|`1.3.4`|Dominic Tarr|[https://github.com/dominictarr/JSONStream](https://github.com/dominictarr/JSONStream)|
 |`aws-sign2`|`0.7.0`|Mikeal Rogers|[https://github.com/mikeal/aws-sign](https://github.com/mikeal/aws-sign)|
@@ -148,9 +147,7 @@ GNU General Public License v3.0 only - [http://www.gnu.org/licenses/gpl-3.0-stan
 
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
-|`@atomist/automation-client`|`1.0.0-asyncHooks.20180913135347`|Atomist|[https://github.com/atomist/automation-client-ts](https://github.com/atomist/automation-client-ts)|
-|`@atomist/microgrammar`|`0.9.1`|Atomist|[https://github.com/atomist/microgrammar](https://github.com/atomist/microgrammar)|
-|`@atomist/microgrammar`|`1.0.0-M.1`|Atomist|[https://github.com/atomist/microgrammar](https://github.com/atomist/microgrammar)|
+|`@atomist/automation-client`|`1.0.0-master.20180914103733`|Atomist|[https://github.com/atomist/automation-client-ts](https://github.com/atomist/automation-client-ts)|
 |`@atomist/microgrammar`|`1.0.0-master.20180829162516`|Atomist|[https://github.com/atomist/microgrammar](https://github.com/atomist/microgrammar)|
 |`@atomist/tree-path`|`1.0.0-master.20180913033718`|Atomist|[https://github.com/atomist/tree-path-ts](https://github.com/atomist/tree-path-ts)|
 
