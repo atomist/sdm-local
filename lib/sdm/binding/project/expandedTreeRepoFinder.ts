@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { RepoFinder } from "@atomist/automation-client/operations/common/repoFinder";
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
+import { RepoFinder } from "@atomist/automation-client";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm";
 import * as fs from "fs";
 import * as _ from "lodash";
 import * as path from "path";

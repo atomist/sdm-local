@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { toStringArray } from "@atomist/automation-client/internal/util/string";
+import { toStringArray } from "@atomist/automation-client";
 import * as os from "os";
 import { AllMessagesPort } from "../../../common/ui/httpMessaging";
 import {

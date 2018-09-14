@@ -17,9 +17,9 @@
 import {
     GitCommandGitProject,
     GitProject,
+    LocalSoftwareDeliveryMachineOptions,
     OnPushToAnyBranch,
 } from "@atomist/sdm";
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import {
     errorMessage,
     infoMessage,

@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-import { HandlerResult, logger } from "@atomist/automation-client";
-import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
-import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/metadata/automationMetadata";
-import { RepoId } from "@atomist/sdm";
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
+import {
+    Arg,
+    CommandHandlerMetadata,
+    HandlerResult,
+    logger,
+    Parameter,
+} from "@atomist/automation-client";
+import {
+    LocalSoftwareDeliveryMachineOptions,
+    RepoId,
+} from "@atomist/sdm";
 import chalk from "chalk";
 import * as inquirer from "inquirer";
 import * as _ from "lodash";

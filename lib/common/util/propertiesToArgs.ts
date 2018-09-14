@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Arg } from "@atomist/automation-client/internal/invoker/Payload";
+import { Arg } from "@atomist/automation-client";
 
 /**
  * Read the properties of the given object and convert them to the

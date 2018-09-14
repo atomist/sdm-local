@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { CredentialsResolver, logger, ProjectOperationCredentials } from "@atomist/sdm";
+import {
+    CredentialsResolver,
+    logger,
+    ProjectOperationCredentials,
+} from "@atomist/sdm";
 
 export class EnvironmentTokenCredentialsResolver implements CredentialsResolver {
 

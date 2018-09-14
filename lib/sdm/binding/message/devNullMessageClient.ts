@@ -19,7 +19,7 @@ import {
     MessageClient,
     MessageOptions,
     SlackMessageClient,
-} from "@atomist/automation-client/spi/message/MessageClient";
+} from "@atomist/automation-client";
 import { SlackMessage } from "@atomist/slack-messages";
 
 /**

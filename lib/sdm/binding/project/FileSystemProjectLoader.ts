@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import { GitProject, logger } from "@atomist/sdm";
 import {
+    GitProject,
+    LocalSoftwareDeliveryMachineOptions,
+    logger,
     ProjectLoader,
     ProjectLoadingParameters,
     WithLoadedProject,
 } from "@atomist/sdm";
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import * as fs from "fs";
 import * as _ from "lodash";
 import { logAndSend } from "../../../common/ui/httpMessaging";

@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
-import { eventStore } from "@atomist/automation-client/globals";
 import {
+    eventStore,
     GraphClient,
+    logger,
     MutationOptions,
     QueryOptions,
-} from "@atomist/automation-client/spi/graph/GraphClient";
+} from "@atomist/automation-client";
 import {
     PushForSdmGoal,
     SdmGoalsForCommit,
+    SdmVersionForCommit,
 } from "@atomist/sdm";
-import { SdmVersionForCommit } from "@atomist/sdm-core/typings/types";
 
 /**
  * Local graph client. Returns empty result set or throws an

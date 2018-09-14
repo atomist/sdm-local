@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CommandHandlerMetadata } from "@atomist/automation-client/metadata/automationMetadata";
+import { CommandHandlerMetadata } from "@atomist/automation-client";
 import { convertToDisplayable } from "./runCommandOnColocatedAutomationClient";
 import { YargBuilder } from "./yargBuilder";
 

@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
 import {
     Destination,
+    logger,
     MessageClient,
     MessageOptions,
     SlackMessageClient,
-} from "@atomist/automation-client/spi/message/MessageClient";
-import { OnAnyRequestedSdmGoal, SdmGoalKey, SdmGoalState } from "@atomist/sdm";
+} from "@atomist/automation-client";
+import {
+    OnAnyRequestedSdmGoal,
+    SdmGoalKey,
+    SdmGoalState,
+} from "@atomist/sdm";
 import { SlackMessage } from "@atomist/slack-messages";
 import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";
 import { isValidSHA1 } from "../../../common/git/handlePushBasedEventOnRepo";

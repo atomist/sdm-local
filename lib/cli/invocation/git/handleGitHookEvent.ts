@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm";
 import {
     EventOnRepo,
     handlePushBasedEventOnRepo,

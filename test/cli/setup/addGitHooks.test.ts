@@ -18,7 +18,7 @@ import * as assert from "power-assert";
 
 import {
     InMemoryProject,
-} from "@atomist/automation-client/project/mem/InMemoryProject";
+} from "@atomist/automation-client";
 import {
     LocalProject,
 } from "@atomist/sdm";

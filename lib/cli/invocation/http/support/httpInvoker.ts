@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { HandlerResult, logger } from "@atomist/automation-client";
+import {
+    HandlerResult,
+    logger,
+} from "@atomist/automation-client";
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import * as _ from "lodash";
 import { AutomationClientConnectionRequest } from "../AutomationClientConnectionRequest";

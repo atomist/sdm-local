@@ -20,13 +20,13 @@ import {
     getUserConfig,
     logger,
 } from "@atomist/automation-client";
-import { SoftwareDeliveryMachineOptions } from "@atomist/sdm";
 import {
+    CachingProjectLoader,
     EphemeralLocalArtifactStore,
     LocalSoftwareDeliveryMachineConfiguration,
     LocalSoftwareDeliveryMachineOptions,
-} from "@atomist/sdm-core";
-import { CachingProjectLoader } from "@atomist/sdm/api-helper/project/CachingProjectLoader";
+    SoftwareDeliveryMachineOptions,
+} from "@atomist/sdm";
 import * as fs from "fs-extra";
 import * as _ from "lodash";
 import * as os from "os";

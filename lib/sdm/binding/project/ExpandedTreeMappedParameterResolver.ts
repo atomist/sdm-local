@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-import { MappedParameterDeclaration } from "@atomist/automation-client/metadata/automationMetadata";
-import { GitHubDotComBase } from "@atomist/automation-client/operations/common/GitHubRepoRef";
-import { logger, MappedParameters } from "@atomist/sdm";
+import {
+    GitHubDotComBase,
+    MappedParameterDeclaration,
+} from "@atomist/automation-client";
+import {
+    logger,
+    MappedParameters,
+} from "@atomist/sdm";
 import * as os from "os";
 import { DefaultWorkspaceId } from "../../../common/binding/defaultWorkspaceContextResolver";
 import { MappedParameterResolver } from "../mapped-parameter/MappedParameterResolver";

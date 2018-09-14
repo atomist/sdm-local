@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-import { HandlerResult } from "@atomist/automation-client";
-import { Arg, Secret } from "@atomist/automation-client/internal/invoker/Payload";
+import {
+    Arg,
+    HandlerResult,
+    Secret,
+} from "@atomist/automation-client";
 import { InvocationTarget } from "./InvocationTarget";
 
 /**

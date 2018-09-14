@@ -17,17 +17,17 @@
 import {
     automationClientInstance,
     Configuration,
+    ConfigurationPostProcessor,
+    eventStore,
+    guid,
     HandlerResult,
     logger,
+    scanFreePort,
 } from "@atomist/automation-client";
-import { ConfigurationPostProcessor } from "@atomist/automation-client/configuration";
-import { eventStore } from "@atomist/automation-client/globals";
-import { guid } from "@atomist/automation-client/internal/util/string";
-import { scanFreePort } from "@atomist/automation-client/util/port";
 import {
     isInLocalMode,
     LocalSoftwareDeliveryMachineConfiguration,
-} from "@atomist/sdm-core";
+} from "@atomist/sdm";
 import * as assert from "assert";
 import * as exp from "express";
 import * as exphbs from "express-handlebars";
