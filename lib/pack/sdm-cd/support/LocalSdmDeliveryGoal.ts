@@ -15,9 +15,13 @@
  */
 
 import { asSpawnCommand } from "@atomist/automation-client";
-import { logger } from "@atomist/sdm";
-import { ExecuteGoal, GenericGoal, GoalInvocation } from "@atomist/sdm";
-import { DelimitedWriteProgressLogDecorator } from "@atomist/sdm/api-helper/log/DelimitedWriteProgressLogDecorator";
+import {
+    DelimitedWriteProgressLogDecorator,
+    ExecuteGoal,
+    GenericGoal,
+    GoalInvocation,
+    logger,
+} from "@atomist/sdm";
 import { ChildProcess, spawn } from "child_process";
 import { AutomationClientInfo } from "../../../cli/AutomationClientInfo";
 import { fetchMetadataFromAutomationClient } from "../../../cli/invocation/http/fetchMetadataFromAutomationClient";

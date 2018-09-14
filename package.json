@@ -25,8 +25,8 @@
     "url": "https://github.com/atomist/sdm-local/issues"
   },
   "dependencies": {
-    "@atomist/microgrammar": "^0.9.1",
-    "@atomist/slack-messages": "^1.0.0",
+    "@atomist/microgrammar": "1.0.0-master.20180829162516",
+    "@atomist/slack-messages": "1.0.1-master.20180830190736",
     "@types/body-parser": "^1.17.0",
     "@types/express": "^4.16.0",
     "@types/express-handlebars": "0.0.30",
@@ -74,9 +74,9 @@
     "@atomist/sdm-core": "*"
   },
   "devDependencies": {
-    "@atomist/automation-client": "1.0.0-asyncHooks.20180913135347",
-    "@atomist/sdm": "1.0.0-master.20180913101258",
-    "@atomist/sdm-core": "1.0.0-master.20180913110440",
+    "@atomist/automation-client": "1.0.0-master.20180914103733",
+    "@atomist/sdm": "1.0.0-master.20180914101315",
+    "@atomist/sdm-core": "1.0.0-master.20180914103207",
     "@types/mocha": "^5.2.5",
     "@types/power-assert": "^1.5.0",
     "axios-mock-adapter": "^1.15.0",

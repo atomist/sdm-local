@@ -17,7 +17,7 @@
 import {
     Destination,
     MessageOptions,
-} from "@atomist/automation-client/spi/message/MessageClient";
+} from "@atomist/automation-client";
 import { logger } from "@atomist/sdm";
 import axios from "axios";
 import * as boxen from "boxen";

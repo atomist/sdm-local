@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
-import { GitHubNameRegExp } from "@atomist/automation-client/operations/common/params/gitHubPatterns";
-import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
+import {
+    GitHubNameRegExp,
+    GitHubRepoRef,
+    RemoteRepoRef,
+} from "@atomist/automation-client";
 import { GeneratorRegistration } from "@atomist/sdm";
 import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition } from "./NodeProjectCreationParameters";
 import { UpdatePackageJsonIdentification } from "./updatePackageJsonIdentification";

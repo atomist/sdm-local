@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CustomEventDestination } from "@atomist/automation-client/spi/message/MessageClient";
+import { CustomEventDestination } from "@atomist/automation-client";
 
 /**
  * Well-known destination for messages on command completion.

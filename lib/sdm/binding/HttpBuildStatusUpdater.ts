@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-import { HandlerContext } from "@atomist/automation-client";
-import { RemoteRepoRef } from "@atomist/automation-client/operations/common/RepoId";
-import { BuildStatus, OnBuildComplete, SdmGoalEvent } from "@atomist/sdm";
-import { BuildStatusUpdater } from "@atomist/sdm-core/internal/delivery/build/local/LocalBuilder";
+import {
+    HandlerContext,
+    RemoteRepoRef,
+} from "@atomist/automation-client";
+import {
+    BuildStatus,
+    OnBuildComplete,
+    SdmGoalEvent,
+} from "@atomist/sdm";
+import { BuildStatusUpdater } from "@atomist/sdm-core";
 import { LocalWorkspaceContext } from "../../common/invocation/LocalWorkspaceContext";
 import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInProcess";
 

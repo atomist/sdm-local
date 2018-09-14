@@ -15,11 +15,11 @@
  */
 
 import {
+    AbstractRemoteRepoRef,
     ActionResult,
+    Configurable,
     successOn,
-} from "@atomist/automation-client/action/ActionResult";
-import { AbstractRemoteRepoRef } from "@atomist/automation-client/operations/common/AbstractRemoteRepoRef";
-import { Configurable } from "@atomist/automation-client/project/git/Configurable";
+} from "@atomist/automation-client";
 import {
     logger,
     ProjectOperationCredentials,

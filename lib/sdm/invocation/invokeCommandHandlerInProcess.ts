@@ -16,9 +16,9 @@
 
 import {
     automationClientInstance,
+    CommandIncoming,
     HandlerResult,
 } from "@atomist/automation-client";
-import { CommandIncoming } from "@atomist/automation-client/internal/transport/RequestProcessor";
 import { CommandHandlerInvoker } from "../../common/invocation/CommandHandlerInvocation";
 import { propertiesToArgs } from "../../common/util/propertiesToArgs";
 

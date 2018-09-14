@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-import { successOn } from "@atomist/automation-client/action/ActionResult";
-import { ProjectPersister } from "@atomist/automation-client/operations/generate/generatorUtils";
+import {
+    ProjectPersister,
+    successOn,
+} from "@atomist/automation-client";
 import {
     GitProject,
     LocalProject,

@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import { TargetsParams } from "@atomist/automation-client/operations/common/params/TargetsParams";
 import {
     andFilter,
-    RepoFilter,
-} from "@atomist/automation-client/operations/common/repoFilter";
-import {
-    logger,
     MappedParameter,
     MappedParameters,
-    Parameter,
     Parameters,
+    RepoFilter,
+    TargetsParams,
+} from "@atomist/automation-client";
+import {
+    logger,
+    Parameter,
     ProjectOperationCredentials,
+    RepoTargets,
+    validationPatterns,
 } from "@atomist/sdm";
-import { validationPatterns } from "@atomist/sdm";
-import { RepoTargets } from "@atomist/sdm";
 import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 

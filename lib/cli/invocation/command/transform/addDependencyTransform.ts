@@ -15,8 +15,11 @@
  */
 
 import { asSpawnCommand } from "@atomist/automation-client";
-import { CodeTransformRegistration, ProgressLog } from "@atomist/sdm";
-import { localCommandsCodeTransform } from "@atomist/sdm/api-helper/command/transform/localCommandsCodeTransform";
+import {
+    CodeTransformRegistration,
+    localCommandsCodeTransform,
+    ProgressLog,
+} from "@atomist/sdm";
 
 export interface ModuleId {
     name?: string;

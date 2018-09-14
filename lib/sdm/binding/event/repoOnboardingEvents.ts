@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { RepoId } from "@atomist/automation-client/operations/common/RepoId";
+import { RepoId } from "@atomist/automation-client";
 import { OnRepoCreation } from "@atomist/sdm";
-import { CoreRepoFieldsAndChannels, OnChannelLink, OnRepoOnboarded } from "@atomist/sdm-core/typings/types";
+import { OnChannelLink, OnRepoOnboarded } from "@atomist/sdm-core";
 import { repoFieldsFromProject } from "../../../common/git/pushFromLastCommit";
 import { EventSender } from "../../../common/invocation/EventHandlerInvocation";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
@@ -36,7 +36,7 @@ export async function sendRepoCreationEvent(cc: LocalWorkspaceContext, id: RepoI
 }
 
 export async function sendChannelLinkEvent(cc: LocalWorkspaceContext, id: RepoId, eventSender: EventSender) {
-    const repo = repoFieldsFromProject(cc.workspaceId, id) as CoreRepoFieldsAndChannels.Fragment;
+    const repo = repoFieldsFromProject(cc.workspaceId, id);
     const payload: OnChannelLink.Subscription = {
         ChannelLink: [{
             repo,
@@ -52,7 +52,7 @@ export async function sendChannelLinkEvent(cc: LocalWorkspaceContext, id: RepoId
 export async function sendRepoOnboardingEvent(cc: LocalWorkspaceContext, id: RepoId, eventSender: EventSender) {
     const payload: OnRepoOnboarded.Subscription = {
         RepoOnboarded: [{
-            repo: repoFieldsFromProject(cc.workspaceId, id) as CoreRepoFieldsAndChannels.Fragment,
+            repo: repoFieldsFromProject(cc.workspaceId, id),
         }],
     };
     return eventSender({

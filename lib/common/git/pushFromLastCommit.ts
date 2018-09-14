@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-import { RepoRef } from "@atomist/automation-client/operations/common/RepoId";
-import { GitProject } from "@atomist/automation-client/project/git/GitProject";
-import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
+import {
+    GitProject,
+    LocalProject,
+    RepoRef,
+} from "@atomist/automation-client";
 import {
     CoreRepoFieldsAndChannels,
     OnPushToAnyBranch,

@@ -19,6 +19,7 @@ import {
     GitProject,
     OnPushToAnyBranch,
 } from "@atomist/sdm";
+import Push = OnPushToAnyBranch.Push;
 import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import {
     errorMessage,
@@ -29,7 +30,6 @@ import { isAtomistTemporaryBranch } from "../../sdm/binding/project/FileSystemPr
 import { FileSystemRemoteRepoRef } from "../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { EventSender } from "../invocation/EventHandlerInvocation";
 import { pushFromLastCommit } from "./pushFromLastCommit";
-import Push = OnPushToAnyBranch.Push;
 
 /**
  * Any event on a local repo

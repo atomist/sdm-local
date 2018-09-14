@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
 import {
     Destination,
     isSlackMessage,
+    logger,
     MessageClient,
     MessageOptions,
     SlackDestination,
     SlackMessageClient,
-} from "@atomist/automation-client/spi/message/MessageClient";
+} from "@atomist/automation-client";
 import axios from "axios";
 import { StreamedMessage } from "../../../common/ui/httpMessaging";
 import {

@@ -1,4 +1,4 @@
-import { GitHubDotComBase } from "@atomist/automation-client/operations/common/GitHubRepoRef";
+import { GitHubDotComBase } from "@atomist/automation-client";
 /*
  * Copyright © 2018 Atomist, Inc.
  *

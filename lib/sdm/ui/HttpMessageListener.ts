@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-import { SlackDestination } from "@atomist/automation-client";
-import { toStringArray } from "@atomist/automation-client/internal/util/string";
+import {
+    SlackDestination,
+    toStringArray,
+} from "@atomist/automation-client";
 import {
     PushFields,
     SdmGoalEvent,

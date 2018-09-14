@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-import { Success } from "@atomist/automation-client";
-import { replacer } from "@atomist/automation-client/internal/transport/AbstractRequestProcessor";
-import { logger, Secrets } from "@atomist/sdm";
+import {
+    replacer,
+    Secrets,
+    Success,
+} from "@atomist/automation-client";
+import {
+    logger,
+} from "@atomist/sdm";
 import * as stringify from "json-stringify-safe";
 import { EventSender } from "../../../common/invocation/EventHandlerInvocation";
 import { InvocationTarget } from "../../../common/invocation/InvocationTarget";
