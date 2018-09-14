@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CommandHandlerMetadata } from "@atomist/automation-client";
+import { CommandHandlerMetadata } from "@atomist/automation-client/lib/metadata/automationMetadata";
 import { convertToDisplayable } from "./runCommandOnColocatedAutomationClient";
 import { YargBuilder } from "./yargBuilder";
 
@@ -34,14 +34,14 @@ export function exposeParameters(hi: CommandHandlerMetadata, args: YargBuilder, 
 
 export function commandLineParametersFromCommandHandlerMetadata(hi: CommandHandlerMetadata, allowUserInput: boolean) {
     const p1 = hi.parameters
-        .map(p => {
+        .map((p: any) => {
             const nameToUse = convertToDisplayable(p.name);
             return {
                 parameterName: nameToUse,
                 required: !allowUserInput && p.required && !p.default_value,
             };
         });
-    const p2 = (hi.mapped_parameters || []).map(mp => {
+    const p2 = (hi.mapped_parameters || []).map( (mp: any) => {
         const nameToUse = convertToDisplayable(mp.name);
         return {
             parameterName: nameToUse,

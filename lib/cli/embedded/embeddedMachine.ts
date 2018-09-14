@@ -22,13 +22,15 @@ import {
 } from "@atomist/automation-client";
 import {
     ConfigureMachine,
-    configureSdm,
-    createSoftwareDeliveryMachine,
     ExtensionPack,
-    LocalSoftwareDeliveryMachineConfiguration,
     SoftwareDeliveryMachine,
     SoftwareDeliveryMachineConfiguration,
 } from "@atomist/sdm";
+import {
+    configureSdm,
+    createSoftwareDeliveryMachine,
+    LocalSoftwareDeliveryMachineConfiguration,
+} from "@atomist/sdm-core";
 import * as _ from "lodash";
 import { DefaultWorkspaceId } from "../../common/binding/defaultWorkspaceContextResolver";
 import { configureLocal } from "../../sdm/configuration/configureLocal";

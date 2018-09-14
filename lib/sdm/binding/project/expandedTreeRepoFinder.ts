@@ -15,7 +15,7 @@
  */
 
 import { RepoFinder } from "@atomist/automation-client";
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import * as fs from "fs";
 import * as _ from "lodash";
 import * as path from "path";

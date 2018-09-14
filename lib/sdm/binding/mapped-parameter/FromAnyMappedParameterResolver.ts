@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { MappedParameterDeclaration } from "@atomist/automation-client";
+import { MappedParameterDeclaration } from "@atomist/automation-client/lib/metadata/automationMetadata";
 import { MappedParameterResolver } from "./MappedParameterResolver";
 
 /**

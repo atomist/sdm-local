@@ -20,10 +20,10 @@ import {
 } from "@atomist/automation-client";
 import {
     BuildStatus,
-    BuildStatusUpdater,
     OnBuildComplete,
     SdmGoalEvent,
 } from "@atomist/sdm";
+import { BuildStatusUpdater } from "@atomist/sdm-core";
 import { LocalWorkspaceContext } from "../../common/invocation/LocalWorkspaceContext";
 import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInProcess";
 

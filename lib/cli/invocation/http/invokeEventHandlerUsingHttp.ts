@@ -16,11 +16,11 @@
 
 import {
     replacer,
+    Secrets,
     Success,
 } from "@atomist/automation-client";
 import {
     logger,
-    Secrets,
 } from "@atomist/sdm";
 import * as stringify from "json-stringify-safe";
 import { EventSender } from "../../../common/invocation/EventHandlerInvocation";

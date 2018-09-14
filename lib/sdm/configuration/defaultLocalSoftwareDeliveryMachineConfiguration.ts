@@ -22,11 +22,13 @@ import {
 } from "@atomist/automation-client";
 import {
     CachingProjectLoader,
+    SoftwareDeliveryMachineOptions,
+} from "@atomist/sdm";
+import {
     EphemeralLocalArtifactStore,
     LocalSoftwareDeliveryMachineConfiguration,
     LocalSoftwareDeliveryMachineOptions,
-    SoftwareDeliveryMachineOptions,
-} from "@atomist/sdm";
+} from "@atomist/sdm-core";
 import * as fs from "fs-extra";
 import * as _ from "lodash";
 import * as os from "os";

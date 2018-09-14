@@ -16,13 +16,13 @@
 
 import {
     CoreRepoFieldsAndChannels,
-    LocalSoftwareDeliveryMachineOptions,
     OnPushToAnyBranch,
     RemoteRepoRef,
     RepoRefResolver,
     ScmProvider,
     SdmGoalEvent,
 } from "@atomist/sdm";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
 /**

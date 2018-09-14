@@ -15,9 +15,7 @@
  */
 
 import {
-    BuildStatusUpdater,
     ExtensionPack,
-    isInLocalMode,
     metadata,
     OnPushToAnyBranch,
     ReviewComment,
@@ -25,6 +23,10 @@ import {
     SdmGoalState,
     SoftwareDeliveryMachine,
 } from "@atomist/sdm";
+import {
+    BuildStatusUpdater,
+    isInLocalMode,
+} from "@atomist/sdm-core";
 import chalk from "chalk";
 import Push = OnPushToAnyBranch.Push;
 import * as _ from "lodash";

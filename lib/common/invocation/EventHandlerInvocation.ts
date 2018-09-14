@@ -16,8 +16,8 @@
 
 import {
     HandlerResult,
-    Secret,
 } from "@atomist/automation-client";
+import { Secret } from "@atomist/automation-client/lib/internal/invoker/Payload";
 
 export interface EventHandlerInvocation {
     name: string;

@@ -16,11 +16,11 @@
 
 import {
     AutomationEventListenerSupport,
-    CommandInvocation,
     HandlerContext,
     HandlerResult,
     logger,
 } from "@atomist/automation-client";
+import { CommandInvocation } from "@atomist/automation-client/lib/internal/invoker/Payload";
 import * as serializeError from "serialize-error";
 import { CommandCompletionDestination } from "../../../common/ui/CommandCompletionDestination";
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import axios from "axios";
 import {
     AutomationClientInfo,

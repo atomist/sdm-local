@@ -15,9 +15,9 @@
  */
 
 import {
-    CommandHandlerMetadata,
     toStringArray,
 } from "@atomist/automation-client";
+import { CommandHandlerMetadata } from "@atomist/automation-client/lib/metadata/automationMetadata";
 import chalk from "chalk";
 import * as _ from "lodash";
 import { sprintf } from "sprintf-js";

@@ -24,8 +24,8 @@ import {
 import {
     PushForSdmGoal,
     SdmGoalsForCommit,
-    SdmVersionForCommit,
 } from "@atomist/sdm";
+import { SdmVersionForCommit } from "@atomist/sdm-core";
 
 /**
  * Local graph client. Returns empty result set or throws an

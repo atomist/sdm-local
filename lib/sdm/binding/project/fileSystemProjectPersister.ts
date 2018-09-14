@@ -21,11 +21,11 @@ import {
 import {
     GitProject,
     LocalProject,
-    LocalSoftwareDeliveryMachineOptions,
     logger,
     NodeFsLocalProject,
     RepoRef,
 } from "@atomist/sdm";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import * as fs from "fs-extra";
 import * as path from "path";
 import { AutomationClientFinder } from "../../../cli/invocation/http/AutomationClientFinder";

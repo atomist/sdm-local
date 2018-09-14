@@ -27,7 +27,7 @@ import {
 import {
     isInLocalMode,
     LocalSoftwareDeliveryMachineConfiguration,
-} from "@atomist/sdm";
+} from "@atomist/sdm-core";
 import * as assert from "assert";
 import * as exp from "express";
 import * as exphbs from "express-handlebars";

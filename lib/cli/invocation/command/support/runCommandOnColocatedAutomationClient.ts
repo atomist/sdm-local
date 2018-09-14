@@ -15,16 +15,15 @@
  */
 
 import {
-    Arg,
-    CommandHandlerMetadata,
     HandlerResult,
     logger,
-    Parameter,
 } from "@atomist/automation-client";
+import { Arg } from "@atomist/automation-client/lib/internal/invoker/Payload";
+import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/lib/metadata/automationMetadata";
 import {
-    LocalSoftwareDeliveryMachineOptions,
     RepoId,
 } from "@atomist/sdm";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import chalk from "chalk";
 import * as inquirer from "inquirer";
 import * as _ from "lodash";

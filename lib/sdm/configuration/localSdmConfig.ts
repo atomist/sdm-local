@@ -16,11 +16,11 @@
 
 import {
     ExtensionPack,
-    isInLocalMode,
     metadata,
     onAnyPush,
     SoftwareDeliveryMachine,
 } from "@atomist/sdm";
+import { isInLocalMode } from "@atomist/sdm-core";
 
 /**
  * Extension pack that configures SDM for local

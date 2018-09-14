@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-import { CommandHandlerMetadata } from "@atomist/automation-client";
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm";
+import { CommandHandlerMetadata } from "@atomist/automation-client/lib/metadata/automationMetadata";
+import {
+    LocalSoftwareDeliveryMachineOptions,
+} from "@atomist/sdm-core";
 import { AutomationClientConnectionRequest } from "./invocation/http/AutomationClientConnectionRequest";
 
 /**
