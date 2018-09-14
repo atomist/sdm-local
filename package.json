@@ -1,7 +1,7 @@
 {
   "name": "@atomist/sdm-local",
   "version": "1.0.0",
-  "description": "Atomist Local Software Delivery Machine",
+  "description": "Atomist Software Delivery Machine - Local",
   "author": {
     "name": "Atomist",
     "email": "support@atomist.com",
