@@ -112,7 +112,7 @@ function changeToPushToAtomistBranch(localConfig: LocalSoftwareDeliveryMachineOp
                     await runAndLog(`git merge ${newBranch}`, { cwd: originalRepoDir });
                 }
             }
-            return p
+            return p;
         };
         return p;
     };
