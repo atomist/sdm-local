@@ -18,7 +18,7 @@ import {
     configureLogging,
     logger,
     LoggingConfiguration,
-    NoLogging,
+    PlainLogging,
 } from "@atomist/automation-client";
 import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";
 import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSystemProjectLoader";
@@ -39,7 +39,7 @@ import {
 
 const loggingConfiguration: LoggingConfiguration = {
     console: {
-        ...NoLogging.console,
+        ...PlainLogging.console,
         level: "warn",
     },
     file: {
@@ -92,9 +92,9 @@ async function sendTo(automationClientInfo: AutomationClientInfo, invocation: Gi
             infoMessage(renderEventDispatch(automationClientInfo, invocation));
         }
         return logExceptionsToConsole(() =>
-                handleGitHookEvent(
-                    automationClientInfo.location,
-                    automationClientInfo.localConfig, invocation),
+            handleGitHookEvent(
+                automationClientInfo.location,
+                automationClientInfo.localConfig, invocation),
             true,
         );
     }
