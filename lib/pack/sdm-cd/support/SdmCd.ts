@@ -22,7 +22,10 @@ import {
 } from "@atomist/sdm";
 import { IsInLocalMode } from "@atomist/sdm-core";
 import { IsSdm } from "./IsSdm";
-import { executeLocalSdmDelivery, LocalSdmDeliveryGoal } from "./LocalSdmDeliveryGoal";
+import {
+    executeLocalSdmDelivery,
+    LocalSdmDeliveryGoal,
+} from "./LocalSdmDeliveryGoal";
 import { SdmDeliveryOptions } from "./SdmDeliveryOptions";
 
 /**

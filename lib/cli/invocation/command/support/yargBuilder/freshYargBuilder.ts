@@ -17,7 +17,14 @@
 import * as _ from "lodash";
 import * as yargs from "yargs";
 import { combine } from "./combining";
-import { CommandLineParameter, isYargCommand, ParameterOptions, SupportedSubsetOfYargsCommandMethod, YargBuilder, YargCommand } from "./interfaces";
+import {
+    CommandLineParameter,
+    isYargCommand,
+    ParameterOptions,
+    SupportedSubsetOfYargsCommandMethod,
+    YargBuilder,
+    YargCommand,
+} from "./interfaces";
 import { imitateYargsCommandMethod } from "./sentences";
 
 export function freshYargBuilder(opts: { epilogForHelpMessage?: string } = {}): YargBuilder {

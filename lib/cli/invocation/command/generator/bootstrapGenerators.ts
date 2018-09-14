@@ -20,7 +20,10 @@ import {
     RemoteRepoRef,
 } from "@atomist/automation-client";
 import { GeneratorRegistration } from "@atomist/sdm";
-import { NodeProjectCreationParameters, NodeProjectCreationParametersDefinition } from "./NodeProjectCreationParameters";
+import {
+    NodeProjectCreationParameters,
+    NodeProjectCreationParametersDefinition,
+} from "./NodeProjectCreationParameters";
 import { UpdatePackageJsonIdentification } from "./updatePackageJsonIdentification";
 
 /**

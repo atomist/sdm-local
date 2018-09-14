@@ -21,7 +21,10 @@ import { logExceptionsToConsole } from "../../ui/consoleOutput";
 import { ShowDescriptionListener } from "./support/commandInvocationListeners";
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
-import { promptForAChoiceWhenNecessary, YargBuilder } from "./support/yargBuilder";
+import {
+    promptForAChoiceWhenNecessary,
+    YargBuilder,
+} from "./support/yargBuilder";
 
 /**
  * Add commands by name from the given client

@@ -22,7 +22,10 @@ import {
     GoalInvocation,
     logger,
 } from "@atomist/sdm";
-import { ChildProcess, spawn } from "child_process";
+import {
+    ChildProcess,
+    spawn,
+} from "child_process";
 import { AutomationClientInfo } from "../../../cli/AutomationClientInfo";
 import { fetchMetadataFromAutomationClient } from "../../../cli/invocation/http/fetchMetadataFromAutomationClient";
 import { renderClientInfo } from "../../../cli/ui/renderClientInfo";

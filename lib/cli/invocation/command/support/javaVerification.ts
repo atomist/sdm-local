@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
-import { Integer, Microgrammar } from "@atomist/microgrammar";
+import {
+    Integer,
+    Microgrammar,
+} from "@atomist/microgrammar";
 import { infoMessage } from "../../../ui/consoleOutput";
-import { CommandResult, verifyCommandResult } from "./verifyCommandResult";
+import {
+    CommandResult,
+    verifyCommandResult,
+} from "./verifyCommandResult";
 
 /**
  * Verify that the correct version of the JDK is present

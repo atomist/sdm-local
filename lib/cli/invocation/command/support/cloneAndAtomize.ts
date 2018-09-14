@@ -18,7 +18,10 @@ import { exec } from "child_process";
 import * as fs from "fs";
 import { promisify } from "util";
 import { LocalWorkspaceContext } from "../../../../common/invocation/LocalWorkspaceContext";
-import { sendChannelLinkEvent, sendRepoOnboardingEvent } from "../../../../sdm/binding/event/repoOnboardingEvents";
+import {
+    sendChannelLinkEvent,
+    sendRepoOnboardingEvent,
+} from "../../../../sdm/binding/event/repoOnboardingEvents";
 import { AutomationClientInfo } from "../../../AutomationClientInfo";
 import { addGitHooks } from "../../../setup/addGitHooks";
 import { infoMessage } from "../../../ui/consoleOutput";
