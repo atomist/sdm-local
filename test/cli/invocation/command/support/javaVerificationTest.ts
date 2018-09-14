@@ -15,7 +15,10 @@
  */
 
 import * as assert from "assert";
-import { verifyJavaTest, verifyMavenTest } from "../../../../../lib/cli/invocation/command/support/javaVerification";
+import {
+    verifyJavaTest,
+    verifyMavenTest,
+} from "../../../../../lib/cli/invocation/command/support/javaVerification";
 
 describe("javaVerification", () => {
 

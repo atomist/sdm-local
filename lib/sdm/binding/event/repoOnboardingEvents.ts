@@ -16,7 +16,10 @@
 
 import { RepoId } from "@atomist/automation-client";
 import { OnRepoCreation } from "@atomist/sdm";
-import { OnChannelLink, OnRepoOnboarded } from "@atomist/sdm-core";
+import {
+    OnChannelLink,
+    OnRepoOnboarded,
+} from "@atomist/sdm-core";
 import { repoFieldsFromProject } from "../../../common/git/pushFromLastCommit";
 import { EventSender } from "../../../common/invocation/EventHandlerInvocation";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";

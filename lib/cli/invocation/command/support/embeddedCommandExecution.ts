@@ -20,9 +20,16 @@ import {
     toParametersListing,
 } from "@atomist/sdm";
 import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
-import { errorMessage, infoMessage, logExceptionsToConsole } from "../../../ui/consoleOutput";
+import {
+    errorMessage,
+    infoMessage,
+    logExceptionsToConsole,
+} from "../../../ui/consoleOutput";
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
-import { CommandInvocationListener, runCommandOnColocatedAutomationClient } from "./runCommandOnColocatedAutomationClient";
+import {
+    CommandInvocationListener,
+    runCommandOnColocatedAutomationClient,
+} from "./runCommandOnColocatedAutomationClient";
 import { YargBuilder } from "./yargBuilder";
 import { Arguments } from "./yargBuilder/interfaces";
 

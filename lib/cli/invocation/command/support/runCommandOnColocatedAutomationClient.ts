@@ -19,7 +19,10 @@ import {
     logger,
 } from "@atomist/automation-client";
 import { Arg } from "@atomist/automation-client/lib/internal/invoker/Payload";
-import { CommandHandlerMetadata, Parameter } from "@atomist/automation-client/lib/metadata/automationMetadata";
+import {
+    CommandHandlerMetadata,
+    Parameter,
+} from "@atomist/automation-client/lib/metadata/automationMetadata";
 import {
     RepoId,
 } from "@atomist/sdm";
@@ -37,7 +40,10 @@ import { expandedTreeRepoFinder } from "../../../../sdm/binding/project/expanded
 import { parseOwnerAndRepo } from "../../../../sdm/binding/project/expandedTreeUtils";
 import { defaultLocalSoftwareDeliveryMachineConfiguration } from "../../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
 import { HttpMessageListener } from "../../../../sdm/ui/HttpMessageListener";
-import { infoMessage, warningMessage } from "../../../ui/consoleOutput";
+import {
+    infoMessage,
+    warningMessage,
+} from "../../../ui/consoleOutput";
 import { AutomationClientConnectionRequest } from "../../http/AutomationClientConnectionRequest";
 import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUsingHttp";
 import { newCliCorrelationId } from "../../http/support/newCorrelationId";

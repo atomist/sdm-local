@@ -15,7 +15,13 @@ import { ConflictResolution } from "./interfaces";
  * limitations under the License.
  */
 
-import { Arguments, Choices, Options as ParameterOptions, PositionalOptions, PositionalOptionsType } from "yargs";
+import {
+    Arguments,
+    Choices,
+    Options as ParameterOptions,
+    PositionalOptions,
+    PositionalOptionsType,
+} from "yargs";
 import * as yargs from "yargs";
 import { CommandLine } from "./commandLine";
 import { HandleInstructions } from "./handleInstruction";

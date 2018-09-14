@@ -17,11 +17,29 @@
 import * as _ from "lodash";
 import * as yargs from "yargs";
 import { combine } from "./combining";
-import { commandLineAlias, dropFirstWord, parseCommandLine, verifyOneWord } from "./commandLine";
-import { doesSomething, DoNothing, handleFunctionFromInstructions, HandleInstructions, handleInstructionsFromFunction } from "./handleInstruction";
 import {
-    CommandLineParameter, ConflictResolution, isYargCommand,
-    ParameterOptions, SupportedSubsetOfYargsCommandMethod, YargBuilder, YargCommand, YargCommandWordSpec, YargRunnableCommandSpec,
+    commandLineAlias,
+    dropFirstWord,
+    parseCommandLine,
+    verifyOneWord,
+} from "./commandLine";
+import {
+    doesSomething,
+    DoNothing,
+    handleFunctionFromInstructions,
+    HandleInstructions,
+    handleInstructionsFromFunction,
+} from "./handleInstruction";
+import {
+    CommandLineParameter,
+    ConflictResolution,
+    isYargCommand,
+    ParameterOptions,
+    SupportedSubsetOfYargsCommandMethod,
+    YargBuilder,
+    YargCommand,
+    YargCommandWordSpec,
+    YargRunnableCommandSpec,
 } from "./interfaces";
 import { positionalCommand } from "./positional";
 

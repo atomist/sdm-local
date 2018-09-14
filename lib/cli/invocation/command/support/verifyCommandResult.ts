@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { exec, ExecOptions } from "child_process";
+import {
+    exec,
+    ExecOptions,
+} from "child_process";
 import { promisify } from "util";
 
 // TODO this file should move to sdm, allowing it to be used in extension packs etc.

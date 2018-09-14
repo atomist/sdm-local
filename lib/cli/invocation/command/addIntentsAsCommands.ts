@@ -26,7 +26,10 @@ import {
 } from "./support/commandInvocationListeners";
 import { commandLineParametersFromCommandHandlerMetadata } from "./support/exposeParameters";
 import { runCommandOnColocatedAutomationClient } from "./support/runCommandOnColocatedAutomationClient";
-import { promptForAChoiceWhenNecessary, YargBuilder } from "./support/yargBuilder";
+import {
+    promptForAChoiceWhenNecessary,
+    YargBuilder,
+} from "./support/yargBuilder";
 
 /**
  * Add commands for all intents

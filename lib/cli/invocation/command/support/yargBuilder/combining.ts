@@ -16,9 +16,17 @@
 
 import * as inquirer from "inquirer";
 import * as _ from "lodash";
-import { handleFunctionFromInstructions, HandleInstructions } from "./handleInstruction";
 import {
-    BuildYargs, dropWithWarningsInHelp, isPromptForChoice, ResolveConflictWithPrompt, YargCommand, YargRunnableCommandSpec,
+    handleFunctionFromInstructions,
+    HandleInstructions,
+} from "./handleInstruction";
+import {
+    BuildYargs,
+    dropWithWarningsInHelp,
+    isPromptForChoice,
+    ResolveConflictWithPrompt,
+    YargCommand,
+    YargRunnableCommandSpec,
 } from "./interfaces";
 import {
     hasPositionalArguments,

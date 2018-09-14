@@ -15,8 +15,15 @@
  */
 
 import * as yargs from "yargs";
-import { CommandLine, parseCommandLine, verifyOneWord } from "./commandLine";
-import { handleFunctionFromInstructions, HandleInstructions } from "./handleInstruction";
+import {
+    CommandLine,
+    parseCommandLine,
+    verifyOneWord,
+} from "./commandLine";
+import {
+    handleFunctionFromInstructions,
+    HandleInstructions,
+} from "./handleInstruction";
 import {
     CommandLineParameter,
     ConflictResolution,
