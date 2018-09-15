@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Use 'warn' log level in embedded SDM. [#176](https://github.com/atomist/sdm-local/issues/176)
 -   Error reporting. [#170](https://github.com/atomist/sdm-local/issues/170)
 
+### Removed
+
+-   Remove sample-sdm from create sdm. [#189](https://github.com/atomist/sdm-local/issues/189)
+
 ### Fixed
 
 -   Local mode doesn’t set a default workspaceId. [#172](https://github.com/atomist/sdm-local/issues/172)
