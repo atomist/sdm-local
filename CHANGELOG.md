@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   Do not include SDMs not in local mode. [#180](https://github.com/atomist/sdm-local/issues/180)
+-   Make it really easy to create an extension pack. [#131](https://github.com/atomist/sdm-local/issues/131)
 
 ### Changed
 
