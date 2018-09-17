@@ -374,7 +374,7 @@ echo "Goodbye, World!"
 
 sha=\`git rev-parse HEAD\`
 branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook ${h} "$PWD" "$branch" "$sha" &
+atomist git-hook ${h} "$PWD" "$branch" "$sha"
 
 ######### Atomist end #########
 `;
@@ -391,7 +391,7 @@ atomist git-hook ${h} "$PWD" "$branch" "$sha" &
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
 read oldrev newrev refname
-atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
+atomist git-hook post-receive "$PWD" "$refname" "$newrev"
 
 ######### Atomist end #########
 `;
@@ -418,7 +418,7 @@ echo ${h}
 
 sha=\`git rev-parse HEAD\`
 branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook ${h} "$PWD" "$branch" "$sha" &
+atomist git-hook ${h} "$PWD" "$branch" "$sha"
 
 ######### Atomist end #########
 `;
@@ -436,7 +436,7 @@ echo ${h}
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
 read oldrev newrev refname
-atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
+atomist git-hook post-receive "$PWD" "$refname" "$newrev"
 
 ######### Atomist end #########
 `;
@@ -508,7 +508,7 @@ atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
 
 sha=\`git rev-parse HEAD\`
 branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook ${h} "$PWD" "$branch" "$sha" &
+atomist git-hook ${h} "$PWD" "$branch" "$sha"
 
 ######### Atomist end #########
 `;
@@ -525,7 +525,7 @@ atomist git-hook ${h} "$PWD" "$branch" "$sha" &
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
 read oldrev newrev refname
-atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
+atomist git-hook post-receive "$PWD" "$refname" "$newrev"
 
 ######### Atomist end #########
 `;
@@ -557,7 +557,7 @@ echo some non-Atomist-y ${h}
 
 sha=\`git rev-parse HEAD\`
 branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook ${h} "$PWD" "$branch" "$sha" &
+atomist git-hook ${h} "$PWD" "$branch" "$sha"
 
 ######### Atomist end #########
 `;
@@ -575,7 +575,7 @@ echo some non-Atomist-y ${h}
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
 read oldrev newrev refname
-atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
+atomist git-hook post-receive "$PWD" "$refname" "$newrev"
 
 ######### Atomist end #########
 `;
