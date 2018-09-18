@@ -22,6 +22,7 @@ import {
 import {
     LocalProject,
 } from "@atomist/sdm";
+import * as os from "os";
 import * as path from "path";
 
 import {
@@ -359,59 +360,174 @@ echo "Goodbye, World!"
 
     describe("addGitHooksToProject", () => {
 
-        it("should add hooks to project", async () => {
-            const p = InMemoryProject.of();
-            (p as any).baseDir = process.cwd();
-            (p as any).makeExecutable = (pth: string) => Promise.resolve(p);
-            await addGitHooksToProject(p as any as LocalProject);
-            for (const h of ["post-commit", "post-merge"]) {
-                const s = path.join(".git", "hooks", h);
-                const f = await p.findFile(s);
-                const n = await f.getContent();
-                const e = `#!/bin/sh
+        describe("win32", () => {
+
+            // tslint:disable:no-invalid-this
+            before(function() {
+                this.originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
+                Object.defineProperty(os, "platform", {
+                    value: () => "win32",
+                });
+            });
+            after(function() {
+                Object.defineProperty(os, "platform", this.originalOsPlatform);
+            });
+            // tslint:enable:no-invalid-this
+
+            it("should add hooks to project", async () => {
+                const p = InMemoryProject.of();
+                (p as any).baseDir = process.cwd();
+                (p as any).makeExecutable = (pth: string) => Promise.resolve(p);
+                await addGitHooksToProject(p as any as LocalProject);
+                for (const h of ["post-commit", "post-merge"]) {
+                    const s = path.join(".git", "hooks", h);
+                    const f = await p.findFile(s);
+                    const n = await f.getContent();
+                    const e = `#!/bin/sh
 
 ######## Atomist start ########
 
 sha=\`git rev-parse HEAD\`
 branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook ${h} "$PWD" "$branch" "$sha" &
+atomist git-hook ${h} "$PWD" "$branch" "$sha"
 
 ######### Atomist end #########
 `;
-                assert.strictEqual(n, e);
-            }
-            for (const h of ["post-receive"]) {
-                const s = path.join(".git", "hooks", h);
-                const f = await p.findFile(s);
-                const n = await f.getContent();
-                const e = `#!/bin/sh
+                    assert.strictEqual(n, e);
+                }
+                for (const h of ["post-receive"]) {
+                    const s = path.join(".git", "hooks", h);
+                    const f = await p.findFile(s);
+                    const n = await f.getContent();
+                    const e = `#!/bin/sh
 
 ######## Atomist start ########
 
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
 read oldrev newrev refname
-atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
+atomist git-hook post-receive "$PWD" "$refname" "$newrev"
 
 ######### Atomist end #########
 `;
-                assert.strictEqual(n, e);
-            }
+                    assert.strictEqual(n, e);
+                }
+            });
+
+            it("should add content to project hooks", async () => {
+                const p = InMemoryProject.of(...hooks.map(h => ({
+                    path: path.join(".git", "hooks", h),
+                    content: `#!/bin/sh\necho ${h}\n`,
+                })));
+                (p as any).baseDir = process.cwd();
+                (p as any).makeExecutable = (pth: string) => Promise.resolve(p);
+                await addGitHooksToProject(p as any as LocalProject);
+                for (const h of ["post-commit", "post-merge"]) {
+                    const s = path.join(".git", "hooks", h);
+                    const f = await p.findFile(s);
+                    const n = await f.getContent();
+                    const e = `#!/bin/sh
+echo ${h}
+
+######## Atomist start ########
+
+sha=\`git rev-parse HEAD\`
+branch=\`git rev-parse --abbrev-ref HEAD\`
+atomist git-hook ${h} "$PWD" "$branch" "$sha"
+
+######### Atomist end #########
+`;
+                    assert.strictEqual(n, e);
+                }
+                for (const h of ["post-receive"]) {
+                    const s = path.join(".git", "hooks", h);
+                    const f = await p.findFile(s);
+                    const n = await f.getContent();
+                    const e = `#!/bin/sh
+echo ${h}
+
+######## Atomist start ########
+
+ATOMIST_GITHOOK_VERBOSE=true
+export ATOMIST_GITHOOK_VERBOSE
+read oldrev newrev refname
+atomist git-hook post-receive "$PWD" "$refname" "$newrev"
+
+######### Atomist end #########
+`;
+                    assert.strictEqual(n, e);
+                }
+            });
+
         });
 
-        it("should add content to project hooks", async () => {
-            const p = InMemoryProject.of(...hooks.map(h => ({
-                path: path.join(".git", "hooks", h),
-                content: `#!/bin/sh\necho ${h}\n`,
-            })));
-            (p as any).baseDir = process.cwd();
-            (p as any).makeExecutable = (pth: string) => Promise.resolve(p);
-            await addGitHooksToProject(p as any as LocalProject);
-            for (const h of ["post-commit", "post-merge"]) {
-                const s = path.join(".git", "hooks", h);
-                const f = await p.findFile(s);
-                const n = await f.getContent();
-                const e = `#!/bin/sh
+        describe("posix", () => {
+
+            // tslint:disable:no-invalid-this
+            before(function() {
+                this.originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
+                Object.defineProperty(os, "platform", {
+                    value: () => "darwin",
+                });
+            });
+            after(function() {
+                Object.defineProperty(os, "platform", this.originalOsPlatform);
+            });
+            // tslint:enable:no-invalid-this
+
+            it("should add hooks to project", async () => {
+                const p = InMemoryProject.of();
+                (p as any).baseDir = process.cwd();
+                (p as any).makeExecutable = (pth: string) => Promise.resolve(p);
+                await addGitHooksToProject(p as any as LocalProject);
+                for (const h of ["post-commit", "post-merge"]) {
+                    const s = path.join(".git", "hooks", h);
+                    const f = await p.findFile(s);
+                    const n = await f.getContent();
+                    const e = `#!/bin/sh
+
+######## Atomist start ########
+
+sha=\`git rev-parse HEAD\`
+branch=\`git rev-parse --abbrev-ref HEAD\`
+atomist git-hook ${h} "$PWD" "$branch" "$sha" &
+
+######### Atomist end #########
+`;
+                    assert.strictEqual(n, e);
+                }
+                for (const h of ["post-receive"]) {
+                    const s = path.join(".git", "hooks", h);
+                    const f = await p.findFile(s);
+                    const n = await f.getContent();
+                    const e = `#!/bin/sh
+
+######## Atomist start ########
+
+ATOMIST_GITHOOK_VERBOSE=true
+export ATOMIST_GITHOOK_VERBOSE
+read oldrev newrev refname
+atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
+
+######### Atomist end #########
+`;
+                    assert.strictEqual(n, e);
+                }
+            });
+
+            it("should add content to project hooks", async () => {
+                const p = InMemoryProject.of(...hooks.map(h => ({
+                    path: path.join(".git", "hooks", h),
+                    content: `#!/bin/sh\necho ${h}\n`,
+                })));
+                (p as any).baseDir = process.cwd();
+                (p as any).makeExecutable = (pth: string) => Promise.resolve(p);
+                await addGitHooksToProject(p as any as LocalProject);
+                for (const h of ["post-commit", "post-merge"]) {
+                    const s = path.join(".git", "hooks", h);
+                    const f = await p.findFile(s);
+                    const n = await f.getContent();
+                    const e = `#!/bin/sh
 echo ${h}
 
 ######## Atomist start ########
@@ -422,13 +538,13 @@ atomist git-hook ${h} "$PWD" "$branch" "$sha" &
 
 ######### Atomist end #########
 `;
-                assert.strictEqual(n, e);
-            }
-            for (const h of ["post-receive"]) {
-                const s = path.join(".git", "hooks", h);
-                const f = await p.findFile(s);
-                const n = await f.getContent();
-                const e = `#!/bin/sh
+                    assert.strictEqual(n, e);
+                }
+                for (const h of ["post-receive"]) {
+                    const s = path.join(".git", "hooks", h);
+                    const f = await p.findFile(s);
+                    const n = await f.getContent();
+                    const e = `#!/bin/sh
 echo ${h}
 
 ######## Atomist start ########
@@ -440,8 +556,10 @@ atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
 
 ######### Atomist end #########
 `;
-                assert.strictEqual(n, e);
-            }
+                    assert.strictEqual(n, e);
+                }
+            });
+
         });
 
     });
@@ -492,6 +610,18 @@ atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
     });
 
     describe("git hooks round trip", () => {
+
+        // tslint:disable:no-invalid-this
+        before(function() {
+            this.originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
+            Object.defineProperty(os, "platform", {
+                value: () => "freebsd",
+            });
+        });
+        after(function() {
+            Object.defineProperty(os, "platform", this.originalOsPlatform);
+        });
+        // tslint:enable:no-invalid-this
 
         it("should add and remove project hooks", async () => {
             const p = InMemoryProject.of();

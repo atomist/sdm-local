@@ -19,6 +19,7 @@ import {
     NodeFsLocalProject,
 } from "@atomist/sdm";
 import * as fs from "fs";
+import * as os from "os";
 import * as path from "path";
 
 import { HookEvent } from "../invocation/git/handleGitHookEvent";
@@ -124,22 +125,23 @@ export async function deatomizeScript(p: LocalProject, scriptPath: string): Prom
  * @return {{"pre-receive": string}}
  */
 function scriptFragments(): { [key: string]: string } {
+    const bg = (os.platform() === "win32") ? "" : " &";
     return {
         "post-receive": `
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
 read oldrev newrev refname
-atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
+atomist git-hook post-receive "$PWD" "$refname" "$newrev"${bg}
 `,
         "post-commit": `
 sha=\`git rev-parse HEAD\`
 branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook post-commit "$PWD" "$branch" "$sha" &
+atomist git-hook post-commit "$PWD" "$branch" "$sha"${bg}
 `,
         "post-merge": `
 sha=\`git rev-parse HEAD\`
 branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook post-merge "$PWD" "$branch" "$sha" &
+atomist git-hook post-merge "$PWD" "$branch" "$sha"${bg}
 `,
     };
 }
