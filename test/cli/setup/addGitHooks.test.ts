@@ -362,17 +362,14 @@ echo "Goodbye, World!"
 
         describe("win32", () => {
 
-            // tslint:disable:no-invalid-this
-            before(function() {
-                this.originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
-                Object.defineProperty(os, "platform", {
-                    value: () => "win32",
-                });
+            let originalOsPlatform: any;
+            before(() => {
+                originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
+                Object.defineProperty(os, "platform", { value: () => "win32" });
             });
-            after(function() {
-                Object.defineProperty(os, "platform", this.originalOsPlatform);
+            after(() => {
+                Object.defineProperty(os, "platform", originalOsPlatform);
             });
-            // tslint:enable:no-invalid-this
 
             it("should add hooks to project", async () => {
                 const p = InMemoryProject.of();
@@ -387,9 +384,7 @@ echo "Goodbye, World!"
 
 ######## Atomist start ########
 
-sha=\`git rev-parse HEAD\`
-branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook ${h} "$PWD" "$branch" "$sha"
+atomist git-hook ${h}
 
 ######### Atomist end #########
 `;
@@ -405,8 +400,7 @@ atomist git-hook ${h} "$PWD" "$branch" "$sha"
 
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
-read oldrev newrev refname
-atomist git-hook post-receive "$PWD" "$refname" "$newrev"
+atomist git-hook ${h}
 
 ######### Atomist end #########
 `;
@@ -431,9 +425,7 @@ echo ${h}
 
 ######## Atomist start ########
 
-sha=\`git rev-parse HEAD\`
-branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook ${h} "$PWD" "$branch" "$sha"
+atomist git-hook ${h}
 
 ######### Atomist end #########
 `;
@@ -450,8 +442,7 @@ echo ${h}
 
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
-read oldrev newrev refname
-atomist git-hook post-receive "$PWD" "$refname" "$newrev"
+atomist git-hook ${h}
 
 ######### Atomist end #########
 `;
@@ -463,17 +454,14 @@ atomist git-hook post-receive "$PWD" "$refname" "$newrev"
 
         describe("posix", () => {
 
-            // tslint:disable:no-invalid-this
-            before(function() {
-                this.originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
-                Object.defineProperty(os, "platform", {
-                    value: () => "darwin",
-                });
+            let originalOsPlatform: any;
+            before(() => {
+                originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
+                Object.defineProperty(os, "platform", { value: () => "darwin" });
             });
-            after(function() {
-                Object.defineProperty(os, "platform", this.originalOsPlatform);
+            after(() => {
+                Object.defineProperty(os, "platform", originalOsPlatform);
             });
-            // tslint:enable:no-invalid-this
 
             it("should add hooks to project", async () => {
                 const p = InMemoryProject.of();
@@ -488,9 +476,7 @@ atomist git-hook post-receive "$PWD" "$refname" "$newrev"
 
 ######## Atomist start ########
 
-sha=\`git rev-parse HEAD\`
-branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook ${h} "$PWD" "$branch" "$sha" &
+atomist git-hook ${h} &
 
 ######### Atomist end #########
 `;
@@ -506,8 +492,7 @@ atomist git-hook ${h} "$PWD" "$branch" "$sha" &
 
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
-read oldrev newrev refname
-atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
+atomist git-hook ${h} &
 
 ######### Atomist end #########
 `;
@@ -532,9 +517,7 @@ echo ${h}
 
 ######## Atomist start ########
 
-sha=\`git rev-parse HEAD\`
-branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook ${h} "$PWD" "$branch" "$sha" &
+atomist git-hook ${h} &
 
 ######### Atomist end #########
 `;
@@ -551,8 +534,7 @@ echo ${h}
 
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
-read oldrev newrev refname
-atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
+atomist git-hook ${h} &
 
 ######### Atomist end #########
 `;
@@ -611,17 +593,14 @@ atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
 
     describe("git hooks round trip", () => {
 
-        // tslint:disable:no-invalid-this
-        before(function() {
-            this.originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
-            Object.defineProperty(os, "platform", {
-                value: () => "freebsd",
-            });
+        let originalOsPlatform: any;
+        before(() => {
+            originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
+            Object.defineProperty(os, "platform", { value: () => "freebsd" });
         });
-        after(function() {
-            Object.defineProperty(os, "platform", this.originalOsPlatform);
+        after(() => {
+            Object.defineProperty(os, "platform", originalOsPlatform);
         });
-        // tslint:enable:no-invalid-this
 
         it("should add and remove project hooks", async () => {
             const p = InMemoryProject.of();
@@ -636,9 +615,7 @@ atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
 
 ######## Atomist start ########
 
-sha=\`git rev-parse HEAD\`
-branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook ${h} "$PWD" "$branch" "$sha" &
+atomist git-hook ${h} &
 
 ######### Atomist end #########
 `;
@@ -654,8 +631,7 @@ atomist git-hook ${h} "$PWD" "$branch" "$sha" &
 
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
-read oldrev newrev refname
-atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
+atomist git-hook ${h} &
 
 ######### Atomist end #########
 `;
@@ -685,9 +661,7 @@ echo some non-Atomist-y ${h}
 
 ######## Atomist start ########
 
-sha=\`git rev-parse HEAD\`
-branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook ${h} "$PWD" "$branch" "$sha" &
+atomist git-hook ${h} &
 
 ######### Atomist end #########
 `;
@@ -704,8 +678,7 @@ echo some non-Atomist-y ${h}
 
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
-read oldrev newrev refname
-atomist git-hook post-receive "$PWD" "$refname" "$newrev" &
+atomist git-hook ${h} &
 
 ######### Atomist end #########
 `;

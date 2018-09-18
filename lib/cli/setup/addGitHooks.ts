@@ -44,7 +44,7 @@ export async function addGitHooks(projectBaseDir: string) {
 
 export async function addGitHooksToProject(p: LocalProject) {
     for (const event of Object.values(HookEvent)) {
-        const atomistContent = scriptFragments()[event];
+        const atomistContent = scriptFragments()[event as HookEvent];
         if (!atomistContent) {
             errorMessage("Unable to create git script content for event '%s'", event);
             process.exit(1);
@@ -122,26 +122,21 @@ export async function deatomizeScript(p: LocalProject, scriptPath: string): Prom
 
 /**
  * Indexed templates fragments for use in git hooks
- * @return {{"pre-receive": string}}
+ * @return object whose keys are HookEvents and whose values are the shell script snippet for the hook
  */
-function scriptFragments(): { [key: string]: string } {
+function scriptFragments(): { [key in HookEvent]: string } {
     const bg = (os.platform() === "win32") ? "" : " &";
     return {
-        "post-receive": `
+        [HookEvent.PostReceive]: `
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
-read oldrev newrev refname
-atomist git-hook post-receive "$PWD" "$refname" "$newrev"${bg}
+atomist git-hook ${HookEvent.PostReceive}${bg}
 `,
-        "post-commit": `
-sha=\`git rev-parse HEAD\`
-branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook post-commit "$PWD" "$branch" "$sha"${bg}
+        [HookEvent.PostCommit]: `
+atomist git-hook ${HookEvent.PostCommit}${bg}
 `,
-        "post-merge": `
-sha=\`git rev-parse HEAD\`
-branch=\`git rev-parse --abbrev-ref HEAD\`
-atomist git-hook post-merge "$PWD" "$branch" "$sha"${bg}
+        [HookEvent.PostMerge]: `
+atomist git-hook ${HookEvent.PostMerge}${bg}
 `,
     };
 }

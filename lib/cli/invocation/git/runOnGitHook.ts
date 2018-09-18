@@ -58,7 +58,7 @@ const verbose = process.env.ATOMIST_GITHOOK_VERBOSE === "true";
 export async function runOnGitHook(argv: string[],
                                    clientFinder: AutomationClientFinder = defaultAutomationClientFinder(),
 ) {
-    const invocation = argsToGitHookInvocation(argv, DefaultWorkspaceContextResolver);
+    const invocation = await argsToGitHookInvocation(argv, DefaultWorkspaceContextResolver);
     if (isAtomistTemporaryBranch(invocation.branch)) {
         logger.info("Ignoring Atomist temporary branch in '%j': Atomist will eventually surface these changes to let hook react",
             invocation);

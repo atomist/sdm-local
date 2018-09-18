@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
+import { safeExec } from "@atomist/automation-client";
 import { logger } from "@atomist/sdm";
 import { WorkspaceContextResolver } from "../../common/binding/WorkspaceContextResolver";
-import { GitHookInvocation } from "../invocation/git/handleGitHookEvent";
+import {
+    GitHookInvocation,
+    HookEvent,
+} from "../invocation/git/handleGitHookEvent";
 
 /**
  * Process the given args (probably from process.argv) into a
@@ -25,28 +29,79 @@ import { GitHookInvocation } from "../invocation/git/handleGitHookEvent";
  * @param teamContextResolver resolver to find team id
  * @return {GitHookInvocation}
  */
-export function argsToGitHookInvocation(
+export async function argsToGitHookInvocation(
     argv: string[],
     teamContextResolver: WorkspaceContextResolver,
-): GitHookInvocation {
+): Promise<GitHookInvocation> {
 
-    if (argv.length < 6) {
+    if (argv.length < 3) {
         logger.error("Not enough arguments to run Git hook, command line: %j", argv);
         process.exit(1);
     }
-
     const args = (argv[2] === "git-hook") ? argv.slice(3) : argv.slice(2);
-    if (args.length < 4) {
+    const event = args[0];
+    if (!event) {
         logger.error("Not enough arguments to run Git hook, provided arguments: %j", args);
         process.exit(1);
     }
 
-    const event: string = args[0];
-    // We can be invoked in the .git/hooks directory or from the git binary itself
-    const baseDir = args[1].replace(/\.git(?:\/hooks)?\/?$/, "").replace(/\/$/, "");
-    const branch = args[2].replace("refs/heads/", "");
-    const sha = args[3];
+    const argBranch = args[2];
+    const argSha = args[3];
 
+    // can be invoked in the .git/hooks, .git, or project directory
+    const baseDir = cleanBaseDir(process.cwd());
     const workspaceId = teamContextResolver.workspaceContext.workspaceId;
-    return { event, baseDir, branch, sha, workspaceId };
+
+    if (argBranch && argSha) {
+        const branch = cleanBranch(argBranch);
+        const sha = argSha;
+        return { event, baseDir, branch, sha, workspaceId };
+    } else {
+        if (event === HookEvent.PostReceive) {
+            return new Promise<GitHookInvocation>((resolve, reject) => {
+                let input: string;
+                process.stdin.on("data", chunk => {
+                    input += chunk.toString();
+                });
+                process.stdin.on("end", () => {
+                    const inputWords = input.trim().split(/\s+/);
+                    // post-receive stdin: oldrev newrev refname
+                    const sha = inputWords[1];
+                    const branch = cleanBranch(inputWords[2]);
+                    resolve({ event, baseDir, branch, sha, workspaceId });
+                });
+            });
+        } else if (event === HookEvent.PostCommit || event === HookEvent.PostMerge) {
+            const gitBranchResult = await safeExec("git", ["rev-parse", "--abbrev-ref", "HEAD"], { cwd: baseDir });
+            const branch = cleanBranch(gitBranchResult.stdout.trim());
+            const gitShaResult = await safeExec("git", ["rev-parse", "HEAD"], { cwd: baseDir });
+            const sha = gitShaResult.stdout.trim();
+            return { event, baseDir, branch, sha, workspaceId };
+        } else {
+            logger.error(`Unrecognized Git hook event: ${event}`);
+            process.exit(1);
+            return Promise.reject(new Error("Will never get here but TypeScript doesn't know that"));
+        }
+    }
+}
+
+/**
+ * Determine project directory from directory which may include .git
+ * or .git/hooks.
+ *
+ * @param dir directory to clean
+ * @return base directory with any .git tail and trailing slash removed
+ */
+export function cleanBaseDir(dir: string): string {
+    return dir.replace(/(?:[\/\\]\.git(?:[\/\\]hooks)?)?[\/\\]?$/, "");
+}
+
+/**
+ * Remove leading refs/heads from Git branch.
+ *
+ * @param fullBranch complete Git branch specification
+ * @return simple branch name
+ */
+export function cleanBranch(fullBranch: string): string {
+    return fullBranch.replace(/^refs\/heads\//, "");
 }

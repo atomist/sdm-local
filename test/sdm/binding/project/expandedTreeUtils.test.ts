@@ -14,14 +14,92 @@
  * limitations under the License.
  */
 
+import * as os from "os";
 import * as path from "path";
 import * as assert from "power-assert";
 import {
+    cygwinizePath,
+    isWithin,
     parseOwnerAndRepo,
     withinExpandedTree,
-} from "../../lib/sdm/binding/project/expandedTreeUtils";
+} from "../../../../lib/sdm/binding/project/expandedTreeUtils";
 
 describe("expandedTreeUtils", () => {
+
+    describe("cygwinizePath", () => {
+
+        it("should convert an absolute windows path", () => {
+            assert(cygwinizePath("C:\\Program Files\\Java\\jdk1.8.11_131") === "/c/Program Files/Java/jdk1.8.11_131");
+        });
+
+        it("should convert a relative windows path", () => {
+            assert(cygwinizePath("Sam\\Cooke\\change") === "Sam/Cooke/change");
+        });
+
+        it("should leave a cygwin path alone", () => {
+            const p = "/c/Program Files/Java/jdk1.8.11_131";
+            assert(cygwinizePath(p) === p);
+        });
+
+    });
+
+    describe("isWithin", () => {
+
+        describe("posix", () => {
+
+            let originalOsPlatform: any;
+            before(() => {
+                originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
+                Object.defineProperty(os, "platform", { value: () => "openbsd" });
+            });
+            after(() => {
+                Object.defineProperty(os, "platform", originalOsPlatform);
+            });
+
+            it("should detect a subdirectory", () => {
+                assert(isWithin("/path/to/owner", "/path/to/owner/repo"));
+            });
+
+            it("should reject a non-subdirectory", () => {
+                assert(!isWithin("/path/to/owner", "/other/to/owner/repo"));
+            });
+
+        });
+
+        describe("win32", () => {
+
+            let originalOsPlatform: any;
+            before(() => {
+                originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
+                Object.defineProperty(os, "platform", { value: () => "win32" });
+            });
+            after(() => {
+                Object.defineProperty(os, "platform", originalOsPlatform);
+            });
+
+            it("should detect a subdirectory", () => {
+                assert(isWithin("C:\\path\\to\\owner", "C:\\path\\to\\owner\\repo"));
+            });
+
+            it("should reject a non-subdirectory", () => {
+                assert(!isWithin("C:\\path\\to\\owner", "C:\\other\\to\\owner\\repo"));
+            });
+
+            it("should detect a subdirectory ignoring case", () => {
+                assert(isWithin("C:\\Path\\to\\Owner", "C:\\path\\to\\owner\\repo"));
+            });
+
+            it("should detect crazy win32 git bash path", () => {
+                assert(isWithin("C:\\Path\\to\\Owner", "/c/Path/to/Owner/repo"));
+            });
+
+            it("should reject a cygwin non-subdirectory", () => {
+                assert(!isWithin("C:\\path\\to\\owner", "/c/other/to/owner/epo"));
+            });
+
+        });
+
+    });
 
     describe("parseOwnerAndRepo", () => {
 
@@ -75,7 +153,7 @@ describe("expandedTreeUtils", () => {
             const dirs = [path.join("a", "b"), path.join("c", "d"), path.join("a-thing", "other-thing")];
             dirs.forEach(d => {
                 const dir = path.join(base, "" + d);
-                assert(withinExpandedTree(base, dir), `${dir} is not within ${base}`);
+                assert(withinExpandedTree(base, dir), `${dir} should be within ${base}`);
             });
         });
 
@@ -84,7 +162,7 @@ describe("expandedTreeUtils", () => {
             const dirs = ["ab", "c", "d", "e", "a-thi", "", "ng", "other-thing"];
             dirs.forEach(d => {
                 const dir = path.join(base, "" + d);
-                assert(!withinExpandedTree(base, dir), `${dir} is not within ${base}`);
+                assert(!withinExpandedTree(base, dir), `${dir} should not be within ${base}`);
             });
         });
 
