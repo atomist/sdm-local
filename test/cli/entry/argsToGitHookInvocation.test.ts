@@ -127,4 +127,86 @@ describe("argsToGitHookInvocation", () => {
         assert.strictEqual(i.workspaceId, tcr.workspaceContext.workspaceId);
     });
 
+    // windows
+
+    it("should parse atomist-githook command line on win32", () => {
+        const a = ["node", "atomist-githook", "event", "dir\\ectory", "branch", "sha"];
+        const i = argsToGitHookInvocation(a, tcr);
+        assert.strictEqual(i.event, "event");
+        assert.strictEqual(i.baseDir, "dir\\ectory");
+        assert.strictEqual(i.branch, "branch");
+        assert.strictEqual(i.sha, "sha");
+        assert.strictEqual(i.workspaceId, tcr.workspaceContext.workspaceId);
+    });
+
+    it("should parse 'atomist git-hook' command line on win32", () => {
+        const a = ["node", "atomist", "git-hook", "event", "dir\\ectory", "branch", "sha"];
+        const i = argsToGitHookInvocation(a, tcr);
+        assert.strictEqual(i.event, "event");
+        assert.strictEqual(i.baseDir, "dir\\ectory");
+        assert.strictEqual(i.branch, "branch");
+        assert.strictEqual(i.sha, "sha");
+        assert.strictEqual(i.workspaceId, tcr.workspaceContext.workspaceId);
+    });
+
+    it("should strip trailing back slash from directory", () => {
+        const a = ["node", "atomist-githook", "event", "C:\\path\\to\\project\\", "branch", "sha"];
+        const i = argsToGitHookInvocation(a, tcr);
+        assert.strictEqual(i.event, "event");
+        assert.strictEqual(i.baseDir, "C:\\path\\to\\project");
+        assert.strictEqual(i.branch, "branch");
+        assert.strictEqual(i.sha, "sha");
+        assert.strictEqual(i.workspaceId, tcr.workspaceContext.workspaceId);
+    });
+
+    it("should strip trailing back slash from 'atomist git-hook' directory", () => {
+        const a = ["node", "atomist", "git-hook", "event", "C:\\path\\to\\project\\", "branch", "sha"];
+        const i = argsToGitHookInvocation(a, tcr);
+        assert.strictEqual(i.event, "event");
+        assert.strictEqual(i.baseDir, "C:\\path\\to\\project");
+        assert.strictEqual(i.branch, "branch");
+        assert.strictEqual(i.sha, "sha");
+        assert.strictEqual(i.workspaceId, tcr.workspaceContext.workspaceId);
+    });
+
+    it("should strip trailing .git from directory on win32", () => {
+        const a = ["node", "atomist-githook", "event", "C:\\path\\to\\project\\.git", "branch", "sha"];
+        const i = argsToGitHookInvocation(a, tcr);
+        assert.strictEqual(i.event, "event");
+        assert.strictEqual(i.baseDir, "C:\\path\\to\\project");
+        assert.strictEqual(i.branch, "branch");
+        assert.strictEqual(i.sha, "sha");
+        assert.strictEqual(i.workspaceId, tcr.workspaceContext.workspaceId);
+    });
+
+    it("should strip trailing .git\\ from directory", () => {
+        const a = ["node", "atomist", "git-hook", "event", "D:\\path\\to\\project\\.git\\", "branch", "sha"];
+        const i = argsToGitHookInvocation(a, tcr);
+        assert.strictEqual(i.event, "event");
+        assert.strictEqual(i.baseDir, "D:\\path\\to\\project");
+        assert.strictEqual(i.branch, "branch");
+        assert.strictEqual(i.sha, "sha");
+        assert.strictEqual(i.workspaceId, tcr.workspaceContext.workspaceId);
+    });
+
+    it("should strip trailing .git\\hooks from directory", () => {
+        const a = ["node", "atomist", "git-hook", "event", "H:\\path\\to\\project\\.git\\hooks", "branch", "sha"];
+        const i = argsToGitHookInvocation(a, tcr);
+        assert.strictEqual(i.event, "event");
+        assert.strictEqual(i.baseDir, "H:\\path\\to\\project");
+        assert.strictEqual(i.branch, "branch");
+        assert.strictEqual(i.sha, "sha");
+        assert.strictEqual(i.workspaceId, tcr.workspaceContext.workspaceId);
+    });
+
+    it("should strip trailing .git\\hooks\\ from directory", () => {
+        const a = ["node", "atomist-githook", "event", "A:\\path\\to\\project\\.git\\hooks\\", "branch", "sha"];
+        const i = argsToGitHookInvocation(a, tcr);
+        assert.strictEqual(i.event, "event");
+        assert.strictEqual(i.baseDir, "A:\\path\\to\\project");
+        assert.strictEqual(i.branch, "branch");
+        assert.strictEqual(i.sha, "sha");
+        assert.strictEqual(i.workspaceId, tcr.workspaceContext.workspaceId);
+    });
+
 });

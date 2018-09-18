@@ -77,9 +77,7 @@ export async function handlePushBasedEventOnRepo(workspaceId: string,
                                                  opts: LocalSoftwareDeliveryMachineOptions,
                                                  payload: EventOnRepo,
                                                  eventHandlerName: string,
-                                                 pushToPayload: (p: Push) => object = p => ({
-                                                     Push: [p],
-                                                 })) {
+                                                 pushToPayload: (p: Push) => object = p => ({ Push: [p] })) {
 
     // This git hook may be invoked from another git hook. This will cause these values to
     // be incorrect, so we need to delete them to have git work them out again from the directory we're passing via cwd
@@ -93,7 +91,7 @@ export async function handlePushBasedEventOnRepo(workspaceId: string,
 
     if (!isWithin(opts.repositoryOwnerParentDirectory, payload.baseDir)) {
         // I would rather send this to the atomist feed
-        return infoMessage(`SDM: skipping push because it is not inside ${opts.repositoryOwnerParentDirectory}\n`);
+        return infoMessage(`SDM: skipping push because '${payload.baseDir}' is not inside '${opts.repositoryOwnerParentDirectory}'\n`);
     }
 
     const push = await createPush(workspaceId, opts, payload);

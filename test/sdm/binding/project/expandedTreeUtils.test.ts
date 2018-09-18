@@ -14,14 +14,68 @@
  * limitations under the License.
  */
 
+import * as os from "os";
 import * as path from "path";
 import * as assert from "power-assert";
 import {
+    isWithin,
     parseOwnerAndRepo,
     withinExpandedTree,
-} from "../../lib/sdm/binding/project/expandedTreeUtils";
+} from "../../../../lib/sdm/binding/project/expandedTreeUtils";
 
 describe("expandedTreeUtils", () => {
+
+    describe("isWithin", () => {
+
+        describe("posix", () => {
+
+            // tslint:disable:no-invalid-this
+            before(function() {
+                this.originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
+                Object.defineProperty(os, "platform", { value: () => "openbsd" });
+            });
+            after(function() {
+                Object.defineProperty(os, "platform", this.originalOsPlatform);
+            });
+            // tslint:enable:no-invalid-this
+
+            it("should detect a subdirectory", () => {
+                assert(isWithin("/path/to/owner", "/path/to/owner/repo"));
+            });
+
+            it("should reject a non-subdirectory", () => {
+                assert(!isWithin("/path/to/owner", "/other/to/owner/repo"));
+            });
+
+        });
+
+        describe("win32", () => {
+
+            // tslint:disable:no-invalid-this
+            before(function() {
+                this.originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
+                Object.defineProperty(os, "platform", { value: () => "win32" });
+            });
+            after(function() {
+                Object.defineProperty(os, "platform", this.originalOsPlatform);
+            });
+            // tslint:enable:no-invalid-this
+
+            it("should detect a subdirectory", () => {
+                assert(isWithin("C:\\path\\to\\owner", "C:\\path\\to\\owner\\repo"));
+            });
+
+            it("should reject a non-subdirectory", () => {
+                assert(!isWithin("C:\\path\\to\\owner", "C:\\other\\to\\owner\\repo"));
+            });
+
+            it("should detect a subdirectory ignoring case", () => {
+                assert(isWithin("C:\\Path\\to\\Owner", "C:\\path\\to\\owner\\repo"));
+            });
+
+        });
+
+    });
 
     describe("parseOwnerAndRepo", () => {
 
@@ -75,7 +129,7 @@ describe("expandedTreeUtils", () => {
             const dirs = [path.join("a", "b"), path.join("c", "d"), path.join("a-thing", "other-thing")];
             dirs.forEach(d => {
                 const dir = path.join(base, "" + d);
-                assert(withinExpandedTree(base, dir), `${dir} is not within ${base}`);
+                assert(withinExpandedTree(base, dir), `${dir} should be within ${base}`);
             });
         });
 
@@ -84,7 +138,7 @@ describe("expandedTreeUtils", () => {
             const dirs = ["ab", "c", "d", "e", "a-thi", "", "ng", "other-thing"];
             dirs.forEach(d => {
                 const dir = path.join(base, "" + d);
-                assert(!withinExpandedTree(base, dir), `${dir} is not within ${base}`);
+                assert(!withinExpandedTree(base, dir), `${dir} should not be within ${base}`);
             });
         });
 

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+import * as os from "os";
 import * as path from "path";
+
 /**
  * Return the directory in our expanded structure for the given directory
  * @param {string} repositoryOwnerParentDirectory
@@ -38,6 +40,9 @@ function trimTrailingSlash(dir: string): string {
 
 export function isWithin(repositoryOwnerParentDirectory: string,
                          baseDir: string): boolean {
+    if (os.platform() === "win32") {
+        return baseDir.toLocaleLowerCase().startsWith(repositoryOwnerParentDirectory.toLocaleLowerCase());
+    }
     return baseDir.startsWith(repositoryOwnerParentDirectory);
 }
 

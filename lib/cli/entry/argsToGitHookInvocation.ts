@@ -43,7 +43,7 @@ export function argsToGitHookInvocation(
 
     const event: string = args[0];
     // We can be invoked in the .git/hooks directory or from the git binary itself
-    const baseDir = args[1].replace(/\.git(?:\/hooks)?\/?$/, "").replace(/\/$/, "");
+    const baseDir = args[1].replace(/\.git(?:[\/\\]hooks)?[\/\\]?$/, "").replace(/[\/\\]$/, "");
     const branch = args[2].replace("refs/heads/", "");
     const sha = args[3];
 
