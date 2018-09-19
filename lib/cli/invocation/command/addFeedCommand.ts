@@ -55,15 +55,11 @@ export function addFeedCommand(yargs: YargBuilder) {
             const channels = toStringArray(argv.channel || []);
             return logExceptionsToConsole(async () => {
                 const alreadyRunning = await isFeedListenerRunning();
-                const isGoalsOnWindows = argv.goals && os.platform() === "win32";
-                if (isGoalsOnWindows) {
-                    errorMessage("--goals is not support on your platform\n");
-                    return;
-                }
+                const goals = argv.goals && os.platform() !== "win32";
                 if (alreadyRunning) {
                     infoMessage("Lifecycle listener is already running\n");
                 } else {
-                    if (!argv.goals) {
+                    if (!goals) {
                         if (channels.length > 0) {
                             infoMessage("Atomist feed from all local SDM activity concerning channels [%s] will appear here\n",
                                 channels);
@@ -77,7 +73,7 @@ export function addFeedCommand(yargs: YargBuilder) {
                         transient: false,
                         channels,
                         verbose: argv.verbose,
-                        goals: argv.goals,
+                        goals,
                     }).start();
                 }
             },
