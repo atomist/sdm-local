@@ -38,10 +38,33 @@ function trimTrailingSlash(dir: string): string {
     return dir.replace(/[\/\\]$/, "");
 }
 
-export function isWithin(repositoryOwnerParentDirectory: string,
-                         baseDir: string): boolean {
+/**
+ * Transform native win32 path to a cygwin path.  All backslashes in
+ * the path are replaced forward slashes and any leading drive letter
+ * is incorprated into the path as a lowercased first directory of the
+ * path.
+ *
+ * @param dir original path
+ * @return cygwinized path
+ */
+export function cygwinizePath(dir: string): string {
+    return dir.replace(/\\/g, "/").replace(/^([A-Za-z]):/, (f, m) => `/${m.toLocaleLowerCase()}`);
+}
+
+/**
+ * Determine whether baseDir is under repositoryOwnerparentdirectory.
+ * On win32, the comparison is done in a case-insensitive way and also
+ * tries to deal with Cygwin-style paths.
+ *
+ * @param repositoryOwnerParentDirectory parent directory
+ * @param baseDir putative child directory
+ * @return true if baseDir is under repositoryownerparentdirectory
+ */
+export function isWithin(repositoryOwnerParentDirectory: string, baseDir: string): boolean {
     if (os.platform() === "win32") {
-        return baseDir.toLocaleLowerCase().startsWith(repositoryOwnerParentDirectory.toLocaleLowerCase());
+        const owner = repositoryOwnerParentDirectory.toLocaleLowerCase();
+        const repo = baseDir.toLocaleLowerCase();
+        return repo.startsWith(owner) || cygwinizePath(repo).startsWith(cygwinizePath(owner));
     }
     return baseDir.startsWith(repositoryOwnerParentDirectory);
 }

@@ -18,6 +18,7 @@ import * as os from "os";
 import * as path from "path";
 import * as assert from "power-assert";
 import {
+    cygwinizePath,
     isWithin,
     parseOwnerAndRepo,
     withinExpandedTree,
@@ -25,19 +26,35 @@ import {
 
 describe("expandedTreeUtils", () => {
 
+    describe("cygwinizePath", () => {
+
+        it("should convert an absolute windows path", () => {
+            assert(cygwinizePath("C:\\Program Files\\Java\\jdk1.8.11_131") === "/c/Program Files/Java/jdk1.8.11_131");
+        });
+
+        it("should convert a relative windows path", () => {
+            assert(cygwinizePath("Sam\\Cooke\\change") === "Sam/Cooke/change");
+        });
+
+        it("should leave a cygwin path alone", () => {
+            const p = "/c/Program Files/Java/jdk1.8.11_131";
+            assert(cygwinizePath(p) === p);
+        });
+
+    });
+
     describe("isWithin", () => {
 
         describe("posix", () => {
 
-            // tslint:disable:no-invalid-this
-            before(function() {
-                this.originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
+            let originalOsPlatform: any;
+            before(() => {
+                originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
                 Object.defineProperty(os, "platform", { value: () => "openbsd" });
             });
-            after(function() {
-                Object.defineProperty(os, "platform", this.originalOsPlatform);
+            after(() => {
+                Object.defineProperty(os, "platform", originalOsPlatform);
             });
-            // tslint:enable:no-invalid-this
 
             it("should detect a subdirectory", () => {
                 assert(isWithin("/path/to/owner", "/path/to/owner/repo"));
@@ -51,15 +68,14 @@ describe("expandedTreeUtils", () => {
 
         describe("win32", () => {
 
-            // tslint:disable:no-invalid-this
-            before(function() {
-                this.originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
+            let originalOsPlatform: any;
+            before(() => {
+                originalOsPlatform = Object.getOwnPropertyDescriptor(os, "platform");
                 Object.defineProperty(os, "platform", { value: () => "win32" });
             });
-            after(function() {
-                Object.defineProperty(os, "platform", this.originalOsPlatform);
+            after(() => {
+                Object.defineProperty(os, "platform", originalOsPlatform);
             });
-            // tslint:enable:no-invalid-this
 
             it("should detect a subdirectory", () => {
                 assert(isWithin("C:\\path\\to\\owner", "C:\\path\\to\\owner\\repo"));
@@ -71,6 +87,14 @@ describe("expandedTreeUtils", () => {
 
             it("should detect a subdirectory ignoring case", () => {
                 assert(isWithin("C:\\Path\\to\\Owner", "C:\\path\\to\\owner\\repo"));
+            });
+
+            it("should detect crazy win32 git bash path", () => {
+                assert(isWithin("C:\\Path\\to\\Owner", "/c/Path/to/Owner/repo"));
+            });
+
+            it("should reject a cygwin non-subdirectory", () => {
+                assert(!isWithin("C:\\path\\to\\owner", "/c/other/to/owner/epo"));
             });
 
         });
