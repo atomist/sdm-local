@@ -23,7 +23,6 @@ import {
 } from "../../../sdm/ui/HttpMessageListener";
 import {
     adviceDoc,
-    errorMessage,
     infoMessage,
     logExceptionsToConsole,
 } from "../../ui/consoleOutput";
