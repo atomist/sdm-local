@@ -240,6 +240,8 @@ function mapStateToRatio(state: SdmGoalState): number {
         case SdmGoalState.failure:
         case SdmGoalState.success:
         case SdmGoalState.skipped:
+        case SdmGoalState.stopped:
+        case SdmGoalState.canceled:
             return 1;
     }
     return 0;
@@ -257,11 +259,15 @@ function mapStateToIcon(state: SdmGoalState): string {
         case SdmGoalState.approved:
             return chalk.yellow("॥");
         case SdmGoalState.failure:
-            return chalk.red("✗");
+            return chalk.red("⨯");
         case SdmGoalState.success:
             return chalk.green("✓");
-        case SdmGoalState.skipped:
+        case SdmGoalState.stopped:
             return chalk.yellow("▪");
+        case SdmGoalState.skipped:
+            return chalk.gray("⬩");
+        case SdmGoalState.canceled:
+            return chalk.gray("⁃");
     }
     return "";
 }
@@ -282,6 +288,10 @@ function mapStateToColor(label: string, state: SdmGoalState): string {
             return chalk.green(label);
         case SdmGoalState.skipped:
             return chalk.yellow(label);
+        case SdmGoalState.skipped:
+            return chalk.gray(label);
+        case SdmGoalState.canceled:
+            return chalk.gray(label);
     }
     return "";
 }

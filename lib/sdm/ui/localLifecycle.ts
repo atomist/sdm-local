@@ -89,11 +89,23 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
         switch (gcl.completedGoal.state) {
             case SdmGoalState.success:
                 return gcl.addressChannels(`${pushIdentification(gcl.completedGoal.push)}
-${chalk.green(`✔ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${
+${chalk.green(`✓ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${
+                    gcl.completedGoal.externalUrl ? `${linkIndicator()} ${chalk.grey(gcl.completedGoal.externalUrl)}` : ""}`);
+            case SdmGoalState.stopped:
+                return gcl.addressChannels(`${pushIdentification(gcl.completedGoal.push)}
+${chalk.yellow(`▪ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${
+                    gcl.completedGoal.externalUrl ? `${linkIndicator()} ${chalk.grey(gcl.completedGoal.externalUrl)}` : ""}`);
+            case SdmGoalState.canceled:
+                return gcl.addressChannels(`${pushIdentification(gcl.completedGoal.push)}
+${chalk.gray(`⁃ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${
+                    gcl.completedGoal.externalUrl ? `${linkIndicator()} ${chalk.grey(gcl.completedGoal.externalUrl)}` : ""}`);
+            case SdmGoalState.skipped:
+                return gcl.addressChannels(`${pushIdentification(gcl.completedGoal.push)}
+${chalk.gray(`⬩ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${
                     gcl.completedGoal.externalUrl ? `${linkIndicator()} ${chalk.grey(gcl.completedGoal.externalUrl)}` : ""}`);
             case SdmGoalState.failure:
                 return gcl.addressChannels(`${pushIdentification(gcl.completedGoal.push)}
-${chalk.red(`✖︎︎ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${
+${chalk.red(`⨯ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${
                     gcl.completedGoal.url ? `${linkIndicator()} ${chalk.grey(gcl.completedGoal.url)}` : ""}${
                     gcl.completedGoal.externalUrl ? `${linkIndicator()} ${chalk.grey(gcl.completedGoal.externalUrl)}` : ""}`);
         }
@@ -112,12 +124,11 @@ ${gsi.goalSet.goals.map(g => `⏦ ${chalk.italic(goalIndentification(g as any))}
     sdm.addGoalExecutionListener(async gci => {
         switch (gci.goalEvent.state) {
             case SdmGoalState.requested:
+                return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
+${chalk.yellow(`︎▹ ${goalIndentification(gci.goalEvent)}`)} ${gci.goalEvent.description}`);
             case SdmGoalState.in_process:
                 return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
 ${chalk.yellow(`︎▸ ${goalIndentification(gci.goalEvent)}`)} ${gci.goalEvent.description}`);
-            case SdmGoalState.skipped:
-                return gci.addressChannels(`${pushIdentification(gci.goalEvent.push)}
-${chalk.yellow(`॥ ${goalIndentification(gci.goalEvent)}`)} ${gci.goalEvent.description}`);
             default:
                 break;
         }
