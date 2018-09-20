@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-local/compare/1.0.0-M.4...HEAD)
 
+### Changed
+
+-   Run git hooks in foreground on win32. [#196](https://github.com/atomist/sdm-local/pull/196)
+
+### Fixed
+
+-   Improve directory path comparisons. [#197](https://github.com/atomist/sdm-local/pull/197)
+
 ## [1.0.0-M.4](https://github.com/atomist/sdm-local/compare/1.0.0-M.3...1.0.0-M.4) - 2018-09-16
 
 ### Added
