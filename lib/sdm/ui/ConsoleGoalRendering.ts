@@ -286,7 +286,7 @@ function mapStateToColor(label: string, state: SdmGoalState): string {
             return chalk.red(label);
         case SdmGoalState.success:
             return chalk.green(label);
-        case SdmGoalState.skipped:
+        case SdmGoalState.stopped:
             return chalk.yellow(label);
         case SdmGoalState.skipped:
             return chalk.gray(label);
