@@ -15,11 +15,18 @@
  */
 
 import {
+    configurationValue,
+    getUserConfig,
+    Parameters,
+} from "@atomist/automation-client";
+import {
     CredentialsResolver,
     logger,
     ProjectOperationCredentials,
 } from "@atomist/sdm";
+import * as _ from "lodash";
 
+@Parameters()
 export class EnvironmentTokenCredentialsResolver implements CredentialsResolver {
 
     private readonly credentials: ProjectOperationCredentials;
@@ -41,6 +48,17 @@ export class EnvironmentTokenCredentialsResolver implements CredentialsResolver 
 const DefaultGitHubToken = "not.a.real.token";
 
 function credentialsFromEnvironment(): ProjectOperationCredentials {
+    try {
+        return { token: configurationValue<string>("token") };
+    } catch (err) {
+        const config = getUserConfig();
+        if (config) {
+            const token = _.get(config, "token");
+            if (token) {
+                return { token };
+            }
+        }
+    }
     const token = process.env.GITHUB_TOKEN;
     if (!token) {
         logger.info("GITHUB_TOKEN not set in environment: Defaulting to '%s'", DefaultGitHubToken);
