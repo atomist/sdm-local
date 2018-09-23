@@ -48,20 +48,24 @@ export class EnvironmentTokenCredentialsResolver implements CredentialsResolver 
 const DefaultGitHubToken = "not.a.real.token";
 
 function credentialsFromEnvironment(): ProjectOperationCredentials {
+    let token;
     try {
         return { token: configurationValue<string>("token") };
     } catch (err) {
         const config = getUserConfig();
         if (config) {
-            const token = _.get(config, "token");
+            token = _.get(config, "token");
             if (token) {
                 return { token };
             }
         }
     }
-    const token = process.env.GITHUB_TOKEN;
+
+    token = process.env.GITHUB_TOKEN;
     if (!token) {
         logger.info("GITHUB_TOKEN not set in environment: Defaulting to '%s'", DefaultGitHubToken);
+        token = DefaultGitHubToken;
+
     }
     return { token };
 }
