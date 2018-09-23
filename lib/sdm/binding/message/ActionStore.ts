@@ -75,5 +75,5 @@ function computeShortSha(message: any) {
 }
 
 export function actionDescription(action: Action): string {
-    return encodeURI(action.text).replace("/", "%2F");
+    return encodeURIComponent(action.text);
 }
