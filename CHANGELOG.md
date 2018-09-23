@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 -   Improve directory path comparisons. [#197](https://github.com/atomist/sdm-local/pull/197)
+-   Encode the action name correctly. [#201](https://github.com/atomist/sdm-local/issues/201)
 
 ## [1.0.0-M.4](https://github.com/atomist/sdm-local/compare/1.0.0-M.3...1.0.0-M.4) - 2018-09-16
 
