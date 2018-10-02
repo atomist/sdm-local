@@ -253,7 +253,7 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
                 };
                 const push = eventStore().messages().find(m => m.value.sha === body.commit).value.push;
                 build.Build[0].push = push;
-                
+
                 const invocation: EventHandlerInvocation = {
                     name: "InvokeListenersOnBuildComplete",
                     payload: build,
