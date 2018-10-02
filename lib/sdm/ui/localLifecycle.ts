@@ -23,16 +23,11 @@ import {
     SdmGoalState,
     SoftwareDeliveryMachine,
 } from "@atomist/sdm";
-import {
-    BuildStatusUpdater,
-    isInLocalMode,
-} from "@atomist/sdm-core";
+import { isInLocalMode } from "@atomist/sdm-core";
 import chalk from "chalk";
-import Push = OnPushToAnyBranch.Push;
 import * as _ from "lodash";
-import { DefaultWorkspaceContextResolver } from "../../common/binding/defaultWorkspaceContextResolver";
-import { HttpBuildStatusUpdater } from "../binding/HttpBuildStatusUpdater";
 import { isFileSystemRemoteRepoRef } from "../binding/project/FileSystemRemoteRepoRef";
+import Push = OnPushToAnyBranch.Push;
 
 /**
  * Add Local IO to the given SDM.
@@ -46,9 +41,6 @@ export const LocalLifecycle: ExtensionPack = {
             addLocalLifecycle(sdm);
             addShowCreatedLocalRepo(sdm);
             addShowReviewResults(sdm);
-            const bu = sdm as any as BuildStatusUpdater;
-            const buu = new HttpBuildStatusUpdater(DefaultWorkspaceContextResolver.workspaceContext);
-            bu.updateBuildStatus = buu.updateBuildStatus.bind(buu);
         }
     },
 };

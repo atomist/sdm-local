@@ -24,6 +24,7 @@ import {
     logger,
     scanFreePort,
 } from "@atomist/automation-client";
+import { OnBuildComplete } from "@atomist/sdm";
 import {
     isInLocalMode,
     LocalSoftwareDeliveryMachineConfiguration,
@@ -220,6 +221,43 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
                 // TODO Hack to get image into the Push
                 eventStore().messages().filter(m => m.value.sha === payload.git.sha && m.value.goalSet && m.value.goalSetId)
                     .forEach(m => _.set(m.value, "push.after.image.imageName", payload.docker.image));
+                return invokeEventHandlerInProcess(
+                    { workspaceId: req.params.team, workspaceName: req.params.team })(invocation)
+                    .then(resp => res.json(decircle(resp)),
+                        boo => res.status(500).send(boo.message));
+            });
+            app.post("/atomist/build/teams/:team", async (req, res) => {
+                const body = req.body;
+
+                const build: OnBuildComplete.Subscription = {
+                    Build: [{
+                        buildId: body.number,
+                        status: body.status,
+                        commit: {
+                            sha: body.commit,
+                            message: "",
+                            repo: {
+                                name: body.repository.name,
+                                owner: body.repository.owner_name,
+                                channels: [{
+                                    name: body.repository.name,
+                                    id: body.repository.name,
+                                    team: {
+                                        id: req.params.team,
+                                    },
+                                }],
+                            },
+                            statuses: [],
+                        },
+                    }],
+                };
+                const push = eventStore().messages().find(m => m.value.sha === body.commit).value.push;
+                build.Build[0].push = push;
+                
+                const invocation: EventHandlerInvocation = {
+                    name: "InvokeListenersOnBuildComplete",
+                    payload: build,
+                };
                 return invokeEventHandlerInProcess(
                     { workspaceId: req.params.team, workspaceName: req.params.team })(invocation)
                     .then(resp => res.json(decircle(resp)),
