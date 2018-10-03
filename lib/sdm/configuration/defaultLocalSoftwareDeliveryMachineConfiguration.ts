@@ -44,7 +44,7 @@ import { FileSystemProjectLoader } from "../binding/project/FileSystemProjectLoa
 import { fileSystemProjectPersister } from "../binding/project/fileSystemProjectPersister";
 import { LocalRepoTargets } from "../binding/project/LocalRepoTargets";
 
-const DefaultAtomistRoot = "atomist";
+const DefaultAtomistRoot = "atomist/projects";
 
 /**
  * Defaults for local-SDM configuration
