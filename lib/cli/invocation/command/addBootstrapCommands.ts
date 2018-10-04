@@ -15,23 +15,14 @@
  */
 
 import { GitHubRepoRef } from "@atomist/sdm";
-import { Question } from "inquirer";
 import * as inquirer from "inquirer";
-import {
-    adviceDoc,
-    infoMessage,
-} from "../../ui/consoleOutput";
-import {
-    nodeGenerator,
-    superforkGenerator,
-} from "./generator/bootstrapGenerators";
+import { Question } from "inquirer";
+import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
+import { nodeGenerator, superforkGenerator } from "./generator/bootstrapGenerators";
 import { NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
 import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
-import {
-    verifyJDK,
-    verifyMaven,
-} from "./support/javaVerification";
+import { verifyMaven } from "./support/javaVerification";
 import { YargBuilder } from "./support/yargBuilder";
 import { AddLocalMode } from "./transform/addLocalModeTransform";
 
@@ -147,7 +138,7 @@ function addSdmGenerator(yargs: YargBuilder) {
 
 async function doAfterSpringSdmCreation() {
     adviceDoc("docs/springSdm.md");
-    await verifyJDK();
+    // await verifyJDK();
     await verifyMaven();
 }
 
