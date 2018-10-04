@@ -17,8 +17,14 @@
 import { GitHubRepoRef } from "@atomist/sdm";
 import * as inquirer from "inquirer";
 import { Question } from "inquirer";
-import { adviceDoc, infoMessage } from "../../ui/consoleOutput";
-import { nodeGenerator, superforkGenerator } from "./generator/bootstrapGenerators";
+import {
+    adviceDoc,
+    infoMessage,
+} from "../../ui/consoleOutput";
+import {
+    nodeGenerator,
+    superforkGenerator,
+} from "./generator/bootstrapGenerators";
 import { NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
 import { UpdatePackageJsonIdentification } from "./generator/updatePackageJsonIdentification";
 import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
