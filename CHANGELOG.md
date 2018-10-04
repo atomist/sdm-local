@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-local/compare/1.0.0-M.5...HEAD)
 
+### Added
+
+-   Publish a notice to the feed on startup. [#205](https://github.com/atomist/sdm-local/issues/205)
+
 ### Changed
 
 -   **BREAKING** Change the default Atomist project directory. [#204](https://github.com/atomist/sdm-local/issues/204)
