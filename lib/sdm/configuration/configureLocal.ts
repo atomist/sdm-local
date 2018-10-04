@@ -58,6 +58,7 @@ import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandle
 import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInProcess";
 import { defaultLocalSoftwareDeliveryMachineConfiguration } from "./defaultLocalSoftwareDeliveryMachineConfiguration";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
+import { NotifyOnStartupAutomationEventListener } from "./support/NotifyOnStartupAutomationEventListener";
 
 /**
  * Options that are used during configuration of an local SDM but don't get passed on to the
@@ -306,6 +307,7 @@ function configureListeners(configuration: Configuration) {
         configuration.listeners = [];
     }
     configuration.listeners.push(new NotifyOnCompletionAutomationEventListener());
+    configuration.listeners.push(new NotifyOnStartupAutomationEventListener());
 }
 
 // TODO this looks out of place here
