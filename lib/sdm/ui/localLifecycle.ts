@@ -18,7 +18,6 @@ import {
     ExtensionPack,
     metadata,
     OnPushToAnyBranch,
-    ReviewComment,
     SdmGoalEvent,
     SdmGoalState,
     SoftwareDeliveryMachine,
@@ -40,7 +39,6 @@ export const LocalLifecycle: ExtensionPack = {
         if (isInLocalMode()) {
             addLocalLifecycle(sdm);
             addShowCreatedLocalRepo(sdm);
-            addShowReviewResults(sdm);
         }
     },
 };
@@ -74,9 +72,6 @@ function linkIndicator(): string {
  * @param {SoftwareDeliveryMachine} sdm
  */
 function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
-    sdm.addPushImpactListener(async pu => {
-        return pu.addressChannels(`Push to ${pushIdentification(pu.push)}`);
-    });
     sdm.addGoalCompletionListener(async gcl => {
         switch (gcl.completedGoal.state) {
             case SdmGoalState.success:
@@ -127,30 +122,3 @@ ${chalk.yellow(`︎▸ ${goalIndentification(gci.goalEvent)}`)} ${gci.goalEvent.
     });
 }
 
-function addShowReviewResults(sdm: SoftwareDeliveryMachine) {
-    sdm.addReviewListenerRegistration({
-        name: "consoleListener",
-        listener: async l => {
-            await l.addressChannels(`${l.review.comments.length} review comments`);
-            for (const c of l.review.comments) {
-                await l.addressChannels(renderReviewComment(c));
-            }
-        },
-    });
-}
-
-function renderReviewComment(rc: ReviewComment) {
-    let s = "";
-    switch (rc.severity) {
-        case "error":
-            s += "✘ " + chalk.red(rc.severity);
-            break;
-        case "warn":
-            s += "⚠︎ " + chalk.yellow(rc.severity);
-            break;
-        case "info":
-            s += "☞ " + chalk.cyan(rc.severity);
-            break;
-    }
-    return `${s}: ${rc.category} - ${rc.detail} ${JSON.stringify(rc.sourceLocation)}`;
-}
