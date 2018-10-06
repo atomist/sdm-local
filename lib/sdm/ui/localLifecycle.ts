@@ -121,4 +121,3 @@ ${chalk.yellow(`︎▸ ${goalIndentification(gci.goalEvent)}`)} ${gci.goalEvent.
         }
     });
 }
-
