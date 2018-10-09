@@ -34,8 +34,8 @@ Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apa
 
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
-|`@atomist/sdm-core`|`1.0.0-master.20181006194507`|Atomist|[https://github.com/atomist/sdm-core](https://github.com/atomist/sdm-core)|
-|`@atomist/sdm`|`1.0.0-master.20181006100238`|Atomist|[https://github.com/atomist/sdm](https://github.com/atomist/sdm)|
+|`@atomist/sdm-core`|`1.0.0-master.20181009143145`|Atomist|[https://github.com/atomist/sdm-core](https://github.com/atomist/sdm-core)|
+|`@atomist/sdm`|`1.0.0-master.20181009135628`|Atomist|[https://github.com/atomist/sdm](https://github.com/atomist/sdm)|
 |`@atomist/slack-messages`|`1.0.0`|Atomist|[https://github.com/atomist/slack-messages](https://github.com/atomist/slack-messages)|
 |`JSONStream`|`1.3.4`|Dominic Tarr|[https://github.com/dominictarr/JSONStream](https://github.com/dominictarr/JSONStream)|
 |`aws-sign2`|`0.7.0`|Mikeal Rogers|[https://github.com/mikeal/aws-sign](https://github.com/mikeal/aws-sign)|
@@ -149,7 +149,7 @@ GNU General Public License v3.0 only - [http://www.gnu.org/licenses/gpl-3.0-stan
 
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
-|`@atomist/automation-client`|`1.0.0-master.20181006002158`|Atomist|[https://github.com/atomist/automation-client-ts](https://github.com/atomist/automation-client-ts)|
+|`@atomist/automation-client`|`1.0.0-master.20181008113855`|Atomist|[https://github.com/atomist/automation-client-ts](https://github.com/atomist/automation-client-ts)|
 |`@atomist/microgrammar`|`1.0.0-M.4`|Atomist|[https://github.com/atomist/microgrammar](https://github.com/atomist/microgrammar)|
 |`@atomist/tree-path`|`1.0.0-M.4`|Atomist|[https://github.com/atomist/tree-path-ts](https://github.com/atomist/tree-path-ts)|
 
@@ -687,7 +687,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`mem`|`4.0.0`|Sindre Sorhus|[https://github.com/sindresorhus/mem](https://github.com/sindresorhus/mem)|
 |`merge-descriptors`|`1.0.1`|Jonathan Ong|[https://github.com/component/merge-descriptors](https://github.com/component/merge-descriptors)|
 |`methods`|`1.1.2`||[https://github.com/jshttp/methods](https://github.com/jshttp/methods)|
-|`metrics`|`0.1.17`|Mike Ihbe|[https://github.com/mikejihbe/metrics](https://github.com/mikejihbe/metrics)|
+|`metrics`|`0.1.18`|Mike Ihbe|[https://github.com/mikejihbe/metrics](https://github.com/mikejihbe/metrics)|
 |`mime-db`|`1.35.0`||[https://github.com/jshttp/mime-db](https://github.com/jshttp/mime-db)|
 |`mime-db`|`1.36.0`||[https://github.com/jshttp/mime-db](https://github.com/jshttp/mime-db)|
 |`mime-types`|`2.1.19`||[https://github.com/jshttp/mime-types](https://github.com/jshttp/mime-types)|
