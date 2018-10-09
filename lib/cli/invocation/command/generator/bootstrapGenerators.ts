@@ -15,9 +15,9 @@
  */
 
 import {
-    validationPatterns,
     GitHubRepoRef,
     RemoteRepoRef,
+    validationPatterns,
 } from "@atomist/automation-client";
 import { GeneratorRegistration } from "@atomist/sdm";
 import {
