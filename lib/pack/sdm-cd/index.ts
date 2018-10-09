@@ -20,6 +20,6 @@ export { IsSdm } from "./support/IsSdm";
 
 export { SdmDeliveryOptions } from "./support/SdmDeliveryOptions";
 
-export { LocalSdmDeliveryGoal } from "./support/LocalSdmDeliveryGoal";
+export { LocalSdmDelivery } from "./support/LocalSdmDelivery";
 
-export { executeLocalSdmDelivery } from "./support/LocalSdmDeliveryGoal";
+export { executeLocalSdmDelivery } from "./support/LocalSdmDelivery";

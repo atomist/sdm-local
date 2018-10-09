@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-import { safeExec } from "@atomist/automation-client";
-import { logger } from "@atomist/sdm";
+import {
+    logger,
+    safeExec,
+} from "@atomist/automation-client";
 import { WorkspaceContextResolver } from "../../common/binding/WorkspaceContextResolver";
 import {
     GitHookInvocation,

@@ -17,7 +17,7 @@
 import {
     GitProject,
     logger,
-} from "@atomist/sdm";
+} from "@atomist/automation-client";
 import { runAndLog } from "./runAndLog";
 
 /**

@@ -18,14 +18,12 @@ import {
     AbstractRemoteRepoRef,
     ActionResult,
     Configurable,
-    successOn,
-} from "@atomist/automation-client";
-import {
     logger,
     ProjectOperationCredentials,
     RemoteRepoRef,
     RepoRef,
-} from "@atomist/sdm";
+    successOn,
+} from "@atomist/automation-client";
 import * as path from "path";
 import { runAndLog } from "../../util/runAndLog";
 import {

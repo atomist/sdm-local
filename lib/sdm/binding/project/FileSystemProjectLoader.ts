@@ -17,6 +17,8 @@
 import {
     GitProject,
     logger,
+} from "@atomist/automation-client";
+import {
     ProjectLoader,
     ProjectLoadingParameters,
     WithLoadedProject,

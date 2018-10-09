@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GitHubRepoRef } from "@atomist/sdm";
+import { GitHubRepoRef } from "@atomist/automation-client";
 import * as inquirer from "inquirer";
 import { Question } from "inquirer";
 import {

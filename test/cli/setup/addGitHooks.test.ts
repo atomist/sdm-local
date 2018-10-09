@@ -18,10 +18,8 @@ import * as assert from "power-assert";
 
 import {
     InMemoryProject,
-} from "@atomist/automation-client";
-import {
     LocalProject,
-} from "@atomist/sdm";
+} from "@atomist/automation-client";
 import * as os from "os";
 import * as path from "path";
 

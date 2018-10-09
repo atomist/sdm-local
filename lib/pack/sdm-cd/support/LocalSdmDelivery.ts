@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-import { asSpawnCommand } from "@atomist/automation-client";
+import {
+    asSpawnCommand,
+    logger,
+} from "@atomist/automation-client";
 import {
     DelimitedWriteProgressLogDecorator,
     ExecuteGoal,
-    GenericGoal,
     GoalInvocation,
-    logger,
+    GoalWithFulfillment,
 } from "@atomist/sdm";
 import {
     ChildProcess,
@@ -33,9 +35,8 @@ import { isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSyst
 import { runAndLog } from "../../../sdm/util/runAndLog";
 import { SdmDeliveryOptions } from "./SdmDeliveryOptions";
 
-export const LocalSdmDeliveryGoal = new GenericGoal(
-    { uniqueName: "sdmDelivery" },
-    "Deliver SDM");
+export const LocalSdmDelivery = new GoalWithFulfillment(
+    { uniqueName: "sdmDelivery", name: "Deliver SDM" });
 
 /**
  * Deliver this SDM

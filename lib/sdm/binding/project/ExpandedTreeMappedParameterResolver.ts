@@ -16,12 +16,10 @@
 
 import {
     GitHubDotComBase,
+    logger,
     MappedParameters,
 } from "@atomist/automation-client";
 import { MappedParameterDeclaration } from "@atomist/automation-client/lib/metadata/automationMetadata";
-import {
-    logger,
-} from "@atomist/sdm";
 import * as os from "os";
 import { DefaultWorkspaceId } from "../../../common/binding/defaultWorkspaceContextResolver";
 import { MappedParameterResolver } from "../mapped-parameter/MappedParameterResolver";

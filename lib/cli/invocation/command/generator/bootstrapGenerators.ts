@@ -15,7 +15,7 @@
  */
 
 import {
-    GitHubNameRegExp,
+    validationPatterns,
     GitHubRepoRef,
     RemoteRepoRef,
 } from "@atomist/automation-client";
@@ -52,8 +52,8 @@ export const superforkGenerator: GeneratorRegistration<{ owner: string, repo: st
     name: "superfork",
     startingPoint: params => new GitHubRepoRef(params.owner, params.repo),
     parameters: {
-        owner: { ...GitHubNameRegExp, description: "GitHub owner" },
-        repo: { ...GitHubNameRegExp, description: "GitHub repo" },
+        owner: { ...validationPatterns.GitHubNameRegExp, description: "GitHub owner" },
+        repo: { ...validationPatterns.GitHubNameRegExp, description: "GitHub repo" },
     },
     transform: async p => p,
 };

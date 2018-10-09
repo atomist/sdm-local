@@ -15,16 +15,14 @@
  */
 
 import {
-    ProjectPersister,
-    successOn,
-} from "@atomist/automation-client";
-import {
     GitProject,
     LocalProject,
     logger,
     NodeFsLocalProject,
+    ProjectPersister,
     RepoRef,
-} from "@atomist/sdm";
+    successOn,
+} from "@atomist/automation-client";
 import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import * as fs from "fs-extra";
 import * as path from "path";

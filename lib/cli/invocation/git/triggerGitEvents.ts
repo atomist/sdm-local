@@ -17,7 +17,7 @@
 import {
     GitCommandGitProject,
     logger,
-} from "@atomist/sdm";
+} from "@atomist/automation-client";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import {
     determineCwd,

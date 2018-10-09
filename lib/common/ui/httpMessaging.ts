@@ -16,9 +16,9 @@
 
 import {
     Destination,
+    logger,
     MessageOptions,
 } from "@atomist/automation-client";
-import { logger } from "@atomist/sdm";
 import axios from "axios";
 import * as boxen from "boxen";
 import { sprintf } from "sprintf-js";

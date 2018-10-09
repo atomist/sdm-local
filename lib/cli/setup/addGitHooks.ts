@@ -17,7 +17,7 @@
 import {
     LocalProject,
     NodeFsLocalProject,
-} from "@atomist/sdm";
+} from "@atomist/automation-client";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";

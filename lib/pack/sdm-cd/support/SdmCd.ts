@@ -24,8 +24,8 @@ import { IsInLocalMode } from "@atomist/sdm-core";
 import { IsSdm } from "./IsSdm";
 import {
     executeLocalSdmDelivery,
-    LocalSdmDeliveryGoal,
-} from "./LocalSdmDeliveryGoal";
+    LocalSdmDelivery,
+} from "./LocalSdmDelivery";
 import { SdmDeliveryOptions } from "./SdmDeliveryOptions";
 
 /**
@@ -36,11 +36,13 @@ export function sdmCd(options: SdmDeliveryOptions): ExtensionPack {
         ...metadata(),
         name: "SdmCd",
         configure: sdm => {
-            sdm.addGoalImplementation("SDM CD", LocalSdmDeliveryGoal,
-                executeLocalSdmDelivery(options));
+            LocalSdmDelivery.with({
+                name: "local-delivery",
+                goalExecutor: executeLocalSdmDelivery(options),
+            });
             sdm.addGoalContributions(
                 whenPushSatisfies(IsSdm, IsInLocalMode).setGoals(
-                    new Goals("delivery", LocalSdmDeliveryGoal)));
+                    new Goals("delivery", LocalSdmDelivery)));
         },
     };
 }

@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import { doWithJson } from "@atomist/automation-client";
+import {
+    doWithJson,
+    logger,
+} from "@atomist/automation-client";
 import {
     CodeTransform,
-    logger,
 } from "@atomist/sdm";
 import { NodeProjectCreationParameters } from "./NodeProjectCreationParameters";
 

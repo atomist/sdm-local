@@ -17,12 +17,12 @@
 import {
     configurationValue,
     getUserConfig,
+    logger,
     Parameters,
+    ProjectOperationCredentials,
 } from "@atomist/automation-client";
 import {
     CredentialsResolver,
-    logger,
-    ProjectOperationCredentials,
 } from "@atomist/sdm";
 import * as _ from "lodash";
 
