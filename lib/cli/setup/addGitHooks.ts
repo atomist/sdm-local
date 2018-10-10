@@ -130,7 +130,9 @@ function scriptFragments(): { [key in HookEvent]: string } {
         [HookEvent.PostReceive]: `
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
-atomist git-hook ${HookEvent.PostReceive}${bg}
+while read before after ref; do
+    atomist git-hook ${HookEvent.PostReceive} "$PWD" "$ref" "$after"${bg}
+done
 `,
         [HookEvent.PostCommit]: `
 atomist git-hook ${HookEvent.PostCommit}${bg}
