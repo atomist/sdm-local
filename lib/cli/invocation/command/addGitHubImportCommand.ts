@@ -1,4 +1,3 @@
-import { GitHubDotComBase } from "@atomist/automation-client";
 /*
  * Copyright © 2018 Atomist, Inc.
  *
@@ -14,6 +13,8 @@ import { GitHubDotComBase } from "@atomist/automation-client";
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { GitHubDotComBase } from "@atomist/automation-client/lib/operations/common/GitHubRepoRef";
 import axios, { AxiosRequestConfig } from "axios";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";

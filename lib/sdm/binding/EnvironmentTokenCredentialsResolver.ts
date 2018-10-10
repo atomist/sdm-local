@@ -16,11 +16,11 @@
 
 import {
     configurationValue,
-    getUserConfig,
     logger,
     Parameters,
     ProjectOperationCredentials,
 } from "@atomist/automation-client";
+import { getUserConfig } from "@atomist/automation-client/lib/configuration";
 import {
     CredentialsResolver,
 } from "@atomist/sdm";

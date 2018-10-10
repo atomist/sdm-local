@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+import { Configuration } from "@atomist/automation-client";
+import { automationClient } from "@atomist/automation-client/lib/automationClient";
 import {
-    automationClient,
-    Configuration,
     defaultConfiguration,
     invokePostProcessors,
-} from "@atomist/automation-client";
+} from "@atomist/automation-client/lib/configuration";
 import {
     ConfigureMachine,
     ExtensionPack,

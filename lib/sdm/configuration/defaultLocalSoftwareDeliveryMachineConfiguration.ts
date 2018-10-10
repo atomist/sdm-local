@@ -17,9 +17,9 @@
 import {
     Configuration,
     configurationValue,
-    getUserConfig,
     logger,
 } from "@atomist/automation-client";
+import { getUserConfig } from "@atomist/automation-client/lib/configuration";
 import {
     CachingProjectLoader,
     SoftwareDeliveryMachineOptions,
@@ -92,7 +92,7 @@ const RepositoryOwnerParentDirectoryPath = "local.repositoryOwnerParentDirectory
 /**
  * Resolve the repositoryOwnerParentDirectory.
  * This will search in the client configuration, user config in .atomist, at ATOMIST_ROOT env var and
- * lastly default to ~/atomist.
+ * lastly default to ~/atomist/projects.
  *
  * The path will get created if it doesn't exist.
  */

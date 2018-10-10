@@ -18,10 +18,9 @@ import {
     getUserConfig,
     resolveWorkspaceIds,
     UserConfig,
-} from "@atomist/automation-client";
+} from "@atomist/automation-client/lib/configuration";
 import * as _ from "lodash";
 import * as os from "os";
-
 import { warningMessage } from "../../cli/ui/consoleOutput";
 import { LocalWorkspaceContext } from "../invocation/LocalWorkspaceContext";
 import { WorkspaceContextResolver } from "./WorkspaceContextResolver";

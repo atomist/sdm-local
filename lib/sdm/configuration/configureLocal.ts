@@ -18,12 +18,12 @@ import {
     automationClientInstance,
     Configuration,
     ConfigurationPostProcessor,
-    eventStore,
     guid,
     HandlerResult,
     logger,
-    scanFreePort,
 } from "@atomist/automation-client";
+import { eventStore } from "@atomist/automation-client/lib/globals";
+import { scanFreePort } from "@atomist/automation-client/lib/util/port";
 import { OnBuildComplete } from "@atomist/sdm";
 import {
     isInLocalMode,

@@ -15,15 +15,17 @@
  */
 
 import {
-    AbstractRemoteRepoRef,
-    ActionResult,
-    Configurable,
     logger,
     ProjectOperationCredentials,
     RemoteRepoRef,
     RepoRef,
-    successOn,
 } from "@atomist/automation-client";
+import {
+    ActionResult,
+    successOn,
+} from "@atomist/automation-client/lib/action/ActionResult";
+import { AbstractRemoteRepoRef } from "@atomist/automation-client/lib/operations/common/AbstractRemoteRepoRef";
+import { Configurable } from "@atomist/automation-client/lib/project/git/Configurable";
 import * as path from "path";
 import { runAndLog } from "../../util/runAndLog";
 import {

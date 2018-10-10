@@ -21,8 +21,8 @@ import {
     NodeFsLocalProject,
     ProjectPersister,
     RepoRef,
-    successOn,
 } from "@atomist/automation-client";
+import { successOn } from "@atomist/automation-client/lib/action/ActionResult";
 import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import * as fs from "fs-extra";
 import * as path from "path";

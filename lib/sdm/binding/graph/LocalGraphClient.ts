@@ -15,12 +15,12 @@
  */
 
 import {
-    eventStore,
     GraphClient,
     logger,
     MutationOptions,
     QueryOptions,
 } from "@atomist/automation-client";
+import { eventStore } from "@atomist/automation-client/lib/globals";
 import {
     PushForSdmGoal,
     SdmGoalsForCommit,

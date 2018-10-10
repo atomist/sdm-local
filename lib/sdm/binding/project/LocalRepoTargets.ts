@@ -15,7 +15,6 @@
  */
 
 import {
-    andFilter,
     logger,
     MappedParameter,
     MappedParameters,
@@ -23,9 +22,10 @@ import {
     Parameters,
     ProjectOperationCredentials,
     RepoFilter,
-    TargetsParams,
     validationPatterns,
 } from "@atomist/automation-client";
+import { TargetsParams } from "@atomist/automation-client/lib/operations/common/params/TargetsParams";
+import { andFilter } from "@atomist/automation-client/lib/operations/common/repoFilter";
 import { RepoTargets } from "@atomist/sdm";
 import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
