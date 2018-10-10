@@ -61,13 +61,18 @@ export async function argsToGitHookInvocation(
     } else {
         if (event === HookEvent.PostReceive) {
             return new Promise<GitHookInvocation>((resolve, reject) => {
-                let input: string;
+                let input: string = "";
                 process.stdin.on("data", chunk => {
                     input += chunk.toString();
                 });
                 process.stdin.on("end", () => {
                     const inputWords = input.trim().split(/\s+/);
-                    // post-receive stdin: oldrev newrev refname
+                    if (inputWords.length < 3) {
+                        const msg = `Git post-receive hook did not receive SHA and branch on standard input`;
+                        logger.error(msg);
+                        reject(new Error(msg));
+                    }
+                    // post-receive stdin: before after refname
                     const sha = inputWords[1];
                     const branch = cleanBranch(inputWords[2]);
                     resolve({ event, baseDir, branch, sha, workspaceId });
