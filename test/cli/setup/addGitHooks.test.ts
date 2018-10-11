@@ -398,7 +398,9 @@ atomist git-hook ${h}
 
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
-atomist git-hook ${h}
+while read before after ref; do
+    atomist git-hook ${h} "$PWD" "$ref" "$after"
+done
 
 ######### Atomist end #########
 `;
@@ -440,7 +442,9 @@ echo ${h}
 
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
-atomist git-hook ${h}
+while read before after ref; do
+    atomist git-hook ${h} "$PWD" "$ref" "$after"
+done
 
 ######### Atomist end #########
 `;
@@ -490,7 +494,9 @@ atomist git-hook ${h} &
 
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
-atomist git-hook ${h} &
+while read before after ref; do
+    atomist git-hook ${h} "$PWD" "$ref" "$after" &
+done
 
 ######### Atomist end #########
 `;
@@ -532,7 +538,9 @@ echo ${h}
 
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
-atomist git-hook ${h} &
+while read before after ref; do
+    atomist git-hook ${h} "$PWD" "$ref" "$after" &
+done
 
 ######### Atomist end #########
 `;
@@ -629,7 +637,9 @@ atomist git-hook ${h} &
 
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
-atomist git-hook ${h} &
+while read before after ref; do
+    atomist git-hook ${h} "$PWD" "$ref" "$after" &
+done
 
 ######### Atomist end #########
 `;
@@ -676,7 +686,9 @@ echo some non-Atomist-y ${h}
 
 ATOMIST_GITHOOK_VERBOSE=true
 export ATOMIST_GITHOOK_VERBOSE
-atomist git-hook ${h} &
+while read before after ref; do
+    atomist git-hook ${h} "$PWD" "$ref" "$after" &
+done
 
 ######### Atomist end #########
 `;

@@ -147,6 +147,17 @@ describe("argsToGitHookInvocation", () => {
             assert.strictEqual(i.workspaceId, tcr.workspaceContext.workspaceId);
         });
 
+        it("should parse git-hook post-receive command line", async () => {
+            const a = ["node", "atomist", "git-hook", HookEvent.PostReceive, "X:\\Men\\Logan\\projects\\o\\r",
+                "other-branch", "074e828a"];
+            const i = await argsToGitHookInvocation(a, tcr);
+            assert(i.event === "post-receive");
+            assert(i.baseDir === repoPath);
+            assert(i.branch === "other-branch");
+            assert(i.sha === "074e828a");
+            assert(i.workspaceId === tcr.workspaceContext.workspaceId);
+        });
+
         it("should parse git-hook command line on win32", async () => {
             repoPath = "L:\\Users\\stan\\atomist\\Own\\the-repo";
             const a = ["node", "atomist", "git-hook", "post-merge", repoPath, "branch", "sha"];
@@ -243,9 +254,10 @@ describe("argsToGitHookInvocation", () => {
 
             let originalProcessCwd: any;
             let originalProcessStdin: any;
+            const baseDir = "C:\\Users\\Stan\\atomist\\Own\\rep";
             before(() => {
                 originalProcessCwd = Object.getOwnPropertyDescriptor(process, "cwd");
-                Object.defineProperty(process, "cwd", { value: () => "C:\\Users\\Stan\\atomist\\Own\\rep\\.git\\" });
+                Object.defineProperty(process, "cwd", { value: () => `${baseDir}\\.git\\` });
                 originalProcessStdin = Object.getOwnPropertyDescriptor(process, "stdin");
                 Object.defineProperty(process, "stdin", {
                     value: {
@@ -268,7 +280,7 @@ describe("argsToGitHookInvocation", () => {
                 const a = ["node", "atomist", "git-hook", HookEvent.PostReceive];
                 const i = await argsToGitHookInvocation(a, tcr);
                 assert(i.event === "post-receive");
-                assert(i.baseDir === "C:\\Users\\Stan\\atomist\\Own\\rep");
+                assert(i.baseDir === baseDir);
                 assert(i.branch === branch);
                 assert(i.sha === sha);
                 assert(i.workspaceId === tcr.workspaceContext.workspaceId);
