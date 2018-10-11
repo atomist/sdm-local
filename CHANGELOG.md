@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   **BREAKING** Change the default Atomist project directory. [#204](https://github.com/atomist/sdm-local/issues/204)
 
+### Fixed
+
+-   Have post-receive hook script read from stdin. [#211](https://github.com/atomist/sdm-local/issues/211)
+
 ## [1.0.0-M.5](https://github.com/atomist/sdm-local/compare/1.0.0-M.4...1.0.0-M.5) - 2018-09-26
 
 ### Changed
