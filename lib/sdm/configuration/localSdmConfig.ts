@@ -46,7 +46,6 @@ function registerNoOpListeners(sdm: SoftwareDeliveryMachine) {
     sdm.addFirstPushListener(NoOp)
         .addRepoCreationListener(NoOp)
         .addRepoOnboardingListener(NoOp)
-        .addBuildListener(NoOp)
         .addChannelLinkListener(NoOp);
     // Ensure there's a push mapping, even if it doesn't return anything
     sdm.addGoalContributions(onAnyPush().setGoals([]));
