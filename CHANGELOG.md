@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-local/compare/1.0.0-RC.1...HEAD)
 
+### Changed
+
+-   Do not import everything from automation-client. [#207](https://github.com/atomist/sdm-local/issues/207)
+
 ## [1.0.0-RC.1](https://github.com/atomist/sdm-local/compare/1.0.0-M.5...1.0.0-RC.1) - 2018-10-15
 
 ### Added
