@@ -195,6 +195,11 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
                 })(invocation);
             });
             app.post("/atomist/link-image/teams/:team", async (req, res) => {
+                const event = automationClientInstance().automations.automations.events.find(e => e.name === "FindArtifactOnImageLinked");
+                if (!event) {
+                    return res.status(404).send(`Event 'FindArtifactOnImageLinked' not found`);
+                }
+
                 const payload = req.body;
                 const invocation: EventHandlerInvocation = {
                     name: "FindArtifactOnImageLinked",
@@ -228,8 +233,12 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
                         boo => res.status(500).send(boo.message));
             });
             app.post("/atomist/build/teams/:team", async (req, res) => {
-                const body = req.body;
+                const event = automationClientInstance().automations.automations.events.find(e => e.name === "InvokeListenersOnBuildComplete");
+                if (!event) {
+                    return res.status(404).send(`Event 'InvokeListenersOnBuildComplete' not found`);
+                }
 
+                const body = req.body;
                 const build: OnBuildComplete.Subscription = {
                     Build: [{
                         buildId: body.number,
