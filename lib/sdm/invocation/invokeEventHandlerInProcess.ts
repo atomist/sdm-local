@@ -62,7 +62,7 @@ export function invokeEventHandlerInProcess(workspaceContext: LocalWorkspaceCont
             data: invocation.payload,
         };
 
-        logger.debug("Invoking %s using %s", invocation.name, stringify(data, replacer));
+        logger.log("silly", "Invoking %s using %s", invocation.name, stringify(data, replacer));
         return automationClientInstance().processEvent(data as any as EventIncoming, async result => {
             const results = (Array.isArray(result) ? result : [result]) as HandlerResult[];
             assert(results.find(r => r.code !== 0),
