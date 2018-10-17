@@ -31,7 +31,7 @@ export class BroadcastingMessageClient implements MessageClient, SlackMessageCli
     private readonly delegates: Array<MessageClient & SlackMessageClient>;
 
     public addressChannels(msg: string | SlackMessage, channels: string | string[], options?: MessageOptions): Promise<any> {
-        logger.debug("Broadcast.addressChannels: %j", msg);
+        logger.log("silly", "Broadcast.addressChannels: %j", msg);
         return Promise.all(
             this.delegates.map(d => {
                 try {
@@ -44,7 +44,7 @@ export class BroadcastingMessageClient implements MessageClient, SlackMessageCli
     }
 
     public addressUsers(msg: string | SlackMessage, users: string | string[], options?: MessageOptions): Promise<any> {
-        logger.debug("Broadcast.addressUsers: %j", msg);
+        logger.log("silly","Broadcast.addressUsers: %j", msg);
         return Promise.all(
             this.delegates.map(d => {
                 try {
@@ -57,7 +57,7 @@ export class BroadcastingMessageClient implements MessageClient, SlackMessageCli
     }
 
     public respond(msg: any, options?: MessageOptions): Promise<any> {
-        logger.debug("Broadcast.respond: %j", msg);
+        logger.log("silly","Broadcast.respond: %j", msg);
         return Promise.all(
             this.delegates.map(d => {
                 try {
@@ -70,7 +70,7 @@ export class BroadcastingMessageClient implements MessageClient, SlackMessageCli
     }
 
     public send(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
-        logger.debug("Broadcast.send: %j", msg);
+        logger.log("silly","Broadcast.send: %j", msg);
         return Promise.all(
             this.delegates.map(d => {
                 try {
