@@ -80,7 +80,7 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
                             case SdmGoalState.pre_approved :
                             case SdmGoalState.canceled :
                                 break;
-                        }                               
+                        }
                     }
                 }
             } else {
