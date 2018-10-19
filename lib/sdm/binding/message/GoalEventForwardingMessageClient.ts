@@ -26,9 +26,9 @@ import {
     SdmGoalKey,
     SdmGoalState,
 } from "@atomist/sdm";
+import { isGitHubAction } from "@atomist/sdm-core";
 import { SlackMessage } from "@atomist/slack-messages";
 import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";
-import { isValidSHA1 } from "../../../common/git/handlePushBasedEventOnRepo";
 import { invokeEventHandlerInProcess } from "../../invocation/invokeEventHandlerInProcess";
 
 export function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
@@ -56,36 +56,39 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
 
     public async send(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
         if (isSdmGoalStoreOrUpdate(msg)) {
-            logger.log("silly", "Storing SDM goal or ingester payload %j", msg);
-            if (isValidSHA1((msg.branch))) {
-                throw new Error("Branch/sha confusion in " + JSON.stringify(msg));
-            }
-            if (!isValidSHA1((msg.sha))) {
-                throw new Error("Invalid sha in " + JSON.stringify(msg));
-            }
             let handlerNames: string[] = [];
-            switch (msg.state) {
-                case SdmGoalState.requested:
+            if (isGitHubAction() && process.argv.length >= 3) {
+                const goal = process.argv[2];
+                if (msg.name === goal) {
+                    msg.state === SdmGoalState.requested;
                     handlerNames = ["FulfillGoalOnRequested"];
-                    break;
-                case SdmGoalState.failure :
-                case SdmGoalState.stopped :
-                    handlerNames = ["RespondOnGoalCompletion", "SkipDownstreamGoalsOnGoalFailure"];
-                    break;
-                case SdmGoalState.success:
-                    handlerNames = ["RespondOnGoalCompletion", "RequestDownstreamGoalsOnGoalSuccess"];
-                    break;
-                case SdmGoalState.skipped :
-                case SdmGoalState.in_process :
-                case SdmGoalState.planned :
-                case SdmGoalState.waiting_for_approval :
-                case SdmGoalState.approved :
-                case SdmGoalState.waiting_for_pre_approval :
-                case SdmGoalState.pre_approved :
-                case SdmGoalState.canceled :
-                    break;
-                default:
-                    throw new Error(`Unexpected SdmGoalState '${msg.state}'`);
+                }
+            } else {
+                logger.log("silly", "Storing SDM goal or ingester payload %j", msg);
+
+                switch (msg.state) {
+                    case SdmGoalState.requested:
+                        handlerNames = ["FulfillGoalOnRequested"];
+                        break;
+                    case SdmGoalState.failure :
+                    case SdmGoalState.stopped :
+                        handlerNames = ["RespondOnGoalCompletion", "SkipDownstreamGoalsOnGoalFailure"];
+                        break;
+                    case SdmGoalState.success:
+                        handlerNames = ["RespondOnGoalCompletion", "RequestDownstreamGoalsOnGoalSuccess"];
+                        break;
+                    case SdmGoalState.skipped :
+                    case SdmGoalState.in_process :
+                    case SdmGoalState.planned :
+                    case SdmGoalState.waiting_for_approval :
+                    case SdmGoalState.approved :
+                    case SdmGoalState.waiting_for_pre_approval :
+                    case SdmGoalState.pre_approved :
+                    case SdmGoalState.canceled :
+                        break;
+                    default:
+                        throw new Error(`Unexpected SdmGoalState '${msg.state}'`);
+                }
             }
             const payload: OnAnyRequestedSdmGoal.Subscription = {
                 SdmGoal: [msg],
