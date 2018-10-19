@@ -74,14 +74,15 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
                 case SdmGoalState.success:
                     handlerNames = ["RespondOnGoalCompletion", "RequestDownstreamGoalsOnGoalSuccess"];
                     break;
-                case SdmGoalState.in_process :
-                    break;
-                case SdmGoalState.planned :
-                    break;
                 case SdmGoalState.skipped :
-                    logger.info("Skipped goal: %j", msg);
-                    break;
+                case SdmGoalState.in_process :
+                case SdmGoalState.planned :
                 case SdmGoalState.waiting_for_approval :
+                case SdmGoalState.approved :
+                case SdmGoalState.waiting_for_pre_approval :
+                case SdmGoalState.pre_approved :
+                case SdmGoalState.stopped :
+                case SdmGoalState.canceled :
                     break;
                 default:
                     throw new Error(`Unexpected SdmGoalState '${msg.state}'`);
