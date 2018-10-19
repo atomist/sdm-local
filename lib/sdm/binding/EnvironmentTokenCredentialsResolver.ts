@@ -29,20 +29,13 @@ import * as _ from "lodash";
 @Parameters()
 export class EnvironmentTokenCredentialsResolver implements CredentialsResolver {
 
-    private readonly credentials: ProjectOperationCredentials;
-
     public eventHandlerCredentials() {
-        return this.credentials;
+        return credentialsFromEnvironment();
     }
 
     public commandHandlerCredentials() {
-        return this.credentials;
+        return credentialsFromEnvironment();
     }
-
-    constructor() {
-        this.credentials = credentialsFromEnvironment();
-    }
-
 }
 
 const DefaultGitHubToken = "not.a.real.token";
