@@ -92,6 +92,12 @@ export function defaultLocalSoftwareDeliveryMachineConfiguration(
 export function defaultGitHubActionSoftwareDeliveryMachineConfiguration(
     configuration: Configuration): LocalSoftwareDeliveryMachineConfiguration {
 
+    const defaultLocalSdmConfiguration: LocalSoftwareDeliveryMachineOptions = {
+        hostname: determineDefaultHostUrl(),
+    };
+
+    const localSdmConfiguration = _.merge(defaultLocalSdmConfiguration, configuration.local);
+
     const sdmConfiguration: Partial<SoftwareDeliveryMachineOptions> = {
         artifactStore: new EphemeralLocalArtifactStore(),
         logFactory: async (context, goal) =>
@@ -101,6 +107,7 @@ export function defaultGitHubActionSoftwareDeliveryMachineConfiguration(
 
     return {
         sdm: sdmConfiguration,
+        local: localSdmConfiguration,
     } as LocalSoftwareDeliveryMachineConfiguration;
 
 }

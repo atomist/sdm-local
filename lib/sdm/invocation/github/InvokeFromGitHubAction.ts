@@ -18,7 +18,6 @@ import {
     AutomationClient,
     AutomationEventListenerSupport,
     EventIncoming,
-    guid,
     logger,
     Secrets,
 } from "@atomist/automation-client";
@@ -29,6 +28,7 @@ import {
 } from "@atomist/sdm";
 import { DefaultGitHubApiUrl } from "@atomist/sdm-core/lib/util/lifecycleHelpers";
 import * as fs from "fs-extra";
+import { newCliCorrelationId } from "../../../cli/invocation/http/support/newCorrelationId";
 
 export class InvokeFromGitHubAction extends AutomationEventListenerSupport {
 
@@ -62,10 +62,11 @@ async function handlePush(client: AutomationClient): Promise<void> {
                     providerType: ProviderType.github_com,
                 },
             },
+            channels: [],
         },
         branch: event.ref.startsWith("refs/heads/") ? event.ref.replace("refs/heads/", "") : event.ref,
         after: {
-            sha: event.head,
+            sha: event.after,
             committer: {
                 login: event.sender.login,
             },
@@ -73,6 +74,11 @@ async function handlePush(client: AutomationClient): Promise<void> {
         before: {
             sha: event.before,
         },
+        commits: event.commits.map((c: any) => ({
+            sha: c.sha,
+            message: c.message,
+            timestamp: c.timestamp,
+        })),
     };
 
     const ei: EventIncoming = {
@@ -81,9 +87,9 @@ async function handlePush(client: AutomationClient): Promise<void> {
         },
         extensions: {
             operationName: "SetGoalsOnPush",
-            correlation_id: guid(),
-            team_id: event.owner.name,
-            team_name: event.owner.name,
+            correlation_id: await newCliCorrelationId(),
+            team_id: event.repository.owner.name,
+            team_name: event.repository.owner.name,
         },
         secrets: [
             { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },
