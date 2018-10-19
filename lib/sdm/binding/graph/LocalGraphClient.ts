@@ -68,6 +68,7 @@ export class LocalGraphClient implements GraphClient {
                 .filter(m => m.value.sha === sha
                     && m.value.goalSet
                     && m.value.goalSetId
+                    && !m.value.goals
                     && (!goalSetId || m.value.goalSetId === goalSetId))
                 .map(m => m.value);
             return {
