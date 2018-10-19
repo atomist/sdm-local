@@ -64,22 +64,34 @@ function registerNoOpListeners(sdm: SoftwareDeliveryMachine) {
 }
 
 function registerGoalSetListener(sdm: SoftwareDeliveryMachine) {
-    sdm.addGoalCompletionListener(setGitHubStatusOnGoalCompletion());
+    sdm.addGoalCompletionListener(exitOnGoalCompletion());
 }
 
-export function setGitHubStatusOnGoalCompletion(): GoalCompletionListener {
+export function exitOnGoalCompletion(): GoalCompletionListener {
     return async (inv: GoalCompletionListenerInvocation) => {
         const { completedGoal, allGoals } = inv;
-        logger.info("Completed goal: '%s' with '%s' in set '%s'",
-            goalKeyString(completedGoal), completedGoal.state, completedGoal.goalSetId);
+        if (process.argv.length >= 3) {
+            if (completedGoal.name === process.argv[2]) {
+                if (completedGoal.state === SdmGoalState.failure) {
+                    logger.info("Exciting because %s failed", completedGoal.uniqueName);
+                    process.exit(1);
+                } else {
+                    logger.info("Exciting because goal was success or waiting");
+                    process.exit(0);
+                }
+            }
+        } else {
+            logger.info("Completed goal: '%s' with '%s' in set '%s'",
+                goalKeyString(completedGoal), completedGoal.state, completedGoal.goalSetId);
 
-        if (completedGoal.state === SdmGoalState.failure) {
-            logger.info("Exciting because %s failed", completedGoal.uniqueName);
-            process.exit(1);
-        }
-        if (allSuccessful(allGoals)) {
-            logger.info("Exciting because all goals success or waiting");
-            process.exit(0);
+            if (completedGoal.state === SdmGoalState.failure) {
+                logger.info("Exciting because %s failed", completedGoal.uniqueName);
+                process.exit(1);
+            }
+            if (allSuccessful(allGoals)) {
+                logger.info("Exciting because all goals success or waiting");
+                process.exit(0);
+            }
         }
     };
 }

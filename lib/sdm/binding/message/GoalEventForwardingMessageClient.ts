@@ -65,7 +65,6 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
                 }
             } else {
                 logger.log("silly", "Storing SDM goal or ingester payload %j", msg);
-
                 switch (msg.state) {
                     case SdmGoalState.requested:
                         handlerNames = ["FulfillGoalOnRequested"];
