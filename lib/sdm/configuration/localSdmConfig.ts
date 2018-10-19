@@ -71,7 +71,7 @@ export function exitOnGoalCompletion(): GoalCompletionListener {
     return async (inv: GoalCompletionListenerInvocation) => {
         const { completedGoal, allGoals } = inv;
         if (process.argv.length >= 3) {
-            if (completedGoal.name === process.argv[2]) {
+            if (completedGoal.name === process.argv.slice(2).join(" ")) {
                 if (completedGoal.state === SdmGoalState.failure) {
                     logger.info("Exciting because %s failed", completedGoal.uniqueName);
                     process.exit(1);

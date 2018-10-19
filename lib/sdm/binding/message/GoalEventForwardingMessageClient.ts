@@ -58,7 +58,7 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
         if (isSdmGoalStoreOrUpdate(msg)) {
             let handlerNames: string[] = [];
             if (isGitHubAction() && process.argv.length >= 3) {
-                const goal = process.argv[2];
+                const goal = process.argv.slice(2).join(" ");
                 if (msg.name === goal) {
                     if (msg.state === SdmGoalState.planned || msg.state === SdmGoalState.requested) {
                         msg.state = SdmGoalState.requested;
