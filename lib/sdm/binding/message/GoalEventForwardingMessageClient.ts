@@ -59,9 +59,29 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
             let handlerNames: string[] = [];
             if (isGitHubAction() && process.argv.length >= 3) {
                 const goal = process.argv[2];
-                if (msg.name === goal && (msg.state === SdmGoalState.planned || msg.state === SdmGoalState.requested)) {
-                    msg.state = SdmGoalState.requested;
-                    handlerNames = ["FulfillGoalOnRequested"];
+                if (msg.name === goal) {
+                    if (msg.state === SdmGoalState.planned || msg.state === SdmGoalState.requested) {
+                        msg.state = SdmGoalState.requested;
+                        handlerNames = ["FulfillGoalOnRequested"];
+                    } else {
+                        switch (msg.state) {
+                            case SdmGoalState.failure :
+                            case SdmGoalState.stopped :
+                                handlerNames = ["RespondOnGoalCompletion", "SkipDownstreamGoalsOnGoalFailure"];
+                                break;
+                            case SdmGoalState.success:
+                                handlerNames = ["RespondOnGoalCompletion"];
+                                break;
+                            case SdmGoalState.skipped :
+                            case SdmGoalState.in_process :
+                            case SdmGoalState.waiting_for_approval :
+                            case SdmGoalState.approved :
+                            case SdmGoalState.waiting_for_pre_approval :
+                            case SdmGoalState.pre_approved :
+                            case SdmGoalState.canceled :
+                                break;
+                        }                               
+                    }
                 }
             } else {
                 logger.log("silly", "Storing SDM goal or ingester payload %j", msg);
@@ -85,8 +105,6 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
                     case SdmGoalState.pre_approved :
                     case SdmGoalState.canceled :
                         break;
-                    default:
-                        throw new Error(`Unexpected SdmGoalState '${msg.state}'`);
                 }
             }
             const payload: OnAnyRequestedSdmGoal.Subscription = {
