@@ -86,6 +86,25 @@ export function defaultLocalSoftwareDeliveryMachineConfiguration(
 
 }
 
+/**
+ * Defaults for GitHub Action SDM configuration
+ */
+export function defaultGitHubActionSoftwareDeliveryMachineConfiguration(
+    configuration: Configuration): LocalSoftwareDeliveryMachineConfiguration {
+
+    const sdmConfiguration: Partial<SoftwareDeliveryMachineOptions> = {
+        artifactStore: new EphemeralLocalArtifactStore(),
+        logFactory: async (context, goal) =>
+            new SimpleNodeLoggerProgressLog(configuration.name, goal.name, path.join(os.homedir(), ".atomist", "log")),
+        credentialsResolver: new EnvironmentTokenCredentialsResolver(),
+    };
+
+    return {
+        sdm: sdmConfiguration,
+    } as LocalSoftwareDeliveryMachineConfiguration;
+
+}
+
 const HostnamePath = "local.hostname";
 const RepositoryOwnerParentDirectoryPath = "local.repositoryOwnerParentDirectory";
 
@@ -113,7 +132,7 @@ export function determineDefaultRepositoryOwnerParentDirectory() {
 
     if (!fs.existsSync(root)) {
         logger.info(`Creating Atomist repository owner parent directory at '${root}'`);
-        fs.mkdirSync(root, "0744");
+        fs.mkdirsSync(root);
     }
 
     return root;

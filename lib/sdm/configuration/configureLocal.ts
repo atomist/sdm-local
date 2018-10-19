@@ -26,6 +26,7 @@ import { eventStore } from "@atomist/automation-client/lib/globals";
 import { scanFreePort } from "@atomist/automation-client/lib/util/port";
 import { OnBuildComplete } from "@atomist/sdm";
 import {
+    isGitHubAction,
     isInLocalMode,
     LocalSoftwareDeliveryMachineConfiguration,
 } from "@atomist/sdm-core";
@@ -54,9 +55,13 @@ import {
 import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessageClient";
 import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
+import { InvokeFromGitHubAction } from "../invocation/github/InvokeFromGitHubAction";
 import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandlerInProcess";
 import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInProcess";
-import { defaultLocalSoftwareDeliveryMachineConfiguration } from "./defaultLocalSoftwareDeliveryMachineConfiguration";
+import {
+    defaultGitHubActionSoftwareDeliveryMachineConfiguration,
+    defaultLocalSoftwareDeliveryMachineConfiguration,
+} from "./defaultLocalSoftwareDeliveryMachineConfiguration";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 import { NotifyOnStartupAutomationEventListener } from "./support/NotifyOnStartupAutomationEventListener";
 
@@ -86,13 +91,16 @@ export function configureLocal(options: LocalConfigureOptions = { forceLocal: fa
         }
 
         // Don't mess with a non local SDM
-        if (!(options.forceLocal || isInLocalMode())) {
+        if (!(options.forceLocal || isInLocalMode() || isGitHubAction())) {
             return config;
         }
 
         const workspaceContext: LocalWorkspaceContext = new EnvConfigWorkspaceContextResolver().workspaceContext;
 
-        const defaultSdmConfiguration = defaultLocalSoftwareDeliveryMachineConfiguration(config, workspaceContext);
+        const defaultSdmConfiguration = isGitHubAction() ?
+            defaultGitHubActionSoftwareDeliveryMachineConfiguration(config) :
+            defaultLocalSoftwareDeliveryMachineConfiguration(config, workspaceContext);
+
         const mergedConfig = _.merge(defaultSdmConfiguration, config) as LocalSoftwareDeliveryMachineConfiguration;
 
         // Set up workspaceIds and apiKey
@@ -317,6 +325,9 @@ function configureListeners(configuration: Configuration) {
     }
     configuration.listeners.push(new NotifyOnCompletionAutomationEventListener());
     configuration.listeners.push(new NotifyOnStartupAutomationEventListener());
+    if (isGitHubAction()) {
+        configuration.listeners.push(new InvokeFromGitHubAction());
+    }
 }
 
 // TODO this looks out of place here
