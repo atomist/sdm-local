@@ -69,6 +69,7 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
                     handlerNames = ["FulfillGoalOnRequested"];
                     break;
                 case SdmGoalState.failure :
+                case SdmGoalState.stopped :
                     handlerNames = ["RespondOnGoalCompletion", "SkipDownstreamGoalsOnGoalFailure"];
                     break;
                 case SdmGoalState.success:
@@ -81,7 +82,6 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
                 case SdmGoalState.approved :
                 case SdmGoalState.waiting_for_pre_approval :
                 case SdmGoalState.pre_approved :
-                case SdmGoalState.stopped :
                 case SdmGoalState.canceled :
                     break;
                 default:
