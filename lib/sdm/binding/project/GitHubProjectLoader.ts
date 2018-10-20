@@ -16,6 +16,7 @@
 
 import { GitCommandGitProject } from "@atomist/automation-client";
 import {
+    CachingProjectLoader,
     ProjectLoader,
     ProjectLoadingParameters,
     WithLoadedProject,
@@ -23,7 +24,7 @@ import {
 
 export class GitHubProjectLoader implements ProjectLoader {
 
-    constructor(private readonly delegate: ProjectLoader) {
+    constructor(private readonly delegate: ProjectLoader = new CachingProjectLoader()) {
     }
 
     public doWithProject<T>(params: ProjectLoadingParameters, action: WithLoadedProject<T>): Promise<T> {
