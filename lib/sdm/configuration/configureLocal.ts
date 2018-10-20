@@ -55,6 +55,7 @@ import {
 import { BroadcastingMessageClient } from "../binding/message/BroadcastingMessageClient";
 import { GoalEventForwardingMessageClient } from "../binding/message/GoalEventForwardingMessageClient";
 import { HttpClientMessageClient } from "../binding/message/HttpClientMessageClient";
+import { GitHubProjectLoader } from "../binding/project/GitHubProjectLoader";
 import { InvokeFromGitHubAction } from "../invocation/github/InvokeFromGitHubAction";
 import { invokeCommandHandlerInProcess } from "../invocation/invokeCommandHandlerInProcess";
 import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInProcess";
@@ -119,6 +120,7 @@ export function configureLocal(options: LocalConfigureOptions = { forceLocal: fa
         configureMessageClientFactory(mergedConfig, workspaceContext, globalActionStore);
         configureGraphClient(mergedConfig);
         configureListeners(mergedConfig);
+        configureProjectLoader(mergedConfig);
 
         return mergedConfig;
     };
@@ -327,6 +329,12 @@ function configureListeners(configuration: Configuration) {
     configuration.listeners.push(new NotifyOnStartupAutomationEventListener());
     if (isGitHubAction()) {
         configuration.listeners.push(new InvokeFromGitHubAction());
+    }
+}
+
+function configureProjectLoader(configuration: Configuration) {
+    if (isGitHubAction()) {
+        configuration.sdm.projectLoader = new GitHubProjectLoader(configuration.sdm.projectLoader);
     }
 }
 
