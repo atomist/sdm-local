@@ -30,6 +30,7 @@ import {
     isInLocalMode,
     LocalSoftwareDeliveryMachineConfiguration,
 } from "@atomist/sdm-core";
+import { isConnectedGitHubAction } from "@atomist/sdm-core/lib/internal/machine/modes";
 import * as assert from "assert";
 import * as exp from "express";
 import * as exphbs from "express-handlebars";
@@ -86,7 +87,7 @@ export interface LocalConfigureOptions {
 export function configureLocal(options: LocalConfigureOptions = { forceLocal: false }): ConfigurationPostProcessor {
     return async (config: Configuration) => {
 
-        if (_.isEmpty(config.groups) && _.isEmpty(config.workspaceIds) && !isInLocalMode()) {
+        if (_.isEmpty(config.groups) && _.isEmpty(config.workspaceIds) && !isInLocalMode() && !isGitHubAction()) {
             throw new Error("No 'workspaceIds' provided in configuration. To start this SDM in local mode, run 'atomist start --local'. " +
                 "To connect to the Atomist API, please configure your 'workspaceIds' by running 'atomist config'");
         }
@@ -96,31 +97,36 @@ export function configureLocal(options: LocalConfigureOptions = { forceLocal: fa
             return config;
         }
 
-        const workspaceContext: LocalWorkspaceContext = new EnvConfigWorkspaceContextResolver().workspaceContext;
+        let mergedConfig: LocalSoftwareDeliveryMachineConfiguration = config as LocalSoftwareDeliveryMachineConfiguration;
 
-        const defaultSdmConfiguration = isGitHubAction() ?
-            defaultGitHubActionSoftwareDeliveryMachineConfiguration(config) :
-            defaultLocalSoftwareDeliveryMachineConfiguration(config, workspaceContext);
+        if (!isConnectedGitHubAction(mergedConfig)) {
+            const workspaceContext: LocalWorkspaceContext = new EnvConfigWorkspaceContextResolver().workspaceContext;
 
-        const mergedConfig = _.merge(defaultSdmConfiguration, config) as LocalSoftwareDeliveryMachineConfiguration;
+            const defaultSdmConfiguration = isGitHubAction() ?
+                defaultGitHubActionSoftwareDeliveryMachineConfiguration(mergedConfig) :
+                defaultLocalSoftwareDeliveryMachineConfiguration(mergedConfig, workspaceContext);
 
-        // Set up workspaceIds and apiKey
-        if (_.isEmpty(mergedConfig.workspaceIds)) {
-            mergedConfig.workspaceIds = [workspaceContext.workspaceId];
+            mergedConfig = _.merge(defaultSdmConfiguration, mergedConfig) as LocalSoftwareDeliveryMachineConfiguration;
+
+            // Set up workspaceIds and apiKey
+            if (_.isEmpty(mergedConfig.workspaceIds)) {
+                mergedConfig.workspaceIds = [workspaceContext.workspaceId];
+            }
+            if (_.isEmpty(config.apiKey)) {
+                mergedConfig.apiKey = guid();
+            }
+
+            mergedConfig.ws.enabled = false;
+
+            const globalActionStore = freshActionStore();
+
+            await configureWebEndpoints(mergedConfig, workspaceContext, globalActionStore);
+            configureMessageClientFactory(mergedConfig, workspaceContext, globalActionStore);
+            configureGraphClient(mergedConfig);
+            configureListeners(mergedConfig);
         }
-        if (_.isEmpty(config.apiKey)) {
-            mergedConfig.apiKey = guid();
-        }
 
-        mergedConfig.ws.enabled = false;
-
-        const globalActionStore = freshActionStore();
-
-        await configureWebEndpoints(mergedConfig, workspaceContext, globalActionStore);
-        configureMessageClientFactory(mergedConfig, workspaceContext, globalActionStore);
-        configureGraphClient(mergedConfig);
-        configureListeners(mergedConfig);
-        configureProjectLoader(mergedConfig);
+        configureForGitHubAction(mergedConfig);
 
         return mergedConfig;
     };
@@ -327,13 +333,11 @@ function configureListeners(configuration: Configuration) {
     }
     configuration.listeners.push(new NotifyOnCompletionAutomationEventListener());
     configuration.listeners.push(new NotifyOnStartupAutomationEventListener());
-    if (isGitHubAction()) {
-        configuration.listeners.push(new InvokeFromGitHubAction());
-    }
 }
 
-function configureProjectLoader(configuration: Configuration) {
+function configureForGitHubAction(configuration: Configuration) {
     if (isGitHubAction()) {
+        configuration.listeners.push(new InvokeFromGitHubAction());
         configuration.sdm.projectLoader = new GitHubProjectLoader(configuration.sdm.projectLoader);
     }
 }

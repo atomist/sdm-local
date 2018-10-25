@@ -42,6 +42,7 @@ import { expandedTreeRepoFinder } from "../binding/project/expandedTreeRepoFinde
 import { ExpandedTreeRepoRefResolver } from "../binding/project/ExpandedTreeRepoRefResolver";
 import { FileSystemProjectLoader } from "../binding/project/FileSystemProjectLoader";
 import { fileSystemProjectPersister } from "../binding/project/fileSystemProjectPersister";
+import { GitHubProjectLoader } from "../binding/project/GitHubProjectLoader";
 import { LocalRepoTargets } from "../binding/project/LocalRepoTargets";
 
 const DefaultAtomistRoot = path.join("atomist", "projects");
