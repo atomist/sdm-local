@@ -106,7 +106,7 @@ export function configureLocal(options: LocalConfigureOptions = { forceLocal: fa
                 defaultGitHubActionSoftwareDeliveryMachineConfiguration(mergedConfig) :
                 defaultLocalSoftwareDeliveryMachineConfiguration(mergedConfig, workspaceContext);
 
-            mergedConfig = _.merge(defaultSdmConfiguration, mergedConfig) as LocalSoftwareDeliveryMachineConfiguration;
+            mergedConfig = _.merge(defaultSdmConfiguration, mergedConfig);
 
             // Set up workspaceIds and apiKey
             if (_.isEmpty(mergedConfig.workspaceIds)) {
