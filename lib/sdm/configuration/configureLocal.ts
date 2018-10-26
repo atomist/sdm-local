@@ -200,7 +200,7 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
                 // TODO Hack to get image into the Push
                 eventStore().messages().filter(m => m.value.sha === payload.git.sha && m.value.goalSet && m.value.goalSetId)
                     .forEach(m => _.set(m.value, "push.after.image.imageName", payload.docker.image));
-                
+
                 const event = automationClientInstance().automations.automations.events.find(e => e.name === "FindArtifactOnImageLinked");
                 if (!event) {
                     return res.status(200).send(`Event 'FindArtifactOnImageLinked' not found`);
