@@ -74,9 +74,9 @@
     "@atomist/sdm-core": "*"
   },
   "devDependencies": {
-    "@atomist/automation-client": "1.0.0-master.20181017160341",
-    "@atomist/sdm": "1.0.0-master.20181018153716",
-    "@atomist/sdm-core": "1.0.0-github-actions.20181025204359",
+    "@atomist/automation-client": "1.0.0-master.20181025105548",
+    "@atomist/sdm": "1.0.0-master.20181026131748",
+    "@atomist/sdm-core": "1.0.0-github-actions.20181026130543",
     "@types/mocha": "^5.2.5",
     "@types/power-assert": "^1.5.0",
     "axios-mock-adapter": "^1.15.0",
