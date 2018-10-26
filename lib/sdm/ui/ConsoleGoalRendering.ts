@@ -140,7 +140,7 @@ export class ConsoleGoalRendering {
                 displayName: g.displayName,
                 goal: {
                     description: (ug ? ug.description : "") || "",
-                    url: (ug ? ug.externalUrl : "") || "",
+                    url: (ug && ug.externalUrls ? ug.externalUrls.map(e => e.url).join(" ") : "") || "",
                     stage: (ug ? ug.phase : "") || "",
                     state: ug ? ug.state : SdmGoalState.planned,
                 },
@@ -164,7 +164,7 @@ export class ConsoleGoalRendering {
         if (goalSet) {
             const gtu = goalSet.goals.find(g => g.name === goal.name);
             if (gtu) {
-                gtu.goal.url = goal.externalUrl || "";
+                gtu.goal.url = goal.externalUrls ? goal.externalUrls.map(e => e.url).join(" ") : "";
                 if (goal.state === SdmGoalState.failure || goal.state === SdmGoalState.in_process) {
                     gtu.goal.url = goal.url || "";
                 }

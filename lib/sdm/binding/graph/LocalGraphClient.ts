@@ -89,7 +89,7 @@ export class LocalGraphClient implements GraphClient {
             const sha = v.sha[0];
             const branch = v.branch[0];
             const version = eventStore().messages()
-                .find(m => m.value.sha === sha && m.value.version && m.value.branch === branch).value;
+                .find(m => !m.value.goalSetId && m.value.sha === sha && m.value.version && m.value.branch === branch).value;
             return {
                 SdmVersion: [{
                     version: version.version,

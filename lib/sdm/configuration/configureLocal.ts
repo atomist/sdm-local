@@ -211,12 +211,16 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
                 })(invocation);
             });
             app.post("/atomist/link-image/teams/:team", async (req, res) => {
+
+                const payload = req.body;
+                // TODO Hack to get image into the Push
+                eventStore().messages().filter(m => m.value.sha === payload.git.sha && m.value.goalSet && m.value.goalSetId)
+                    .forEach(m => _.set(m.value, "push.after.image.imageName", payload.docker.image));
+
                 const event = automationClientInstance().automations.automations.events.find(e => e.name === "FindArtifactOnImageLinked");
                 if (!event) {
                     return res.status(200).send(`Event 'FindArtifactOnImageLinked' not found`);
                 }
-
-                const payload = req.body;
                 const invocation: EventHandlerInvocation = {
                     name: "FindArtifactOnImageLinked",
                     payload: {
@@ -240,9 +244,6 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
                         }],
                     },
                 };
-                // TODO Hack to get image into the Push
-                eventStore().messages().filter(m => m.value.sha === payload.git.sha && m.value.goalSet && m.value.goalSetId)
-                    .forEach(m => _.set(m.value, "push.after.image.imageName", payload.docker.image));
                 return invokeEventHandlerInProcess(
                     { workspaceId: req.params.team, workspaceName: req.params.team })(invocation)
                     .then(resp => res.json(decircle(resp)),
