@@ -76,25 +76,20 @@ function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
         switch (gcl.completedGoal.state) {
             case SdmGoalState.success:
                 return gcl.addressChannels(`${pushIdentification(gcl.completedGoal.push)}
-${chalk.green(`✓ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${
-                    gcl.completedGoal.externalUrl ? `${linkIndicator()} ${chalk.grey(gcl.completedGoal.externalUrl)}` : ""}`);
+${chalk.green(`✓ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${links(gcl.completedGoal)}`);
             case SdmGoalState.stopped:
                 return gcl.addressChannels(`${pushIdentification(gcl.completedGoal.push)}
-${chalk.yellow(`▪ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${
-                    gcl.completedGoal.externalUrl ? `${linkIndicator()} ${chalk.grey(gcl.completedGoal.externalUrl)}` : ""}`);
+${chalk.yellow(`▪ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${links(gcl.completedGoal)}`);
             case SdmGoalState.canceled:
                 return gcl.addressChannels(`${pushIdentification(gcl.completedGoal.push)}
-${chalk.gray(`⁃ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${
-                    gcl.completedGoal.externalUrl ? `${linkIndicator()} ${chalk.grey(gcl.completedGoal.externalUrl)}` : ""}`);
+${chalk.gray(`⁃ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${links(gcl.completedGoal)}`);
             case SdmGoalState.skipped:
                 return gcl.addressChannels(`${pushIdentification(gcl.completedGoal.push)}
-${chalk.gray(`⬩ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${
-                    gcl.completedGoal.externalUrl ? `${linkIndicator()} ${chalk.grey(gcl.completedGoal.externalUrl)}` : ""}`);
+${chalk.gray(`⬩ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${links(gcl.completedGoal)}`);
             case SdmGoalState.failure:
                 return gcl.addressChannels(`${pushIdentification(gcl.completedGoal.push)}
 ${chalk.red(`⨯ ${goalIndentification(gcl.completedGoal)}`)} ${gcl.completedGoal.description}${
-                    gcl.completedGoal.url ? `${linkIndicator()} ${chalk.grey(gcl.completedGoal.url)}` : ""}${
-                    gcl.completedGoal.externalUrl ? `${linkIndicator()} ${chalk.grey(gcl.completedGoal.externalUrl)}` : ""}`);
+                    gcl.completedGoal.url ? `${linkIndicator()} ${chalk.grey(gcl.completedGoal.url)}` : ""}${links(gcl.completedGoal)}`);
         }
     });
     sdm.addGoalsSetListener(async gsi => {
@@ -120,4 +115,9 @@ ${chalk.yellow(`︎▸ ${goalIndentification(gci.goalEvent)}`)} ${gci.goalEvent.
                 break;
         }
     });
+}
+
+function links(sdmGoal: SdmGoalEvent): string {
+    return sdmGoal.externalUrls && sdmGoal.externalUrls.length > 0 ? `${
+        linkIndicator()} ${chalk.grey(sdmGoal.externalUrls.map(u => u.url).join(" "))}` : "";
 }
