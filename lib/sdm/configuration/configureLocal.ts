@@ -25,7 +25,6 @@ import {
     SlackMessageClient,
 } from "@atomist/automation-client";
 import { eventStore } from "@atomist/automation-client/lib/globals";
-import { AbstractRequestProcessor } from "@atomist/automation-client/lib/internal/transport/AbstractRequestProcessor";
 import { scanFreePort } from "@atomist/automation-client/lib/util/port";
 import { OnBuildComplete } from "@atomist/sdm";
 import {
