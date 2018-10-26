@@ -19,7 +19,6 @@ import {
     AutomationEventListenerSupport,
     EventIncoming,
     logger,
-    Secrets,
 } from "@atomist/automation-client";
 import {
     OnPushToAnyBranch,
@@ -29,14 +28,19 @@ import {
 import { DefaultGitHubApiUrl } from "@atomist/sdm-core/lib/util/lifecycleHelpers";
 import * as fs from "fs-extra";
 import { newCliCorrelationId } from "../../../cli/invocation/http/support/newCorrelationId";
+import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 
 export class InvokeFromGitHubAction extends AutomationEventListenerSupport {
+
+    constructor(private readonly workspaceContext: LocalWorkspaceContext) {
+        super();
+    }
 
     public async startupSuccessful(client: AutomationClient): Promise<void> {
         const event = process.env.GITHUB_EVENT_NAME;
         switch (event) {
             case "push":
-                return handlePush(client);
+                return handlePush(client, this.workspaceContext);
                 break;
             default:
                 logger.info(`Unknown GitHub event '${event}'`);
@@ -44,7 +48,8 @@ export class InvokeFromGitHubAction extends AutomationEventListenerSupport {
     }
 }
 
-async function handlePush(client: AutomationClient): Promise<void> {
+async function handlePush(client: AutomationClient,
+                          workspaceContext: LocalWorkspaceContext): Promise<void> {
     const event = await fs.readJSON(process.env.GITHUB_EVENT_PATH);
 
     const push: OnPushToAnyBranch.Push = {
@@ -88,14 +93,10 @@ async function handlePush(client: AutomationClient): Promise<void> {
         extensions: {
             operationName: "SetGoalsOnPush",
             correlation_id: await newCliCorrelationId(),
-            team_id: event.repository.owner.name,
-            team_name: event.repository.owner.name,
+            team_id: workspaceContext.workspaceId || event.repository.owner.name,
+            team_name: workspaceContext.workspaceName || event.repository.owner.name,
         },
         secrets: [
-            { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },
-            { uri: "github://org_token", value: process.env.GITHUB_TOKEN },
-            { uri: Secrets.OrgToken, value: process.env.GITHUB_TOKEN },
-            { uri: Secrets.UserToken, value: process.env.GITHUB_TOKEN },
         ],
     };
 

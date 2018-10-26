@@ -21,8 +21,11 @@ import {
     guid,
     HandlerResult,
     logger,
+    MessageClient,
+    SlackMessageClient,
 } from "@atomist/automation-client";
 import { eventStore } from "@atomist/automation-client/lib/globals";
+import { AbstractRequestProcessor } from "@atomist/automation-client/lib/internal/transport/AbstractRequestProcessor";
 import { scanFreePort } from "@atomist/automation-client/lib/util/port";
 import { OnBuildComplete } from "@atomist/sdm";
 import {
@@ -98,9 +101,9 @@ export function configureLocal(options: LocalConfigureOptions = { forceLocal: fa
         }
 
         let mergedConfig: LocalSoftwareDeliveryMachineConfiguration = config as LocalSoftwareDeliveryMachineConfiguration;
+        const workspaceContext: LocalWorkspaceContext = new EnvConfigWorkspaceContextResolver().workspaceContext;
 
         if (!isConnectedGitHubAction(mergedConfig)) {
-            const workspaceContext: LocalWorkspaceContext = new EnvConfigWorkspaceContextResolver().workspaceContext;
 
             const defaultSdmConfiguration = isGitHubAction() ?
                 defaultGitHubActionSoftwareDeliveryMachineConfiguration(mergedConfig) :
@@ -118,15 +121,15 @@ export function configureLocal(options: LocalConfigureOptions = { forceLocal: fa
 
             mergedConfig.ws.enabled = false;
 
-            const globalActionStore = freshActionStore();
-
-            await configureWebEndpoints(mergedConfig, workspaceContext, globalActionStore);
-            configureMessageClientFactory(mergedConfig, workspaceContext, globalActionStore);
-            configureGraphClient(mergedConfig);
-            configureListeners(mergedConfig);
         }
+        const globalActionStore = freshActionStore();
 
-        configureForGitHubAction(mergedConfig);
+        await configureWebEndpoints(mergedConfig, workspaceContext, globalActionStore);
+        configureMessageClientFactory(mergedConfig, workspaceContext, globalActionStore);
+        configureGraphClient(mergedConfig);
+        configureListeners(mergedConfig);
+
+        configureForGitHubAction(mergedConfig, workspaceContext);
 
         return mergedConfig;
     };
@@ -336,9 +339,9 @@ function configureListeners(configuration: Configuration) {
     configuration.listeners.push(new NotifyOnStartupAutomationEventListener());
 }
 
-function configureForGitHubAction(configuration: Configuration) {
+function configureForGitHubAction(configuration: Configuration, workspaceContext: LocalWorkspaceContext) {
     if (isGitHubAction()) {
-        configuration.listeners.push(new InvokeFromGitHubAction());
+        configuration.listeners.push(new InvokeFromGitHubAction(workspaceContext));
         configuration.sdm.projectLoader = new GitHubProjectLoader(configuration.sdm.projectLoader);
     }
 }
@@ -367,9 +370,18 @@ function configureMessageClientFactory(configuration: Configuration,
     configuration.http.messageClientFactory =
         aca => {
             assert(!!aca.context.correlationId);
+
+            // try to add the WebSocket message client in if it is available
+            let webSockerMessageClient: MessageClient & SlackMessageClient;
+            if (automationClientInstance().webSocketHandler) {
+                webSockerMessageClient = (automationClientInstance().webSocketHandler as any)
+                    .createMessageClient(aca.trigger, aca);
+            }
+
             const channel = parseChannel(aca.context.correlationId);
             const portToCommunicateToListenerOn = parsePort(aca.context.correlationId);
             return new BroadcastingMessageClient(
+                webSockerMessageClient,
                 new HttpClientMessageClient({
                     workspaceId: teamContext.workspaceId,
                     channel,
