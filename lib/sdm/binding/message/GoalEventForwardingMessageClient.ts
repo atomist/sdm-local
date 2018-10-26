@@ -21,12 +21,14 @@ import {
     MessageOptions,
     SlackMessageClient,
 } from "@atomist/automation-client";
+import { eventStore } from "@atomist/automation-client/lib/globals";
 import {
     OnAnyRequestedSdmGoal,
     SdmGoalKey,
     SdmGoalState,
 } from "@atomist/sdm";
 import { SlackMessage } from "@atomist/slack-messages";
+import * as _ from "lodash";
 import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";
 import { isValidSHA1 } from "../../../common/git/handlePushBasedEventOnRepo";
 import { invokeEventHandlerInProcess } from "../../invocation/invokeEventHandlerInProcess";
@@ -35,6 +37,8 @@ export function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
     state: SdmGoalState;
     sha: string;
     branch: string;
+    goalSetId: string;
+    push: any;
 }) {
     const maybe = o as SdmGoalKey;
     return !!maybe.name && !!maybe.environment;
@@ -86,6 +90,16 @@ export class GoalEventForwardingMessageClient implements MessageClient, SlackMes
                 default:
                     throw new Error(`Unexpected SdmGoalState '${msg.state}'`);
             }
+
+            const goals = _.cloneDeep(eventStore().messages()
+                .filter(m => m.value.sha === msg.sha
+                    && m.value.goalSet
+                    && m.value.goalSetId
+                    && (!msg.goalSetId || m.value.goalSetId === msg.goalSetId))
+                .map(m => m.value));
+            goals.forEach(g => delete g.push);
+            msg.push.goals = goals;
+
             const payload: OnAnyRequestedSdmGoal.Subscription = {
                 SdmGoal: [msg],
             };
