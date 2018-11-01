@@ -113,7 +113,7 @@ export function determineDefaultRepositoryOwnerParentDirectory() {
 
     if (!fs.existsSync(root)) {
         logger.info(`Creating Atomist repository owner parent directory at '${root}'`);
-        fs.mkdirSync(root, "0744");
+        fs.mkdirsSync(root);
     }
 
     return root;
