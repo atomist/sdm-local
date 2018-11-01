@@ -27,20 +27,16 @@ import {
 } from "@atomist/sdm";
 import { DefaultGitHubApiUrl } from "@atomist/sdm-core/lib/util/lifecycleHelpers";
 import * as fs from "fs-extra";
+import * as os from "os";
 import { newCliCorrelationId } from "../../../cli/invocation/http/support/newCorrelationId";
-import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 
 export class InvokeFromGitHubAction extends AutomationEventListenerSupport {
-
-    constructor(private readonly workspaceContext: LocalWorkspaceContext) {
-        super();
-    }
 
     public async startupSuccessful(client: AutomationClient): Promise<void> {
         const event = process.env.GITHUB_EVENT_NAME;
         switch (event) {
             case "push":
-                return handlePush(client, this.workspaceContext);
+                return handlePush(client);
                 break;
             default:
                 logger.info(`Unknown GitHub event '${event}'`);
@@ -48,8 +44,7 @@ export class InvokeFromGitHubAction extends AutomationEventListenerSupport {
     }
 }
 
-async function handlePush(client: AutomationClient,
-                          workspaceContext: LocalWorkspaceContext): Promise<void> {
+async function handlePush(client: AutomationClient): Promise<void> {
     const event = await fs.readJSON(process.env.GITHUB_EVENT_PATH);
 
     const push: OnPushToAnyBranch.Push = {
@@ -93,14 +88,14 @@ async function handlePush(client: AutomationClient,
         extensions: {
             operationName: "SetGoalsOnPush",
             correlation_id: await newCliCorrelationId(),
-            team_id: workspaceContext.workspaceId || event.repository.owner.name,
-            team_name: workspaceContext.workspaceName || event.repository.owner.name,
+            team_id: client.configuration.workspaceIds && client.configuration.workspaceIds.length > 0
+                ? client.configuration.workspaceIds[0] : event.repository.owner.name,
+            team_name: os.hostname(),
         },
-        secrets: [
-        ],
+        secrets: [],
     };
 
-    await client.processEvent(ei, async results => {
+    await client.httpHandler.processEvent(ei, async results => {
         const r = await results;
         logger.info(`Returned '${JSON.stringify(r)}'`);
     });

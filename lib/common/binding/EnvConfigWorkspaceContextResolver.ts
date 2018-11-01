@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { automationClientInstance } from "@atomist/automation-client";
 import {
     getUserConfig,
     resolveWorkspaceIds,
@@ -35,7 +36,11 @@ export class EnvConfigWorkspaceContextResolver implements WorkspaceContextResolv
     public get workspaceContext(): LocalWorkspaceContext {
         let userConfig: UserConfig;
         try {
-            userConfig = getUserConfig() || {};
+            if (automationClientInstance()) {
+                userConfig = automationClientInstance().configuration;
+            } else {
+                userConfig = getUserConfig();
+            }
         } catch (e) {
             warningMessage(`Failed to load user configuration, ignoring: ${e.message}`);
             userConfig = {};

@@ -99,9 +99,6 @@ export function defaultGitHubActionSoftwareDeliveryMachineConfiguration(
     const localSdmConfiguration = _.merge(defaultLocalSdmConfiguration, configuration.local);
 
     const sdmConfiguration: Partial<SoftwareDeliveryMachineOptions> = {
-        artifactStore: new EphemeralLocalArtifactStore(),
-        logFactory: async (context, goal) =>
-            new SimpleNodeLoggerProgressLog(configuration.name, goal.name, path.join(os.homedir(), ".atomist", "log")),
         credentialsResolver: new EnvironmentTokenCredentialsResolver(),
     };
 

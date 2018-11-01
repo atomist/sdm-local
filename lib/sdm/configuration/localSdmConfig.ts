@@ -74,10 +74,10 @@ export function exitOnGoalCompletion(): GoalCompletionListener {
             if (completedGoal.name === process.argv.slice(2).join(" ")) {
                 if (completedGoal.state === SdmGoalState.failure) {
                     logger.info("Exciting because %s failed", completedGoal.uniqueName);
-                    process.exit(1);
+                    setTimeout(() => process.exit(1), 5000);
                 } else {
                     logger.info("Exciting because goal was success or waiting");
-                    process.exit(0);
+                    setTimeout(() => process.exit(0), 5000);
                 }
             }
         } else {
@@ -86,11 +86,11 @@ export function exitOnGoalCompletion(): GoalCompletionListener {
 
             if (completedGoal.state === SdmGoalState.failure) {
                 logger.info("Exciting because %s failed", completedGoal.uniqueName);
-                process.exit(1);
+                setTimeout(() => process.exit(1), 5000);
             }
             if (allSuccessful(allGoals)) {
                 logger.info("Exciting because all goals success or waiting");
-                process.exit(0);
+                setTimeout(() => process.exit(0), 5000);
             }
         }
     };
