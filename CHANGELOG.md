@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-local/compare/1.0.1...HEAD)
 
+### Fixed
+
+-   Don't install local config and local lifecycle extension packs more then once
+
 ## [1.0.1](https://github.com/atomist/sdm-local/compare/1.0.0...1.0.1) - 2018-11-09
 
 ## [1.0.0](https://github.com/atomist/sdm-local/compare/1.0.0-RC.2...1.0.0) - 2018-11-09
