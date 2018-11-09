@@ -17,7 +17,9 @@
     "atomist",
     "automation",
     "sdm",
-    "local"
+    "local",
+    "ci",
+    "cd"
   ],
   "bugs": {
     "url": "https://github.com/atomist/sdm-local/issues"
