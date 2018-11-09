@@ -25,8 +25,7 @@
   "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "@atomist/microgrammar": "1.0.0-M.4",
-    "@atomist/slack-messages": "1.0.0",
+    "@atomist/microgrammar": "^1.0.1",
     "@types/body-parser": "^1.17.0",
     "@types/express": "^4.16.0",
     "@types/express-handlebars": "0.0.30",
@@ -34,64 +33,64 @@
     "@types/inquirer": "0.0.43",
     "@types/json-stringify-safe": "^5.0.0",
     "@types/jssha": "0.0.29",
-    "@types/lodash": "^4.14.116",
+    "@types/lodash": "^4.14.118",
     "@types/marked": "^0.4.0",
-    "@types/node": "^10.7.1",
+    "@types/node": "^10.12.3",
     "@types/node-notifier": "0.0.28",
     "@types/open": "0.0.29",
     "@types/serialize-error": "^2.1.0",
-    "@types/sprintf-js": "^1.1.0",
+    "@types/sprintf-js": "^1.1.1",
     "@types/strip-ansi": "^3.0.0",
-    "@types/yargs": "^11.1.1",
+    "@types/yargs": "^12.0.1",
     "ansi.js": "0.0.5",
     "axios": "^0.19.0-beta.1",
     "body-parser": "^1.18.3",
-    "boxen": "^1.3.0",
+    "boxen": "^2.0.0",
     "chalk": "^2.4.1",
     "express": "^4.16.3",
     "express-handlebars": "^3.0.0",
     "file-url": "^2.0.2",
     "format-date": "^1.0.0",
-    "fs-extra": "^7.0.0",
+    "fs-extra": "^7.0.1",
     "inquirer": "^6.0.0",
     "json-stringify-safe": "^5.0.1",
     "jssha": "^2.3.1",
     "lodash": "^4.17.10",
-    "marked": "^0.4.0",
+    "marked": "^0.5.1",
     "marked-terminal": "^3.0.0",
     "on-new-line": "^1.0.0",
-    "portfinder": "^1.0.17",
-    "serialize-error": "^2.1.0",
+    "portfinder": "^1.0.19",
+    "serialize-error": "^3.0.0",
     "simple-node-logger": "^0.93.37",
     "sprintf-js": "^1.1.1",
-    "strip-ansi": "^4.0.0",
-    "terminal-kit": "^1.26.2",
+    "strip-ansi": "^5.0.0",
+    "terminal-kit": "^1.26.4",
     "yargs": "^12.0.1"
   },
   "peerDependencies": {
-    "@atomist/automation-client": "*",
-    "@atomist/sdm": "*",
-    "@atomist/sdm-core": "*"
+    "@atomist/automation-client": ">=1.0.1",
+    "@atomist/sdm": ">=1.0.1",
+    "@atomist/sdm-core": ">=1.0.1",
+    "@atomist/slack-messages": ">=1.0.1"
   },
   "devDependencies": {
-    "@atomist/automation-client": "1.0.0-RC.2",
-    "@atomist/sdm": "1.0.0-RC.2",
-    "@atomist/sdm-core": "1.0.0-RC.2",
+    "@atomist/automation-client": "^1.0.1",
+    "@atomist/sdm": "^1.0.1",
+    "@atomist/sdm-core": "^1.0.1",
+    "@atomist/slack-messages": "^1.0.1",
     "@types/mocha": "^5.2.5",
     "@types/power-assert": "^1.5.0",
     "axios-mock-adapter": "^1.15.0",
     "espower-typescript": "^9.0.0",
     "mocha": "^5.2.0",
     "npm-run-all": "^4.1.3",
-    "nyc": "^13.0.1",
     "power-assert": "^1.6.0",
     "rimraf": "^2.6.2",
-    "source-map-support": "^0.5.9",
     "supervisor": "^0.12.0",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
-    "typedoc": "^0.11.1",
-    "typescript": "^2.9.2"
+    "typedoc": "^0.13.0",
+    "typescript": "^3.1.6"
   },
   "directories": {
     "test": "test"
@@ -110,29 +109,12 @@
     "doc": "typedoc --mode modules --excludeExternals --ignoreCompilerErrors --exclude \"**/*.d.ts\" --out doc index.ts lib",
     "lint": "tslint --format verbose --project . --exclude \"node_modules/**\" --exclude \"**/*.d.ts\" \"**/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
-    "test": "nyc mocha --require espower-typescript/guess --require source-map-support/register \"test/**/*est.ts\"",
+    "test": "mocha --require espower-typescript/guess --require source-map-support/register \"test/**/*est.ts\"",
     "test:one": "mocha --require espower-typescript/guess \"test/**/${TEST:-*est.ts}\"",
     "typedoc": "npm run doc"
   },
   "engines": {
     "node": ">=8.1.0",
     "npm": ">=5.0.0"
-  },
-  "nyc": {
-    "include": [
-      "lib/**/*.*"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "exclude": [
-      "lib/typings",
-      "**/*.d.ts"
-    ],
-    "reporter": [
-      "html",
-      "text-summary"
-    ],
-    "all": true
   }
 }
