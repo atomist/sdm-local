@@ -34,8 +34,6 @@ import {
 import * as _ from "lodash";
 import { DefaultWorkspaceId } from "../../common/binding/defaultWorkspaceContextResolver";
 import { configureLocal } from "../../sdm/configuration/configureLocal";
-import { LocalSdmConfig } from "../../sdm/configuration/localSdmConfig";
-import { LocalLifecycle } from "../../sdm/ui/localLifecycle";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { fetchMetadataFromAutomationClient } from "../invocation/http/fetchMetadataFromAutomationClient";
 
@@ -80,7 +78,7 @@ const createMachine = (options: EmbeddedMachineOptions) => (config: SoftwareDeli
             name: options.name || "Local bootstrap SDM",
             configuration: config,
         });
-    sdm.addExtensionPacks(...(options.extensionPacks || [LocalLifecycle]), LocalSdmConfig);
+    sdm.addExtensionPacks(...(options.extensionPacks || []));
     options.configure(sdm);
     return sdm;
 };
