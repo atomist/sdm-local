@@ -117,7 +117,7 @@ export function configureLocal(options: LocalConfigureOptions = { forceLocal: fa
 
             mergedConfig.ws.enabled = false;
         }
-        
+
         const globalActionStore = freshActionStore();
 
         await configureWebEndpoints(mergedConfig, workspaceContext, globalActionStore);
