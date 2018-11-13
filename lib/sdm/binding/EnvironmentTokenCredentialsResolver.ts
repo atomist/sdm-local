@@ -19,6 +19,7 @@ import {
     logger,
     Parameters,
     ProjectOperationCredentials,
+    TokenCredentials,
 } from "@atomist/automation-client";
 import { getUserConfig } from "@atomist/automation-client/lib/configuration";
 import {
@@ -47,7 +48,7 @@ export class EnvironmentTokenCredentialsResolver implements CredentialsResolver 
 
 const DefaultGitHubToken = "not.a.real.token";
 
-function credentialsFromEnvironment(): ProjectOperationCredentials {
+export function credentialsFromEnvironment(): TokenCredentials {
     let token;
     try {
         return { token: configurationValue<string>("token") };

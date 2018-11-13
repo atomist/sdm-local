@@ -21,6 +21,7 @@ import {
 } from "@atomist/automation-client";
 import { CommandHandlerInvoker } from "../../common/invocation/CommandHandlerInvocation";
 import { propertiesToArgs } from "../../common/util/propertiesToArgs";
+import { credentialsFromEnvironment } from "../binding/EnvironmentTokenCredentialsResolver";
 
 export type CommandHandlerCallback = (result: Promise<HandlerResult>) => void;
 const DefaultCommandHandlerCallback = () => { /* intentionally left empty */ };
@@ -35,7 +36,7 @@ export function invokeCommandHandlerInProcess(callback: CommandHandlerCallback =
                 { name: "slackTeam", value: invocation.workspaceId },
             ]).concat(parameters), // mapped parameters can also be passed in
             secrets: (invocation.secrets || []).concat([
-                { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },
+                { uri: "github://user_token?scopes=repo,user:email,read:user", value: credentialsFromEnvironment().token },
             ]),
             // tslint:disable-next-line:variable-name
             correlation_id: invocation.correlationId,
