@@ -44,6 +44,7 @@ export function invokeEventHandlerInProcess(workspaceContext: LocalWorkspaceCont
         const team_id = workspaceContext.workspaceId;
         // tslint:disable-next-line:variable-name
         const team_name = workspaceContext.workspaceName;
+        const token = credentialsFromEnvironment().token;
 
         const data = {
             extensions: {
@@ -54,10 +55,10 @@ export function invokeEventHandlerInProcess(workspaceContext: LocalWorkspaceCont
                 correlation_id: correlationId || await newCliCorrelationId(),
             },
             secrets: (invocation.secrets || []).concat([
-                { uri: "github://user_token?scopes=repo,user:email,read:user", value: credentialsFromEnvironment().token },
-                { uri: "github://org_token", value: credentialsFromEnvironment().token },
-                { uri: Secrets.OrgToken, value: credentialsFromEnvironment().token },
-                { uri: Secrets.UserToken, value: credentialsFromEnvironment().token },
+                { uri: "github://user_token?scopes=repo,user:email,read:user", value: token },
+                { uri: "github://org_token", value: token },
+                { uri: Secrets.OrgToken, value: token },
+                { uri: Secrets.UserToken, value: token },
             ]),
             api_version: "1",
             data: invocation.payload,

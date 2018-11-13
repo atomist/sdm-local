@@ -55,6 +55,7 @@ export function invokeEventHandlerUsingHttp(location: AutomationClientConnection
                                             target: InvocationTarget): EventSender {
     assert(!!target);
     return async invocation => {
+        const token = credentialsFromEnvironment().token;
         const data = {
             extensions: {
                 operationName: invocation.name,
@@ -64,10 +65,10 @@ export function invokeEventHandlerUsingHttp(location: AutomationClientConnection
                 correlation_id: target.correlationId || await newCliCorrelationId(),
             },
             secrets: (invocation.secrets || []).concat([
-                { uri: "github://user_token?scopes=repo,user:email,read:user", value: credentialsFromEnvironment().token },
-                { uri: "github://org_token", value: credentialsFromEnvironment().token },
-                { uri: Secrets.OrgToken, value: credentialsFromEnvironment().token },
-                { uri: Secrets.UserToken, value: credentialsFromEnvironment().token },
+                { uri: "github://user_token?scopes=repo,user:email,read:user", value: token },
+                { uri: "github://org_token", value: token },
+                { uri: Secrets.OrgToken, value: token },
+                { uri: Secrets.UserToken, value: token },
             ]),
             api_version: "1",
             data: invocation.payload,
