@@ -30,6 +30,7 @@ import * as inquirer from "inquirer";
 import * as _ from "lodash";
 import { CommandHandlerInvocation } from "../../../../common/invocation/CommandHandlerInvocation";
 import { InvocationTarget } from "../../../../common/invocation/InvocationTarget";
+import { credentialsFromEnvironment } from "../../../../sdm/binding/EnvironmentTokenCredentialsResolver";
 import { ExtraParametersMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/CommandLineMappedParameterResolver";
 import { FromAnyMappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/FromAnyMappedParameterResolver";
 import { MappedParameterResolver } from "../../../../sdm/binding/mapped-parameter/MappedParameterResolver";
@@ -93,7 +94,7 @@ export async function runCommandOnColocatedAutomationClient(connectionConfig: Au
         .map(name => ({ name: convertToUsable(name), value: command[name] }))
         .filter(keep => !!keep.value);
     const args = [
-        { name: "github://user_token?scopes=repo,user:email,read:user", value: null },
+        { name: "github://user_token?scopes=repo,user:email,read:user", value: credentialsFromEnvironment().token },
     ]
         .concat(extraArgs);
     await promptForMissingParameters(hm, args);
