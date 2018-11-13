@@ -23,6 +23,7 @@ import { replacer } from "@atomist/automation-client/lib/internal/transport/Abst
 import * as stringify from "json-stringify-safe";
 import { EventSender } from "../../../common/invocation/EventHandlerInvocation";
 import { InvocationTarget } from "../../../common/invocation/InvocationTarget";
+import { credentialsFromEnvironment } from "../../../sdm/binding/EnvironmentTokenCredentialsResolver";
 import { AutomationClientConnectionRequest } from "./AutomationClientConnectionRequest";
 import { postToSdm } from "./support/httpInvoker";
 import { newCliCorrelationId } from "./support/newCorrelationId";
@@ -63,10 +64,10 @@ export function invokeEventHandlerUsingHttp(location: AutomationClientConnection
                 correlation_id: target.correlationId || await newCliCorrelationId(),
             },
             secrets: (invocation.secrets || []).concat([
-                { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },
-                { uri: "github://org_token", value: process.env.GITHUB_TOKEN },
-                { uri: Secrets.OrgToken, value: process.env.GITHUB_TOKEN },
-                { uri: Secrets.UserToken, value: process.env.GITHUB_TOKEN },
+                { uri: "github://user_token?scopes=repo,user:email,read:user", value: credentialsFromEnvironment().token },
+                { uri: "github://org_token", value: credentialsFromEnvironment().token },
+                { uri: Secrets.OrgToken, value: credentialsFromEnvironment().token },
+                { uri: Secrets.UserToken, value: credentialsFromEnvironment().token },
             ]),
             api_version: "1",
             data: invocation.payload,

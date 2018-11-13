@@ -27,6 +27,7 @@ import * as assert from "power-assert";
 import { newCliCorrelationId } from "../../cli/invocation/http/support/newCorrelationId";
 import { EventSender } from "../../common/invocation/EventHandlerInvocation";
 import { LocalWorkspaceContext } from "../../common/invocation/LocalWorkspaceContext";
+import { credentialsFromEnvironment } from "../binding/EnvironmentTokenCredentialsResolver";
 
 /**
  * Invoke an event handler on the automation client at the given location
@@ -53,10 +54,10 @@ export function invokeEventHandlerInProcess(workspaceContext: LocalWorkspaceCont
                 correlation_id: correlationId || await newCliCorrelationId(),
             },
             secrets: (invocation.secrets || []).concat([
-                { uri: "github://user_token?scopes=repo,user:email,read:user", value: process.env.GITHUB_TOKEN },
-                { uri: "github://org_token", value: process.env.GITHUB_TOKEN },
-                { uri: Secrets.OrgToken, value: process.env.GITHUB_TOKEN },
-                { uri: Secrets.UserToken, value: process.env.GITHUB_TOKEN },
+                { uri: "github://user_token?scopes=repo,user:email,read:user", value: credentialsFromEnvironment().token },
+                { uri: "github://org_token", value: credentialsFromEnvironment().token },
+                { uri: Secrets.OrgToken, value: credentialsFromEnvironment().token },
+                { uri: Secrets.UserToken, value: credentialsFromEnvironment().token },
             ]),
             api_version: "1",
             data: invocation.payload,
