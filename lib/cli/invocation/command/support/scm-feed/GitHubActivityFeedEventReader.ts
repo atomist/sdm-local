@@ -16,7 +16,11 @@
 
 import { authHeaders } from "@atomist/sdm-core/lib/util/github/ghub";
 import axios from "axios";
-import { FeedEvent, FeedEventReader, ScmFeedCriteria } from "./FeedEvent";
+import {
+    FeedEvent,
+    FeedEventReader,
+    ScmFeedCriteria,
+} from "./FeedEvent";
 
 export class GitHubActivityFeedEventReader implements FeedEventReader {
 

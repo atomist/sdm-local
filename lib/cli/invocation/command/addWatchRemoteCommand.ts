@@ -15,7 +15,11 @@
  */
 
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
-import { errorMessage, infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
+import {
+    errorMessage,
+    infoMessage,
+    logExceptionsToConsole,
+} from "../../ui/consoleOutput";
 import { ScmFeedCriteria } from "./support/scm-feed/FeedEvent";
 import { GitHubActivityFeedEventReader } from "./support/scm-feed/GitHubActivityFeedEventReader";
 import { startWatching } from "./support/scm-feed/watcher";
