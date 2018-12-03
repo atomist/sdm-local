@@ -22,7 +22,10 @@ import {
 } from "../../ui/consoleOutput";
 import { ScmFeedCriteria } from "./support/scm-feed/FeedEvent";
 import { GitHubActivityFeedEventReader } from "./support/scm-feed/GitHubActivityFeedEventReader";
-import { DefaultPollingIntervalSeconds, startWatching } from "./support/scm-feed/watcher";
+import {
+    DefaultPollingIntervalSeconds,
+    startWatching,
+} from "./support/scm-feed/watcher";
 import { YargBuilder } from "./support/yargBuilder";
 
 /**

@@ -19,7 +19,10 @@ import * as fs from "fs-extra";
 import { promisify } from "util";
 import { doForever } from "../../../../../common/util/scheduling";
 import { dirFor } from "../../../../../sdm/binding/project/expandedTreeUtils";
-import { errorMessage, infoMessage } from "../../../../ui/consoleOutput";
+import {
+    errorMessage,
+    infoMessage,
+} from "../../../../ui/consoleOutput";
 import {
     FeedEventReader,
     isPushEvent,
