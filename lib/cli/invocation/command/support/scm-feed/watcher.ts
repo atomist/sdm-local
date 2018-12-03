@@ -19,30 +19,36 @@ import * as fs from "fs-extra";
 import { promisify } from "util";
 import { dirFor } from "../../../../../sdm/binding/project/expandedTreeUtils";
 import { infoMessage } from "../../../../ui/consoleOutput";
-import {
-    FeedCriteria,
-    isPushEvent,
-    PushEvent,
-    readGitHubActivityFeed,
-} from "./gitHubActivityFeed";
+import { doForever } from "../../../../../common/util/scheduling";
+import { FeedEventReader, isPushEvent, ScmFeedCriteria } from "./FeedEvent";
 
-// Events we've already seen in this process
-const alreadySeen: PushEvent[] = [];
+export const DefaultPollingIntervalSeconds = 10;
+
+export async function startWatching(criteria: ScmFeedCriteria,
+                                    setup: {
+                                        repositoryOwnerParentDirectory: string,
+                                        intervalSeconds?: number,
+                                        feedEventReader: FeedEventReader,
+                                    }): Promise<void> {
+    await doForever(async () => {
+        await updateClonedProjects(criteria, setup);
+    }, 1000 * (setup.intervalSeconds || DefaultPollingIntervalSeconds));
+}
 
 /**
  * Update projects based on commit criteria
- * @param {FeedCriteria} criteria
  * @param {{repositoryOwnerParentDirectory: string}} setup
  * @return {Promise<void>}
  */
-export async function updatePushedProjects(criteria: FeedCriteria,
-                                           setup: {
-                                               repositoryOwnerParentDirectory: string,
-                                           }): Promise<void> {
-    infoMessage("Reading GitHub activity feed for %s...", criteria.owner);
-    const newEvents = (await readGitHubActivityFeed(criteria))
-        .filter(isPushEvent)
-        .filter(pe => !alreadySeen.some(seen => seen.id === pe.id));
+async function updateClonedProjects(
+    criteria: ScmFeedCriteria,
+    setup: {
+        repositoryOwnerParentDirectory: string,
+        feedEventReader: FeedEventReader,
+    }): Promise<void> {
+    infoMessage("Reading SCM activity feed for %s...", criteria.owner);
+    const newEvents = (await setup.feedEventReader.readNewEvents())
+        .filter(isPushEvent);
     for (const pushEvent of newEvents) {
         // Update to events
         const repoName = pushEvent.repo.name.substring(pushEvent.repo.name.indexOf("/"));
@@ -55,5 +61,4 @@ export async function updatePushedProjects(criteria: FeedCriteria,
             infoMessage(`Ignoring push to ${repoName} as expected directory does not exist: '${dir}'`);
         }
     }
-    alreadySeen.push(...newEvents);
 }

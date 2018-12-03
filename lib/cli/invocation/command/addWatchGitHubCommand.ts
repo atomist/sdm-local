@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-import { doForever } from "../../../common/util/scheduling";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
-import {
-    infoMessage,
-    logExceptionsToConsole,
-} from "../../ui/consoleOutput";
-import { updatePushedProjects } from "./support/github-feed/updatePushedProjects";
+import { infoMessage, logExceptionsToConsole, } from "../../ui/consoleOutput";
 import { YargBuilder } from "./support/yargBuilder";
+import { startWatching } from "./support/scm-feed/watcher";
+import { GitHubActivityFeedEventReader } from "./support/scm-feed/GitHubActivityFeedEventReader";
+import { ScmFeedCriteria } from "./support/scm-feed/FeedEvent";
 
 /**
  * Watch the given GitHub org, updating any projects we have cloned.
@@ -29,6 +27,7 @@ import { YargBuilder } from "./support/yargBuilder";
  * @param {YargBuilder} yargs
  */
 export function addWatchGitHubCommand(yargs: YargBuilder) {
+    // TODO parse out name
     yargs.command({
         command: "watch github <args>",
         describe: "Watch the given GitHub org " +
@@ -61,18 +60,21 @@ export function addWatchGitHubCommand(yargs: YargBuilder) {
             const token: string = null;
             infoMessage("Starting polling GitHub owner %s every %d seconds...", args.owner, args.seconds);
             infoMessage("Terminate process to stop polling. An SDM must be running");
+            const criteria: ScmFeedCriteria = {
+                owner: args.owner,
+                user: args.user === true,
+                token,
+                apiBase: args.apiBase,
+            };
+            const feedEventReader = new GitHubActivityFeedEventReader(criteria);
             return logExceptionsToConsole(async () => {
-                await doForever(async () => {
-                    await updatePushedProjects({
-                        owner: args.owner,
-                        user: args.user === true,
-                        token,
-                        apiBase: args.apiBase,
-                    }, {
-                        repositoryOwnerParentDirectory: determineDefaultRepositoryOwnerParentDirectory(),
-                    });
-                }, 1000 * args.seconds);
+                await startWatching( criteria, {
+                    repositoryOwnerParentDirectory: determineDefaultRepositoryOwnerParentDirectory(),
+                    intervalSeconds: args.seconds,
+                    feedEventReader,
+                });
             }, true);
         },
     });
 }
+
