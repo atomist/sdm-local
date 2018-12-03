@@ -81,7 +81,7 @@ export async function initiateWatch(args: {
     infoMessage("Terminate process to stop polling. An SDM must be running\n");
     const criteria: ScmFeedCriteria = {
         owner: args.owner,
-        user: args.user === true,
+        user: args.user,
         token,
         apiBase: args.apiBase,
     };
