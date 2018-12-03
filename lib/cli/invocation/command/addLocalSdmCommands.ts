@@ -34,7 +34,7 @@ import { addIntentsAsCommands } from "./addIntentsAsCommands";
 import { addReplayCommand } from "./addReplayCommand";
 import { addShowSdmsCommand } from "./addShowSdmsCommand";
 import { addStartSdmDeliveryMachine } from "./addStartSdmDeliveryMachine";
-import { addWatchGitHubCommand } from "./addWatchGitHubCommand";
+import { addWatchRemoteCommand } from "./addWatchRemoteCommand";
 import { addShowSkillsCommand } from "./showSkillsCommand";
 import {
     freshYargBuilder,
@@ -69,7 +69,7 @@ export async function addLocalSdmCommands(yargs: Argv | YargBuilder,
 
     addCloneCommand(clients, yargBuilder, workspaceContextResolver);
     addGitHubImportCommand(clients, yargBuilder, workspaceContextResolver);
-    addWatchGitHubCommand(yargBuilder);
+    addWatchRemoteCommand(yargBuilder);
 
     // TODO filter on working directories
     for (const client of clients) {

@@ -17,9 +17,9 @@
 import { exec } from "child_process";
 import * as fs from "fs-extra";
 import { promisify } from "util";
+import { doForever } from "../../../../../common/util/scheduling";
 import { dirFor } from "../../../../../sdm/binding/project/expandedTreeUtils";
 import { infoMessage } from "../../../../ui/consoleOutput";
-import { doForever } from "../../../../../common/util/scheduling";
 import { FeedEventReader, isPushEvent, ScmFeedCriteria } from "./FeedEvent";
 
 export const DefaultPollingIntervalSeconds = 10;

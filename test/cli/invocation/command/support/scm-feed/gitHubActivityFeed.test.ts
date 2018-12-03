@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { GitHubActivityFeedEventReader } from "../../../../../../lib/cli/invocation/command/support/scm-feed/GitHubActivityFeedEventReader";
 import { isPushEvent } from "../../../../../../lib/cli/invocation/command/support/scm-feed/FeedEvent";
+import { GitHubActivityFeedEventReader } from "../../../../../../lib/cli/invocation/command/support/scm-feed/GitHubActivityFeedEventReader";
 
 describe("gitHubActivityFeed", () => {
 

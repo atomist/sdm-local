@@ -15,25 +15,30 @@
  */
 
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
-import { infoMessage, logExceptionsToConsole, } from "../../ui/consoleOutput";
-import { YargBuilder } from "./support/yargBuilder";
-import { startWatching } from "./support/scm-feed/watcher";
-import { GitHubActivityFeedEventReader } from "./support/scm-feed/GitHubActivityFeedEventReader";
+import { errorMessage, infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
 import { ScmFeedCriteria } from "./support/scm-feed/FeedEvent";
+import { GitHubActivityFeedEventReader } from "./support/scm-feed/GitHubActivityFeedEventReader";
+import { startWatching } from "./support/scm-feed/watcher";
+import { YargBuilder } from "./support/yargBuilder";
 
 /**
- * Watch the given GitHub org, updating any projects we have cloned.
+ * Watch the given SCM org, updating any projects we have cloned.
  * This will fire events to any running SDMs.
  * @param {YargBuilder} yargs
  */
-export function addWatchGitHubCommand(yargs: YargBuilder) {
-    // TODO parse out name
+export function addWatchRemoteCommand(yargs: YargBuilder) {
     yargs.command({
-        command: "watch github <args>",
-        describe: "Watch the given GitHub org " +
+        command: "watch remote <args>",
+        describe: "Watch directories cloned from the given SCM org " +
         `under the Atomist root at ${determineDefaultRepositoryOwnerParentDirectory()}`,
         builder: a => {
-            a.option("seconds", {
+            a.option("provider", {
+                type: "string",
+                default: "github",
+                description: "SCM provider",
+                required: false,
+                choices: ["github"],
+            }).option("seconds", {
                 type: "number",
                 default: 30,
                 description: "Seconds to wait between polling",
@@ -66,9 +71,13 @@ export function addWatchGitHubCommand(yargs: YargBuilder) {
                 token,
                 apiBase: args.apiBase,
             };
+            if (args.provider !== "github") {
+                errorMessage("Only GitHub polling supported for now");
+                process.exit(1);
+            }
             const feedEventReader = new GitHubActivityFeedEventReader(criteria);
             return logExceptionsToConsole(async () => {
-                await startWatching( criteria, {
+                await startWatching(criteria, {
                     repositoryOwnerParentDirectory: determineDefaultRepositoryOwnerParentDirectory(),
                     intervalSeconds: args.seconds,
                     feedEventReader,
@@ -77,4 +86,3 @@ export function addWatchGitHubCommand(yargs: YargBuilder) {
         },
     });
 }
-

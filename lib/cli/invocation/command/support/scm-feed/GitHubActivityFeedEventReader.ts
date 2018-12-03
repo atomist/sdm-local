@@ -29,13 +29,14 @@ export class GitHubActivityFeedEventReader implements FeedEventReader {
     public async readNewEvents(): Promise<FeedEvent[]> {
         // TODO how many events do you get
         const config = authHeaders(this.criteria.token);
-        const url = `${this.criteria.scheme || "https://"}${this.criteria.apiBase || "api.github.com"}/${!!this.criteria.user ? "users" : "orgs"}/${this.criteria.owner}/events`;
+        const url = `${this.criteria.scheme || "https://"}${this.criteria.apiBase || "api.github.com"}/${
+            !!this.criteria.user ? "users" : "orgs"}/${this.criteria.owner}/events`;
         // TODO why do we need this cast?
         const r = await
         axios.get(url, config as any);
         const eventsRead = r.data as FeedEvent[];
         const newEvents = eventsRead.filter(
-            e => !this.eventWindow.some(seen => seen.id === e.id)
+            e => !this.eventWindow.some(seen => seen.id === e.id),
         );
         return newEvents;
     }
