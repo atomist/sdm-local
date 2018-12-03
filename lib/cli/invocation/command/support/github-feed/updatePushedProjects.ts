@@ -19,7 +19,12 @@ import * as fs from "fs-extra";
 import { promisify } from "util";
 import { dirFor } from "../../../../../sdm/binding/project/expandedTreeUtils";
 import { infoMessage } from "../../../../ui/consoleOutput";
-import { FeedCriteria, isPushEvent, PushEvent, readGitHubActivityFeed } from "./gitHubActivityFeed";
+import {
+    FeedCriteria,
+    isPushEvent,
+    PushEvent,
+    readGitHubActivityFeed,
+} from "./gitHubActivityFeed";
 
 // Events we've already seen in this process
 const alreadySeen: PushEvent[] = [];

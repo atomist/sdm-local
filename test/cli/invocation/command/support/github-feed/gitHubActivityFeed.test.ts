@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { isPushEvent, readGitHubActivityFeed } from "../../../../../../lib/cli/invocation/command/support/github-feed/gitHubActivityFeed";
+import {
+    isPushEvent,
+    readGitHubActivityFeed,
+} from "../../../../../../lib/cli/invocation/command/support/github-feed/gitHubActivityFeed";
 
 describe("gitHubActivityFeed", () => {
 

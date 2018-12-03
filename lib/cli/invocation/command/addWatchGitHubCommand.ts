@@ -16,7 +16,10 @@
 
 import { doForever } from "../../../common/util/scheduling";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
-import { infoMessage, logExceptionsToConsole } from "../../ui/consoleOutput";
+import {
+    infoMessage,
+    logExceptionsToConsole,
+} from "../../ui/consoleOutput";
 import { updatePushedProjects } from "./support/github-feed/updatePushedProjects";
 import { YargBuilder } from "./support/yargBuilder";
 
