@@ -55,4 +55,10 @@ export interface FeedEventReader {
      */
     readNewEvents(): Promise<FeedEvent[]>;
 
+    /**
+     * Perform whatever startup is necessary, such as ignoring previous events
+     * @return {Promise<void>}
+     */
+    start(): Promise<void>;
+
 }

@@ -23,9 +23,10 @@ import * as asyncPolling from "async-polling";
  * @return {Promise<void>}
  */
 export async function doForever(f: () => Promise<void>, intervalMillis: number) {
-    const polling = asyncPolling(async () => {
+    const polling = asyncPolling(async end => {
         // We never finish
         await f();
+        end(null, "And again...");
     }, intervalMillis);
 
     polling.on("error", (error: Error) => {

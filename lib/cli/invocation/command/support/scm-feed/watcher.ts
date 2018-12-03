@@ -19,7 +19,7 @@ import * as fs from "fs-extra";
 import { promisify } from "util";
 import { doForever } from "../../../../../common/util/scheduling";
 import { dirFor } from "../../../../../sdm/binding/project/expandedTreeUtils";
-import { infoMessage } from "../../../../ui/consoleOutput";
+import { errorMessage, infoMessage } from "../../../../ui/consoleOutput";
 import {
     FeedEventReader,
     isPushEvent,
@@ -28,14 +28,25 @@ import {
 
 export const DefaultPollingIntervalSeconds = 10;
 
+/**
+ * Start watching this remote org
+ * @param {ScmFeedCriteria} criteria
+ * @param {{repositoryOwnerParentDirectory: string; intervalSeconds?: number; feedEventReader: FeedEventReader}} setup
+ * @return {Promise<void>}
+ */
 export async function startWatching(criteria: ScmFeedCriteria,
                                     setup: {
                                         repositoryOwnerParentDirectory: string,
                                         intervalSeconds?: number,
                                         feedEventReader: FeedEventReader,
                                     }): Promise<void> {
+    await setup.feedEventReader.start();
     await doForever(async () => {
-        await updateClonedProjects(criteria, setup);
+        try {
+            await updateClonedProjects(criteria, setup);
+        } catch (e) {
+            errorMessage("Error attempting to poll SCM provider: %s", e.message);
+        }
     }, 1000 * (setup.intervalSeconds || DefaultPollingIntervalSeconds));
 }
 
@@ -50,19 +61,19 @@ async function updateClonedProjects(
         repositoryOwnerParentDirectory: string,
         feedEventReader: FeedEventReader,
     }): Promise<void> {
-    infoMessage("Reading SCM activity feed for %s...", criteria.owner);
+    infoMessage("[%s] Reading SCM activity feed for %s...\n", new Date().toLocaleString(), criteria.owner);
     const newEvents = (await setup.feedEventReader.readNewEvents())
         .filter(isPushEvent);
     for (const pushEvent of newEvents) {
         // Update to events
-        const repoName = pushEvent.repo.name.substring(pushEvent.repo.name.indexOf("/"));
+        const repoName = pushEvent.repo.name.substring(pushEvent.repo.name.indexOf("/")).replace("/", "");
         const dir = dirFor(setup.repositoryOwnerParentDirectory, criteria.owner, repoName);
-        if (!fs.existsSync(dir)) {
-            infoMessage(`Updating directory at: '${dir}'`);
+        if (fs.existsSync(dir)) {
+            infoMessage("Updating directory at: '%s'\n", dir);
             // Update. Must not update this directory.
             await promisify(exec)("git pull", { cwd: dir });
         } else {
-            infoMessage(`Ignoring push to ${repoName} as expected directory does not exist: '${dir}'`);
+            infoMessage("Ignoring push to unmanaged project %s/%s - expected directory does not exist: '%s'\n", criteria.owner, repoName, dir);
         }
     }
 }

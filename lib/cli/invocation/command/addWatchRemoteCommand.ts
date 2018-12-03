@@ -22,7 +22,7 @@ import {
 } from "../../ui/consoleOutput";
 import { ScmFeedCriteria } from "./support/scm-feed/FeedEvent";
 import { GitHubActivityFeedEventReader } from "./support/scm-feed/GitHubActivityFeedEventReader";
-import { startWatching } from "./support/scm-feed/watcher";
+import { DefaultPollingIntervalSeconds, startWatching } from "./support/scm-feed/watcher";
 import { YargBuilder } from "./support/yargBuilder";
 
 /**
@@ -64,29 +64,37 @@ export function addWatchRemoteCommand(yargs: YargBuilder) {
             });
             return a;
         },
-        handler: args => {
-            // TODO set this
-            const token: string = null;
-            infoMessage("Starting polling GitHub owner %s every %d seconds...", args.owner, args.seconds);
-            infoMessage("Terminate process to stop polling. An SDM must be running");
-            const criteria: ScmFeedCriteria = {
-                owner: args.owner,
-                user: args.user === true,
-                token,
-                apiBase: args.apiBase,
-            };
-            if (args.provider !== "github") {
-                errorMessage("Only GitHub polling supported for now");
-                process.exit(1);
-            }
-            const feedEventReader = new GitHubActivityFeedEventReader(criteria);
-            return logExceptionsToConsole(async () => {
-                await startWatching(criteria, {
-                    repositoryOwnerParentDirectory: determineDefaultRepositoryOwnerParentDirectory(),
-                    intervalSeconds: args.seconds,
-                    feedEventReader,
-                });
-            }, true);
-        },
+        handler: args => initiateWatch(args as any),
     });
+}
+
+export async function initiateWatch(args: {
+    owner: string,
+    user?: boolean,
+    apiBase?: string,
+    provider: "github",
+    seconds?: number,
+}): Promise<void> {
+    const token: string = process.env.GITHUB_TOKEN || undefined;
+    const intervalSeconds = args.seconds || DefaultPollingIntervalSeconds;
+    infoMessage("Starting polling GitHub owner %s every %d seconds...\n", args.owner, intervalSeconds);
+    infoMessage("Terminate process to stop polling. An SDM must be running\n");
+    const criteria: ScmFeedCriteria = {
+        owner: args.owner,
+        user: args.user === true,
+        token,
+        apiBase: args.apiBase,
+    };
+    if (args.provider !== "github") {
+        errorMessage("Only GitHub polling supported for now");
+        process.exit(1);
+    }
+    const feedEventReader = new GitHubActivityFeedEventReader(criteria);
+    await logExceptionsToConsole(async () => {
+        await startWatching(criteria, {
+            repositoryOwnerParentDirectory: determineDefaultRepositoryOwnerParentDirectory(),
+            intervalSeconds: args.seconds,
+            feedEventReader,
+        });
+    }, true);
 }

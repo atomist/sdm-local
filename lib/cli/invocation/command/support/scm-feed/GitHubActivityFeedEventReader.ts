@@ -27,7 +27,7 @@ export class GitHubActivityFeedEventReader implements FeedEventReader {
     public readonly eventWindow: FeedEvent[] = [];
 
     /**
-     * Read the GitHubActivityFeed
+     * Read the GitHub activity feed
      * @return {Promise<void>}
      */
     public async readNewEvents(): Promise<FeedEvent[]> {
@@ -36,13 +36,18 @@ export class GitHubActivityFeedEventReader implements FeedEventReader {
         const url = `${this.criteria.scheme || "https://"}${this.criteria.apiBase || "api.github.com"}/${
             !!this.criteria.user ? "users" : "orgs"}/${this.criteria.owner}/events`;
         // TODO why do we need this cast?
-        const r = await
-        axios.get(url, config as any);
+        const r = await axios.get(url, config as any);
         const eventsRead = r.data as FeedEvent[];
         const newEvents = eventsRead.filter(
             e => !this.eventWindow.some(seen => seen.id === e.id),
         );
+        this.eventWindow.push(...newEvents);
         return newEvents;
+    }
+
+    public async start() {
+        // Read events to fill the buffer of events we'll ignore
+        await this.readNewEvents();
     }
 
     constructor(private readonly criteria: ScmFeedCriteria) {}
