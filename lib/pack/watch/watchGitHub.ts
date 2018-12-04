@@ -20,6 +20,7 @@ import {
     metadata,
 } from "@atomist/sdm";
 import { initiateWatch } from "../../cli/invocation/command/addWatchRemoteCommand";
+import { infoMessage } from "../../cli/ui/consoleOutput";
 
 /**
  * An extension pack for watching a single remote SCM.
@@ -49,13 +50,14 @@ export const WatchGitHub: ExtensionPack = {
 async function startListening(cc: AdminCommunicationContext): Promise<void> {
     const owner = cc.sdm.configuration.sdm.watch.github.owner || process.env.GITHUB_OWNER;
     if (!owner) {
-        throw new Error("Configuration key 'sdm.watch.github.owner' or environment variable GITHUB_OWNER must be set to watch GitHub");
+        infoMessage("WatchGitHub: Configuration key 'sdm.watch.github.owner' or environment variable GITHUB_OWNER must be set to watch GitHub: Not starting polling");
+    } else {
+        return initiateWatch({
+            owner,
+            provider: "github",
+            apiBase: cc.sdm.configuration.sdm.watch.github.apiBase,
+            seconds: cc.sdm.configuration.sdm.watch.github.intervalSeconds,
+            user: !!cc.sdm.configuration.sdm.watch.github.user,
+        });
     }
-    return initiateWatch({
-        owner,
-        provider: "github",
-        apiBase: cc.sdm.configuration.sdm.watch.github.apiBase,
-        seconds: cc.sdm.configuration.sdm.watch.github.intervalSeconds,
-        user: !!cc.sdm.configuration.sdm.watch.github.user,
-    });
 }
