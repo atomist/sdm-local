@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { AdminCommunicationContext, ExtensionPack, metadata } from "@atomist/sdm";
+import {
+    AdminCommunicationContext,
+    ExtensionPack,
+    metadata,
+} from "@atomist/sdm";
 import { initiateWatch } from "../../cli/invocation/command/addWatchRemoteCommand";
 
 /**
