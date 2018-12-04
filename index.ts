@@ -28,3 +28,5 @@ export {
     ParameterOptions,
     CommandLineParameter,
 } from "./lib/cli/invocation/command/support/yargBuilder";
+
+export { ScmWatch } from "./lib/pack/watch/scmWatch";
