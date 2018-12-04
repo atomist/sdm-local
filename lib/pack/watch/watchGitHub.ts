@@ -1,4 +1,4 @@
-import { AdminCommunicationContext, ConfigurationValueType, ExtensionPack, metadata } from "@atomist/sdm";
+import { AdminCommunicationContext, ExtensionPack, metadata } from "@atomist/sdm";
 import { initiateWatch } from "../../cli/invocation/command/addWatchRemoteCommand";
 
 /**
@@ -13,25 +13,29 @@ import { initiateWatch } from "../../cli/invocation/command/addWatchRemoteComman
  *
  * You must also set GITHUB_TOKEN in your environment.
  */
-export const ScmWatch: ExtensionPack = {
-    ...metadata("scm-watch"),
-    requiredConfigurationValues: [
-        {
-            path: "sdm.scm.owner",
-            type: ConfigurationValueType.String,
-        },
-    ],
+export const WatchGitHub: ExtensionPack = {
+    ...metadata("watch-github"),
+    // requiredConfigurationValues: [
+    //     {
+    //         path: "sdm.watch.github.owner",
+    //         type: ConfigurationValueType.String,
+    //     },
+    // ],
     configure: sdm => {
         sdm.addStartupListener(startListening);
     },
 };
 
 async function startListening(cc: AdminCommunicationContext): Promise<void> {
+    const owner = cc.sdm.configuration.sdm.watch.github.owner || process.env.GITHUB_OWNER;
+    if (!owner) {
+        throw new Error("Configuration key 'sdm.watch.github.owner' or environment variable GITHUB_OWNER must be set to watch GitHub");
+    }
     return initiateWatch({
-        owner: cc.sdm.configuration.sdm.scm.owner,
+        owner,
         provider: "github",
-        apiBase: cc.sdm.configuration.sdm.scm.apiBase,
-        seconds: cc.sdm.configuration.sdm.scm.intervalSeconds,
-        user: !!cc.sdm.configuration.sdm.scm.user,
+        apiBase: cc.sdm.configuration.sdm.watch.github.apiBase,
+        seconds: cc.sdm.configuration.sdm.watch.github.intervalSeconds,
+        user: !!cc.sdm.configuration.sdm.watch.github.user,
     });
 }

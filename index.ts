@@ -29,4 +29,4 @@ export {
     CommandLineParameter,
 } from "./lib/cli/invocation/command/support/yargBuilder";
 
-export { ScmWatch } from "./lib/pack/watch/scmWatch";
+export { WatchGitHub } from "./lib/pack/watch/watchGitHub";
