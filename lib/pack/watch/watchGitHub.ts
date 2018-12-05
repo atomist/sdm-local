@@ -48,16 +48,18 @@ export const WatchGitHub: ExtensionPack = {
 };
 
 async function startListening(cc: AdminCommunicationContext): Promise<void> {
-    const owner = cc.sdm.configuration.sdm.watch.github.owner || process.env.GITHUB_OWNER;
+    const watchConfig: any = (!!cc.sdm.configuration.sdm.watch ? cc.sdm.configuration.sdm.watch.github : undefined) || {};
+    const owner = watchConfig.owner || process.env.GITHUB_OWNER;
     if (!owner) {
-        infoMessage("WatchGitHub: Configuration key 'sdm.watch.github.owner' or environment variable GITHUB_OWNER must be set to watch GitHub: Not starting polling");
+        infoMessage("WatchGitHub: Configuration key 'sdm.watch.github.owner' or environment variable GITHUB_OWNER must be set to watch GitHub: " +
+            "Not starting polling");
     } else {
         return initiateWatch({
             owner,
             provider: "github",
-            apiBase: cc.sdm.configuration.sdm.watch.github.apiBase,
-            seconds: cc.sdm.configuration.sdm.watch.github.intervalSeconds,
-            user: !!cc.sdm.configuration.sdm.watch.github.user,
+            apiBase: watchConfig.apiBase,
+            seconds: watchConfig.intervalSeconds,
+            user: !!watchConfig.user,
         });
     }
 }
