@@ -280,6 +280,8 @@ function mapStateToIcon(state: SdmGoalState): string {
 function mapStateToColor(label: string, state: SdmGoalState): string {
     switch (state) {
         case SdmGoalState.planned:
+        case SdmGoalState.waiting_for_pre_approval:
+        case SdmGoalState.pre_approved:
         case SdmGoalState.requested:
             return chalk.gray(label);
         case SdmGoalState.in_process:
