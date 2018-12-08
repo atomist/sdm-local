@@ -34,10 +34,12 @@ import {
 } from "./expandedTreeUtils";
 
 /**
- * RemoteRepoRef displayGoalWorking against our expanded directory structure.
+ * RemoteRepoRef working against our expanded directory structure.
  * Supports cloning and pushing.
  */
 export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
+
+    public kind: string = "file";
 
     public static fromDirectory(opts: {
         repositoryOwnerParentDirectory: string,
@@ -48,7 +50,7 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
     }): FileSystemRemoteRepoRef {
         const { owner, repo } = parseOwnerAndRepo(opts.repositoryOwnerParentDirectory, opts.baseDir);
         if (!(!!owner && !!repo)) {
-            throw new Error(`Cannot parse ${opts.repositoryOwnerParentDirectory}/owner/repo from [${opts.baseDir}]`);
+            throw new Error(`Cannot parse ${opts.repositoryOwnerParentDirectory}/owner/repo from '${opts.baseDir}'`);
         }
         return new FileSystemRemoteRepoRef({
             repositoryOwnerParentDirectory: opts.repositoryOwnerParentDirectory,
