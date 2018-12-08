@@ -229,6 +229,8 @@ function formatLink(url: string): string {
 function mapStateToRatio(state: SdmGoalState): number {
     switch (state) {
         case SdmGoalState.planned:
+        case SdmGoalState.waiting_for_pre_approval:
+        case SdmGoalState.pre_approved:
             return 0;
         case SdmGoalState.requested:
             return 0.25;
@@ -251,6 +253,9 @@ function mapStateToIcon(state: SdmGoalState): string {
     switch (state) {
         case SdmGoalState.planned:
             return chalk.gray("▫");
+        case SdmGoalState.waiting_for_pre_approval:
+        case SdmGoalState.pre_approved:
+            return chalk.gray("॥");
         case SdmGoalState.requested:
             return chalk.gray("▹");
         case SdmGoalState.in_process:
