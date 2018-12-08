@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/atomist/sdm/raw/master/docs/SDM-Logo-Dark.png">
+  <img src="https://images.atomist.com/sdm/SDM-Logo-Dark.png">
 </p>
 
 # Software Delivery Machine - Local - `@atomist/sdm-local`
