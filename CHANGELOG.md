@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-local/compare/1.0.3...HEAD)
 
+### Fixed
+
+-   Don't disable logging by just depending on sdm-local. [cfedbc9](https://github.com/atomist/sdm-local/commit/cfedbc91ca3c20bf31370451cca4c95cc20e027d)
+
 ## [1.0.3](https://github.com/atomist/sdm-local/compare/1.0.2...1.0.3) - 2018-12-08
 
 ### Fixed
