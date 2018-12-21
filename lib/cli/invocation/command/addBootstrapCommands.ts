@@ -22,7 +22,7 @@ import {
     infoMessage,
 } from "../../ui/consoleOutput";
 import {
-    nodeGenerator,
+    sdmGenerator,
     superforkGenerator,
 } from "./generator/bootstrapGenerators";
 import { NodeProjectCreationParametersDefinition } from "./generator/NodeProjectCreationParameters";
@@ -82,7 +82,7 @@ function addSdmGenerator(yargs: YargBuilder) {
         name,
         cliCommand: "create sdm",
         cliDescription: "Create an SDM",
-        parameters: nodeGenerator(name, undefined).parameters,
+        parameters: sdmGenerator(name, undefined).parameters,
         build: argv => {
             // Expose type parameter
             argv.option("type", {
@@ -110,18 +110,18 @@ function addSdmGenerator(yargs: YargBuilder) {
             switch (answers.type) {
                 case "spring":
                     return sdm => {
-                        sdm.addGeneratorCommand(nodeGenerator(name,
+                        sdm.addGeneratorCommand(sdmGenerator(name,
                             new GitHubRepoRef("atomist-seeds", "spring-sdm"),
                             "spring"));
                     };
                 case "spring to k8":
                     return sdm => {
-                        sdm.addGeneratorCommand(nodeGenerator(name,
+                        sdm.addGeneratorCommand(sdmGenerator(name,
                             GitHubRepoRef.from({ owner: "atomist-seeds", repo: "spring-sdm", branch: "kube" }),
                             "spring"));
                     };
                 case "blank":
-                    return sdm => sdm.addGeneratorCommand(nodeGenerator(name,
+                    return sdm => sdm.addGeneratorCommand(sdmGenerator(name,
                         new GitHubRepoRef("atomist-seeds", "empty-sdm"),
                         "blank"));
                 default:

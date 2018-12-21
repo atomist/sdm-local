@@ -24,6 +24,7 @@ import {
     NodeProjectCreationParameters,
     NodeProjectCreationParametersDefinition,
 } from "./NodeProjectCreationParameters";
+import { UpdateSeedK8SDescriptor } from "./updateK8sDescriptors";
 import { UpdatePackageJsonIdentification } from "./updatePackageJsonIdentification";
 
 /**
@@ -39,6 +40,25 @@ export function nodeGenerator(name: string,
         parameters: NodeProjectCreationParametersDefinition,
         transform: [
             UpdatePackageJsonIdentification,
+        ],
+        tags,
+    };
+}
+
+/**
+ * Generator that can create a new SDM. Parameterized
+ * by name, starting point and tags.
+ */
+export function sdmGenerator(name: string,
+                             startingPoint: RemoteRepoRef,
+                             ...tags: string[]): GeneratorRegistration<NodeProjectCreationParameters> {
+    return {
+        name,
+        startingPoint,
+        parameters: NodeProjectCreationParametersDefinition,
+        transform: [
+            UpdatePackageJsonIdentification,
+            UpdateSeedK8SDescriptor,
         ],
         tags,
     };
