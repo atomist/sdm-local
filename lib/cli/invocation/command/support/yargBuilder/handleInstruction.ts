@@ -23,7 +23,7 @@ type DoNothing = "do nothing";
 export const DoNothing: DoNothing = "do nothing";
 
 interface RunFunction {
-    fn: (argObject: Arguments) => Promise<any>;
+    fn: (argObject: Arguments<any>) => Promise<any>;
 }
 
 export function doesSomething(hi: HandleInstructions): boolean {
@@ -40,7 +40,7 @@ export function handleFunctionFromInstructions(instr: HandleInstructions):
     return instr.fn;
 }
 
-export function handleInstructionsFromFunction(fn?: (argObject: Arguments) => any): HandleInstructions {
+export function handleInstructionsFromFunction(fn?: (argObject: Arguments<any>) => any): HandleInstructions {
     if (!fn) {
         return DoNothing;
     }

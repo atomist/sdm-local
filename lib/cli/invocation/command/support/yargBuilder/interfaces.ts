@@ -164,9 +164,9 @@ export interface PositionalParameter {
 export interface SupportedSubsetOfYargsCommandMethod {
     command: string;
     describe: string;
-    aliases?: string;
+    aliases?: string[] | string;
     builder?: (ys: YargBuilder) => YargBuilder;
-    handler?: (argObject: Arguments) => Promise<any>;
+    handler?: (argObject: Arguments<any>) => Promise<any>;
     parameters?: CommandLineParameter[]; // bonus; yargs doesn't include this
     positional?: PositionalParameter[];
     /**

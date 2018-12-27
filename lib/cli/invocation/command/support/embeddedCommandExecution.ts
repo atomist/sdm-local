@@ -59,7 +59,7 @@ export interface EmbeddedCommandSpec {
     /**
      * Configure the sdm.machine to run the command
      */
-    configurer: (argv: Arguments) => Promise<ConfigureMachine>;
+    configurer: (argv: Arguments<any>) => Promise<ConfigureMachine>;
 
 }
 
