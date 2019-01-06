@@ -22,6 +22,8 @@ import {
     Parameters,
     ProjectOperationCredentials,
     RepoFilter,
+    Secret,
+    Secrets,
     validationPatterns,
 } from "@atomist/automation-client";
 import { TargetsParams } from "@atomist/automation-client/lib/operations/common/params/TargetsParams";
@@ -58,8 +60,11 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
     @Parameter({ description: "regex", required: false })
     public repos: string = ".*";
 
+    @Secret(Secrets.userToken(["repo", "user:email", "read:user"]))
+    public token: string = "this.is.not.your.token.and.does.not.matter";
+
     get credentials(): ProjectOperationCredentials {
-        return { token: "this.is.not.your.token.and.does.not.matter" };
+        return { token: this.token };
     }
 
     /**
