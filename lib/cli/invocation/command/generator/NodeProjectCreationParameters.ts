@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ export interface NodeProjectCreationParameters extends SeedDrivenGeneratorParame
 /**
  * Corresponding parameter definitions
  */
-export const NodeProjectCreationParametersDefinition: ParametersObject = {
+export const NodeProjectCreationParametersDefinition: ParametersObject<any, any> = {
 
     version: {
         ...SemVerRegExp,

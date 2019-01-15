@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import {
 } from "@atomist/sdm";
 import {
     EphemeralLocalArtifactStore,
+    FilePreferenceStoreFactory,
     LocalSoftwareDeliveryMachineConfiguration,
     LocalSoftwareDeliveryMachineOptions,
 } from "@atomist/sdm-core";
@@ -64,7 +65,6 @@ export function defaultLocalSoftwareDeliveryMachineConfiguration(
 
     const localSdmConfiguration = _.merge(defaultLocalSdmConfiguration, configuration.local);
 
-    const repoRefResolver = new ExpandedTreeRepoRefResolver(localSdmConfiguration);
     const sdmConfiguration: SoftwareDeliveryMachineOptions = {
         artifactStore: new EphemeralLocalArtifactStore(),
         projectLoader: new FileSystemProjectLoader(
@@ -73,7 +73,8 @@ export function defaultLocalSoftwareDeliveryMachineConfiguration(
         logFactory: async (context, goal) =>
             new SimpleNodeLoggerProgressLog(configuration.name, goal.name, path.join(os.homedir(), ".atomist", "log")),
         credentialsResolver: new EnvironmentTokenCredentialsResolver(),
-        repoRefResolver,
+        preferenceStoreFactory: FilePreferenceStoreFactory,
+        repoRefResolver: new ExpandedTreeRepoRefResolver(localSdmConfiguration),
         repoFinder: expandedTreeRepoFinder(localSdmConfiguration),
         projectPersister: fileSystemProjectPersister(workspaceContext, localSdmConfiguration, automationClientFinder),
         targets: () => new LocalRepoTargets(localSdmConfiguration),
