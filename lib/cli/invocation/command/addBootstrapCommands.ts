@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ function addExtensionPackGenerator(yargs: YargBuilder) {
                     description: "Repo name. Must begin 'sdm-pack'",
                     validInput: "Must begin with 'sdm-pack'",
                 },
-            },
+            } as any,
             transform: [
                 UpdatePackageJsonIdentification,
             ],
