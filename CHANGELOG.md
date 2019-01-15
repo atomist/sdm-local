@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-local/compare/1.0.4...HEAD)
 
+### Added
+
+-   Configure `FilePreferenceStore` in local mode. [#224](https://github.com/atomist/sdm-local/issues/224)
+
 ### Fixed
 
 -   Credentials on CodeTransform invocation are not valid. [#222](https://github.com/atomist/sdm-local/issues/222)
