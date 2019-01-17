@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { logger } from "@atomist/automation-client";
 import * as _ from "lodash";
 import { determineDefaultHostUrl } from "../../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
 import { AutomationClientInfo } from "../../../AutomationClientInfo";
@@ -45,14 +46,18 @@ export class PortRangeAutomationClientFinder implements AutomationClientFinder {
     private readonly options: PortRangeOptions;
 
     public async findAutomationClients(): Promise<AutomationClientInfo[]> {
+        const low = this.options.lowerPort;
+        const high = this.options.lowerPort + this.options.checkRange;
+        const additional = this.options.additionalPorts || [];
+        const hostUrl = determineDefaultHostUrl();
+        logger.info(`Looking for automation clients at ${hostUrl} on ports: ${low}-${high} and ${additional.join(",")}`);
         const requests: AutomationClientConnectionRequest[] =
-            _.range(this.options.lowerPort, this.options.lowerPort + this.options.checkRange)
-                .concat(this.options.additionalPorts || [])
+            _.range(low, high).concat(additional)
                 .map(port => ({
-                    baseEndpoint: `http://${determineDefaultHostUrl()}:${port}`,
+                    baseEndpoint: `http://${hostUrl}:${port}`,
                 }));
         return new FixedAutomationClientFinder(...requests).findAutomationClients();
-       }
+    }
 
     constructor(opts: Partial<PortRangeOptions> = {}) {
         this.options = {
