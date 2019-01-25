@@ -104,6 +104,7 @@ export function configureLocal(options: LocalConfigureOptions = { forceLocal: fa
         }
 
         mergedConfig.ws.enabled = false;
+        mergedConfig.cluster.enabled = false;
 
         const globalActionStore = freshActionStore();
 
