@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 -   Credentials on CodeTransform invocation are not valid. [#222](https://github.com/atomist/sdm-local/issues/222)
+-   Local mode does not work if NODE_ENV=production. [#228](https://github.com/atomist/sdm-local/issues/228)
 
 ## [1.0.4](https://github.com/atomist/sdm-local/compare/1.0.3...1.0.4) - 2018-12-27
 
