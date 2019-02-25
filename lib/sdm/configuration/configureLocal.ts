@@ -309,6 +309,9 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
                         configuration: automationClientInstance().configuration,
                     });
             });
+            app.post("/atomist/fingerprints/teams/:team", async (req, res) => {
+                logger.warn("Received fingerprint: " + JSON.stringify(req.body));
+            });
         },
     ];
 }
