@@ -311,6 +311,7 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
             });
             app.post("/atomist/fingerprints/teams/:team", async (req, res) => {
                 logger.warn("Received fingerprint: " + JSON.stringify(req.body));
+                return res.status(200).send(`Ignoring fingerprint. Thanks though`);
             });
         },
     ];
