@@ -24,7 +24,10 @@ import {
     CodeTransform,
 } from "@atomist/sdm";
 import { NodeProjectCreationParameters } from "./NodeProjectCreationParameters";
-import { Author, PackageJson } from "./PackageJson";
+import {
+    Author,
+    PackageJson,
+} from "./PackageJson";
 
 /**
  * Code transform to update identification fields of package.json
