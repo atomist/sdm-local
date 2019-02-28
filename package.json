@@ -27,7 +27,7 @@
   "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "@atomist/microgrammar": "1.2.0-master.20190222012515",
+    "@atomist/microgrammar": "^1.2.0-master.20190222012515",
     "@types/body-parser": "^1.17.0",
     "@types/express": "^4.16.0",
     "@types/express-handlebars": "0.0.30",

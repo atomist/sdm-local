@@ -135,8 +135,8 @@ export const GitRemoteParser = Microgrammar.fromString<{ base: string, owner: st
     "${base}${sep}${owner}/${repo}${dotgit}", {
         base: /(git@|https?:\/\/)[^:\/]+/,
         sep: /[:\/]/,
-        repo: /[^\s^\.]+/,
-        owner: /[^\s^\.]+/,
+        owner: /[^\s\.\/]+/,
+        repo: /[^\s\.]+/,
         dotgit: optional(".git"),
     },
 );

@@ -16,6 +16,8 @@
 
 import * as assert from "assert";
 import { GitRemoteParser } from "../../../../lib/cli/invocation/command/addCloneCommand";
+import { isFailedMatchReport } from "@atomist/microgrammar";
+import { stringifyExplanationTree } from "@atomist/microgrammar/lib/MicrogrammarParseError";
 
 describe("GitRemoteParser", () => {
 
@@ -74,8 +76,13 @@ describe("GitRemoteParser", () => {
 
     it("should parse git protocol", () => {
         const url = "git@github.com:atomist/cli.git";
-        const parsed = GitRemoteParser.firstMatch(url);
-        assert(parsed, `Must have matched on [${url}]`);
+        const parseReport = GitRemoteParser.perfectMatch(url);
+        if (isFailedMatchReport(parseReport)) {
+            // console.log(stringifyExplanationTree(parseReport.toExplanationTree()));
+            assert.fail(`Must have matched on [${url}]`);
+            return;
+        }
+        const parsed = parseReport.toValueStructure();
         assert.equal(parsed.base, "git@github.com");
         assert.equal(parsed.owner, "atomist");
         assert.equal(parsed.repo, "cli");
