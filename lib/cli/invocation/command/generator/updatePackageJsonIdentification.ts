@@ -17,11 +17,13 @@
 import {
     doWithJson,
     logger,
+    Project,
 } from "@atomist/automation-client";
 import {
     CodeTransform,
 } from "@atomist/sdm";
 import { NodeProjectCreationParameters } from "./NodeProjectCreationParameters";
+import { PackageJson } from "./PackageJson";
 
 /**
  * Code transform to update identification fields of package.json
@@ -33,7 +35,7 @@ export const UpdatePackageJsonIdentification: CodeTransform<NodeProjectCreationP
     async (project, context, params) => {
         logger.info("Updating JSON: params=%j", params);
         const author = params.screenName;
-        return doWithJson(project, "package.json", pkg => {
+        return doWithJson<PackageJson, Project>(project, "package.json", pkg => {
             const repoUrl = params.target.repoRef.url;
             pkg.name = params.target.repoRef.repo;
             pkg.description = params.target.description;
