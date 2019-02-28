@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import * as assert from "assert";
-import { GitRemoteParser } from "../../../../lib/cli/invocation/command/addCloneCommand";
 import { isFailedMatchReport } from "@atomist/microgrammar";
 import { stringifyExplanationTree } from "@atomist/microgrammar/lib/MicrogrammarParseError";
+import * as assert from "assert";
+import { GitRemoteParser } from "../../../../lib/cli/invocation/command/addCloneCommand";
 
 describe("GitRemoteParser", () => {
 
