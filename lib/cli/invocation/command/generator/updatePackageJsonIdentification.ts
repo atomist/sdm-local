@@ -56,6 +56,7 @@ export const UpdatePackageJsonIdentification: CodeTransform<NodeProjectCreationP
             pkg.bugs = {
                 url: `${repoUrl}/issues`,
             };
+            pkg.keywords = pkg.keywords.filter(keyword => keyword !== "seed");
             logger.info("Updated JSON. Result is %j", pkg);
         });
     };
