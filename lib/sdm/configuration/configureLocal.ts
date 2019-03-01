@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -308,6 +308,10 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
                         command,
                         configuration: automationClientInstance().configuration,
                     });
+            });
+            app.post("/atomist/fingerprints/teams/:team", async (req, res) => {
+                logger.warn("Received fingerprint: " + JSON.stringify(req.body));
+                return res.status(200).send(`Ignoring fingerprint. Thanks though`);
             });
         },
     ];
