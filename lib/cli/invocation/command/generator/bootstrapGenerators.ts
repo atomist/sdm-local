@@ -35,7 +35,7 @@ import { UpdatePackageJsonIdentification } from "./updatePackageJsonIdentificati
  */
 export function nodeGenerator(name: string,
                               startingPoint: RemoteRepoRef,
-                              transforms: CodeTransform<any>[] = [UpdatePackageJsonIdentification],
+                              transforms: Array<CodeTransform<any>> = [UpdatePackageJsonIdentification],
                               ...tags: string[]): GeneratorRegistration<NodeProjectCreationParameters> {
     return {
         name,
