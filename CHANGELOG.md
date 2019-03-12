@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   Configure `FilePreferenceStore` in local mode. [#224](https://github.com/atomist/sdm-local/issues/224)
+-   Add uhura to seed list. [a160911](https://github.com/atomist/sdm-local/commit/a1609116f83031f3cdf6f65324016d1796755e3e)
 
 ### Fixed
 
