@@ -3,6 +3,9 @@
 
 Choose `blank` for a new SDM to which you can add your own functionality.
 
+Choose `uhura` for a new SDM that provides self service software delivery
+for common project types.
+
 Choose `spring` for a new SDM providing convenient creation and local CD
 of Spring Boot applications.
 

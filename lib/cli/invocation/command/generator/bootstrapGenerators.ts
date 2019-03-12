@@ -19,7 +19,10 @@ import {
     RemoteRepoRef,
     validationPatterns,
 } from "@atomist/automation-client";
-import { GeneratorRegistration } from "@atomist/sdm";
+import {
+    CodeTransform,
+    GeneratorRegistration,
+} from "@atomist/sdm";
 import {
     NodeProjectCreationParameters,
     NodeProjectCreationParametersDefinition,
@@ -32,13 +35,14 @@ import { UpdatePackageJsonIdentification } from "./updatePackageJsonIdentificati
  */
 export function nodeGenerator(name: string,
                               startingPoint: RemoteRepoRef,
+                              transforms: CodeTransform<any>[] = [UpdatePackageJsonIdentification],
                               ...tags: string[]): GeneratorRegistration<NodeProjectCreationParameters> {
     return {
         name,
         startingPoint,
         parameters: NodeProjectCreationParametersDefinition,
         transform: [
-            UpdatePackageJsonIdentification,
+            ...transforms,
         ],
         tags,
     };

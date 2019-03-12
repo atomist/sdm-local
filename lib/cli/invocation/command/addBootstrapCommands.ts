@@ -75,7 +75,7 @@ function addExtensionPackGenerator(yargs: YargBuilder) {
 }
 
 function addSdmGenerator(yargs: YargBuilder) {
-    const choices = ["blank", "spring", "spring to k8"];
+    const choices = ["blank", "uhura", "spring", "spring to k8"];
     const typeDescription = "Type of SDM to create";
     const name = "newSdm";
     addEmbeddedCommand(yargs, {
@@ -112,18 +112,26 @@ function addSdmGenerator(yargs: YargBuilder) {
                     return sdm => {
                         sdm.addGeneratorCommand(nodeGenerator(name,
                             new GitHubRepoRef("atomist-seeds", "spring-sdm"),
+                            [UpdatePackageJsonIdentification],
                             "spring"));
                     };
                 case "spring to k8":
                     return sdm => {
                         sdm.addGeneratorCommand(nodeGenerator(name,
                             GitHubRepoRef.from({ owner: "atomist-seeds", repo: "spring-sdm", branch: "kube" }),
+                            [UpdatePackageJsonIdentification],
                             "spring"));
                     };
                 case "blank":
                     return sdm => sdm.addGeneratorCommand(nodeGenerator(name,
                         new GitHubRepoRef("atomist-seeds", "empty-sdm"),
+                        [UpdatePackageJsonIdentification],
                         "blank"));
+                case "uhura":
+                    return sdm => sdm.addGeneratorCommand(nodeGenerator(name,
+                        new GitHubRepoRef("atomist", "uhura"),
+                        [],
+                        "uhura"));
                 default:
                     throw new Error("Unknown SDM type " + answers.type);
             }
