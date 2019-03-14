@@ -75,7 +75,7 @@ function addExtensionPackGenerator(yargs: YargBuilder) {
 }
 
 function addSdmGenerator(yargs: YargBuilder) {
-    const choices = ["blank", "uhura", "spring", "spring to k8"];
+    const choices = ["blank", "uhura"];
     const typeDescription = "Type of SDM to create";
     const name = "newSdm";
     addEmbeddedCommand(yargs, {
