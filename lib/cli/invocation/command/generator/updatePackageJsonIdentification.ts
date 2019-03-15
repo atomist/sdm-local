@@ -19,11 +19,15 @@ import {
     logger,
     Project,
 } from "@atomist/automation-client";
+import { execPromise } from "@atomist/automation-client/lib/util/child_process";
 import {
     CodeTransform,
 } from "@atomist/sdm";
 import { NodeProjectCreationParameters } from "./NodeProjectCreationParameters";
-import { PackageJson } from "./PackageJson";
+import {
+    Author,
+    PackageJson,
+} from "./PackageJson";
 
 /**
  * Code transform to update identification fields of package.json
@@ -34,10 +38,13 @@ import { PackageJson } from "./PackageJson";
 export const UpdatePackageJsonIdentification: CodeTransform<NodeProjectCreationParameters> =
     async (project, context, params) => {
         logger.info("Updating JSON: params=%j", params);
-        const author = params.screenName;
+        const author: Author = {
+            name: await fetchGitConfig("user.name", params.screenName),
+            email: await fetchGitConfig("user.email", undefined),
+        };
         return doWithJson<PackageJson, Project>(project, "package.json", pkg => {
             const repoUrl = params.target.repoRef.url;
-            pkg.name = params.target.repoRef.repo;
+            pkg.name = `@${params.target.repoRef.owner}/${params.target.repoRef.repo}`;
             pkg.description = params.target.description;
             pkg.version = params.version;
             pkg.author = author;
@@ -49,6 +56,17 @@ export const UpdatePackageJsonIdentification: CodeTransform<NodeProjectCreationP
             pkg.bugs = {
                 url: `${repoUrl}/issues`,
             };
+            pkg.keywords = pkg.keywords.filter(keyword => keyword !== "seed");
             logger.info("Updated JSON. Result is %j", pkg);
         });
     };
+
+async function fetchGitConfig(property: string, defaultValue: string): Promise<string> {
+    try {
+        const result = await execPromise("git", ["config", property]);
+        return result.stdout.trim();
+    } catch {
+        logger.info("Unable to retrieve git config " + property);
+        return defaultValue;
+    }
+}
