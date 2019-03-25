@@ -145,9 +145,18 @@ function addSdmGenerator(yargs: YargBuilder) {
                 if (chm.tags.includes("spring" as any)) {
                     await doAfterSpringSdmCreation();
                 }
+                if ((hr as any).generatedRepositoryUrl) {
+                    infoMessage(`To run your new SDM:
+cd ${removeUrlScheme((hr as any).generatedRepositoryUrl)};
+atomist start`);
+                }
             },
         }],
     });
+}
+
+function removeUrlScheme(url: string): string {
+    return url.replace(/^.*:\//, "");
 }
 
 async function doAfterSpringSdmCreation() {
