@@ -205,14 +205,19 @@ async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[
 }
 
 /**
- * Field handled specially for transform targets
+ * handled specially for transform targets
  */
-const TargetsOwnerField = "targets.owner";
+const TransformTargetOwnerParameter = "targets.owner";
 
 /**
- * Field handled specially for transform targets
+ * handled specially for transform targets
  */
-const TargetsRepoField = "targets.repo";
+const TransformTargetRepositoryParameter = "targets.repo";
+
+/**
+ * handle specially for generators
+ */
+const GeneratorTargetOwnerParameter = "target.owner";
 
 /**
  * Pattern to match all repos
@@ -233,9 +238,9 @@ const RegexPattern = "custom regex";
 async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mappedParameters: Array<{ name: string; value: string }>): Promise<void> {
     const allRepos = await determineAvailableRepos();
     // Don't ask for repo filter if we have an owner
-    if (mappedParameters.some(mp => mp.name === TargetsOwnerField && !!mp.value) &&
-        !mappedParameters.some(mp => mp.name === TargetsRepoField && !!mp.value)) {
-        addOrReplaceMappedParameter(mappedParameters, TargetsRepoField, AllReposPattern);
+    if (mappedParameters.some(mp => mp.name === TransformTargetOwnerParameter && !!mp.value) &&
+        !mappedParameters.some(mp => mp.name === TransformTargetRepositoryParameter && !!mp.value)) {
+        addOrReplaceMappedParameter(mappedParameters, TransformTargetRepositoryParameter, AllReposPattern);
     }
     const questions: inquirer.Question[] =
         mappedParameters
@@ -246,29 +251,31 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
                     name: nameToUse,
                     message: () => {
                         switch (p.name) {
-                            case TargetsOwnerField :
+                            case GeneratorTargetOwnerParameter:
+                                return "Organization (or GitHub user) to hold the new repository";
+                            case TransformTargetOwnerParameter:
                                 return "Org to target";
-                            case TargetsRepoField :
+                            case TransformTargetRepositoryParameter:
                                 return "Repos to target";
-                            default :
+                            default:
                                 return `(mapped parameter) ${nameToUse}`;
                         }
                     },
                     // Use a dropdown for orgs and repos
-                    type: [TargetsOwnerField, TargetsRepoField].includes(p.name) ? "list" : "string",
+                    type: [TransformTargetOwnerParameter, TransformTargetRepositoryParameter].includes(p.name) ? "list" : "string",
                     // Choices will be undefined unless it's a list type
                     choices: (answer: any) => {
                         switch (p.name) {
-                            case TargetsOwnerField :
+                            case TransformTargetOwnerParameter:
                                 return _.uniq(allRepos.map(r => r.owner));
-                            case TargetsRepoField :
+                            case TransformTargetRepositoryParameter:
                                 // Used the mapped name, which will be bound to the answer
-                                const owner = answer[convertToDisplayable(TargetsOwnerField)];
+                                const owner = answer[convertToDisplayable(TransformTargetOwnerParameter)];
                                 return (allRepos.filter(r => r.owner === owner).map(r => r.repo) as any[])
                                     .concat(new inquirer.Separator(),
-                                    chalk.italic(AllReposPattern),
-                                    // chalk.italic(RegexPattern)
-                            );
+                                        chalk.italic(AllReposPattern),
+                                        // chalk.italic(RegexPattern)
+                                    );
                             default: return undefined;
                         }
                     },
@@ -290,13 +297,13 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
             addOrReplaceMappedParameter(mappedParameters, convertToUsable(enteredName), fromPrompt[enteredName]);
         });
 
-    const trReposField = fromPrompt[convertToDisplayable(TargetsRepoField)];
+    const trReposField = fromPrompt[convertToDisplayable(TransformTargetRepositoryParameter)];
     if (!!trReposField && trReposField.includes(AllReposPattern)) {
         addOrReplaceMappedParameter(mappedParameters, "targets.repo");
         addOrReplaceMappedParameter(mappedParameters, "targets.repos", ".*");
     } else if (!!trReposField && trReposField.includes(RegexPattern)) {
         // Ask extra question to clarify regex if we need to
-        const filter = await inquirer.prompt<{regex: string}>([{
+        const filter = await inquirer.prompt<{ regex: string }>([{
             name: "regex",
             message: "Regex to filter repos by name: Considering including anchors",
         }]);
@@ -310,10 +317,10 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
 /**
  * If value is undefined, delete it
  */
-function addOrReplaceMappedParameter(mappedParameters: Array<{name: string, value: string}>, name: string, value?: string) {
+function addOrReplaceMappedParameter(mappedParameters: Array<{ name: string, value: string }>, name: string, value?: string) {
     _.remove(mappedParameters, arg => arg.name === name);
     if (!!value) {
-        mappedParameters.push({name, value});
+        mappedParameters.push({ name, value });
     }
 }
 
@@ -322,7 +329,7 @@ function addOrReplaceMappedParameter(mappedParameters: Array<{name: string, valu
  * @param repositoryOwnerParentDirectory base of expanded tree
  */
 async function determineAvailableRepos(opts: LocalSoftwareDeliveryMachineOptions =
-                                           defaultLocalSoftwareDeliveryMachineConfiguration({}).local): Promise<RepoId[]> {
+    defaultLocalSoftwareDeliveryMachineConfiguration({}).local): Promise<RepoId[]> {
     return expandedTreeRepoFinder(opts)(undefined);
 }
 
