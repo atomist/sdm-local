@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-local/compare/1.0.5...HEAD)
 
+### Changed
+
+-   Carefully describe target.owner for generator parameters. [#238](https://github.com/atomist/sdm-local/issues/238)
+
 ## [1.0.5](https://github.com/atomist/sdm-local/compare/1.0.4...1.0.5) - 2019-03-15
 
 ### Added
