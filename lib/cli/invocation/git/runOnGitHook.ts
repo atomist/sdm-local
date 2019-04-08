@@ -64,8 +64,10 @@ export async function runOnGitHook(argv: string[],
         return undefined;
     }
 
-    await suggestStartingAllMessagesListener();
     const clients = await clientFinder.findAutomationClients();
+    if (clients.length > 0) {
+        await suggestStartingAllMessagesListener();
+    }
     if (clients.length === 0 && verbose) {
         infoMessage("No Atomist connected clients found");
         process.exit(0);
