@@ -59,7 +59,9 @@ export function addReplayCommand(yargs: YargBuilder,
                 infoMessage(msg);
                 await sendDiagnosticMessageToAllMessagesListener(msg);
                 await triggerGitEvents(clients, ya.event, ya.depth, teamContextResolver);
-                return suggestStartingAllMessagesListener();
+                if (clients.length > 0) {
+                    return suggestStartingAllMessagesListener();
+                }
             },
                 true);
         },
