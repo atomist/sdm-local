@@ -41,6 +41,9 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
 
     public kind: string = "file";
 
+    public readonly repositoryOwnerParentDirectory: string;
+    public mergePullRequests: boolean;
+
     public static fromDirectory(opts: {
         repositoryOwnerParentDirectory: string,
         mergePullRequests: boolean,
@@ -49,16 +52,10 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
         sha?: string,
     }): FileSystemRemoteRepoRef {
         const { owner, repo } = parseOwnerAndRepo(opts.repositoryOwnerParentDirectory, opts.baseDir);
-        if (!(!!owner && !!repo)) {
+        if (!owner || !repo) {
             throw new Error(`Cannot parse ${opts.repositoryOwnerParentDirectory}/owner/repo from '${opts.baseDir}'`);
         }
-        return new FileSystemRemoteRepoRef({
-            repositoryOwnerParentDirectory: opts.repositoryOwnerParentDirectory,
-            mergePullRequests: opts.mergePullRequests,
-            branch: opts.branch,
-            sha: opts.sha,
-            owner, repo,
-        });
+        return new FileSystemRemoteRepoRef({ ...opts, owner, repo });
     }
 
     /**
@@ -78,11 +75,11 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility: any): Promise<ActionResult<this>> {
-        throw new Error();
+        throw new Error("FileSystemRemoteRepoRef does not implement createRemote");
     }
 
     public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
-        throw new Error();
+        throw new Error("FileSystemRemoteRepoRef does not implement deleteRemote");
     }
 
     public async raisePullRequest(creds: ProjectOperationCredentials,
@@ -90,8 +87,8 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
                                   body: string,
                                   head: string,
                                   base: string): Promise<ActionResult<this>> {
-        if (this.opts.mergePullRequests) {
-            const cwd = path.join(this.opts.repositoryOwnerParentDirectory, this.owner, this.repo);
+        if (this.mergePullRequests) {
+            const cwd = path.join(this.repositoryOwnerParentDirectory, this.owner, this.repo);
 
             // 1. Checkout branch
             await runAndLog(`git checkout ${head}`, { cwd });
@@ -120,37 +117,25 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
     }
 
     public get url(): string {
-        return `file:/${this.repositoryOwnerParentDirectory}/${this.owner}/${this.repo}`;
+        return `file://${this.repositoryOwnerParentDirectory}/${this.owner}/${this.repo}`;
     }
 
     public get fileSystemLocation(): string {
         return `${this.repositoryOwnerParentDirectory}/${this.owner}/${this.repo}`;
     }
 
-    get repositoryOwnerParentDirectory(): string {
-        return this.opts.repositoryOwnerParentDirectory;
-    }
-
-    get branch(): string {
-        return this.opts.branch;
-    }
-
-    // TODO this should go. It's questionable code in the SDM deploy implementation that hits it
-    set branch(branch: string) {
-        this.opts.branch = branch;
-    }
-
-    constructor(private readonly opts: {
+    constructor(opts: {
         repositoryOwnerParentDirectory: string,
         mergePullRequests: boolean,
         owner: string,
         repo: string,
-        branch: string,
-        sha: string,
+        branch?: string,
+        sha?: string,
     }) {
-        super(null, "http://not.a.real.remote",
-            "http://not.a.real.apiBase",
-            opts.owner, opts.repo, opts.sha);
+        super(undefined, "http://not.a.real.remote", "http://not.a.real.apiBase",
+            opts.owner, opts.repo, opts.sha, undefined, opts.branch);
+        this.repositoryOwnerParentDirectory = opts.repositoryOwnerParentDirectory;
+        this.mergePullRequests = opts.mergePullRequests;
     }
 
 }

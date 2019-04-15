@@ -19,7 +19,7 @@ import {
     Secrets,
     Success,
 } from "@atomist/automation-client";
-import { replacer } from "@atomist/automation-client/lib/internal/transport/AbstractRequestProcessor";
+import { replacer } from "@atomist/automation-client/lib/internal/util/string";
 import * as stringify from "json-stringify-safe";
 import { EventSender } from "../../../common/invocation/EventHandlerInvocation";
 import { InvocationTarget } from "../../../common/invocation/InvocationTarget";
