@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import {
     Secrets,
     Success,
 } from "@atomist/automation-client";
-import { replacer } from "@atomist/automation-client/lib/internal/transport/AbstractRequestProcessor";
+import { replacer } from "@atomist/automation-client/lib/internal/util/string";
 import * as stringify from "json-stringify-safe";
 import { EventSender } from "../../../common/invocation/EventHandlerInvocation";
 import { InvocationTarget } from "../../../common/invocation/InvocationTarget";
