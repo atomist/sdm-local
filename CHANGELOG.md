@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Carefully describe target.owner for generator parameters. [#238](https://github.com/atomist/sdm-local/issues/238)
 -   Suggest starting feed only if relevant. [#247](https://github.com/atomist/sdm-local/issues/247)
 
+### Fixed
+
+-   Fix FileSystemRemoteRepoRef branch implementation. [#253](https://github.com/atomist/sdm-local/issues/253)
+
 ## [1.0.5](https://github.com/atomist/sdm-local/compare/1.0.4...1.0.5) - 2019-03-15
 
 ### Added
