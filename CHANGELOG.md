@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 -   Remove the message about channels. [#249](https://github.com/atomist/sdm-local/issues/249)
+-   Remove stray dependency on types/open. [#256](https://github.com/atomist/sdm-local/issues/256)
 
 ## [1.0.6](https://github.com/atomist/sdm-local/compare/1.0.5...1.0.6) - 2019-04-16
 
