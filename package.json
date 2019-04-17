@@ -38,7 +38,6 @@
     "@types/marked": "^0.6.3",
     "@types/node": "^11.11.3",
     "@types/node-notifier": "0.0.28",
-    "@types/open": "^0.0.29",
     "@types/serialize-error": "^2.1.0",
     "@types/sprintf-js": "^1.1.2",
     "@types/strip-ansi": "^3.0.0",
