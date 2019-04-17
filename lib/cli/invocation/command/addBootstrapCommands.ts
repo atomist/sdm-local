@@ -35,6 +35,7 @@ import { AddLocalMode } from "./transform/addLocalModeTransform";
 /**
  * Add bootstrap commands to generate a new SDM
  * and add local capability to an existing SDM
+ *
  * @param {YargBuilder} yargs
  */
 export function addBootstrapCommands(yargs: YargBuilder) {
