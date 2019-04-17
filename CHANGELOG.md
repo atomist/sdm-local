@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-local/compare/1.0.6...HEAD)
 
+### Removed
+
+-   Remove the message about channels. [#249](https://github.com/atomist/sdm-local/issues/249)
+
 ## [1.0.6](https://github.com/atomist/sdm-local/compare/1.0.5...1.0.6) - 2019-04-16
 
 ### Changed
