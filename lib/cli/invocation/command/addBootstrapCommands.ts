@@ -157,7 +157,7 @@ atomist start`);
 }
 
 function removeUrlScheme(url: string): string {
-    return url.replace(/^.*:\//, "");
+    return url.replace(/^.*:\/\//, "");
 }
 
 async function doAfterSpringSdmCreation() {
