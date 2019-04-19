@@ -15,6 +15,7 @@
  */
 
 import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
+// tslint:disable-next-line:import-blacklist
 import axios from "axios";
 import {
     AutomationClientInfo,

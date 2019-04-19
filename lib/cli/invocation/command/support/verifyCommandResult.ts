@@ -83,7 +83,7 @@ export interface CommandVerificationRequest extends CommandTest {
  * @param {CommandVerificationRequest} opts
  * @return {Promise<void>}
  */
-export async function verifyCommandResult(opts: CommandVerificationRequest) {
+export async function verifyCommandResult(opts: CommandVerificationRequest): Promise<void> {
     try {
         const r = await promisify(exec)(opts.command, opts.execOptions);
         if (!opts.outputTest || opts.outputTest(r)) {

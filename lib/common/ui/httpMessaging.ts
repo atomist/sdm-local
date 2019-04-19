@@ -19,6 +19,8 @@ import {
     logger,
     MessageOptions,
 } from "@atomist/automation-client";
+// only local connections
+// tslint:disable-next-line:import-blacklist
 import axios from "axios";
 import * as boxen from "boxen";
 import { sprintf } from "sprintf-js";
@@ -50,7 +52,7 @@ export interface StreamedMessage {
  * @param {string} message
  * @return {Promise<void>}
  */
-export async function sendDiagnosticMessageToAllMessagesListener(message: string, ...args: any[]) {
+export async function sendDiagnosticMessageToAllMessagesListener(message: string, ...args: any[]): Promise<void> {
     const url = `http://${determineDefaultHostUrl()}:${AllMessagesPort}/write`;
     const boxed = boxen(sprintf(message, args), { padding: 1 }) + "\n";
     try {
@@ -61,12 +63,12 @@ export async function sendDiagnosticMessageToAllMessagesListener(message: string
 }
 
 /**
- * Convenient functino to log in the present process and send a message
+ * Convenient function to log in the present process and send a message
  * to the all messages listener, which will be displayed if it's in verbose mode.
  * Typically used when we want to send information about events within the
  * SDM process to a user debugging sdm-local.
  */
-export async function logAndSend(msg: string, ...args: any[]) {
+export async function logAndSend(msg: string, ...args: any[]): Promise<void> {
     logger.info(msg, args);
     return sendDiagnosticMessageToAllMessagesListener(msg, args);
 }

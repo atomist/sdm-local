@@ -28,7 +28,7 @@ import {
  * Verify that the correct version of the JDK is present
  * @return {Promise<void>}
  */
-export async function verifyJDK() {
+export async function verifyJDK(): Promise<void> {
     await verifyCommandResult({
         command: "java -version",
         outputTest: verifyJavaTest,
@@ -41,7 +41,7 @@ export async function verifyJDK() {
  * Verify that the correct version of Maven is present
  * @return {Promise<void>}
  */
-export async function verifyMaven() {
+export async function verifyMaven(): Promise<void> {
     await verifyCommandResult({
         command: "mvn --version",
         outputTest: verifyMavenTest,
@@ -56,7 +56,7 @@ export async function verifyMaven() {
  * @param {CommandResult} r
  * @return {boolean}
  */
-export function verifyJavaTest(r: CommandResult) {
+export function verifyJavaTest(r: CommandResult): boolean {
     if (!r.stdout) {
         return false;
     }
@@ -70,7 +70,8 @@ export function verifyJavaTest(r: CommandResult) {
     return parsed.major >= 9 || (parsed.major === 1 && parsed.minor >= 8);
 }
 
-const ThreePointJavaVersionGrammar = Microgrammar.fromString<{major: number, minor?: number, b1?: number}>(
+const ThreePointJavaVersionGrammar = Microgrammar.fromString<{ major: number, minor?: number, b1?: number }>(
+    // tslint:disable-next-line:no-invalid-template-strings
     "java version \"${major}.${minor}.${b1}",
     {
         major: Integer,
@@ -80,14 +81,15 @@ const ThreePointJavaVersionGrammar = Microgrammar.fromString<{major: number, min
 );
 
 // Java version output changed in 9, so this is valid
-const OnePointJavaVersionGrammar = Microgrammar.fromString<{major: number}>(
+const OnePointJavaVersionGrammar = Microgrammar.fromString<{ major: number }>(
+    // tslint:disable-next-line:no-invalid-template-strings
     "java version \"${major}",
     {
         major: Integer,
     },
 );
 
-export function verifyMavenTest(r: CommandResult) {
+export function verifyMavenTest(r: CommandResult): boolean {
     if (!r.stdout) {
         return false;
     }
@@ -95,7 +97,8 @@ export function verifyMavenTest(r: CommandResult) {
     return !!parsed && parsed.major >= 3;
 }
 
-const MavenVersionGrammar = Microgrammar.fromString<{major: number, minor: number, point: number}>(
+const MavenVersionGrammar = Microgrammar.fromString<{ major: number, minor: number, point: number }>(
+    // tslint:disable-next-line:no-invalid-template-strings
     "Apache Maven ${major}.${minor}.${point}",
     {
         major: Integer,

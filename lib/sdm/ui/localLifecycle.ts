@@ -43,7 +43,7 @@ export const LocalLifecycle: ExtensionPack = {
     },
 };
 
-function addShowCreatedLocalRepo(sdm: SoftwareDeliveryMachine) {
+function addShowCreatedLocalRepo(sdm: SoftwareDeliveryMachine): void {
     sdm.addChannelLinkListener(async i => {
         if (isFileSystemRemoteRepoRef(i.id)) {
             return i.addressChannels(`🏛  Your new local repo is available at **${i.id.fileSystemLocation}**`);
@@ -71,7 +71,7 @@ function linkIndicator(): string {
  * Formatted for the console
  * @param {SoftwareDeliveryMachine} sdm
  */
-function addLocalLifecycle(sdm: SoftwareDeliveryMachine) {
+function addLocalLifecycle(sdm: SoftwareDeliveryMachine): void {
     sdm.addGoalCompletionListener(async gcl => {
         switch (gcl.completedGoal.state) {
             case SdmGoalState.success:

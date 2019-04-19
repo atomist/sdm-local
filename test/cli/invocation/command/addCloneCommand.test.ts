@@ -24,43 +24,43 @@ describe("GitRemoteParser", () => {
         const url = "https://github.com/spring-team/david1";
         const parsed = GitRemoteParser.firstMatch(url);
         assert(parsed, `Must have matched on [${url}]`);
-        assert.equal(parsed.base, "https://github.com");
-        assert.equal(parsed.owner, "spring-team");
-        assert.equal(parsed.repo, "david1");
+        assert.strictEqual(parsed.base, "https://github.com");
+        assert.strictEqual(parsed.owner, "spring-team");
+        assert.strictEqual(parsed.repo, "david1");
     });
 
     it("should parse GitHub url with http", () => {
         const url = "http://github.com/spring-team/david1";
         const parsed = GitRemoteParser.firstMatch(url);
         assert(parsed, `Must have matched on [${url}]`);
-        assert.equal(parsed.base, "http://github.com");
-        assert.equal(parsed.owner, "spring-team");
-        assert.equal(parsed.repo, "david1");
+        assert.strictEqual(parsed.base, "http://github.com");
+        assert.strictEqual(parsed.owner, "spring-team");
+        assert.strictEqual(parsed.repo, "david1");
     });
 
     it("should parse GitHub url ending with .git", () => {
         const url = "https://github.com/spring-team/david1.git";
         const parsed = GitRemoteParser.firstMatch(url);
         assert(parsed, `Must have matched on [${url}]`);
-        assert.equal(parsed.base, "https://github.com");
-        assert.equal(parsed.owner, "spring-team");
-        assert.equal(parsed.repo, "david1");
+        assert.strictEqual(parsed.base, "https://github.com");
+        assert.strictEqual(parsed.owner, "spring-team");
+        assert.strictEqual(parsed.repo, "david1");
     });
 
     it("should parse GitHub url with flags", () => {
         const url = "https://github.com/spring-team/david1 --depth=1";
         const parsed = GitRemoteParser.firstMatch(url);
         assert(parsed, `Must have matched on [${url}]`);
-        assert.equal(parsed.owner, "spring-team");
-        assert.equal(parsed.repo, "david1");
+        assert.strictEqual(parsed.owner, "spring-team");
+        assert.strictEqual(parsed.repo, "david1");
     });
 
     it("should parse GitHub url after flags", () => {
         const url = "--depth=1 https://github.com/spring-team/david1";
         const parsed = GitRemoteParser.firstMatch(url);
         assert(parsed, `Must have matched on [${url}]`);
-        assert.equal(parsed.owner, "spring-team");
-        assert.equal(parsed.repo, "david1");
+        assert.strictEqual(parsed.owner, "spring-team");
+        assert.strictEqual(parsed.repo, "david1");
     });
 
     it("should parse BitBucket url ending with .git", () => {
@@ -68,9 +68,9 @@ describe("GitRemoteParser", () => {
         const parsed = GitRemoteParser.firstMatch(url);
         assert(parsed, `Must have matched on [${url}]`);
         // TODO parse out the username bit, but this is not urgent
-        assert.equal(parsed.base, "https://username@bitbucket.org");
-        assert.equal(parsed.owner, "teamsinspace");
-        assert.equal(parsed.repo, "documentation-tests");
+        assert.strictEqual(parsed.base, "https://username@bitbucket.org");
+        assert.strictEqual(parsed.owner, "teamsinspace");
+        assert.strictEqual(parsed.repo, "documentation-tests");
     });
 
     it("should parse git protocol", () => {
@@ -82,8 +82,8 @@ describe("GitRemoteParser", () => {
             return;
         }
         const parsed = parseReport.toValueStructure();
-        assert.equal(parsed.base, "git@github.com");
-        assert.equal(parsed.owner, "atomist");
-        assert.equal(parsed.repo, "cli");
+        assert.strictEqual(parsed.base, "git@github.com");
+        assert.strictEqual(parsed.owner, "atomist");
+        assert.strictEqual(parsed.repo, "cli");
     });
 });

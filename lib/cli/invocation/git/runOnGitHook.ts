@@ -55,7 +55,7 @@ const verbose = process.env.ATOMIST_GITHOOK_VERBOSE === "true";
  */
 export async function runOnGitHook(argv: string[],
                                    clientFinder: AutomationClientFinder = defaultAutomationClientFinder(),
-) {
+): Promise<void> {
     configureLogging(loggingConfiguration);
     const invocation = await argsToGitHookInvocation(argv, DefaultWorkspaceContextResolver);
     if (isAtomistTemporaryBranch(invocation.branch)) {
@@ -72,7 +72,7 @@ export async function runOnGitHook(argv: string[],
         infoMessage("No Atomist connected clients found");
         process.exit(0);
     }
-    return Promise.all(clients.map(client => sendTo(client, invocation)));
+    await Promise.all(clients.map(client => sendTo(client, invocation)));
 }
 
 /**
@@ -81,7 +81,7 @@ export async function runOnGitHook(argv: string[],
  * @param {GitHookInvocation} invocation
  * @return {Promise<void>}
  */
-async function sendTo(automationClientInfo: AutomationClientInfo, invocation: GitHookInvocation) {
+async function sendTo(automationClientInfo: AutomationClientInfo, invocation: GitHookInvocation): Promise<void> {
     if (!automationClientInfo.localConfig) {
         if (verbose) {
             infoMessage("Not a local machine; not delivering push event.\n");

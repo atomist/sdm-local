@@ -21,7 +21,7 @@ import { adviceDoc } from "../../../ui/consoleOutput";
  * Display a message to the console suggesting starting the listener
  * @return {Promise<void>}
  */
-export async function suggestStartingAllMessagesListener() {
+export async function suggestStartingAllMessagesListener(): Promise<void> {
     const running = await isFeedListenerRunning();
     if (!running) {
         adviceDoc("docs/startListener.md");

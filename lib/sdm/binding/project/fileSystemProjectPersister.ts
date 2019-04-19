@@ -61,7 +61,7 @@ export function fileSystemProjectPersister(teamContext: LocalWorkspaceContext,
         });
         // Override target repo to get file url
         Object.defineProperty((params as any).target, "repoRef", {
-            get() {
+            get(): FileSystemRemoteRepoRef {
                 return frr;
             },
         });
@@ -87,7 +87,7 @@ async function emitEventsForNewProject(workspaceContext: LocalWorkspaceContext,
                                        lc: LocalSoftwareDeliveryMachineOptions,
                                        createdProject: LocalProject,
                                        id: RepoRef,
-                                       automationClientFinder: AutomationClientFinder) {
+                                       automationClientFinder: AutomationClientFinder): Promise<void> {
     const eventSender = invokeEventHandlerInProcess(workspaceContext);
     await sendRepoCreationEvent(workspaceContext, id, eventSender);
 

@@ -34,7 +34,7 @@ import {
 export function addCommandsByName(ai: AutomationClientInfo,
                                   yargs: YargBuilder,
                                   workspaceResolver: WorkspaceContextResolver,
-                                  allowUserInput: boolean = true) {
+                                  allowUserInput: boolean = true): void {
     yargs.command({
         command: "run",
         describe: "Run a command by name",

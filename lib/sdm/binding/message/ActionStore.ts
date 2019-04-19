@@ -47,7 +47,7 @@ export function freshActionStore(): ActionStore {
 class InMemoryActionStore {
     private readonly actionByKey: { [key: string]: Action } = {};
 
-    public async storeActions(sm: SlackMessage) {
+    public async storeActions(sm: SlackMessage): Promise<void> {
         logger.debug("Storing actions for message: %s", (sm as any).key);
         _.flatMap(sm.attachments, a => a.actions)
             .forEach((action, i) => {
@@ -56,7 +56,7 @@ class InMemoryActionStore {
         return;
     }
 
-    public async getAction(key: ActionKey) {
+    public async getAction(key: ActionKey): Promise<Action> {
         logger.info("Getting action: %s", key);
         return this.actionByKey[key];
     }
@@ -68,7 +68,7 @@ export function actionKeyFor(message: SlackMessage, index: number): ActionKey {
     return messageKey;
 }
 
-function computeShortSha(message: any) {
+function computeShortSha(message: any): string {
     const shaObj = new jsSHA("SHA-1", "TEXT");
     shaObj.update(JSON.stringify(message));
     return shaObj.getHash("HEX");

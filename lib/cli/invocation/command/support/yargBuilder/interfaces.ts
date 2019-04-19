@@ -17,12 +17,12 @@ import { ConflictResolution } from "./interfaces";
 
 import {
     Arguments,
+    Argv as yargsArgv,
     Choices,
     Options as ParameterOptions,
     PositionalOptions,
     PositionalOptionsType,
 } from "yargs";
-import * as yargs from "yargs";
 import { CommandLine } from "./commandLine";
 import { HandleInstructions } from "./handleInstruction";
 
@@ -65,7 +65,6 @@ export interface YargBuilder extends BuildYargs {
      * This exists to be compatible with yargs syntax
      * once we aren't using it, we could remove it
      * @param params
-     * @deprecated
      */
     option(parameterName: string,
            params: ParameterOptions): YargBuilder;
@@ -83,7 +82,6 @@ export interface YargBuilder extends BuildYargs {
      * This exists to be compatible with yargs syntax
      * once we aren't using it, we could remove it
      * @param params
-     * @deprecated
      */
     command(params: SupportedSubsetOfYargsCommandMethod): YargBuilder;
 }
@@ -190,29 +188,30 @@ export interface YargCommandWordSpec {
     warnings?: string[];
 }
 
+export interface Built {
+    /**
+     * Put everything we know into the real yargs
+     * @param  yarg
+     */
+    save(yarg: yargsArgv): yargsArgv;
+    /**
+     * Contribution to the description displayed on --help
+     */
+    helpMessages: string[];
+    /**
+     * for rolling up descriptions of subcommands
+     */
+    descriptions: string[];
+    /**
+     * for sorting
+     */
+    commandName: string;
+}
 export interface BuildYargs {
     /**
      * Combine the tree of commands,
      * convert duplicates into warnings.
      * After this, you should only save.
      */
-    build(): {
-        /**
-         * Put everything we know into the real yargs
-         * @param  yarg
-         */
-        save(yarg: yargs.Argv): yargs.Argv;
-        /**
-         * Contribution to the description displayed on --help
-         */
-        helpMessages: string[];
-        /**
-         * for rolling up descriptions of subcommands
-         */
-        descriptions: string[];
-        /**
-         * for sorting
-         */
-        commandName: string;
-    };
+    build(): Built;
 }

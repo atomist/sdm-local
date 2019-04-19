@@ -42,7 +42,7 @@ const NoOp = () => Promise.resolve();
  * avoiding sdm-core optimization
  * @param {SoftwareDeliveryMachine} sdm
  */
-function registerNoOpListeners(sdm: SoftwareDeliveryMachine) {
+function registerNoOpListeners(sdm: SoftwareDeliveryMachine): void {
     sdm.addFirstPushListener(NoOp)
         .addRepoCreationListener(NoOp)
         .addRepoOnboardingListener(NoOp)

@@ -45,11 +45,11 @@ export function commandLineAlias(commandLine: CommandLine, alias: string): Comma
     return new CommandLineImpl([alias], commandLine.positionalArguments);
 }
 
-function isPositionalArgument(w: string) {
+function isPositionalArgument(w: string): boolean {
     return /^<.*>$/.test(w) || /^\[.*\]/.test(w);
 }
 
-export function verifyOneWord(commandLine: CommandLine) {
+export function verifyOneWord(commandLine: CommandLine): void {
     if (commandLine.words.length > 1) {
         throw new Error("You can only have one word if there are positional arguments");
     }
@@ -59,11 +59,11 @@ class CommandLineImpl implements CommandLine {
     constructor(public readonly words: string[],
                 public readonly positionalArguments: string[]) { }
 
-    public get firstWord() {
+    public get firstWord(): string {
         return this.words[0];
     }
 
-    public toString() {
+    public toString(): string {
         return [...this.words, ...this.positionalArguments].join(" ");
     }
 }

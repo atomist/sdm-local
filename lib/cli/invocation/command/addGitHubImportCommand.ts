@@ -15,6 +15,7 @@
  */
 
 import { GitHubDotComBase } from "@atomist/automation-client/lib/operations/common/GitHubRepoRef";
+// tslint:disable-next-line:import-blacklist
 import axios, { AxiosRequestConfig } from "axios";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
@@ -36,11 +37,11 @@ import { YargBuilder } from "./support/yargBuilder";
  */
 export function addGitHubImportCommand(clients: AutomationClientInfo[],
                                        yargs: YargBuilder,
-                                       workspaceContextResolver: WorkspaceContextResolver) {
+                                       workspaceContextResolver: WorkspaceContextResolver): void {
     yargs.command({
         command: "import github <org> [githubBase]",
         describe: "Clone all accessible repos under a github org " +
-        `under the Atomist root at ${determineDefaultRepositoryOwnerParentDirectory()}`,
+            `under the Atomist root at ${determineDefaultRepositoryOwnerParentDirectory()}`,
         handler: argv => {
             const githubBase = argv.githubBase || GitHubDotComBase;
             return logExceptionsToConsole(async () => {
@@ -93,9 +94,9 @@ async function findAllReposFor(githubBase: string, owner: string, user: boolean)
 
 function authHeaders(token: string): AxiosRequestConfig {
     return token ? {
-            headers: {
-                Authorization: `token ${token}`,
-            },
-        }
+        headers: {
+            Authorization: `token ${token}`,
+        },
+    }
         : {};
 }

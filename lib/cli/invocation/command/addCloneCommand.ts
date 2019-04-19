@@ -76,7 +76,7 @@ const GitCloneArgs = [
  */
 export function addCloneCommand(clients: AutomationClientInfo[],
                                 yargs: YargBuilder,
-                                workspaceContextResolver: WorkspaceContextResolver) {
+                                workspaceContextResolver: WorkspaceContextResolver): void {
     yargs.command({
         command: "clone <args>",
         describe: "Like git clone but also onboards the repo with Atomist " +
@@ -132,6 +132,7 @@ async function superclone(clients: AutomationClientInfo[],
  * @type {Microgrammar<{base: string; owner: string; repo: string}>}
  */
 export const GitRemoteParser = Microgrammar.fromString<{ base: string, owner: string, repo: string }>(
+    // tslint:disable-next-line:no-invalid-template-strings
     "${base}${sep}${owner}/${repo}${dotgit}", {
         base: /(git@|https?:\/\/)[^:\/]+/,
         sep: /[:\/]/,

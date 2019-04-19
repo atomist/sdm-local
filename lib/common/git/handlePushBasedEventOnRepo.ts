@@ -69,7 +69,7 @@ function validateEventOnRepo(payload: EventOnRepo): boolean {
 }
 
 export function isValidSHA1(s: string): boolean {
-    return s.match(/[a-fA-F0-9]{40}/) != null;
+    return s.match(/[a-fA-F0-9]{40}/) !== undefined;
 }
 
 /**
@@ -80,7 +80,8 @@ export async function handlePushBasedEventOnRepo(workspaceId: string,
                                                  opts: LocalSoftwareDeliveryMachineOptions,
                                                  payload: EventOnRepo,
                                                  eventHandlerName: string,
-                                                 pushToPayload: (p: Push) => object = p => ({ Push: [p] })) {
+                                                 pushToPayload: (p: Push) => object = p => ({ Push: [p] }),
+): Promise<any> {
 
     // This git hook may be invoked from another git hook. This will cause these values to
     // be incorrect, so we need to delete them to have git work them out again from the directory we're passing via cwd
@@ -122,7 +123,7 @@ async function doWithProjectUnderExpandedDirectoryTree(baseDir: string,
                                                        branch: string,
                                                        sha: string,
                                                        opts: LocalSoftwareDeliveryMachineOptions,
-                                                       action: (p: GitProject) => Promise<any>) {
+                                                       action: (p: GitProject) => Promise<any>): Promise<OnPushToAnyBranch.Push> {
     const p = GitCommandGitProject.fromBaseDir(
         FileSystemRemoteRepoRef.fromDirectory({
             repositoryOwnerParentDirectory: opts.repositoryOwnerParentDirectory,
@@ -133,6 +134,6 @@ async function doWithProjectUnderExpandedDirectoryTree(baseDir: string,
         }),
         baseDir,
         {},
-        () => null);
+        () => undefined);
     return action(p);
 }

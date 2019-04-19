@@ -15,7 +15,6 @@
  */
 
 import {
-    asSpawnCommand,
     logger,
 } from "@atomist/automation-client";
 import {
@@ -101,10 +100,9 @@ class DeliveryManager {
             await goalInvocation.addressChannels(`No previous process found for SDM at ${baseDir}`);
         }
 
-        const spawnCommand = asSpawnCommand("atomist start --install=false --local=true --compile=false");
         childProcess = spawn(
-            spawnCommand.command,
-            spawnCommand.args,
+            "atomist",
+            ["start", "--install=false", "--local=true", "--compile=false"],
             { cwd: baseDir });
 
         this.childProcesses[baseDir] = childProcess;
@@ -146,7 +144,7 @@ class DeliveryManager {
 }
 
 // This is rather heavy-handed: Kills all processes that have started in this directory
-async function killPrevious(baseDir: string) {
+async function killPrevious(baseDir: string): Promise<void> {
     const key = `${baseDir}/node_modules/@atomist/automation-client/start.client.js`;
     const cmd = `for pid in $(ps -ef | grep "${key}" | awk '{print $2}'); do kill -9 $pid; done`;
     let result;

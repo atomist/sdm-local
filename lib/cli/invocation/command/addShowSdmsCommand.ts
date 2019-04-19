@@ -28,7 +28,7 @@ import { YargBuilder } from "./support/yargBuilder";
  * @param {AutomationClientInfo[]} clients
  * @param {YargBuilder} YargBuilder
  */
-export function addShowSdmsCommand(clients: AutomationClientInfo[], yargBuilder: YargBuilder) {
+export function addShowSdmsCommand(clients: AutomationClientInfo[], yargBuilder: YargBuilder): void {
     yargBuilder.command({
         command: "show sdms",
         describe: "Show connected sdms",

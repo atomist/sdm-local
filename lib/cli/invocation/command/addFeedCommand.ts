@@ -31,7 +31,7 @@ import { YargBuilder } from "./support/yargBuilder";
 /**
  * @param {yargs.Argv} yargs
  */
-export function addFeedCommand(yargs: YargBuilder) {
+export function addFeedCommand(yargs: YargBuilder): void {
     yargs.command({
         command: "feed",
         describe: "Start listener daemon to display messages",

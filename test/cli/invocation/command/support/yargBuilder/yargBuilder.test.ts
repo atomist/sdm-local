@@ -110,7 +110,7 @@ describe("yarg saver", () => {
             },
         };
 
-        assert.deepEqual(tree, expected, JSON.stringify(tree, null, 2));
+        assert.deepStrictEqual(tree, expected, JSON.stringify(tree, undefined, 2));
 
     });
 
@@ -145,7 +145,7 @@ describe("yarg saver", () => {
             },
         };
 
-        assert.deepEqual(tree, expected, JSON.stringify(tree, null, 2));
+        assert.deepStrictEqual(tree, expected, JSON.stringify(tree, undefined, 2));
     });
 
     it("Retains the children of commands that dropped out for being conflicting", () => {
@@ -193,7 +193,7 @@ describe("yarg saver", () => {
             },
         };
 
-        assert.deepEqual(tree, expected, JSON.stringify(tree, null, 2));
+        assert.deepStrictEqual(tree, expected, JSON.stringify(tree, undefined, 2));
 
         assert(combined.helpMessages.some((line: string) => line.includes("good job me 2")), "Help message was: " + combined.helpMessages.join("\n"));
         // don't warn about the command that is, in fact there
@@ -206,7 +206,8 @@ describe("yarg saver", () => {
 
 });
 
-function treeifyNested(c: any, tree: { [key: string]: any } = {}) {
+interface CuteTree { [key: string]: any; }
+function treeifyNested(c: any, tree: CuteTree = {}): CuteTree {
     if (!c.nested) {
         return tree;
     }

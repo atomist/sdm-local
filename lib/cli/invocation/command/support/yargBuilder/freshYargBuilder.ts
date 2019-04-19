@@ -18,6 +18,7 @@ import * as _ from "lodash";
 import * as yargs from "yargs";
 import { combine } from "./combining";
 import {
+    Built,
     CommandLineParameter,
     isYargCommand,
     ParameterOptions,
@@ -44,7 +45,7 @@ class YargBuilderTopLevel implements YargBuilder {
         this.epilogsForHelpMessage = opts.epilogForHelpMessage ? [opts.epilogForHelpMessage] : [];
     }
 
-    public demandCommand() {
+    public demandCommand(): this {
         // no-op. Only here for compatibility with yargs syntax.
         // We can figure out whether to demand a command.
         return this;
@@ -56,7 +57,7 @@ class YargBuilderTopLevel implements YargBuilder {
         return this;
     }
 
-    public withParameter(p: CommandLineParameter) {
+    public withParameter(p: CommandLineParameter): this {
         this.parameters.push(p);
         return this;
     }
@@ -79,7 +80,7 @@ class YargBuilderTopLevel implements YargBuilder {
         return this;
     }
 
-    public build() {
+    public build(): Built {
         const self = this;
         const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName);
         const nestedCommandSavers = Object.entries(commandsByNames).map(([k, v]) =>
@@ -88,10 +89,9 @@ class YargBuilderTopLevel implements YargBuilder {
             ..._.flatMap(nestedCommandSavers, nc => nc.helpMessages),
             ...this.epilogsForHelpMessage];
 
-        return {
+        const result: Built = {
             commandName: "top",
             helpMessages,
-            nested: nestedCommandSavers,
             descriptions: [] as string[],
             save(y: yargs.Argv): yargs.Argv {
                 _.sortBy(nestedCommandSavers, n => n.commandName).forEach(c => c.save(y));
@@ -106,5 +106,7 @@ class YargBuilderTopLevel implements YargBuilder {
                 return y;
             },
         };
+        (result as any).nested = nestedCommandSavers;
+        return result;
     }
 }
