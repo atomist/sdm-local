@@ -119,7 +119,7 @@ export function configureLocal(options: LocalConfigureOptions = { forceLocal: fa
 
 async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachineConfiguration,
                                      teamContext: LocalWorkspaceContext,
-                                     actionStore: ActionStore) {
+                                     actionStore: ActionStore): Promise<void> {
     _.set(configuration, "http.enabled", true);
 
     // Binding to localhost will prevent Express to be accessible from a different computer on the network
@@ -189,7 +189,7 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
                     return res.render(
                         "result",
                         {
-                            result: JSON.stringify(decircle(r), null, 2),
+                            result: JSON.stringify(decircle(r), undefined, 2),
                             command,
                             configuration: automationClientInstance().configuration,
                         });
@@ -317,7 +317,7 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
     ];
 }
 
-function configureListeners(configuration: Configuration) {
+function configureListeners(configuration: Configuration): void {
     if (!configuration.listeners) {
         configuration.listeners = [];
     }
@@ -325,8 +325,7 @@ function configureListeners(configuration: Configuration) {
     configuration.listeners.push(new NotifyOnStartupAutomationEventListener());
 }
 
-// TODO this looks out of place here
-function decircle(result: HandlerResult) {
+function decircle(result: HandlerResult): HandlerResult {
     let noncircular = result;
     try {
         JSON.stringify(noncircular);
@@ -345,7 +344,7 @@ function decircle(result: HandlerResult) {
  */
 function configureMessageClientFactory(configuration: Configuration,
                                        teamContext: LocalWorkspaceContext,
-                                       actionStore: ActionStore) {
+                                       actionStore: ActionStore): void {
     configuration.http.messageClientFactory =
         aca => {
             assert(!!aca.context.correlationId);
@@ -372,7 +371,7 @@ function configureMessageClientFactory(configuration: Configuration,
         };
 }
 
-function configureGraphClient(configuration: Configuration) {
+function configureGraphClient(configuration: Configuration): void {
     configuration.http.graphClientFactory =
         () => new LocalGraphClient(false);
 }

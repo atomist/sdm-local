@@ -45,6 +45,7 @@ export class LocalGraphClient implements GraphClient {
 
     public async executeQuery<T, Q>(query: string, variables?: Q, options?: any): Promise<T> {
         logger.warn("Returning empty object for query " + query);
+        // tslint:disable-next-line:no-object-literal-type-assertion
         return {} as T;
     }
 
@@ -108,6 +109,7 @@ export class LocalGraphClient implements GraphClient {
         if (this.showErrorStacks) {
             logger.info("Returning empty object for query: %j, %s", optionsOrName, err.stack);
         }
+        // tslint:disable-next-line:no-object-literal-type-assertion
         return {} as T;
     }
 

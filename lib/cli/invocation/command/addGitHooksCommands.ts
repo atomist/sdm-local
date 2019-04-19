@@ -28,7 +28,7 @@ import { YargBuilder } from "./support/yargBuilder";
  * Command to add git hooks to current directory or all projects
  * @param {yargs.Argv} yargs
  */
-export function addAddGitHooksCommand(yargs: YargBuilder) {
+export function addAddGitHooksCommand(yargs: YargBuilder): void {
     yargs.command({
         command: "add git hooks",
         describe: `Install git hooks to current project, or if 'base' parameter is supplied, under that base`,
@@ -44,7 +44,7 @@ export function addAddGitHooksCommand(yargs: YargBuilder) {
     });
 }
 
-export function addRemoveGitHooksCommand(yargs: YargBuilder) {
+export function addRemoveGitHooksCommand(yargs: YargBuilder): void {
     yargs.command({
         command: "remove git hooks",
         describe: `Remove git hooks from all projects, or in current directory if not connected to an SDM`,
@@ -62,7 +62,7 @@ export function addRemoveGitHooksCommand(yargs: YargBuilder) {
     });
 }
 
-async function installHookOrHooks(repositoryOwnerParentDirectory?: string) {
+async function installHookOrHooks(repositoryOwnerParentDirectory?: string): Promise<void> {
     if (!repositoryOwnerParentDirectory) {
         return addGitHooks(determineCwd());
     }
@@ -70,7 +70,7 @@ async function installHookOrHooks(repositoryOwnerParentDirectory?: string) {
     return installAllGitHooks(repositoryOwnerParentDirectory);
 }
 
-async function removeHookOrHooks(repositoryOwnerParentDirectory: string) {
+async function removeHookOrHooks(repositoryOwnerParentDirectory: string): Promise<void> {
     if (!repositoryOwnerParentDirectory) {
         const cwd = determineCwd();
         return removeGitHooks(cwd);
@@ -82,8 +82,8 @@ async function removeHookOrHooks(repositoryOwnerParentDirectory: string) {
  * Install git hooks in all git projects under our expanded directory structure
  * @return {Promise<void>}
  */
-async function installAllGitHooks(repositoryOwnerParentDirectory: string) {
-    const repoFinder = expandedTreeRepoFinder( { repositoryOwnerParentDirectory });
+async function installAllGitHooks(repositoryOwnerParentDirectory: string): Promise<void> {
+    const repoFinder = expandedTreeRepoFinder({ repositoryOwnerParentDirectory });
     const allRepos = await repoFinder(undefined);
     for (const rr of allRepos) {
         if (!isFileSystemRemoteRepoRef(rr)) {
@@ -93,7 +93,7 @@ async function installAllGitHooks(repositoryOwnerParentDirectory: string) {
     }
 }
 
-async function removeAllGitHooks(repositoryOwnerParentDirectory: string) {
+async function removeAllGitHooks(repositoryOwnerParentDirectory: string): Promise<void> {
     const repoFinder = expandedTreeRepoFinder({ repositoryOwnerParentDirectory });
     const allRepos = await repoFinder(undefined);
     for (const rr of allRepos) {

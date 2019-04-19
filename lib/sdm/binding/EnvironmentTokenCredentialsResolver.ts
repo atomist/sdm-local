@@ -32,11 +32,11 @@ export class EnvironmentTokenCredentialsResolver implements CredentialsResolver 
 
     private readonly credentials: ProjectOperationCredentials;
 
-    public eventHandlerCredentials() {
+    public eventHandlerCredentials(): ProjectOperationCredentials {
         return this.credentials;
     }
 
-    public commandHandlerCredentials() {
+    public commandHandlerCredentials(): ProjectOperationCredentials {
         return this.credentials;
     }
 

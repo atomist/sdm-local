@@ -19,6 +19,7 @@ import {
     CodeTransformRegistration,
     localCommandsCodeTransform,
     ProgressLog,
+    spawnCodeTransform,
 } from "@atomist/sdm";
 
 export interface ModuleId {
@@ -46,8 +47,11 @@ export function addDependencyTransform(opts: Partial<ModuleId> & {
             },
         },
         transform: async (p, cli) => {
-            const command = asSpawnCommand(`npm i ${cli.parameters.name || opts.name}${cli.parameters.version}`);
-            return localCommandsCodeTransform([command], opts.progressLog)(p, cli);
+            return spawnCodeTransform([{
+                command: "npm",
+                args: ["install",
+                    `${cli.parameters.name || opts.name}${cli.parameters.version}`],
+            }], opts.progressLog)(p, cli);
         },
     };
 }

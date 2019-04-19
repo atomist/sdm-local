@@ -29,7 +29,7 @@ export function renderClientInfo(aci: AutomationClientInfo): string {
     return `${chalk.bold(aci.client.name)} @ ${chalk.underline(aci.location.baseEndpoint)} - ${local} - ${reg}`;
 }
 
-export function renderEventDispatch(aci: AutomationClientInfo, what: any) {
+export function renderEventDispatch(aci: AutomationClientInfo, what: any): string {
     return sprintf("Sending event %s to machine %s\n",
         chalk.yellow(JSON.stringify(what)),
         chalk.underline(aci.client.name));

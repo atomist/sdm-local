@@ -32,7 +32,6 @@ import chalk from "chalk";
 import * as formatDate from "format-date";
 import * as _ from "lodash";
 import * as marked from "marked";
-import { MarkedOptions } from "marked";
 import * as TerminalRenderer from "marked-terminal";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionRequest";
 import {
@@ -149,13 +148,13 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
      * @param {string[] | string} channels
      * @param {string} markdown
      */
-    private writeToChannel(channels: string[] | string, markdown: string) {
+    private writeToChannel(channels: string[] | string, markdown: string): Promise<any> {
         const outputText = ` ${marked(`**${channels}**`, this.markedOptions).trim()} ${this.dateString()} ${
             marked(markdown, this.markedOptions).trim()}`;
         return this.sender(chalk.gray("#") + outputText.split("\n").join("\n  ") + "\n");
     }
 
-    public dateString() {
+    public dateString(): string {
         return chalk.dim(formatDate("{year}-{month}-{day} {hours}:{minutes}:{seconds}", new Date()));
     }
 
@@ -170,7 +169,7 @@ export class ConsoleMessageClient implements MessageClient, SlackMessageClient {
     constructor(private readonly linkedChannel: string,
                 private readonly sender: Sender,
                 private readonly connectionConfig: AutomationClientConnectionRequest,
-                public readonly markedOptions: MarkedOptions = {
+                public readonly markedOptions: marked.MarkedOptions = {
             breaks: false,
         }) {
     }

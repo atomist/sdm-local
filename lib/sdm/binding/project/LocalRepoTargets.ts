@@ -86,7 +86,7 @@ export class LocalRepoTargets extends TargetsParams implements RepoTargets {
         return rr;
     }
 
-    public bindAndValidate() {
+    public bindAndValidate(): void {
         // nothing to do
     }
 

@@ -38,7 +38,7 @@ import {
 export function addIntentsAsCommands(ai: AutomationClientInfo,
                                      yargBuilder: YargBuilder,
                                      workSpaceContextResolver: WorkspaceContextResolver,
-                                     allowUserInput: boolean = true) {
+                                     allowUserInput: boolean = true): void {
     const handlers = ai.client.commands
         .filter(hm => !!hm.intent && hm.intent.length > 0);
 

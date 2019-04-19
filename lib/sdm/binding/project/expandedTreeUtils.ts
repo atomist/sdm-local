@@ -24,7 +24,7 @@ import * as path from "path";
  * @param {string} repo
  * @return {string}
  */
-export function dirFor(repositoryOwnerParentDirectory: string, owner: string, repo: string) {
+export function dirFor(repositoryOwnerParentDirectory: string, owner: string, repo: string): string {
     return `${repositoryOwnerParentDirectory}/${owner}/${repo}`;
 }
 

@@ -76,11 +76,11 @@ const AtomistTemporaryBranch = "atomist-internal";
  * @param {string} branch
  * @return {string}
  */
-function atomistTemporaryBranchFor(branch: string) {
+function atomistTemporaryBranchFor(branch: string): string {
     return `${AtomistTemporaryBranch}/${branch}`;
 }
 
-export function isAtomistTemporaryBranch(branch: string) {
+export function isAtomistTemporaryBranch(branch: string): boolean {
     return branch.includes(AtomistTemporaryBranch);
 }
 

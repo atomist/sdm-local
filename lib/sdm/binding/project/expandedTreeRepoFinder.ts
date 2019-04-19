@@ -82,7 +82,7 @@ function containsDirectory(dirName: string): (parent: string) => Promise<boolean
 }
 
 const NotADirectory = {
-    isDirectory() {
+    isDirectory(): boolean {
         return false;
     },
 };

@@ -109,7 +109,7 @@ export class FileSystemRemoteRepoRef extends AbstractRemoteRepoRef {
     }
 
     public async setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>> {
-        return null;
+        return undefined;
     }
 
     public cloneUrl(): string {

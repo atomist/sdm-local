@@ -37,7 +37,7 @@ const MaxColumnWidth = 30;
  * @param {YargBuilder} yargs
  */
 export function addShowSkillsCommand(clients: AutomationClientInfo[],
-                                     yargs: YargBuilder) {
+                                     yargs: YargBuilder): void {
     yargs.command({
         command: "show skills",
         aliases: "s",
@@ -49,7 +49,7 @@ export function addShowSkillsCommand(clients: AutomationClientInfo[],
     });
 }
 
-function printSkillsToConsole(clients: AutomationClientInfo[]) {
+function printSkillsToConsole(clients: AutomationClientInfo[]): void {
     const commands = _.flatten(clients.map(client => client.client.commands));
     infoMessage("%s commands are available from %s connected SDM%s\n\n",
         commands.length,

@@ -16,7 +16,7 @@
 
 import { CommandHandlerMetadata } from "@atomist/automation-client/lib/metadata/automationMetadata";
 import { convertToDisplayable } from "./runCommandOnColocatedAutomationClient";
-import { YargBuilder } from "./yargBuilder";
+import { CommandLineParameter, YargBuilder } from "./yargBuilder";
 
 /**
  * Expose the parameters for this command
@@ -24,7 +24,7 @@ import { YargBuilder } from "./yargBuilder";
  * @param {yargs.Argv} args
  * @param allowUserInput whether to make all parameters optional, allowing user input to supply them
  */
-export function exposeParameters(hi: CommandHandlerMetadata, args: YargBuilder, allowUserInput: boolean) {
+export function exposeParameters(hi: CommandHandlerMetadata, args: YargBuilder, allowUserInput: boolean): YargBuilder {
     commandLineParametersFromCommandHandlerMetadata(hi, allowUserInput)
         .forEach(p => {
             args.withParameter(p);
@@ -32,7 +32,8 @@ export function exposeParameters(hi: CommandHandlerMetadata, args: YargBuilder, 
     return args;
 }
 
-export function commandLineParametersFromCommandHandlerMetadata(hi: CommandHandlerMetadata, allowUserInput: boolean) {
+export function commandLineParametersFromCommandHandlerMetadata(hi: CommandHandlerMetadata,
+                                                                allowUserInput: boolean): CommandLineParameter[] {
     const p1 = hi.parameters
         .map((p: any) => {
             const nameToUse = convertToDisplayable(p.name);
@@ -41,7 +42,7 @@ export function commandLineParametersFromCommandHandlerMetadata(hi: CommandHandl
                 required: !allowUserInput && p.required && !p.default_value,
             };
         });
-    const p2 = (hi.mapped_parameters || []).map( (mp: any) => {
+    const p2 = (hi.mapped_parameters || []).map((mp: any) => {
         const nameToUse = convertToDisplayable(mp.name);
         return {
             parameterName: nameToUse,

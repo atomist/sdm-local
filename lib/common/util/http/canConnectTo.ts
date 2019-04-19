@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// We only use this for local connections
+// tslint:disable-next-line:import-blacklist
 import axios from "axios";
 
 /**

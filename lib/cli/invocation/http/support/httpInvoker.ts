@@ -18,6 +18,7 @@ import {
     HandlerResult,
     logger,
 } from "@atomist/automation-client";
+// tslint:disable-next-line:import-blacklist
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import * as _ from "lodash";
 import { AutomationClientConnectionRequest } from "../AutomationClientConnectionRequest";
@@ -27,7 +28,7 @@ import { AutomationClientConnectionRequest } from "../AutomationClientConnection
  * @param {AutomationClientConnectionConfig} config
  * @param {string} relativePath
  * @param data
- * @return {AxiosPromise}
+ * @return {AxiosPromise}d
  */
 export function postToSdm(config: AutomationClientConnectionRequest, relativePath: string, data: any): Promise<HandlerResult> {
     let url = `${config.baseEndpoint}/${relativePath}`;
@@ -39,14 +40,14 @@ export function postToSdm(config: AutomationClientConnectionRequest, relativePat
         .then(logResponse(url), interpretSdmResponse(config, url));
 }
 
-function logResponse(url: string) {
+function logResponse(url: string): (resp: AxiosResponse) => HandlerResult {
     return (resp: AxiosResponse): HandlerResult => {
         logger.debug(`Response from %s was %d, data %j`, url, resp.status, resp.data);
         return resp.data;
     };
 }
 
-function interpretSdmResponse(config: AutomationClientConnectionRequest, url: string) {
+function interpretSdmResponse(config: AutomationClientConnectionRequest, url: string): (err: AxiosError) => HandlerResult {
     return (err: AxiosError): HandlerResult => {
         logger.error("Error accessing %s: %s", url, err.message);
         if (_.get(err, "message", "").includes("ECONNREFUSED")) {

@@ -44,7 +44,7 @@ import { handleGitHookEvent } from "./handleGitHookEvent";
 export async function triggerGitEvents(clients: AutomationClientInfo[],
                                        event: string,
                                        depth: number,
-                                       teamContextResolver: WorkspaceContextResolver) {
+                                       teamContextResolver: WorkspaceContextResolver): Promise<void> {
     const relevantClients = clients.filter(client => !!client.localConfig && withinExpandedTree(client.localConfig.repositoryOwnerParentDirectory));
     await Promise.all(relevantClients.map(client => triggerGitEventsOn(client, event, depth, teamContextResolver)));
 }
@@ -52,16 +52,16 @@ export async function triggerGitEvents(clients: AutomationClientInfo[],
 async function triggerGitEventsOn(ai: AutomationClientInfo,
                                   event: string,
                                   depth: number,
-                                  teamContextResolver: WorkspaceContextResolver) {
+                                  teamContextResolver: WorkspaceContextResolver): Promise<void> {
     const currentDir = determineCwd();
     const workspaceId = teamContextResolver.workspaceContext.workspaceId;
     if (withinExpandedTree(ai.localConfig.repositoryOwnerParentDirectory, currentDir)) {
         const p = GitCommandGitProject.fromBaseDir(FileSystemRemoteRepoRef.fromDirectory({
-                repositoryOwnerParentDirectory: ai.localConfig.repositoryOwnerParentDirectory,
-                mergePullRequests: ai.localConfig.mergePullRequests,
-                baseDir: currentDir,
-            }),
-            currentDir, null, () => null);
+            repositoryOwnerParentDirectory: ai.localConfig.repositoryOwnerParentDirectory,
+            mergePullRequests: ai.localConfig.mergePullRequests,
+            baseDir: currentDir,
+        }),
+            currentDir, undefined, () => undefined);
         logger.debug("Trigger %s within [%s], depth=%d", event, currentDir, depth);
         const { branch } = await p.gitStatus();
         // Go back on the current branch

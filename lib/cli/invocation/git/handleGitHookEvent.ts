@@ -64,7 +64,7 @@ export enum HookEvent {
  */
 export async function handleGitHookEvent(cc: AutomationClientConnectionRequest,
                                          lc: LocalSoftwareDeliveryMachineOptions,
-                                         payload: GitHookInvocation) {
+                                         payload: GitHookInvocation): Promise<void> {
     if (!payload) {
         return errorMessage("Payload must be supplied");
     }
