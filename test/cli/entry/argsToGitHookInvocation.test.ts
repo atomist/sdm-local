@@ -181,7 +181,6 @@ describe("argsToGitHookInvocation", () => {
             originalSafeExec = Object.getOwnPropertyDescriptor(sdm_lib, "execPromise");
             Object.defineProperty(sdm_lib, "execPromise", {
                 value: (cmd: string, args: string[], opts: any) => {
-                    console.log("JESS WAS HERE");
                     if (cmd !== "git") {
                         assert.fail(`Unknown command: ${cmd} ${args.join(" ")}`);
                         return { stdout: "", stderr: "FAIL" };
