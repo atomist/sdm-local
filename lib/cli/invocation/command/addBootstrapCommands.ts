@@ -15,7 +15,10 @@
  */
 
 import { GitHubRepoRef } from "@atomist/automation-client";
-import { prompt, Question } from "inquirer";
+import {
+    prompt,
+    Question,
+} from "inquirer";
 import {
     adviceDoc,
     infoMessage,
