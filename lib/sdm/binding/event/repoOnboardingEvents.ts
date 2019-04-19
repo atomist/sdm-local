@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { HandlerResult, RepoId } from "@atomist/automation-client";
+import {
+    HandlerResult,
+    RepoId,
+} from "@atomist/automation-client";
 import { OnRepoCreation } from "@atomist/sdm";
 import {
     OnChannelLink,

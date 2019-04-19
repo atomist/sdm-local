@@ -16,7 +16,10 @@
 
 import { CommandHandlerMetadata } from "@atomist/automation-client/lib/metadata/automationMetadata";
 import { convertToDisplayable } from "./runCommandOnColocatedAutomationClient";
-import { CommandLineParameter, YargBuilder } from "./yargBuilder";
+import {
+    CommandLineParameter,
+    YargBuilder,
+} from "./yargBuilder";
 
 /**
  * Expose the parameters for this command
