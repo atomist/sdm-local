@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import { asSpawnCommand } from "@atomist/automation-client";
 import {
     CodeTransformRegistration,
-    localCommandsCodeTransform,
     ProgressLog,
     spawnCodeTransform,
 } from "@atomist/sdm";
