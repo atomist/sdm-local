@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as ac from "@atomist/automation-client";
+import * as sdm_lib from "@atomist/sdm";
 import * as assert from "power-assert";
 import * as process from "process";
 import {
@@ -178,9 +178,10 @@ describe("argsToGitHookInvocation", () => {
 
         let originalSafeExec: any;
         before(() => {
-            originalSafeExec = Object.getOwnPropertyDescriptor(ac, "safeExec");
-            Object.defineProperty(ac, "safeExec", {
+            originalSafeExec = Object.getOwnPropertyDescriptor(sdm_lib, "execPromise");
+            Object.defineProperty(sdm_lib, "execPromise", {
                 value: (cmd: string, args: string[], opts: any) => {
+                    console.log("JESS WAS HERE");
                     if (cmd !== "git") {
                         assert.fail(`Unknown command: ${cmd} ${args.join(" ")}`);
                         return { stdout: "", stderr: "FAIL" };
@@ -201,7 +202,7 @@ describe("argsToGitHookInvocation", () => {
             });
         });
         after(() => {
-            Object.defineProperty(ac, "safeExec", originalSafeExec);
+            Object.defineProperty(sdm_lib, "execPromise", originalSafeExec);
         });
 
         describe("posix", () => {
