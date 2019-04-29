@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 -   Remove excess slash from directory. [#259](https://github.com/atomist/sdm-local/issues/259)
+-   Keep http customizers in place in local mode. [e6bfafc](https://github.com/atomist/sdm-local/commit/e6bfafcb6393c01604a57756ab4efdb520398d26)
 
 ## [1.0.6](https://github.com/atomist/sdm-local/compare/1.0.5...1.0.6) - 2019-04-16
 
