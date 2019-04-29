@@ -137,6 +137,7 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
     process.env.ATOMIST_WEBHOOK_BASEURL = `http://${configuration.local.hostname}:${configuration.http.port}`;
 
     configuration.http.customizers = [
+        ...(configuration.http.customizers || []),
         (app: exp.Express) => {
             // TODO could use this to set local mode for a server - e.g. the name to send to
             app.get("/local/configuration", async (req, res) => {
