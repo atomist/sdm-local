@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { asSpawnCommand } from "@atomist/automation-client";
 import {
     CodeTransformRegistration,
-    localCommandsCodeTransform,
     ProgressLog,
+    spawnCodeTransform,
 } from "@atomist/sdm";
 
 export interface ModuleId {
@@ -46,8 +45,11 @@ export function addDependencyTransform(opts: Partial<ModuleId> & {
             },
         },
         transform: async (p, cli) => {
-            const command = asSpawnCommand(`npm i ${cli.parameters.name || opts.name}${cli.parameters.version}`);
-            return localCommandsCodeTransform([command], opts.progressLog)(p, cli);
+            return spawnCodeTransform([{
+                command: "npm",
+                args: ["install",
+                    `${cli.parameters.name || opts.name}${cli.parameters.version}`],
+            }], opts.progressLog)(p, cli);
         },
     };
 }

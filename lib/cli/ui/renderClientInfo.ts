@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ export function renderClientInfo(aci: AutomationClientInfo): string {
     return `${chalk.bold(aci.client.name)} @ ${chalk.underline(aci.location.baseEndpoint)} - ${local} - ${reg}`;
 }
 
-export function renderEventDispatch(aci: AutomationClientInfo, what: any) {
+export function renderEventDispatch(aci: AutomationClientInfo, what: any): string {
     return sprintf("Sending event %s to machine %s\n",
         chalk.yellow(JSON.stringify(what)),
         chalk.underline(aci.client.name));

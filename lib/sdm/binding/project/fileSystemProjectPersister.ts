@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ export function fileSystemProjectPersister(teamContext: LocalWorkspaceContext,
         });
         // Override target repo to get file url
         Object.defineProperty((params as any).target, "repoRef", {
-            get() {
+            get(): FileSystemRemoteRepoRef {
                 return frr;
             },
         });
@@ -87,7 +87,7 @@ async function emitEventsForNewProject(workspaceContext: LocalWorkspaceContext,
                                        lc: LocalSoftwareDeliveryMachineOptions,
                                        createdProject: LocalProject,
                                        id: RepoRef,
-                                       automationClientFinder: AutomationClientFinder) {
+                                       automationClientFinder: AutomationClientFinder): Promise<void> {
     const eventSender = invokeEventHandlerInProcess(workspaceContext);
     await sendRepoCreationEvent(workspaceContext, id, eventSender);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import {
 export function addIntentsAsCommands(ai: AutomationClientInfo,
                                      yargBuilder: YargBuilder,
                                      workSpaceContextResolver: WorkspaceContextResolver,
-                                     allowUserInput: boolean = true) {
+                                     allowUserInput: boolean = true): void {
     const handlers = ai.client.commands
         .filter(hm => !!hm.intent && hm.intent.length > 0);
 

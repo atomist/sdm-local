@@ -81,7 +81,7 @@ export function invokeEventHandlerUsingHttp(location: AutomationClientConnection
         assert(!!location.baseEndpoint, "Base endpoint must be provided: saw " + JSON.stringify(location));
         const resp = await postToSdm(location, url, data);
         assert(resp.code !== 0,
-            "Event handler did not succeed. Returned: " + JSON.stringify(resp, null, 2));
+            "Event handler did not succeed. Returned: " + JSON.stringify(resp, undefined, 2));
         return resp;
     };
 }

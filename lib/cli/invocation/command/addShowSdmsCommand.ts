@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import { YargBuilder } from "./support/yargBuilder";
  * @param {AutomationClientInfo[]} clients
  * @param {YargBuilder} YargBuilder
  */
-export function addShowSdmsCommand(clients: AutomationClientInfo[], yargBuilder: YargBuilder) {
+export function addShowSdmsCommand(clients: AutomationClientInfo[], yargBuilder: YargBuilder): void {
     yargBuilder.command({
         command: "show sdms",
         describe: "Show connected sdms",

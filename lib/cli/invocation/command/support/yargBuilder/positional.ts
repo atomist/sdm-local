@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import {
     HandleInstructions,
 } from "./handleInstruction";
 import {
+    Built,
     CommandLineParameter,
     ConflictResolution,
     isPromptForChoice,
@@ -44,7 +45,7 @@ export function yargCommandWithPositionalArguments(
         positional: Array<{ key: string, opts: PositionalOptions }>,
         conflictResolution?: ConflictResolution,
     },
-) {
+): YargCommand {
     return new YargSaverPositionalCommand({
         commandLine: parseCommandLine(params.command),
         description: params.describe,
@@ -55,7 +56,7 @@ export function yargCommandWithPositionalArguments(
     });
 }
 
-export function positionalCommand(conflictResolution: ConflictResolution, spec: YargRunnableCommandSpec) {
+export function positionalCommand(conflictResolution: ConflictResolution, spec: YargRunnableCommandSpec): YargCommand {
     return new YargSaverPositionalCommand({ ...spec, conflictResolution });
 }
 
@@ -69,12 +70,12 @@ class YargSaverPositionalCommand implements YargCommand {
     public readonly description: string;
     public readonly handleInstructions: HandleInstructions;
     public readonly commandLine: CommandLine;
-    public readonly isRunnable = true;
+    public readonly isRunnable: boolean = true;
 
     public readonly positionalArguments: Array<{ key: string, opts: PositionalOptions }>;
     public readonly helpMessages: string[] = [];
 
-    public get contributorName() { return this.commandName; }
+    public get contributorName(): string { return this.commandName; }
 
     public withSubcommand(): never {
         throw new Error("You cannot have both subcommands and positional arguments");
@@ -94,12 +95,12 @@ class YargSaverPositionalCommand implements YargCommand {
         }
     }
 
-    public withParameter(p: CommandLineParameter) {
+    public withParameter(p: CommandLineParameter): this {
         this.parameters.push(p);
         return this;
     }
 
-    public addHelpMessages(strs: string[]) {
+    public addHelpMessages(strs: string[]): void {
         strs.forEach(s => this.helpMessages.push(s));
     }
 
@@ -120,7 +121,7 @@ class YargSaverPositionalCommand implements YargCommand {
         throw new Error("Commands with positional arguments may not have subcommands");
     }
 
-    public build() {
+    public build(): Built {
         const ypc = this; // mutating this object will screw this up. Conceptually, should copy
         return {
             helpMessages: ypc.helpMessages,

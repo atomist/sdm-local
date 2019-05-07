@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import {
     handleInstructionsFromFunction,
 } from "./handleInstruction";
 import {
+    Built,
     CommandLineParameter,
     ConflictResolution,
     isYargCommand,
@@ -43,7 +44,7 @@ import {
 } from "./interfaces";
 import { positionalCommand } from "./positional";
 
-async function apologize() {
+async function apologize(): Promise<void> {
     // tslint:disable-next-line:no-console
     console.log("I'm sorry. I don't know how to do this. Try --help");
 }
@@ -55,7 +56,7 @@ async function apologize() {
  */
 export class YargCommandWord implements YargCommand {
 
-    public runnableCommand?: YargRunnableCommandSpec = null;
+    public runnableCommand?: YargRunnableCommandSpec = undefined;
     public readonly nestedCommands: YargCommand[];
 
     public readonly conflictResolution: ConflictResolution;
@@ -88,7 +89,7 @@ export class YargCommandWord implements YargCommand {
         return this;
     }
 
-    public addHelpMessages(strs: string[]) {
+    public addHelpMessages(strs: string[]): void {
         strs.forEach(s => this.warnings.push(s));
     }
 
@@ -101,7 +102,7 @@ export class YargCommandWord implements YargCommand {
         return this;
     }
 
-    public demandCommand() {
+    public demandCommand(): this {
         // no-op. Only here for compatibility with yargs syntax.
         // We can figure out whether to demand a command.
         return this;
@@ -113,13 +114,13 @@ export class YargCommandWord implements YargCommand {
         return this;
     }
 
-    public withParameter(p: CommandLineParameter) {
+    public withParameter(p: CommandLineParameter): this {
         this.beRunnable();
         this.runnableCommand.parameters.push(p);
         return this;
     }
 
-    public beRunnable() {
+    public beRunnable(): void {
         if (!this.runnableCommand) {
             this.runnableCommand = {
                 handleInstructions: DoNothing,
@@ -139,7 +140,7 @@ export class YargCommandWord implements YargCommand {
         return !!this.runnableCommand;
     }
 
-    public build() {
+    public build(): Built {
         const self = this;
         const commandsByNames = _.groupBy(this.nestedCommands, nc => nc.commandName);
         const nestedCommandSavers = Object.entries(commandsByNames).map(([k, v]) =>
@@ -155,10 +156,9 @@ export class YargCommandWord implements YargCommand {
             allDescriptions.push(myDescription);
         }
 
-        return {
+        const result: Built = {
             helpMessages,
             descriptions: allDescriptions,
-            nested: nestedCommandSavers, // the data here is for testing and debugging
             commandName: self.commandName,
             save(yarg: yargs.Argv): yargs.Argv {
                 yarg.command({
@@ -185,6 +185,9 @@ export class YargCommandWord implements YargCommand {
                 return yarg;
             },
         };
+        // the data here is for testing and debugging
+        (result as any).nested = nestedCommandSavers;
+        return result;
     }
 
     public get handleInstructions(): HandleInstructions {
@@ -211,7 +214,7 @@ export function condenseDescriptions(allChildDescriptions: string[], myDescripti
     return myDescription + ", or " + childrenDescription;
 }
 
-export function imitateYargsCommandMethod(params: SupportedSubsetOfYargsCommandMethod) {
+export function imitateYargsCommandMethod(params: SupportedSubsetOfYargsCommandMethod): YargCommand[] {
     const conflictResolution: ConflictResolution = params.conflictResolution ||
         { kind: "expected to be unique", failEverything: true, commandDescription: params.command };
 
@@ -219,7 +222,7 @@ export function imitateYargsCommandMethod(params: SupportedSubsetOfYargsCommandM
         multilevelCommand(spec, params.describe, conflictResolution, params.builder));
 }
 
-function verifyEmpty(positionalArgs: any[]) {
+function verifyEmpty(positionalArgs: any[]): void {
     if (positionalArgs.length > 1) {
         throw new Error("Positional arguments are only ok in a PositionalCommand");
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@
 
 import * as inquirer from "inquirer";
 import * as _ from "lodash";
+import yargs = require("yargs");
 import {
     handleFunctionFromInstructions,
     HandleInstructions,
 } from "./handleInstruction";
 import {
     BuildYargs,
+    Built,
     dropWithWarningsInHelp,
     isPromptForChoice,
     ResolveConflictWithPrompt,
@@ -168,7 +170,7 @@ function combineIntoPrompt(ycs: YargCommand[]): [YargCommand[], string[]] {
     return [[constructPromptCommandFrom(uniqueChoices), ...rest], warnings];
 }
 
-function warningsFromDuplicateChoices(duplicatedChoices: YargCommand[]) {
+function warningsFromDuplicateChoices(duplicatedChoices: YargCommand[]): string[] {
     return duplicatedChoices.map(yc =>
         `WARNING: Command '${yc.conflictResolution.commandDescription}' not available. Duplicate name: ${
         yc.commandName} Duplicate choice: ${
@@ -221,12 +223,12 @@ function promptAndRun(runnableOnes: YargCommandWord[]): HandleInstructions {
 
 function contributeOnlyHelpMessages(formerCommandName: string, ms: string[]): BuildYargs {
     return {
-        build() {
+        build(): Built {
             return {
                 helpMessages: ms,
                 descriptions: [],
                 commandName: formerCommandName,
-                save(v) {
+                save(v: yargs.Argv): yargs.Argv {
                     return v;
                 },
             };

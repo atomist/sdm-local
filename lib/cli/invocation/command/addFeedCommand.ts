@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import { YargBuilder } from "./support/yargBuilder";
 /**
  * @param {yargs.Argv} yargs
  */
-export function addFeedCommand(yargs: YargBuilder) {
+export function addFeedCommand(yargs: YargBuilder): void {
     yargs.command({
         command: "feed",
         describe: "Start listener daemon to display messages",

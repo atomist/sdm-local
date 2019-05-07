@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 import chalk from "chalk";
 import { sdmCd } from "../../../pack/sdm-cd/support/SdmCd";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
+import { AutomationClientInfo } from "../../AutomationClientInfo";
 import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
 import {
     infoMessage,
@@ -31,7 +32,7 @@ export const DefaultSdmCdPort = 2901;
  * Start an SDM dedicated to SDM CD
  * @param {YargBuilder} yargs
  */
-export function addStartSdmDeliveryMachine(yargs: YargBuilder) {
+export function addStartSdmDeliveryMachine(yargs: YargBuilder): void {
     yargs.command({
         command: "deliver",
         describe: "Start SDM delivery machine",
@@ -64,7 +65,7 @@ export function addStartSdmDeliveryMachine(yargs: YargBuilder) {
 
 async function startSdmMachine(host: string,
                                port: number,
-                               repositoryOwnerParentDirectory?: string) {
+                               repositoryOwnerParentDirectory?: string): Promise<AutomationClientInfo> {
     return startEmbeddedMachine({
         repositoryOwnerParentDirectory,
         port,

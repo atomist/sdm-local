@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,11 +76,11 @@ const AtomistTemporaryBranch = "atomist-internal";
  * @param {string} branch
  * @return {string}
  */
-function atomistTemporaryBranchFor(branch: string) {
+function atomistTemporaryBranchFor(branch: string): string {
     return `${AtomistTemporaryBranch}/${branch}`;
 }
 
-export function isAtomistTemporaryBranch(branch: string) {
+export function isAtomistTemporaryBranch(branch: string): boolean {
     return branch.includes(AtomistTemporaryBranch);
 }
 

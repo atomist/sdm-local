@@ -80,10 +80,11 @@ export function defaultLocalSoftwareDeliveryMachineConfiguration(
         targets: () => new LocalRepoTargets(localSdmConfiguration),
     };
 
-    return {
+    const result: LocalSoftwareDeliveryMachineConfiguration = {
         sdm: sdmConfiguration,
         local: localSdmConfiguration,
-    } as LocalSoftwareDeliveryMachineConfiguration;
+    };
+    return result;
 
 }
 
@@ -97,8 +98,8 @@ const RepositoryOwnerParentDirectoryPath = "local.repositoryOwnerParentDirectory
  *
  * The path will get created if it doesn't exist.
  */
-export function determineDefaultRepositoryOwnerParentDirectory() {
-    let root;
+export function determineDefaultRepositoryOwnerParentDirectory(): string {
+    let root: string;
     try {
         root = configurationValue<string>(RepositoryOwnerParentDirectoryPath);
     } catch (err) {
@@ -125,7 +126,7 @@ export function determineDefaultRepositoryOwnerParentDirectory() {
  * This will search in the client configuration, user config in .atomist and finally
  * default to 127.0.0.1.
  */
-export function determineDefaultHostUrl() {
+export function determineDefaultHostUrl(): string {
     try {
         return configurationValue<string>(HostnamePath);
     } catch (err) {

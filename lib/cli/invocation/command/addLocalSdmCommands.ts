@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ import {
  * @return {yargs.Arguments}
  */
 export async function addLocalSdmCommands(yargs: Argv | YargBuilder,
-                                          finder: AutomationClientFinder = defaultAutomationClientFinder()) {
+                                          finder: AutomationClientFinder = defaultAutomationClientFinder()): Promise<void> {
     const workspaceContextResolver: WorkspaceContextResolver = DefaultWorkspaceContextResolver;
 
     const yargBuilder = isYargBuilder(yargs) ? yargs : freshYargBuilder();
@@ -85,7 +85,7 @@ export async function addLocalSdmCommands(yargs: Argv | YargBuilder,
  */
 async function addCommandsToConnectTo(client: AutomationClientInfo,
                                       yargBuilder: YargBuilder,
-                                      workspaceContextResolver: WorkspaceContextResolver) {
+                                      workspaceContextResolver: WorkspaceContextResolver): Promise<void> {
     verifyLocalSdm(client);
 
     // If we were able to connect to an SDM...
@@ -95,7 +95,7 @@ async function addCommandsToConnectTo(client: AutomationClientInfo,
     }
 }
 
-function verifyLocalSdm(client: AutomationClientInfo) {
+function verifyLocalSdm(client: AutomationClientInfo): void {
     if (!!client.location && !client.localConfig) {
         infoMessage(`Detected non-local SDM '${client.client.name}:${client.client.version}'.
 To make commands available here please restart this SDM with 'atomist start --local'.

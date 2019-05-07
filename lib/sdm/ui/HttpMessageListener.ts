@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import {
 } from "@atomist/sdm";
 import * as bodyParser from "body-parser";
 import * as express from "express";
+// tslint:disable-next-line:no-implicit-dependencies
 import * as core from "express-serve-static-core";
 import * as http from "http";
 import {
@@ -95,7 +96,7 @@ export class HttpMessageListener {
      * and the events it has seen?
      * @return {boolean}
      */
-    get canTerminate() {
+    get canTerminate(): boolean {
         return this.parameters.transient && this.seenCompletion;
     }
 
@@ -115,7 +116,7 @@ export class HttpMessageListener {
         return this;
     }
 
-    private addMessageRoute(app: core.Express) {
+    private addMessageRoute(app: core.Express): void {
         app.post(MessageRoute, (req, res, next) => {
             const destinations: SlackDestination[] = req.body.destinations;
             // Shut down the listener
@@ -147,7 +148,7 @@ export class HttpMessageListener {
         });
     }
 
-    private addGoalRoute(app: core.Express) {
+    private addGoalRoute(app: core.Express): void {
         app.post(GoalRoute, (req, res, next) => {
             const destinations: SlackDestination[] = req.body.destinations;
 
@@ -188,7 +189,7 @@ export class HttpMessageListener {
     /**
      * Add raw write route
      */
-    private addWriteRoute(app: core.Express) {
+    private addWriteRoute(app: core.Express): void {
         // Raw message point. Ignore if not in verbose mode.
         const verbose = this.parameters.verbose;
         app.post("/write", (req, res) => {

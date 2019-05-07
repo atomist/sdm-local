@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,13 +106,13 @@ describe("expandedTreeUtils", () => {
         it("works not within directory tree", () => {
             const base = path.join("", "usr", "foo");
             const dir = path.join(base, "c", "d", "e");
-            assert.deepEqual(parseOwnerAndRepo(base, dir), {});
+            assert.deepStrictEqual(parseOwnerAndRepo(base, dir), {});
         });
 
         it("works within directory tree", () => {
             const base = path.join("", "Users", "rodjohnson", "temp", "local-sdm");
             const dir = path.join(base, "spring-team", "spring-rest-seed");
-            assert.deepEqual(parseOwnerAndRepo(base, dir), {
+            assert.deepStrictEqual(parseOwnerAndRepo(base, dir), {
                 owner: "spring-team",
                 repo: "spring-rest-seed",
             });
@@ -121,7 +121,7 @@ describe("expandedTreeUtils", () => {
         it("works within directory tree under org only", () => {
             const base = path.join("", "Users", "rodjohnson", "temp", "local-sdm");
             const dir = path.join(base, "spring-team");
-            assert.deepEqual(parseOwnerAndRepo(base, dir), {
+            assert.deepStrictEqual(parseOwnerAndRepo(base, dir), {
                 owner: "spring-team",
                 repo: undefined,
             });
@@ -130,7 +130,7 @@ describe("expandedTreeUtils", () => {
         it("works with org with trailing path separator after repo", () => {
             const base = path.join("", "Users", "rodjohnson", "temp", "local-sdm");
             const dir = path.join(base, "spring-team", "melb1", "");
-            assert.deepEqual(parseOwnerAndRepo(base, dir), {
+            assert.deepStrictEqual(parseOwnerAndRepo(base, dir), {
                 owner: "spring-team",
                 repo: "melb1",
             });
@@ -139,7 +139,7 @@ describe("expandedTreeUtils", () => {
         it("works if base ends with path separator", () => {
             const base = path.join("", "Users", "me", "projects" + path.sep);
             const dir = path.join(base + "spring-team", "melb1" + path.sep);
-            assert.deepEqual(parseOwnerAndRepo(base, dir), {
+            assert.deepStrictEqual(parseOwnerAndRepo(base, dir), {
                 owner: "spring-team",
                 repo: "melb1",
             });

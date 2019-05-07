@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ export class SimpleNodeLoggerProgressLog implements ProgressLog {
         });
     }
 
-    public write(pWhat: string) {
+    public write(pWhat: string): void {
         let what = pWhat || "";
         this.log += strip_ansi(what);
         if (what.endsWith("\n\r") || what.endsWith("\r\n")) {
@@ -57,20 +57,20 @@ export class SimpleNodeLoggerProgressLog implements ProgressLog {
 
     }
 
-    get url() {
+    get url(): string {
         const appender = this.logger.getAppenders()[0];
         return fileUrl(path.join(this.sdmRoot, appender.createFileName()));
     }
 
-    public async isAvailable() {
+    public async isAvailable(): Promise<boolean> {
         return true;
     }
 
-    public flush() {
+    public flush(): Promise<void> {
         return Promise.resolve();
     }
 
-    public close() {
+    public close(): Promise<void> {
         return Promise.resolve();
     }
 

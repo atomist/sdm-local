@@ -15,8 +15,10 @@
  */
 
 import { GitHubRepoRef } from "@atomist/automation-client";
-import * as inquirer from "inquirer";
-import { Question } from "inquirer";
+import {
+    prompt,
+    Question,
+} from "inquirer";
 import {
     adviceDoc,
     infoMessage,
@@ -38,14 +40,14 @@ import { AddLocalMode } from "./transform/addLocalModeTransform";
  *
  * @param {YargBuilder} yargs
  */
-export function addBootstrapCommands(yargs: YargBuilder) {
+export function addBootstrapCommands(yargs: YargBuilder): void {
     addSdmGenerator(yargs);
     addExtensionPackGenerator(yargs);
     addSuperforkGenerator(yargs);
     addEnableLocalSupport(yargs);
 }
 
-function addExtensionPackGenerator(yargs: YargBuilder) {
+function addExtensionPackGenerator(yargs: YargBuilder): void {
     const name = "extensionPack";
     addEmbeddedCommand(yargs, {
         name,
@@ -75,7 +77,7 @@ function addExtensionPackGenerator(yargs: YargBuilder) {
     });
 }
 
-function addSdmGenerator(yargs: YargBuilder) {
+function addSdmGenerator(yargs: YargBuilder): void {
     const choices = ["blank", "uhura"];
     const typeDescription = "Type of SDM to create";
     const name = "newSdm";
@@ -107,7 +109,7 @@ function addSdmGenerator(yargs: YargBuilder) {
                         true :
                         `Please enter one of following values: ${choices}`,
             }];
-            const answers = await inquirer.prompt(questions);
+            const answers = await prompt(questions);
             switch (answers.type) {
                 case "spring":
                     return sdm => {
@@ -160,13 +162,13 @@ function removeUrlScheme(url: string): string {
     return url.replace(/^.*:\/\//, "");
 }
 
-async function doAfterSpringSdmCreation() {
+async function doAfterSpringSdmCreation(): Promise<void> {
     adviceDoc("docs/springSdm.md");
     // await verifyJDK();
     await verifyMaven();
 }
 
-function addSuperforkGenerator(yargs: YargBuilder) {
+function addSuperforkGenerator(yargs: YargBuilder): void {
     const name = "superfork";
     addEmbeddedCommand(yargs, {
         name,
@@ -189,7 +191,7 @@ function addSuperforkGenerator(yargs: YargBuilder) {
  * Add local support to this project
  * @param {YargBuilder} yargs
  */
-function addEnableLocalSupport(yargs: YargBuilder) {
+function addEnableLocalSupport(yargs: YargBuilder): void {
     addEmbeddedCommand(yargs, {
         name: "addLocalMode",
         cliCommand: "enable local",

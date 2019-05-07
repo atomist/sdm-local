@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ const MaxColumnWidth = 30;
  * @param {YargBuilder} yargs
  */
 export function addShowSkillsCommand(clients: AutomationClientInfo[],
-                                     yargs: YargBuilder) {
+                                     yargs: YargBuilder): void {
     yargs.command({
         command: "show skills",
         aliases: "s",
@@ -49,7 +49,7 @@ export function addShowSkillsCommand(clients: AutomationClientInfo[],
     });
 }
 
-function printSkillsToConsole(clients: AutomationClientInfo[]) {
+function printSkillsToConsole(clients: AutomationClientInfo[]): void {
     const commands = _.flatten(clients.map(client => client.client.commands));
     infoMessage("%s commands are available from %s connected SDM%s\n\n",
         commands.length,

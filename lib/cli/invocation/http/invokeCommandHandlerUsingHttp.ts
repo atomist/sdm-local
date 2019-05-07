@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ export function invokeCommandHandlerUsingHttp(location: AutomationClientConnecti
         logger.debug("Hitting %s to invoke command %s using %j", url, invocation.name, data);
         const resp = await postToSdm(location, url, data);
         if (resp.code !== 0) {
-            logger.error("Command handler did not succeed. Returned: " + JSON.stringify(resp, null, 2));
+            logger.error("Command handler did not succeed. Returned: " + JSON.stringify(resp, undefined, 2));
         }
         return resp;
     };

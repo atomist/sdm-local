@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,7 +116,7 @@ export class ConsoleGoalRendering {
         });
     }
 
-    public addGoals(id: string, goals: string[], p: Push) {
+    public addGoals(id: string, goals: string[], p: Push): void {
         process.stdout.write(push(p) + "\n");
         const gss = goals.map(g => ({
             name: g,
@@ -159,7 +159,7 @@ export class ConsoleGoalRendering {
         });
     }
 
-    public updateGoal(goal: SdmGoalEvent) {
+    public updateGoal(goal: SdmGoalEvent): void {
         const goalSet = this.goalSets.find(gs => gs.goalSetId === goal.goalSetId);
         if (goalSet) {
             const gtu = goalSet.goals.find(g => g.name === goal.name);
@@ -303,11 +303,11 @@ function mapStateToColor(label: string, state: SdmGoalState): string {
     return "";
 }
 
-function date() {
+function date(): string {
     return chalk.dim(formatDate("{year}-{month}-{day} {hours}:{minutes}:{seconds}", new Date()));
 }
 
-function push(p: Push) {
+function push(p: Push): string {
     return `${chalk.grey("#")} ${chalk.bold(p.repo)} ${date()} ${chalk.yellow(
         `${p.owner}/${p.repo}/${p.branch}`)} - ${chalk.yellow(p.sha.slice(0, 7))} ${p.message.split("\n")[0]}`;
 }

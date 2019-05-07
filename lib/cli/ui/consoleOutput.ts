@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import { renderProjectDocChunk } from "./docChunk";
  * @return {Promise<void>}
  */
 export async function logExceptionsToConsole(what: () => Promise<any>,
-                                             showStack: boolean) {
+                                             showStack: boolean): Promise<void> {
     try {
         await what();
         // TODO this prevented waiting, but causes feed command to die immediately
@@ -45,7 +45,7 @@ export async function logExceptionsToConsole(what: () => Promise<any>,
  * @param msg message
  * @param args arguments
  */
-export function errorMessage(msg: string, ...args: any[]) {
+export function errorMessage(msg: string, ...args: any[]): void {
     process.stdout.write(chalk.red(sprintf("✘ " + msg, ...args)));
 }
 
@@ -54,7 +54,7 @@ export function errorMessage(msg: string, ...args: any[]) {
  * @param msg message
  * @param args arguments
  */
-export function warningMessage(msg: string, ...args: any[]) {
+export function warningMessage(msg: string, ...args: any[]): void {
     process.stdout.write(chalk.yellowBright(sprintf("⚠︎ " + msg, ...args)));
 }
 
@@ -64,7 +64,7 @@ export function warningMessage(msg: string, ...args: any[]) {
  * @param {string} msg
  * @param args
  */
-export function adviceMessage(msg: string, ...args: any[]) {
+export function adviceMessage(msg: string, ...args: any[]): void {
     process.stdout.write(chalk.cyan(sprintf("⚠︎ " + msg, ...args)));
 }
 
@@ -73,7 +73,7 @@ export function adviceMessage(msg: string, ...args: any[]) {
  * @param msg message
  * @param args arguments
  */
-export function infoMessage(msg: string, ...args: any[]) {
+export function infoMessage(msg: string, ...args: any[]): void {
     process.stdout.write(chalk.cyan(sprintf(msg, ...args)));
 }
 
@@ -81,7 +81,7 @@ export function infoMessage(msg: string, ...args: any[]) {
  * Dynamically build an advice block from one or more documentation chunks
  * @param {string} relativePaths paths relative to the base of the current project
  */
-export function adviceDoc(...relativePaths: string[]) {
+export function adviceDoc(...relativePaths: string[]): void {
     const docChunk = relativePaths.map(renderProjectDocChunk).join("\n\n");
     if (docChunk) {
         // Some times you want to draw boxes manually (eg emoji use)

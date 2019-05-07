@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import {
-    logger,
-    safeExec,
-} from "@atomist/automation-client";
+import { logger } from "@atomist/automation-client";
+import { execPromise } from "@atomist/sdm";
 import { WorkspaceContextResolver } from "../../common/binding/WorkspaceContextResolver";
 import {
     GitHookInvocation,
@@ -79,9 +77,9 @@ export async function argsToGitHookInvocation(
                 });
             });
         } else if (event === HookEvent.PostCommit || event === HookEvent.PostMerge) {
-            const gitBranchResult = await safeExec("git", ["rev-parse", "--abbrev-ref", "HEAD"], { cwd: baseDir });
+            const gitBranchResult = await execPromise("git", ["rev-parse", "--abbrev-ref", "HEAD"], { cwd: baseDir });
             const branch = cleanBranch(gitBranchResult.stdout.trim());
-            const gitShaResult = await safeExec("git", ["rev-parse", "HEAD"], { cwd: baseDir });
+            const gitShaResult = await execPromise("git", ["rev-parse", "HEAD"], { cwd: baseDir });
             const sha = gitShaResult.stdout.trim();
             return { event, baseDir, branch, sha, workspaceId };
         } else {

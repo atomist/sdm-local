@@ -156,7 +156,7 @@ async function promptForMissingParameters(hi: CommandHandlerMetadata, args: Arg[
         return args.find(a => a.name === p.name);
     }
 
-    function mustBeSupplied(p: Parameter) {
+    function mustBeSupplied(p: Parameter): boolean {
         const arg = findArg(p);
         return p.required && (
             !arg || arg.value === undefined ||
@@ -317,7 +317,8 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
 /**
  * If value is undefined, delete it
  */
-function addOrReplaceMappedParameter(mappedParameters: Array<{ name: string, value: string }>, name: string, value?: string) {
+function addOrReplaceMappedParameter(mappedParameters: Array<{ name: string, value: string }>,
+                                     name: string, value?: string): void {
     _.remove(mappedParameters, arg => arg.name === name);
     if (!!value) {
         mappedParameters.push({ name, value });

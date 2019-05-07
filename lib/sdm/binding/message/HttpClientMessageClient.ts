@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import {
     SlackDestination,
     SlackMessageClient,
 } from "@atomist/automation-client";
+// this is calling a local address so it's fine
+// tslint:disable-next-line:import-blacklist
 import axios from "axios";
 import { StreamedMessage } from "../../../common/ui/httpMessaging";
 import {
@@ -53,10 +55,10 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
         const dests = Array.isArray(destinations) ? destinations : [destinations];
         if (isSdmGoalStoreOrUpdate(msg) || (msg.goals && msg.push && msg.goalSetId)) {
             return this.stream({
-               message: msg,
-               options,
-               machineAddress: currentMachineAddress(),
-               destinations: dests,
+                message: msg,
+                options,
+                machineAddress: currentMachineAddress(),
+                destinations: dests,
             }, this.goalUrl);
         }
         return this.sendInternal(msg, dests, options);
@@ -67,10 +69,14 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
             logger.info("Storing any actions for message %j", message);
             await this.options.actionStore.storeActions(message);
         }
-        const destinations = [{
-                team: this.options.workspaceId,
-                channels,
-            } as SlackDestination];
+        const destinations: SlackDestination[] = [{
+            team: this.options.workspaceId,
+            channels: Array.isArray(channels) ? channels : [channels],
+            userAgent: undefined,
+            users: undefined,
+            addressUser: undefined,
+            addressChannel: undefined,
+        }];
         return this.sendInternal(message, destinations, options);
     }
 
@@ -98,7 +104,7 @@ export class HttpClientMessageClient implements MessageClient, SlackMessageClien
      * @param {StreamedMessage} sm
      * @return {Promise<any>}
      */
-    private async stream(sm: StreamedMessage, url: string) {
+    private async stream(sm: StreamedMessage, url: string): Promise<void> {
         try {
             if (!this.dead) {
                 logger.log("silly", `Write to url ${url}: ${JSON.stringify(sm)}`);

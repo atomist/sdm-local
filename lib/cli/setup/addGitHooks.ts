@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import {
  * @param {string} projectBaseDir
  * @return {Promise<void>}
  */
-export async function addGitHooks(projectBaseDir: string) {
+export async function addGitHooks(projectBaseDir: string): Promise<void> {
     if (fs.existsSync(path.join(projectBaseDir, ".git"))) {
         const p = await NodeFsLocalProject.fromExistingDirectory(undefined, projectBaseDir);
         return addGitHooksToProject(p);
@@ -42,7 +42,7 @@ export async function addGitHooks(projectBaseDir: string) {
     }
 }
 
-export async function addGitHooksToProject(p: LocalProject) {
+export async function addGitHooksToProject(p: LocalProject): Promise<void> {
     for (const event of Object.values(HookEvent)) {
         const atomistContent = scriptFragments()[event as HookEvent];
         if (!atomistContent) {
@@ -54,7 +54,7 @@ export async function addGitHooksToProject(p: LocalProject) {
     }
 }
 
-export async function removeGitHooks(baseDir: string) {
+export async function removeGitHooks(baseDir: string): Promise<void> {
     if (fs.existsSync(path.join(baseDir, ".git"))) {
         const p = await NodeFsLocalProject.fromExistingDirectory({ owner: "doesn't", repo: "matter", url: undefined }, baseDir);
         await removeGitHooksFromProject(p);
@@ -63,7 +63,7 @@ export async function removeGitHooks(baseDir: string) {
     }
 }
 
-export async function removeGitHooksFromProject(p: LocalProject) {
+export async function removeGitHooksFromProject(p: LocalProject): Promise<void> {
     for (const hookFile of Object.values(HookEvent)) {
         await deatomizeScript(p, path.join(".git", "hooks", hookFile));
     }
@@ -151,6 +151,6 @@ const AtomistEndComment = "\n######### Atomist end #########\n";
  * @param {string} toAppend
  * @return {string}
  */
-export function markAsAtomistContent(toAppend: string) {
+export function markAsAtomistContent(toAppend: string): string {
     return `${AtomistStartComment}${toAppend}${AtomistEndComment}`;
 }
