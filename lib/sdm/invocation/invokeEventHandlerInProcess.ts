@@ -20,6 +20,7 @@ import {
     HandlerResult,
     logger,
     Secrets,
+    Success,
 } from "@atomist/automation-client";
 import { replacer } from "@atomist/automation-client/lib/internal/util/string";
 import * as stringify from "json-stringify-safe";
@@ -65,12 +66,13 @@ export function invokeEventHandlerInProcess(workspaceContext: LocalWorkspaceCont
         };
 
         logger.log("silly", "Invoking %s using %s", invocation.name, stringify(data, replacer));
-        return automationClientInstance().processEvent(data as any as EventIncoming, async result => {
+        await automationClientInstance().processEvent(data as any as EventIncoming, async result => {
             const results = (Array.isArray(result) ? result : [result]) as HandlerResult[];
             assert(results.find(r => r.code !== 0),
                 "Event handler did not succeed. Returned: " + JSON.stringify(result, undefined, 2));
             return results;
         });
 
+        return Success;
     };
 }

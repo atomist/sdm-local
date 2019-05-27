@@ -23,8 +23,8 @@ import * as formatDate from "format-date";
 import * as _ from "lodash";
 import * as marked from "marked";
 import * as TerminalRenderer from "marked-terminal";
+import stripAnsi from "strip-ansi";
 import Signals = NodeJS.Signals;
-import strip_ansi = require("strip-ansi");
 import {
     init,
     ProgressBar,
@@ -120,7 +120,7 @@ export class ConsoleGoalRendering {
         process.stdout.write(push(p) + "\n");
         const gss = goals.map(g => ({
             name: g,
-            displayName: strip_ansi(marked(g.split("#")[0]).trim()),
+            displayName: stripAnsi(marked(g.split("#")[0]).trim()),
         }));
 
         const ml = _.maxBy(gss, "displayName.length");

@@ -18,6 +18,7 @@ import {
     automationClientInstance,
     CommandIncoming,
     HandlerResult,
+    Success,
 } from "@atomist/automation-client";
 import { CommandHandlerInvoker } from "../../common/invocation/CommandHandlerInvocation";
 import { propertiesToArgs } from "../../common/util/propertiesToArgs";
@@ -48,6 +49,8 @@ export function invokeCommandHandlerInProcess(callback: CommandHandlerCallback =
             },
         };
 
-        return automationClientInstance().processCommand(data as CommandIncoming, callback);
+        await automationClientInstance().processCommand(data as CommandIncoming, callback);
+
+        return Success;
     };
 }

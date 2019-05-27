@@ -19,7 +19,7 @@ import * as fileUrl from "file-url";
 import * as fs from "fs-extra";
 import * as path from "path";
 import * as snLogger from "simple-node-logger";
-import strip_ansi = require("strip-ansi");
+import stripAnsi from "strip-ansi";
 
 /**
  * Write log to a file using simple-node-logger in the repository
@@ -46,7 +46,7 @@ export class SimpleNodeLoggerProgressLog implements ProgressLog {
 
     public write(pWhat: string): void {
         let what = pWhat || "";
-        this.log += strip_ansi(what);
+        this.log += stripAnsi(what);
         if (what.endsWith("\n\r") || what.endsWith("\r\n")) {
             what = what.slice(0, -2);
         }
