@@ -154,7 +154,7 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
             app.engine("handlebars", exphbs({
                 defaultLayout: "main",
                 layoutsDir: path.join(__dirname, "..", "..", "views", "layouts"),
-            }));
+            }) as any);
 
             // Add a GET route for convenient links to command handler invocation, as a normal automation client doesn't expose one
             app.get("/command/:name", async (req, res) => {
