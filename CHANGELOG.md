@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-local/compare/1.0.7...HEAD)
 
+### Fixed
+
+-   Fix isValidSHA1. [8a4f500](https://github.com/atomist/sdm-local/commit/8a4f5007edb22a7746ec5ad8156f7bc8af7704e8)
+
 ## [1.0.7](https://github.com/atomist/sdm-local/compare/1.0.6...1.0.7) - 2019-05-27
 
 ### Removed
