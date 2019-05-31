@@ -66,7 +66,7 @@ export function invokeEventHandlerInProcess(workspaceContext: LocalWorkspaceCont
         };
 
         logger.log("silly", "Invoking %s using %s", invocation.name, stringify(data, replacer));
-        await automationClientInstance().processEvent(data as any as EventIncoming, async result => {
+        automationClientInstance().processEvent(data as any as EventIncoming, async result => {
             const results = (Array.isArray(result) ? result : [result]) as HandlerResult[];
             assert(results.find(r => r.code !== 0),
                 "Event handler did not succeed. Returned: " + JSON.stringify(result, undefined, 2));

@@ -49,7 +49,7 @@ export function invokeCommandHandlerInProcess(callback: CommandHandlerCallback =
             },
         };
 
-        await automationClientInstance().processCommand(data as CommandIncoming, callback);
+        automationClientInstance().processCommand(data as CommandIncoming, callback);
 
         return Success;
     };
