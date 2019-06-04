@@ -39,7 +39,7 @@ export class NotifyOnStartupAutomationEventListener extends AutomationEventListe
         registerShutdownHook(async () => {
             await messageClient.respond(`${message} disconnected`);
             return 0;
-        });
+        }, 5000, "send shutdown chat message");
     }
 
 }

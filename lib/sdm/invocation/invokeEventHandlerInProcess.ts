@@ -34,8 +34,7 @@ import { credentialsFromEnvironment } from "../binding/EnvironmentTokenCredentia
  * Invoke an event handler on the automation client at the given location
  * @return {Promise<HandlerResult>}
  */
-export function invokeEventHandlerInProcess(workspaceContext: LocalWorkspaceContext,
-                                            correlationId?: string): EventSender {
+export function invokeEventHandlerInProcess(workspaceContext: LocalWorkspaceContext, correlationId?: string): EventSender {
     return async invocation => {
         if (!automationClientInstance()) {
             throw new Error("This function must be invoked inside an automation client locally");

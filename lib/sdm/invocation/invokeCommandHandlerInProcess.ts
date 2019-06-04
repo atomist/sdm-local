@@ -39,9 +39,7 @@ export function invokeCommandHandlerInProcess(callback: CommandHandlerCallback =
             secrets: (invocation.secrets || []).concat([
                 { uri: "github://user_token?scopes=repo,user:email,read:user", value: credentialsFromEnvironment().token },
             ]),
-            // tslint:disable-next-line:variable-name
             correlation_id: invocation.correlationId,
-            // tslint:disable-next-line:variable-name
             api_version: "1",
             team: {
                 id: invocation.workspaceId,
