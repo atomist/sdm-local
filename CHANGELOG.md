@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-local/compare/1.0.8...HEAD)
 
+### Changed
+
+-   Updated Atomist and TypeScript deps. [78ea594](https://github.com/atomist/sdm-local/commit/78ea594f1cf9fe42b781638520f2e8b6efc17447)
+
 ## [1.0.8](https://github.com/atomist/sdm-local/compare/1.0.7...1.0.8) - 2019-05-31
 
 ### Fixed
