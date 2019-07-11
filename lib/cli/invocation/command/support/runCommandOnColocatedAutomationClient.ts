@@ -289,7 +289,7 @@ async function promptForMissingMappedParameters(hi: CommandHandlerMetadata, mapp
                         return `Please enter a valid value`;
                     },
                 };
-            });
+            }) as any[];
     const fromPrompt = await inquirer.prompt(questions) as any;
 
     Object.getOwnPropertyNames(fromPrompt)

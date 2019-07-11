@@ -104,11 +104,11 @@ function addSdmGenerator(yargs: YargBuilder): void {
                 type: "list",
                 choices,
                 default: "blank",
-                validate: input =>
+                validate: (input: string) =>
                     choices.includes(input) ?
                         true :
                         `Please enter one of following values: ${choices}`,
-            }];
+            } as any];
             const answers = await prompt(questions);
             switch (answers.type) {
                 case "spring":
