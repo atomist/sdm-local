@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-local/compare/1.0.9...HEAD)
 
+### Changed
+
+-   Update dependencies. [28b25f4](https://github.com/atomist/sdm-local/commit/28b25f402255c9e8187d5517bac859a2afd77012)
+
 ## [1.0.9](https://github.com/atomist/sdm-local/compare/1.0.8...1.0.9) - 2019-07-09
 
 ### Changed
