@@ -38,9 +38,7 @@
     "@types/marked": "^0.6.5",
     "@types/node": "^12.6.2",
     "@types/node-notifier": "5.4.0",
-    "@types/serialize-error": "^4.0.1",
     "@types/sprintf-js": "^1.1.2",
-    "@types/strip-ansi": "^5.2.1",
     "@types/yargs": "^13.0.0",
     "ansi.js": "^0.0.5",
     "axios": "^0.19.0",
@@ -66,7 +64,7 @@
     "simple-node-logger": "^18.12.23",
     "sprintf-js": "^1.1.2",
     "strip-ansi": "^5.2.0",
-    "terminal-kit": "^1.28.3",
+    "terminal-kit": "1.28.3",
     "yargs": "^13.2.4"
   },
   "peerDependencies": {
