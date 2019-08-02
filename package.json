@@ -70,17 +70,17 @@
     "yargs": "^13.2.4"
   },
   "peerDependencies": {
-    "@atomist/automation-client": ">=1.6.2",
+    "@atomist/automation-client": "^1.6.2",
     "@atomist/microgrammar": ">=1.2.0",
-    "@atomist/sdm": ">=1.6.1",
-    "@atomist/sdm-core": ">=1.6.1",
+    "@atomist/sdm": "^1.6.1",
+    "@atomist/sdm-core": "^1.6.1",
     "@atomist/slack-messages": ">=1.1.1"
   },
   "devDependencies": {
-    "@atomist/automation-client": "^1.6.1",
+    "@atomist/automation-client": "^1.6.2",
     "@atomist/microgrammar": "^1.2.0",
-    "@atomist/sdm": "^1.6.0",
-    "@atomist/sdm-core": "^1.6.0",
+    "@atomist/sdm": "^1.6.1",
+    "@atomist/sdm-core": "^1.6.1",
     "@atomist/slack-messages": "^1.1.1",
     "@types/mocha": "^5.2.7",
     "@types/power-assert": "^1.5.0",
