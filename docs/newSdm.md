@@ -4,8 +4,8 @@
 Choose `blank` for a new SDM to which you can add your own functionality. It
 contains a simple 'hello world' example.
 
-Choose `spring` for a new SDM that allows the creation of Spring projects,
-build and delivery to Kubernetes clusters.
+Choose `spring` for a new SDM that allows the creation of Spring projects, and
+to build and deliver them to a Kubernetes clusters.
 
 > If you're new to Atomist, choose "blank" to see Atomist's capabilities quickly.
 
