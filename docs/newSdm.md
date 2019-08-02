@@ -1,9 +1,18 @@
 
 ## Create a new Software Delivery Machine (SDM) repository
 
-Choose `blank` for a new SDM to which you can add your own functionality.
+Choose `blank` for a new SDM to which you can add your own functionality. It
+contains a simple 'hello world' example.
 
-Choose `uhura` for a new SDM that provides self service software delivery
-for common project types.
+Choose `spring` for a new SDM that allows the creation of Spring projects,
+build and delivery to Kubernetes clusters.
 
-> If you're new to Atomist, choose "uhura" to see Atomist's capabilities quickly.
+> If you're new to Atomist, choose "blank" to see Atomist's capabilities quickly.
+
+For more examples, we recommend checking out the samples repository at:
+    
+    https://github.com/atomist/samples
+    
+You can also start the samples directly from the Atomist CLI:
+    
+    $ atomist start --repository-url https://github.com/atomist/samples.git
