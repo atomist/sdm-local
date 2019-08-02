@@ -116,13 +116,13 @@ function addSdmGenerator(yargs: YargBuilder): void {
                         sdm.addGeneratorCommand(nodeGenerator(name,
                             new GitHubRepoRef("atomist-seeds", "demo-sdm"),
                             [UpdatePackageJsonIdentification],
-                            "spring"));
+                            "atomist"));
                     };
                 case "blank":
                     return sdm => sdm.addGeneratorCommand(nodeGenerator(name,
                         new GitHubRepoRef("atomist-seeds", "empty-sdm"),
                         [UpdatePackageJsonIdentification],
-                        "blank"));
+                        "atomist"));
                 default:
                     throw new Error("Unknown SDM type " + answers.type);
             }
