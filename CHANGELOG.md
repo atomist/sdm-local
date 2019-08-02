@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-local/compare/1.0.10...HEAD)
 
+### Changed
+
+-   Remove uhura and update empty-sdm with current configure. [f70c08b](https://github.com/atomist/sdm-local/commit/f70c08b4792c70ef3e901e7c686b1a31db75af91)
+
 ## [1.0.10](https://github.com/atomist/sdm-local/compare/1.0.9...1.0.10) - 2019-07-11
 
 ### Changed
