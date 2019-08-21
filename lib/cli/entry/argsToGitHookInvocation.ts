@@ -25,6 +25,7 @@ import {
 /**
  * Process the given args (probably from process.argv) into a
  * GitHookInvocation
+ * Note that this is not intended for use by humans, but only from our installed git hooks.
  * @param {string[]} argv command line args
  * @param teamContextResolver resolver to find team id
  * @return {GitHookInvocation}
