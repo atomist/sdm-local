@@ -91,7 +91,9 @@ export function adviceDoc(...relativePaths: string[]): void {
         } else {
             process.stdout.write("\n" + boxen(docChunk, { padding: 1 }) + "\n\n");
         }
+    } else if (docChunk === "") {
+        // this is fine, it's empty
     } else {
-        warningMessage("Internal error: Document at '%s' not found");
+        warningMessage("Warning: unable to display advice: Document(s) at '%s' not found", relativePaths.join(":"));
     }
 }

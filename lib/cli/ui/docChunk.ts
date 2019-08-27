@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
 import * as fs from "fs-extra";
 import * as marked from "marked";
 import * as TerminalRenderer from "marked-terminal";
@@ -40,7 +39,6 @@ export function renderDocChunk(location: string): string | undefined {
         const chunk = fs.readFileSync(location).toString();
         return marked(chunk).trim();
     } catch (e) {
-        logger.warn("Error reading doc file at %s : %s", location, e.message);
         return "Failed to resolve doc chunk at " + location;
     }
 }
