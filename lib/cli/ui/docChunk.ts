@@ -40,7 +40,6 @@ export function renderDocChunk(location: string): string | undefined {
         const chunk = fs.readFileSync(location).toString();
         return marked(chunk).trim();
     } catch (e) {
-        logger.warn("Error reading doc file at %s : %s", location, e.message);
         return "Failed to resolve doc chunk at " + location;
     }
 }
