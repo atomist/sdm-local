@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
 import * as fs from "fs-extra";
 import * as marked from "marked";
 import * as TerminalRenderer from "marked-terminal";
