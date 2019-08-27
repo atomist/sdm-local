@@ -32,6 +32,7 @@ marked.setOptions({
  */
 export function renderProjectDocChunk(relativePath: string): string | undefined {
     const location = path.join(__dirname, "../../..", relativePath);
+    process.stdout.write("Looking in: " + location + " from " + __dirname);
     return renderDocChunk(location);
 }
 

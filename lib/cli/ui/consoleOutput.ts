@@ -92,6 +92,6 @@ export function adviceDoc(...relativePaths: string[]): void {
             process.stdout.write("\n" + boxen(docChunk, { padding: 1 }) + "\n\n");
         }
     } else {
-        warningMessage("Internal error: Document at '%s' not found");
+        warningMessage("Warning: unable hoto display advice: Document(s) at '%s' not found", relativePaths.join(":"));
     }
 }
