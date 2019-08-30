@@ -14,23 +14,6 @@
  * limitations under the License.
  */
 
-import { ConflictResolution } from "./interfaces";
-/*
- * Copyright © 2018 Atomist, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import {
     Arguments,
     Argv as yargsArgv,
@@ -41,6 +24,7 @@ import {
 } from "yargs";
 import { CommandLine } from "./commandLine";
 import { HandleInstructions } from "./handleInstruction";
+import { ConflictResolution } from "./interfaces";
 
 export { PositionalOptions, PositionalOptionsType, Choices, ParameterOptions, Arguments };
 
@@ -82,8 +66,7 @@ export interface YargBuilder extends BuildYargs {
      * once we aren't using it, we could remove it
      * @param params
      */
-    option(parameterName: string,
-           params: ParameterOptions): YargBuilder;
+    option(parameterName: string, params: ParameterOptions): YargBuilder;
 
     /**
      * This exists to be compatible with yargs syntax
