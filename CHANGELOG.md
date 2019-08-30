@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-local/compare/1.1.0...HEAD)
 
+### Deprecated
+
+-   Deprecate unsupported commands. [#278](https://github.com/atomist/sdm-local/issues/278)
+
 ## [1.1.0](https://github.com/atomist/sdm-local/compare/1.0.10...1.1.0) - 2019-08-02
 
 ### Changed
