@@ -22,6 +22,7 @@ import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
 import {
     infoMessage,
     logExceptionsToConsole,
+    warningMessage,
 } from "../../ui/consoleOutput";
 import { renderClientInfo } from "../../ui/renderClientInfo";
 import { YargBuilder } from "./support/yargBuilder";
@@ -50,6 +51,7 @@ export function addStartSdmDeliveryMachine(yargs: YargBuilder): void {
             });
         },
         handler: argv => {
+            warningMessage(`The 'deliver' command is DEPRECATED and will be removed in a future release.`);
             return logExceptionsToConsole(async () => {
                 const client = await startSdmMachine(argv.port, argv.base);
                 infoMessage("Started local SDM delivery machine \n\t%s\n",

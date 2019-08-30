@@ -47,11 +47,11 @@ export function addBootstrapCommands(yargs: YargBuilder): void {
     addEnableLocalSupport(yargs);
 }
 
-function addExtensionPackGenerator(yargs: YargBuilder): void {
-    const name = "extensionPack";
+function addExtensionPackGenerator(yargs: YargBuilder, deprecated?: boolean): void {
+    const name = deprecated ? "extensionPackDeprecated" : "extensionPack";
     addEmbeddedCommand(yargs, {
         name,
-        cliCommand: "create extension pack",
+        cliCommand: deprecated ? "create extension pack" : "create extension-pack",
         cliDescription: "Create an Atomist extension pack",
         configurer: async () => sdm => sdm.addGeneratorCommand({
             name,
@@ -74,6 +74,7 @@ function addExtensionPackGenerator(yargs: YargBuilder): void {
                 infoMessage("Add your new extension pack to any SDM you please!\n");
             },
         }],
+        deprecated,
     });
 }
 
@@ -172,6 +173,7 @@ function addSuperforkGenerator(yargs: YargBuilder): void {
                 infoMessage("Superfork complete\n");
             },
         }],
+        deprecated: true,
     });
 }
 
@@ -194,5 +196,6 @@ function addEnableLocalSupport(yargs: YargBuilder): void {
                 adviceDoc("docs/runLocally.md");
             },
         }],
+        deprecated: true,
     });
 }
