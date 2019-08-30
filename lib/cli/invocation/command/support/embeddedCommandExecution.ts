@@ -24,6 +24,7 @@ import {
     errorMessage,
     infoMessage,
     logExceptionsToConsole,
+    warningMessage,
 } from "../../../ui/consoleOutput";
 import { fetchMetadataFromAutomationClient } from "../../http/fetchMetadataFromAutomationClient";
 import {
@@ -61,6 +62,8 @@ export interface EmbeddedCommandSpec {
      */
     configurer: (argv: Arguments<any>) => Promise<ConfigureMachine>;
 
+    /** Is this command deprecated? */
+    deprecated?: boolean;
 }
 
 /**
@@ -71,11 +74,10 @@ export interface EmbeddedCommandSpec {
  * being exposed as optional command parameters.
  * @param {yargs.Argv} yargs
  */
-export function addEmbeddedCommand(yargs: YargBuilder,
-                                   spec: EmbeddedCommandSpec): void {
+export function addEmbeddedCommand(yargs: YargBuilder, spec: EmbeddedCommandSpec): void {
     yargs.command({
         command: spec.cliCommand,
-        describe: spec.cliDescription,
+        describe: (spec.deprecated ? "DEPRECATED " : "") + spec.cliDescription,
         builder: ra => {
             // Always require the repositoryOwnerParentDirectory, as
             // we cannot create an embedded SDM otherwise
@@ -102,6 +104,9 @@ export function addEmbeddedCommand(yargs: YargBuilder,
             return ra;
         },
         handler: async argv => {
+            if (spec.deprecated) {
+                warningMessage(`The '${spec.cliCommand}' command is DEPRECATED and will be removed in a future release.`);
+            }
             return logExceptionsToConsole(async () => {
                 await runCommandOnEmbeddedMachine(
                     argv.repositoryOwnerParentDirectory,

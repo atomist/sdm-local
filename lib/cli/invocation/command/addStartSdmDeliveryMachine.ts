@@ -22,6 +22,7 @@ import { startEmbeddedMachine } from "../../embedded/embeddedMachine";
 import {
     infoMessage,
     logExceptionsToConsole,
+    warningMessage,
 } from "../../ui/consoleOutput";
 import { renderClientInfo } from "../../ui/renderClientInfo";
 import { YargBuilder } from "./support/yargBuilder";
@@ -35,7 +36,7 @@ export const DefaultSdmCdPort = 2901;
 export function addStartSdmDeliveryMachine(yargs: YargBuilder): void {
     yargs.command({
         command: "deliver",
-        describe: "Start SDM delivery machine",
+        describe: "DEPRECATED Start SDM delivery machine",
         builder: args => {
             return args.option("port", {
                 required: false,
@@ -50,6 +51,7 @@ export function addStartSdmDeliveryMachine(yargs: YargBuilder): void {
             });
         },
         handler: argv => {
+            warningMessage(`The 'deliver' command is DEPRECATED and will be removed in a future release.`);
             return logExceptionsToConsole(async () => {
                 const client = await startSdmMachine(argv.port, argv.base);
                 infoMessage("Started local SDM delivery machine \n\t%s\n",
