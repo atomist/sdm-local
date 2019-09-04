@@ -24,9 +24,9 @@ import {
 import { eventStore } from "@atomist/automation-client/lib/globals";
 import {
     OnAnyRequestedSdmGoal,
-    SdmGoalKey,
     SdmGoalState,
 } from "@atomist/sdm";
+import { SdmGoalKey } from "@atomist/sdm/lib/api/goal/SdmGoalMessage";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";

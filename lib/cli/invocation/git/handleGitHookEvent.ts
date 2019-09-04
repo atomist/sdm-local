@@ -71,7 +71,7 @@ export async function handleGitHookEvent(cc: AutomationClientConnectionRequest,
     if (!payload.event) {
         return errorMessage("Invalid git hook invocation payload. Event is required: %j", payload);
     }
-    if (!Object.values(HookEvent).includes(payload.event)) {
+    if (!(Object.values(HookEvent) as string[]).includes(payload.event)) {
         return errorMessage("Unknown git hook event '%s'", payload.event);
     }
     if (!lc) {
