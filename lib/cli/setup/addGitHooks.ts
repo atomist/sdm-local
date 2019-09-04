@@ -44,7 +44,7 @@ export async function addGitHooks(projectBaseDir: string): Promise<void> {
 
 export async function addGitHooksToProject(p: LocalProject): Promise<void> {
     for (const event of Object.values(HookEvent)) {
-        const atomistContent = scriptFragments()[event as HookEvent];
+        const atomistContent = scriptFragments()[event];
         if (!atomistContent) {
             errorMessage("Unable to create git script content for event '%s'", event);
             process.exit(1);
