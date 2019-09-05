@@ -1,7 +1,7 @@
 
 ## Create a new Software Delivery Machine (SDM) repository
 
-Choose `aspect` for a new SDM that has hosts a new Atomist Aspect.
+Choose `aspect` for a new SDM that you can use to host a new Atomist Aspect.
 
 Choose `blank` for a new SDM to which you can add your own functionality. It
 contains a simple 'hello world' example.
