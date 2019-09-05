@@ -79,7 +79,7 @@ function addExtensionPackGenerator(yargs: YargBuilder, deprecated?: boolean): vo
 }
 
 function addSdmGenerator(yargs: YargBuilder): void {
-    const choices = ["blank", "spring"];
+    const choices = ["aspect", "blank", "spring"];
     const typeDescription = "Type of SDM to create";
     const name = "newSdm";
     addEmbeddedCommand(yargs, {
@@ -112,6 +112,13 @@ function addSdmGenerator(yargs: YargBuilder): void {
             } as any];
             const answers = await prompt(questions);
             switch (answers.type) {
+                case "aspect":
+                    return sdm => {
+                        sdm.addGeneratorCommand(nodeGenerator(name,
+                            new GitHubRepoRef("atomist-seeds", "aspect"),
+                            [UpdatePackageJsonIdentification],
+                            "atomist"));
+                    };
                 case "spring":
                     return sdm => {
                         sdm.addGeneratorCommand(nodeGenerator(name,
