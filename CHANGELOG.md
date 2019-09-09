@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-local/compare/1.2.0...HEAD)
 
+### Changed
+
+-   Update automation-client, sdm and sdm-core to 1.7.0. [c26a8a9](https://github.com/atomist/sdm-local/commit/c26a8a99bf6e4c1a9a2c68c5c101f8c61b29a8fa)
+
 ## [1.2.0](https://github.com/atomist/sdm-local/compare/1.1.0...1.2.0) - 2019-08-30
 
 ### Deprecated
