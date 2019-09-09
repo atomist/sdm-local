@@ -1,0 +1,711 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@atomist/sdm-local</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@atomist/sdm-local</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> @atomist/sdm-local</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<p align="center">
+					<img src="https://images.atomist.com/sdm/SDM-Logo-Dark.png">
+				</p>
+				<a href="#software-delivery-machine---local---codeatomistsdm-localcode" id="software-delivery-machine---local---codeatomistsdm-localcode" style="color: inherit; text-decoration: none;">
+					<h1>Software Delivery Machine - Local - <code>@atomist/sdm-local</code></h1>
+				</a>
+				<p><a href="https://app.atomist.com/workspace/T29E48P34"><img src="http://badge.atomist.com/T29E48P34/atomist/sdm-local/c9f93c3b-3cfb-4824-a590-15e7a5743a2d" alt="atomist sdm goals"></a>
+				<a href="https://www.npmjs.com/package/@atomist/sdm-local"><img src="https://img.shields.io/npm/v/@atomist/sdm-local.svg" alt="npm version"></a></p>
+				<p>A <strong>Software Delivery Machine</strong> (SDM) helps you write and deliver code that is up to your own standards, at scale.
+				This project runs a software delivery sdm.machine locally on your sdm.machine, responding to your commands and your commits.</p>
+				<p>For instance:</p>
+				<ul>
+					<li>Every time you make a commit, perform a build in the background, and tell you if it fails.</li>
+					<li>every time you make a commit, fix trivial linting errors.</li>
+					<li>at your command, perform common code changes that you program (such as upgrade a library). It can do this across all the repositories you have checked out, and tell you if this causes any build failures.</li>
+					<li>at your command, create a new project by copying and modifying a working project you already have.</li>
+				</ul>
+				<p>For more information on software delivery machines, see Rod Johnson&#39;s blog <a href="https://the-composition.com/why-you-need-a-software-delivery-machine-85e8399cdfc0">Why you need a Software Delivery Machine</a>. This <a href="https://vimeo.com/260496136">video</a> shows an SDM in action.
+					The blogs and videos show an SDM that connects to Atomist&#39;s cloud service. This repository contains a <em>local</em> software delivery sdm.machine that works on your development sdm.machine and responds to your commits, performing whatever actions you decide
+				should happen in response to new code. </p>
+				<p>The SDM framework understands code and delivery flows. Further description is in the Atomist <a href="https://github.com/atomist/sdm">sdm library project</a>.</p>
+				<blockquote>
+					<p>This project is purely
+						open source and can be used without the
+						Atomist service. However, the code you write it can
+						run unchanged to benefit your entire team if you do
+					connect to the Atomist service, as the <code>SoftwareDeliveryMachine</code> API is identical between local and cloud SDMs.</p>
+				</blockquote>
+				<a href="#quick-start" id="quick-start" style="color: inherit; text-decoration: none;">
+					<h2>Quick Start</h2>
+				</a>
+				<a href="#prerequisites" id="prerequisites" style="color: inherit; text-decoration: none;">
+					<h3>Prerequisites</h3>
+				</a>
+				<ul>
+					<li>Node (version??)</li>
+				</ul>
+				<a href="#steps" id="steps" style="color: inherit; text-decoration: none;">
+					<h3>Steps</h3>
+				</a>
+				<p>Install the atomist CLI with the following command.</p>
+				<pre><code><span class="hljs-built_in">npm</span> i -g @atomist/cli</code></pre><p>Use the following command to create a new SDM:</p>
+				<pre><code><span class="hljs-attribute">atomist create sdm</span></code></pre><p>This will create a new SDM instance in a git repository on your local drive, by default under <code>&lt;user home&gt;/atomist/&lt;org&gt;</code>.</p>
+				<p>In order to see what&#39;s happening across all your automation clients, start a local listener to the Atomist lifecycle feed. This plays the same role as Atomist lifecycle in Slack, showing activity on your repositories. The console will display messages:</p>
+				<pre><code><span class="hljs-attribute">atomist feed</span></code></pre><p><em>Optional</em>: You likely want CD for your own SDMs. (Otherwise, you can start and stop them yourselves, for example in your IDE.) SDM CD requires special support as an SDM would need to shut itself down to deliver itself. Thus there is a command to run a dedicated SDM to deliver other SDMs. Start it as follows:</p>
+				<pre><code><span class="hljs-attribute">atomist deliver</span></code></pre>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h2>Usage</h2>
+				</a>
+				<a href="#overview" id="overview" style="color: inherit; text-decoration: none;">
+					<h3>Overview</h3>
+				</a>
+				<p>You customize an SDM to work with the code
+				you care about: fix formatting errors (with commits), perform code reviews, run tests, publish artifacts, etc.</p>
+				<p>It also responds to your commands: to create new projects, edit code in existing projects, or other actions
+				you program into it.</p>
+				<p>The instructions here will take you through </p>
+				<ul>
+					<li>Initializing your local SDM</li>
+					<li>Seeing it react to a push, then changing how it reacts to your push</li>
+					<li>Creating a new project with a generator</li>
+					<li>Changing to project creation to work from a project of your choice</li>
+					<li>Invoking a <em>code transform</em> to change code in one or more projects, then writing your own code transfor</li>
+					<li>Running a command, then making your own commands</li>
+				</ul>
+				<p>Later, when they&#39;ve proven useful, you can elevate your push reactions, generators, editors,
+				and commands into the cloud for your whole team to use with <a href="https://www.atomist.com">Atomist</a>.</p>
+				<p>Here is an architecture diagram:</p>
+				<p><img src="docs/local-sdm.png" alt="architecture diagram"></p>
+				<a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
+					<h3>Setup</h3>
+				</a>
+				<p>To create your local SDM, execute:</p>
+				<pre><code><span class="hljs-attribute">atomist create sdm</span></code></pre><p>The SDM works only on <code>git</code> repositories.</p>
+				<p>To find projects on your filesystem, the SDM looks in directories group by owner (on GitHub, the owner is an organization
+					or user; on BitBucket, the owner is a user or a BitBucket Project), and it looks for each owner directory
+				under one parent directory.</p>
+				<p>The directory structure looks like this:</p>
+				<pre><code>$ATOMIST_ROOT
+├── ow<span class="hljs-symbol">ner1</span>
+│   ├── rep<span class="hljs-meta">o1</span>
+│   └── rep<span class="hljs-meta">o2</span>
+└── ow<span class="hljs-symbol">ner2</span>
+    ├── rep<span class="hljs-meta">o3</span>
+    └── rep<span class="hljs-meta">o4</span>
+</code></pre><p><code>ATOMIST_ROOT</code> defaults to <code>&lt;user home&gt;/atomist</code>. </p>
+				<p>3) Send commit events from your repositories to your SDM. See &quot;Configure existing projects&quot; below. TODO: test this. how does it know</p>
+				<a href="#startup" id="startup" style="color: inherit; text-decoration: none;">
+					<h3>Startup</h3>
+				</a>
+				<p>Install the cli: <code>npm install -g @atomist/cli</code></p>
+				<p>Start your SDM in local mode by setting an environment variable and then invoking the atomist CLI. <code>ATOMIST_MODE=local atomist start</code>. The SDM will run in the background, listening for commands and events. This terminal will display logs.</p>
+				<p>Trigger commands with <code>atomist &lt;command&gt;</code> in another terminal. Try <code>atomist say hello</code>! Your SDM will send messages right back to where you ran the command.</p>
+				<p>Events are triggered by git postCommit hooks. Messages from events don&#39;t come back to wherever you made the commit. Instead: </p>
+				<a href="#see-messages-from-events" id="see-messages-from-events" style="color: inherit; text-decoration: none;">
+					<h4>See messages from events</h4>
+				</a>
+				<p>In order to see messages from events (not interspersed with logs), activate a message listener in another terminal:</p>
+				<pre><code><span class="hljs-attribute">atomist feed</span>
+</code></pre><p>You can narrow down messages with the <code>channel</code> option. For example, this will display only messages to the given two services:</p>
+				<pre><code>atomist feed <span class="hljs-attribute">--channel</span>=AccountService <span class="hljs-attribute">--channel</span>=BillingService</code></pre><p>You can use the <code>--verbose</code> flag to show more information about command invocation. This is particularly useful when developing your SDM.</p>
+				<a href="#configure-existing-projects" id="configure-existing-projects" style="color: inherit; text-decoration: none;">
+					<h4>Configure Existing Projects</h4>
+				</a>
+				<p>If you already have repositories cloned under your $SDM_PROJECTS_ROOT, configure them to activate the local SDM
+				on commit.</p>
+				<p>Add the Atomist git hook to the existing git projects within this directory structure by
+				running the following command:</p>
+				<pre><code>atomist <span class="hljs-keyword">add</span><span class="bash"> git hooks</span></code></pre><p>Success will result in output like the following:</p>
+				<pre><code class="language-==&gt;">2018-06-06T11:23:58.003Z [m:85087] [info ] Adding extension pack &#39;WellKnownGoals&#39; version 0.1.0 from Atomist
+2018-06-06T11:23:58.051Z [m:85087] [info ] Searching under child directory [spring-team] of /Users/rodjohnson/temp/local-sdm
+2018-06-06T11:23:58.052Z [m:85087] [info ] Searching under child directory [undefined] of /Users/rodjohnson/temp/local-sdm
+2018-06-06T11:23:58.053Z [m:85087] [info ] Searching under child directory [x] of /Users/rodjohnson/temp/local-sdm
+2018-06-06T11:23:58.074Z [m:85087] [info ] addGitHooks: Adding git post-commit script to project at /Users/rodjohnson/temp/local-sdm/spring-team/danger-mouse
+2018-06-06T11:23:58.076Z [m:85087] [info ] addGitHooks: Adding git post-commit script to project at /Users/rodjohnson/temp/local-sdm/spring-team/fiddlesticks
+2018-06-06T11:23:58.077Z [m:85087] [info ] addGitHooks: Adding git post-commit script to project at /Users/rodjohnson/temp/local-sdm/spring-team/foo
+2018-06-06T11:23:58.078Z [m:85087] [info ] addGitHooks: Adding git post-commit script to project at /Users/rodjohnson/temp/local-sdm/spring-team/losgatos1
+2018-06-06T11:23:58.079Z [m:85087] [info ] addGitHooks: Adding git post-commit script to project at /Users/rodjohnson/temp/local-sdm/spring-team/spring-rest-seed
+2018-06-06T11:23:58.080Z [m:85087] [info ] addGitHooks: Adding git post-commit script to project at /Users/rodjohnson/temp/local-sdm/x/y</code></pre>
+				<blockquote>
+					<p>Running <code>atomist add git hooks</code> is only necessary for pre-existing cloned directories and directories that are cloned using <code>git</code> rather than the local SDM.</p>
+				</blockquote>
+				<a href="#reacting-to-commits" id="reacting-to-commits" style="color: inherit; text-decoration: none;">
+					<h2>Reacting to commits</h2>
+				</a>
+				<p>A software delivery sdm.machine reacts to code changes. For instance, when you commit to a Spring Boot application, it can
+					start the app up locally, while running tests.
+					When you commit to a Node library, it can publish a snapshot to npm, while running tests, and while fixing any formatting
+				errors and performing automated code review and identifying sensitive changes.</p>
+				<p>Make a commit in any repository within $SDM_PROJECTS_ROOT, and the SDM will run immediately. </p>
+				<p>Commits to managed repos generate Atomist <em>push</em> events.</p>
+				<a href="#adding-to-your-sdm" id="adding-to-your-sdm" style="color: inherit; text-decoration: none;">
+					<h1>Adding to your SDM</h1>
+				</a>
+				<blockquote>
+					<p>The API is identical to the API of a cloud-connected Atomist SDM.</p>
+				</blockquote>
+				<a href="#adding-projects" id="adding-projects" style="color: inherit; text-decoration: none;">
+					<h2>Adding projects</h2>
+				</a>
+				<p>Further projects can be added under the expanded directory tree in three ways:</p>
+				<a href="#normal-git-clone" id="normal-git-clone" style="color: inherit; text-decoration: none;">
+					<h3>Normal git Clone</h3>
+				</a>
+				<p>Cloning any git project from anywhere under <code>$ATOMIST_ROOT</code> and running <code>atomist add git hooks</code> to add git hooks to it.</p>
+				<a href="#symbolic-link" id="symbolic-link" style="color: inherit; text-decoration: none;">
+					<h3>Symbolic Link</h3>
+				</a>
+				<p>Go to the correct organization directory, creating it if necessary. Then create a symlink to the required directory elsewhere on your sdm.machine. For example:</p>
+				<pre><code>ln -s <span class="hljs-regexp">/Users/</span>rodjohnson<span class="hljs-regexp">/sforzando-dev/i</span>dea-projects<span class="hljs-regexp">/flight1</span></code></pre><p>Then run <code>atomist add git hooks</code> and the linked project will be treated as a normal project.</p>
+				<a href="#39atomist-clone39-command" id="39atomist-clone39-command" style="color: inherit; text-decoration: none;">
+					<h3>&#39;atomist clone&#39; Command</h3>
+				</a>
+				<p>The easiest way to add an existing project to your SDM projects is: run the <code>atomist clone</code> command to clone a
+				GitHub.com repository in the right place in the expanded tree and automatically install the git hooks:</p>
+				<pre><code>atomist clone http<span class="hljs-variable">s:</span>//github.<span class="hljs-keyword">com</span>/<span class="hljs-symbol">&lt;owner&gt;</span>/<span class="hljs-symbol">&lt;repo&gt;</span>
+</code></pre><p>The arguments are the same as those to <code>git clone</code>.</p>
+				<p>This is the recommended way, as it will run Atomist onboarding events for a new repo.</p>
+				<p>Output will look as follows:</p>
+				<pre><code><span class="hljs-number">018</span><span class="hljs-number">-06</span><span class="hljs-number">-06</span>T11:<span class="hljs-number">27</span>:<span class="hljs-number">27.068</span>Z [m:<span class="hljs-number">85220</span>] [info ] Adding extension pack <span class="hljs-string">'WellKnownGoals'</span> version <span class="hljs-number">0.1</span><span class="hljs-number">.0</span> <span class="hljs-keyword">from</span> Atomist
+<span class="hljs-number">2018</span><span class="hljs-number">-06</span><span class="hljs-number">-06</span>T11:<span class="hljs-number">27</span>:<span class="hljs-number">27.116</span>Z [m:<span class="hljs-number">85220</span>] [info ] Adding GitHub project johnsonr/initializr
+Cloning <span class="hljs-built_in">int</span>o <span class="hljs-string">'initializr'</span>...
+warning: redirecting to https:<span class="hljs-comment">//github.com/johnsonr/initializr/</span>
+<span class="hljs-number">2018</span><span class="hljs-number">-06</span><span class="hljs-number">-06</span>T11:<span class="hljs-number">27</span>:<span class="hljs-number">33.349</span>Z [m:<span class="hljs-number">85220</span>] [info ] addGitHooks: Adding git post-commit script to project at /Users/rodjohnson/temp/local-sdm/johnsonr/initializr</code></pre>
+				<a href="#running-commands" id="running-commands" style="color: inherit; text-decoration: none;">
+					<h2>Running Commands</h2>
+				</a>
+				<p>All commands (&quot;skills&quot;) on connected SDMs will be shown by the following command:</p>
+				<pre><code><span class="hljs-attribute">atomist show skills</span></code></pre><p>The CLI exposes the &quot;intents&quot; of all commands based on their command registrations. Type in intents as follows to activate the command:</p>
+				<pre><code><span class="hljs-attribute">atomist create spring</span></code></pre><p>No parameters beyond the command name are required to invoke an intent. However, command-specific parameters may be provided in options syntax.</p>
+				<blockquote>
+					<p>Clashing intents cause ambiguity, which will be flagged in a warning message. Try to avoid clashing intents between your commands, within or across SDMs.</p>
+				</blockquote>
+				<a href="#architecture" id="architecture" style="color: inherit; text-decoration: none;">
+					<h2>Architecture</h2>
+				</a>
+				<p>This project consists of four parts:</p>
+				<ul>
+					<li>One or more Atomist SDMs running in their own processes, in a special local mode</li>
+					<li>A command line, exposed as a Node binary.</li>
+					<li><code>git</code> hooks inserted in those projects you wish to use the local SDM with.</li>
+					<li>A feed listener process which, if running, will display all messages from the SDMs and some diagnostic information.</li>
+				</ul>
+				<a href="#troubleshooting" id="troubleshooting" style="color: inherit; text-decoration: none;">
+					<h2>Troubleshooting</h2>
+				</a>
+				<ul>
+					<li><em>My command isn&#39;t accepted by the CLI, nor shown in the usage message of <code>atomist --help</code></em>: Check that the relevant SDM is running in local mode. The list of commands (beyond the built-in commands) is built dynamically on every invocation, so if the relevant SDM isn&#39;t running the SDM will not respond to those commands.</li>
+				</ul>
+				<a href="#advanced-setup" id="advanced-setup" style="color: inherit; text-decoration: none;">
+					<h2>Advanced Setup</h2>
+				</a>
+				<a href="#mapped-parameters-and-secrets" id="mapped-parameters-and-secrets" style="color: inherit; text-decoration: none;">
+					<h3>Mapped Parameters and Secrets</h3>
+				</a>
+				<p>Environment variables</p>
+				<ul>
+					<li><p><code>ATOMIST_ROOT</code>: Default system-wide location for Atomist expanded directory tree. Defaults to <code>&lt;user home&gt;/atomist</code></p>
+					</li>
+					<li><p><code>ATOMIST_GITHOOK_VERBOSE</code>: Make Atomist git hooks synchronous (although they will never block a git action, and display output to the console</p>
+					</li>
+					<li><p><code>ATOMIST_TEAMS</code>: Shared with Atomist cloud service. Comma-separated list of teams we will use.</p>
+					</li>
+					<li><p><code>SLACK_TEAM</code></p>
+					</li>
+					<li><p><code>SLACK_USER_NAME</code></p>
+					</li>
+				</ul>
+				<a href="#required-ports" id="required-ports" style="color: inherit; text-decoration: none;">
+					<h3>Required Ports</h3>
+				</a>
+				<p>The following ports are required:</p>
+				<ul>
+					<li><code>2866</code>: The default port for your Automation client. By default ports 2866-2876 are regularly checked for running automation clients, so if you restrict your clients to these ports you do not need to configure anything.</li>
+					<li><code>6660</code>: The default port for listening to all Atomist messages</li>
+					<li>[Port range above <code>10000</code>]: Atomist will find free ports for routing messages back to command line. These ports will be used only during command execution.</li>
+				</ul>
+				<blockquote>
+					<p>To start additional automation clients, increment the port by 1 for each after 2866.</p>
+				</blockquote>
+				<a href="#roadmap" id="roadmap" style="color: inherit; text-decoration: none;">
+					<h2>Roadmap</h2>
+				</a>
+				<ul>
+					<li>Decide how to get build results from external tools in (if we wish to)</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_index_.html">"index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_automationclientinfo_.html">"lib/cli/<wbr>Automation<wbr>Client<wbr>Info"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_embedded_embeddedmachine_.html">"lib/cli/embedded/embedded<wbr>Machine"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_entry_argstogithookinvocation_.html">"lib/cli/entry/args<wbr>ToGit<wbr>Hook<wbr>Invocation"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_addbootstrapcommands_.html">"lib/cli/invocation/command/add<wbr>Bootstrap<wbr>Commands"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_addclonecommand_.html">"lib/cli/invocation/command/add<wbr>Clone<wbr>Command"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_addcommandsbyname_.html">"lib/cli/invocation/command/add<wbr>Commands<wbr>ByName"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_addfeedcommand_.html">"lib/cli/invocation/command/add<wbr>Feed<wbr>Command"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_addgithookscommands_.html">"lib/cli/invocation/command/add<wbr>Git<wbr>Hooks<wbr>Commands"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_addgithubimportcommand_.html">"lib/cli/invocation/command/add<wbr>Git<wbr>Hub<wbr>Import<wbr>Command"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_addintentsascommands_.html">"lib/cli/invocation/command/add<wbr>Intents<wbr>AsCommands"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_addlocalsdmcommands_.html">"lib/cli/invocation/command/add<wbr>Local<wbr>Sdm<wbr>Commands"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_addreplaycommand_.html">"lib/cli/invocation/command/add<wbr>Replay<wbr>Command"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_addshowsdmscommand_.html">"lib/cli/invocation/command/add<wbr>Show<wbr>Sdms<wbr>Command"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_addstartsdmdeliverymachine_.html">"lib/cli/invocation/command/add<wbr>Start<wbr>Sdm<wbr>Delivery<wbr>Machine"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_generator_nodeprojectcreationparameters_.html">"lib/cli/invocation/command/generator/<wbr>Node<wbr>Project<wbr>Creation<wbr>Parameters"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_generator_packagejson_.html">"lib/cli/invocation/command/generator/<wbr>Package<wbr>Json"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_generator_bootstrapgenerators_.html">"lib/cli/invocation/command/generator/bootstrap<wbr>Generators"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_generator_updatepackagejsonidentification_.html">"lib/cli/invocation/command/generator/update<wbr>Package<wbr>Json<wbr>Identification"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_showskillscommand_.html">"lib/cli/invocation/command/show<wbr>Skills<wbr>Command"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_cloneandatomize_.html">"lib/cli/invocation/command/support/clone<wbr>And<wbr>Atomize"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_commandinvocationlisteners_.html">"lib/cli/invocation/command/support/command<wbr>Invocation<wbr>Listeners"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_embeddedcommandexecution_.html">"lib/cli/invocation/command/support/embedded<wbr>Command<wbr>Execution"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_exposeparameters_.html">"lib/cli/invocation/command/support/expose<wbr>Parameters"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_javaverification_.html">"lib/cli/invocation/command/support/java<wbr>Verification"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_runcommandoncolocatedautomationclient_.html">"lib/cli/invocation/command/support/run<wbr>Command<wbr>OnColocated<wbr>Automation<wbr>Client"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_suggeststartingallmessageslistener_.html">"lib/cli/invocation/command/support/suggest<wbr>Starting<wbr>All<wbr>Messages<wbr>Listener"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_verifycommandresult_.html">"lib/cli/invocation/command/support/verify<wbr>Command<wbr>Result"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_yargbuilder_combining_.html">"lib/cli/invocation/command/support/yarg<wbr>Builder/combining"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_yargbuilder_commandline_.html">"lib/cli/invocation/command/support/yarg<wbr>Builder/command<wbr>Line"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_yargbuilder_freshyargbuilder_.html">"lib/cli/invocation/command/support/yarg<wbr>Builder/fresh<wbr>Yarg<wbr>Builder"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_yargbuilder_handleinstruction_.html">"lib/cli/invocation/command/support/yarg<wbr>Builder/handle<wbr>Instruction"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_yargbuilder_index_.html">"lib/cli/invocation/command/support/yarg<wbr>Builder/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_yargbuilder_interfaces_.html">"lib/cli/invocation/command/support/yarg<wbr>Builder/interfaces"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_yargbuilder_positional_.html">"lib/cli/invocation/command/support/yarg<wbr>Builder/positional"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_support_yargbuilder_sentences_.html">"lib/cli/invocation/command/support/yarg<wbr>Builder/sentences"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_transform_adddependencytransform_.html">"lib/cli/invocation/command/transform/add<wbr>Dependency<wbr>Transform"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_command_transform_addlocalmodetransform_.html">"lib/cli/invocation/command/transform/add<wbr>Local<wbr>Mode<wbr>Transform"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_git_handlegithookevent_.html">"lib/cli/invocation/git/handle<wbr>Git<wbr>Hook<wbr>Event"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_git_runongithook_.html">"lib/cli/invocation/git/run<wbr>OnGit<wbr>Hook"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_git_triggergitevents_.html">"lib/cli/invocation/git/trigger<wbr>Git<wbr>Events"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_http_automationclientconnectionrequest_.html">"lib/cli/invocation/http/<wbr>Automation<wbr>Client<wbr>Connection<wbr>Request"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_http_automationclientfinder_.html">"lib/cli/invocation/http/<wbr>Automation<wbr>Client<wbr>Finder"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_http_fetchmetadatafromautomationclient_.html">"lib/cli/invocation/http/fetch<wbr>Metadata<wbr>From<wbr>Automation<wbr>Client"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_http_invokecommandhandlerusinghttp_.html">"lib/cli/invocation/http/invoke<wbr>Command<wbr>Handler<wbr>Using<wbr>Http"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_http_invokeeventhandlerusinghttp_.html">"lib/cli/invocation/http/invoke<wbr>Event<wbr>Handler<wbr>Using<wbr>Http"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_http_support_fixedautomationclientfinder_.html">"lib/cli/invocation/http/support/<wbr>Fixed<wbr>Automation<wbr>Client<wbr>Finder"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_http_support_portrangeautomationclientfinder_.html">"lib/cli/invocation/http/support/<wbr>Port<wbr>Range<wbr>Automation<wbr>Client<wbr>Finder"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_http_support_singledefaultautomationclientfinder_.html">"lib/cli/invocation/http/support/<wbr>Single<wbr>Default<wbr>Automation<wbr>Client<wbr>Finder"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_http_support_defaultautomationclientfinder_.html">"lib/cli/invocation/http/support/default<wbr>Automation<wbr>Client<wbr>Finder"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_http_support_httpinvoker_.html">"lib/cli/invocation/http/support/http<wbr>Invoker"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_http_support_newcorrelationid_.html">"lib/cli/invocation/http/support/new<wbr>Correlation<wbr>Id"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_invocation_http_support_portallocation_.html">"lib/cli/invocation/http/support/port<wbr>Allocation"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_setup_addgithooks_.html">"lib/cli/setup/add<wbr>Git<wbr>Hooks"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_ui_consoleoutput_.html">"lib/cli/ui/console<wbr>Output"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_ui_docchunk_.html">"lib/cli/ui/doc<wbr>Chunk"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_cli_ui_renderclientinfo_.html">"lib/cli/ui/render<wbr>Client<wbr>Info"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_common_binding_envconfigworkspacecontextresolver_.html">"lib/common/binding/<wbr>Env<wbr>Config<wbr>Workspace<wbr>Context<wbr>Resolver"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_common_binding_workspacecontextresolver_.html">"lib/common/binding/<wbr>Workspace<wbr>Context<wbr>Resolver"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_common_binding_defaultworkspacecontextresolver_.html">"lib/common/binding/default<wbr>Workspace<wbr>Context<wbr>Resolver"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_common_git_handlepushbasedeventonrepo_.html">"lib/common/git/handle<wbr>Push<wbr>Based<wbr>Event<wbr>OnRepo"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_common_git_pushfromlastcommit_.html">"lib/common/git/push<wbr>From<wbr>Last<wbr>Commit"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_common_invocation_commandhandlerinvocation_.html">"lib/common/invocation/<wbr>Command<wbr>Handler<wbr>Invocation"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_common_invocation_eventhandlerinvocation_.html">"lib/common/invocation/<wbr>Event<wbr>Handler<wbr>Invocation"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_common_invocation_invocationtarget_.html">"lib/common/invocation/<wbr>Invocation<wbr>Target"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_common_invocation_localworkspacecontext_.html">"lib/common/invocation/<wbr>Local<wbr>Workspace<wbr>Context"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_common_invocation_parsecorrelationid_.html">"lib/common/invocation/parse<wbr>Correlation<wbr>Id"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_common_ui_commandcompletiondestination_.html">"lib/common/ui/<wbr>Command<wbr>Completion<wbr>Destination"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_common_ui_httpmessaging_.html">"lib/common/ui/http<wbr>Messaging"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_common_util_failbecause_.html">"lib/common/util/fail<wbr>Because"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_common_util_http_canconnectto_.html">"lib/common/util/http/can<wbr>Connect<wbr>To"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_common_util_propertiestoargs_.html">"lib/common/util/properties<wbr>ToArgs"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_pack_sdm_cd_index_.html">"lib/pack/sdm-<wbr>cd/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_pack_sdm_cd_support_issdm_.html">"lib/pack/sdm-<wbr>cd/support/<wbr>IsSdm"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_pack_sdm_cd_support_localsdmdelivery_.html">"lib/pack/sdm-<wbr>cd/support/<wbr>Local<wbr>Sdm<wbr>Delivery"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_pack_sdm_cd_support_sdmcd_.html">"lib/pack/sdm-<wbr>cd/support/<wbr>Sdm<wbr>Cd"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_pack_sdm_cd_support_sdmdeliveryoptions_.html">"lib/pack/sdm-<wbr>cd/support/<wbr>Sdm<wbr>Delivery<wbr>Options"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_environmenttokencredentialsresolver_.html">"lib/sdm/binding/<wbr>Environment<wbr>Token<wbr>Credentials<wbr>Resolver"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_event_repoonboardingevents_.html">"lib/sdm/binding/event/repo<wbr>Onboarding<wbr>Events"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_graph_localgraphclient_.html">"lib/sdm/binding/graph/<wbr>Local<wbr>Graph<wbr>Client"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_log_simplenodeloggerprogresslog_.html">"lib/sdm/binding/log/<wbr>Simple<wbr>Node<wbr>Logger<wbr>Progress<wbr>Log"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_mapped_parameter_commandlinemappedparameterresolver_.html">"lib/sdm/binding/mapped-<wbr>parameter/<wbr>Command<wbr>Line<wbr>Mapped<wbr>Parameter<wbr>Resolver"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_mapped_parameter_fromanymappedparameterresolver_.html">"lib/sdm/binding/mapped-<wbr>parameter/<wbr>From<wbr>Any<wbr>Mapped<wbr>Parameter<wbr>Resolver"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_mapped_parameter_mappedparameterresolver_.html">"lib/sdm/binding/mapped-<wbr>parameter/<wbr>Mapped<wbr>Parameter<wbr>Resolver"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_message_actionstore_.html">"lib/sdm/binding/message/<wbr>Action<wbr>Store"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_message_broadcastingmessageclient_.html">"lib/sdm/binding/message/<wbr>Broadcasting<wbr>Message<wbr>Client"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_message_goaleventforwardingmessageclient_.html">"lib/sdm/binding/message/<wbr>Goal<wbr>Event<wbr>Forwarding<wbr>Message<wbr>Client"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_message_httpclientmessageclient_.html">"lib/sdm/binding/message/<wbr>Http<wbr>Client<wbr>Message<wbr>Client"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_message_devnullmessageclient_.html">"lib/sdm/binding/message/dev<wbr>Null<wbr>Message<wbr>Client"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_project_expandedtreemappedparameterresolver_.html">"lib/sdm/binding/project/<wbr>Expanded<wbr>Tree<wbr>Mapped<wbr>Parameter<wbr>Resolver"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_project_expandedtreereporefresolver_.html">"lib/sdm/binding/project/<wbr>Expanded<wbr>Tree<wbr>Repo<wbr>Ref<wbr>Resolver"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_project_filesystemprojectloader_.html">"lib/sdm/binding/project/<wbr>File<wbr>System<wbr>Project<wbr>Loader"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_project_filesystemremotereporef_.html">"lib/sdm/binding/project/<wbr>File<wbr>System<wbr>Remote<wbr>Repo<wbr>Ref"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_project_localrepotargets_.html">"lib/sdm/binding/project/<wbr>Local<wbr>Repo<wbr>Targets"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_project_expandedtreerepofinder_.html">"lib/sdm/binding/project/expanded<wbr>Tree<wbr>Repo<wbr>Finder"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_project_expandedtreeutils_.html">"lib/sdm/binding/project/expanded<wbr>Tree<wbr>Utils"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_binding_project_filesystemprojectpersister_.html">"lib/sdm/binding/project/file<wbr>System<wbr>Project<wbr>Persister"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_configuration_configurelocal_.html">"lib/sdm/configuration/configure<wbr>Local"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_configuration_defaultlocalsoftwaredeliverymachineconfiguration_.html">"lib/sdm/configuration/default<wbr>Local<wbr>Software<wbr>Delivery<wbr>Machine<wbr>Configuration"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_configuration_localsdmconfig_.html">"lib/sdm/configuration/local<wbr>Sdm<wbr>Config"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_configuration_support_notifyoncompletionautomationeventlistener_.html">"lib/sdm/configuration/support/<wbr>Notify<wbr>OnCompletion<wbr>Automation<wbr>Event<wbr>Listener"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_configuration_support_notifyonstartupautomationeventlistener_.html">"lib/sdm/configuration/support/<wbr>Notify<wbr>OnStartup<wbr>Automation<wbr>Event<wbr>Listener"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_invocation_invokecommandhandlerinprocess_.html">"lib/sdm/invocation/invoke<wbr>Command<wbr>Handler<wbr>InProcess"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_invocation_invokeeventhandlerinprocess_.html">"lib/sdm/invocation/invoke<wbr>Event<wbr>Handler<wbr>InProcess"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_ui_consolegoalrendering_.html">"lib/sdm/ui/<wbr>Console<wbr>Goal<wbr>Rendering"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_ui_consolemessageclient_.html">"lib/sdm/ui/<wbr>Console<wbr>Message<wbr>Client"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_ui_httpmessagelistener_.html">"lib/sdm/ui/<wbr>Http<wbr>Message<wbr>Listener"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_ui_locallifecycle_.html">"lib/sdm/ui/local<wbr>Lifecycle"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_util_currentmachineaddress_.html">"lib/sdm/util/current<wbr>Machine<wbr>Address"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_util_git_.html">"lib/sdm/util/git"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_sdm_util_runandlog_.html">"lib/sdm/util/run<wbr>And<wbr>Log"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_lib_typings_index_.html">"lib/typings/index"</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
