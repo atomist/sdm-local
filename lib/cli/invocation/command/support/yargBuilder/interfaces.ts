@@ -24,7 +24,6 @@ import {
 } from "yargs";
 import { CommandLine } from "./commandLine";
 import { HandleInstructions } from "./handleInstruction";
-import { ConflictResolution } from "./interfaces";
 
 export { PositionalOptions, PositionalOptionsType, Choices, ParameterOptions, Arguments };
 
