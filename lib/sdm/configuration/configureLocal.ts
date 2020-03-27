@@ -73,7 +73,9 @@ export interface LocalConfigureOptions {
 }
 
 /**
- * Configures an automation client in local mode
+ * Configures an automation client in local mode.  The returned
+ * function mutates the provide configuration in place and returns it.
+ *
  * @param {LocalModeConfiguration} localModeConfiguration
  * @return {ConfigurationPostProcessor}
  */
@@ -93,7 +95,8 @@ export function configureLocal(options: LocalConfigureOptions = { forceLocal: fa
         const workspaceContext: LocalWorkspaceContext = new EnvConfigWorkspaceContextResolver().workspaceContext;
 
         const defaultSdmConfiguration = defaultLocalSoftwareDeliveryMachineConfiguration(config, workspaceContext);
-        const mergedConfig = _.merge(defaultSdmConfiguration, config) as LocalSoftwareDeliveryMachineConfiguration;
+        _.defaultsDeep(config, defaultSdmConfiguration);
+        const mergedConfig = config as LocalSoftwareDeliveryMachineConfiguration;
 
         // Set up workspaceIds and apiKey
         if (_.isEmpty(mergedConfig.workspaceIds)) {
