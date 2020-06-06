@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {configureLogging, logger, LoggingConfiguration, PlainLogging} from "@atomist/automation-client/lib/util/logger";
 import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";
 import { isAtomistTemporaryBranch } from "../../../sdm/binding/project/FileSystemProjectLoader";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
@@ -30,7 +31,6 @@ import {
     GitHookInvocation,
     handleGitHookEvent,
 } from "./handleGitHookEvent";
-import {configureLogging, logger, LoggingConfiguration, PlainLogging} from "@atomist/automation-client/lib/util/logger";
 
 const loggingConfiguration: LoggingConfiguration = {
     console: {

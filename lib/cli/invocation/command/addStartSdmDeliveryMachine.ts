@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {SoftwareDeliveryMachine} from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachine";
 import chalk from "chalk";
 import { sdmCd } from "../../../pack/sdm-cd/support/SdmCd";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
@@ -26,7 +27,6 @@ import {
 } from "../../ui/consoleOutput";
 import { renderClientInfo } from "../../ui/renderClientInfo";
 import { YargBuilder } from "./support/yargBuilder";
-import {SoftwareDeliveryMachine} from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachine";
 
 export const DefaultSdmCdPort = 2901;
 

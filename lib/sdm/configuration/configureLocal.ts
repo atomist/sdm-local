@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
+import {Configuration, ConfigurationPostProcessor} from "@atomist/automation-client/lib/configuration";
 import {automationClientInstance, eventStore} from "@atomist/automation-client/lib/globals";
+import {HandlerResult} from "@atomist/automation-client/lib/HandlerResult";
+import {guid} from "@atomist/automation-client/lib/internal/util/string";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 import { scanFreePort } from "@atomist/automation-client/lib/util/port";
+import {LocalSoftwareDeliveryMachineConfiguration} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
+import {isInLocalMode} from "@atomist/sdm-core/lib/internal/machine/modes";
+import {OnBuildComplete} from "@atomist/sdm/lib/typings/types";
 import * as assert from "assert";
 import * as exp from "express";
 import * as exphbs from "express-handlebars";
@@ -46,13 +53,6 @@ import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInP
 import { defaultLocalSoftwareDeliveryMachineConfiguration } from "./defaultLocalSoftwareDeliveryMachineConfiguration";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 import { NotifyOnStartupAutomationEventListener } from "./support/NotifyOnStartupAutomationEventListener";
-import {Configuration, ConfigurationPostProcessor} from "@atomist/automation-client/lib/configuration";
-import {isInLocalMode} from "@atomist/sdm-core/lib/internal/machine/modes";
-import {OnBuildComplete} from "@atomist/sdm/lib/typings/types";
-import {logger} from "@atomist/automation-client/lib/util/logger";
-import {guid} from "@atomist/automation-client/lib/internal/util/string";
-import {HandlerResult} from "@atomist/automation-client/lib/HandlerResult";
-import {LocalSoftwareDeliveryMachineConfiguration} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
 
 /**
  * Options that are used during configuration of an local SDM but don't get passed on to the

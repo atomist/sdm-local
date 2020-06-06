@@ -15,14 +15,14 @@
  */
 
 import {configurationValue, getUserConfig} from "@atomist/automation-client/lib/configuration";
-import * as _ from "lodash";
 import {Parameters} from "@atomist/automation-client/lib/decorators";
 import {
     ProjectOperationCredentials,
-    TokenCredentials
+    TokenCredentials,
 } from "@atomist/automation-client/lib/operations/common/ProjectOperationCredentials";
 import {logger} from "@atomist/automation-client/lib/util/logger";
 import {CredentialsResolver} from "@atomist/sdm/lib/spi/credentials/CredentialsResolver";
+import * as _ from "lodash";
 
 @Parameters()
 export class EnvironmentTokenCredentialsResolver implements CredentialsResolver {

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+import {ProgressLog} from "@atomist/sdm/lib/spi/log/ProgressLog";
 import * as fileUrl from "file-url";
 import * as fs from "fs-extra";
 import * as path from "path";
 import * as snLogger from "simple-node-logger";
 import stripAnsi from "strip-ansi";
-import {ProgressLog} from "@atomist/sdm/lib/spi/log/ProgressLog";
 
 /**
  * Write log to a file using simple-node-logger in the repository

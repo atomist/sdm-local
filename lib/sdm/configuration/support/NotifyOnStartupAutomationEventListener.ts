@@ -15,10 +15,10 @@
  */
 
 import { AutomationClient } from "@atomist/automation-client/lib/automationClient";
+import {registerShutdownHook} from "@atomist/automation-client/lib/internal/util/shutdown";
+import {AutomationEventListenerSupport} from "@atomist/automation-client/lib/server/AutomationEventListener";
 import { codeLine } from "@atomist/slack-messages";
 import { newCliCorrelationId } from "../../../cli/invocation/http/support/newCorrelationId";
-import {AutomationEventListenerSupport} from "@atomist/automation-client/lib/server/AutomationEventListener";
-import {registerShutdownHook} from "@atomist/automation-client/lib/internal/util/shutdown";
 
 /**
  * Notify the local feed that an SDM is now connected and ready to receive traffic.

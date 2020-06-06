@@ -19,16 +19,16 @@ import {
     successOn,
 } from "@atomist/automation-client/lib/action/ActionResult";
 import { AbstractRemoteRepoRef } from "@atomist/automation-client/lib/operations/common/AbstractRemoteRepoRef";
+import {ProjectOperationCredentials} from "@atomist/automation-client/lib/operations/common/ProjectOperationCredentials";
+import {RemoteRepoRef, RepoRef} from "@atomist/automation-client/lib/operations/common/RepoId";
 import { Configurable } from "@atomist/automation-client/lib/project/git/Configurable";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 import * as path from "path";
 import { runAndLog } from "../../util/runAndLog";
 import {
     dirFor,
     parseOwnerAndRepo,
 } from "./expandedTreeUtils";
-import {RemoteRepoRef, RepoRef} from "@atomist/automation-client/lib/operations/common/RepoId";
-import {ProjectOperationCredentials} from "@atomist/automation-client/lib/operations/common/ProjectOperationCredentials";
-import {logger} from "@atomist/automation-client/lib/util/logger";
 
 /**
  * RemoteRepoRef working against our expanded directory structure.

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import {CustomEventDestination} from "@atomist/automation-client/lib/spi/message/MessageClient";
 
 /**

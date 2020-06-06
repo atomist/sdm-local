@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+import {automationClientInstance} from "@atomist/automation-client/lib/globals";
 import * as _ from "lodash";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionRequest";
-import {automationClientInstance} from "@atomist/automation-client/lib/globals";
 
 /**
  * Identify the address of the automation client we're running within

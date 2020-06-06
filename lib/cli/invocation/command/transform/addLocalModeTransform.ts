@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { addDependencyTransform } from "./addDependencyTransform";
-import {CodeTransformRegistration} from "@atomist/sdm/lib/api/registration/CodeTransformRegistration";
 import {LoggingProgressLog} from "@atomist/sdm/lib/api-helper/log/LoggingProgressLog";
+import {CodeTransformRegistration} from "@atomist/sdm/lib/api/registration/CodeTransformRegistration";
+import { addDependencyTransform } from "./addDependencyTransform";
 
 /**
  * Transform to add local mode into a project

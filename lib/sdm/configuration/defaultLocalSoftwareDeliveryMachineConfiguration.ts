@@ -17,6 +17,14 @@
 // tslint:disable:deprecation
 
 import {Configuration, configurationValue, getUserConfig} from "@atomist/automation-client/lib/configuration";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {
+    LocalSoftwareDeliveryMachineConfiguration,
+    LocalSoftwareDeliveryMachineOptions,
+} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
+import {FilePreferenceStoreFactory} from "@atomist/sdm-core/lib/internal/preferences/FilePreferenceStore";
+import {CachingProjectLoader} from "@atomist/sdm/lib/api-helper/project/CachingProjectLoader";
+import {SoftwareDeliveryMachineOptions} from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachineOptions";
 import * as fs from "fs-extra";
 import * as _ from "lodash";
 import * as os from "os";
@@ -31,14 +39,6 @@ import { ExpandedTreeRepoRefResolver } from "../binding/project/ExpandedTreeRepo
 import { FileSystemProjectLoader } from "../binding/project/FileSystemProjectLoader";
 import { fileSystemProjectPersister } from "../binding/project/fileSystemProjectPersister";
 import { LocalRepoTargets } from "../binding/project/LocalRepoTargets";
-import {CachingProjectLoader} from "@atomist/sdm/lib/api-helper/project/CachingProjectLoader";
-import {SoftwareDeliveryMachineOptions} from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachineOptions";
-import {
-    LocalSoftwareDeliveryMachineConfiguration,
-    LocalSoftwareDeliveryMachineOptions
-} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
-import {logger} from "@atomist/automation-client/lib/util/logger";
-import {FilePreferenceStoreFactory} from "@atomist/sdm-core/lib/internal/preferences/FilePreferenceStore";
 
 const DefaultAtomistRoot = path.join("atomist", "projects");
 

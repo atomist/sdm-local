@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-
 // This code is based on sdm-pack-node, but deliberately duplicated
 // here to avoid a dependency
 
-import {DeclarationType, ParametersObject} from "@atomist/sdm/lib/api/registration/ParametersDefinition";
+import {MappedParameters} from "@atomist/automation-client/lib/decorators";
 import {SeedDrivenGeneratorParameters} from "@atomist/automation-client/lib/operations/generate/SeedDrivenGeneratorParameters";
 import {SemVerRegExp} from "@atomist/sdm/lib/api/command/support/commonValidationPatterns";
-import {MappedParameters} from "@atomist/automation-client/lib/decorators";
+import {DeclarationType, ParametersObject} from "@atomist/sdm/lib/api/registration/ParametersDefinition";
 
 /**
  * Parameters for creating Node projects.

@@ -23,11 +23,11 @@ import { AutomationClientConnectionRequest } from "./AutomationClientConnectionR
 import { postToSdm } from "./support/httpInvoker";
 import { newCliCorrelationId } from "./support/newCorrelationId";
 
+import {Secrets} from "@atomist/automation-client/lib/decorators";
+import {Success} from "@atomist/automation-client/lib/HandlerResult";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 import * as assert from "assert";
 import { AutomationClientFinder } from "./AutomationClientFinder";
-import {Success} from "@atomist/automation-client/lib/HandlerResult";
-import {Secrets} from "@atomist/automation-client/lib/decorators";
-import {logger} from "@atomist/automation-client/lib/util/logger";
 
 /**
  * Invoke the event handler on all these clients

@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
+import {HandlerResult} from "@atomist/automation-client/lib/HandlerResult";
 import { Arg } from "@atomist/automation-client/lib/internal/invoker/Payload";
 import {
     CommandHandlerMetadata,
     Parameter,
 } from "@atomist/automation-client/lib/metadata/automationMetadata";
+import {RepoId} from "@atomist/automation-client/lib/operations/common/RepoId";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
 import chalk from "chalk";
 import * as inquirer from "inquirer";
 import * as _ from "lodash";
@@ -42,10 +46,6 @@ import { invokeCommandHandlerUsingHttp } from "../../http/invokeCommandHandlerUs
 import { newCliCorrelationId } from "../../http/support/newCorrelationId";
 import { portToListenOnFor } from "../../http/support/portAllocation";
 import { suggestStartingAllMessagesListener } from "./suggestStartingAllMessagesListener";
-import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
-import {logger} from "@atomist/automation-client/lib/util/logger";
-import {HandlerResult} from "@atomist/automation-client/lib/HandlerResult";
-import {RepoId} from "@atomist/automation-client/lib/operations/common/RepoId";
 
 /**
  * Listeners to command execution

@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-
-import {onAnyPush} from "@atomist/sdm/lib/api/dsl/goalDsl";
-import {metadata} from "@atomist/sdm/lib/api-helper/misc/extensionPack";
-import {ExtensionPack} from "@atomist/sdm/lib/api/machine/ExtensionPack";
 import {isInLocalMode} from "@atomist/sdm-core/lib/internal/machine/modes";
+import {metadata} from "@atomist/sdm/lib/api-helper/misc/extensionPack";
+import {onAnyPush} from "@atomist/sdm/lib/api/dsl/goalDsl";
+import {ExtensionPack} from "@atomist/sdm/lib/api/machine/ExtensionPack";
 import {SoftwareDeliveryMachine} from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachine";
 
 /**

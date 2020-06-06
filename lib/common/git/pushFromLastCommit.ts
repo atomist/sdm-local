@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-import {
-    commitMessageForSha,
-    retrieveLogDataForSha,
-    shaHistory,
-    timestampFromCommit,
-} from "../../sdm/util/git";
+import {RepoRef} from "@atomist/automation-client/lib/operations/common/RepoId";
 import After = PushFields.After;
 import Author = PushForSdmGoal.Author;
 import Before = PushForSdmGoal.Before;
 import Committer = PushForSdmGoal.Committer;
 import {GitProject} from "@atomist/automation-client/lib/project/git/GitProject";
-import {RepoRef} from "@atomist/automation-client/lib/operations/common/RepoId";
 import {LocalProject} from "@atomist/automation-client/lib/project/local/LocalProject";
 import {
     CoreRepoFieldsAndChannels,
     OnPushToAnyBranch,
     OwnerType,
     PushFields,
-    PushForSdmGoal
+    PushForSdmGoal,
 } from "@atomist/sdm/lib/typings/types";
+import {
+    commitMessageForSha,
+    retrieveLogDataForSha,
+    shaHistory,
+    timestampFromCommit,
+} from "../../sdm/util/git";
 
 export function repoFieldsFromProject(workspaceId: string, id: RepoRef): CoreRepoFieldsAndChannels.Fragment {
     return {

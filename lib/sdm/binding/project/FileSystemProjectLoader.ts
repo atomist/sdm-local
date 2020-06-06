@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+import {GitProject} from "@atomist/automation-client/lib/project/git/GitProject";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
+import {ProjectLoader, ProjectLoadingParameters, WithLoadedProject} from "@atomist/sdm/lib/spi/project/ProjectLoader";
 import * as fs from "fs";
 import * as _ from "lodash";
 import { logAndSend } from "../../../common/ui/httpMessaging";
@@ -23,10 +27,6 @@ import {
     FileSystemRemoteRepoRef,
     isFileSystemRemoteRepoRef,
 } from "./FileSystemRemoteRepoRef";
-import {ProjectLoader, ProjectLoadingParameters, WithLoadedProject} from "@atomist/sdm/lib/spi/project/ProjectLoader";
-import {GitProject} from "@atomist/automation-client/lib/project/git/GitProject";
-import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
-import {logger} from "@atomist/automation-client/lib/util/logger";
 
 /**
  * Local project loader backed by expanded directory tree.

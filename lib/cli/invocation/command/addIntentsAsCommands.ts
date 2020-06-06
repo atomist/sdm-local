@@ -15,6 +15,7 @@
  */
 
 import { CommandHandlerMetadata } from "@atomist/automation-client/lib/metadata/automationMetadata";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 import { AutomationClientInfo } from "../../AutomationClientInfo";
@@ -29,7 +30,6 @@ import {
     promptForAChoiceWhenNecessary,
     YargBuilder,
 } from "./support/yargBuilder";
-import {logger} from "@atomist/automation-client/lib/util/logger";
 
 /**
  * Add commands for all intents

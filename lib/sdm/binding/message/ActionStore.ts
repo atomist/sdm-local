@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
+import {logger} from "@atomist/automation-client/lib/util/logger";
 import {
     Action,
     SlackMessage,
 } from "@atomist/slack-messages";
 import * as jsSHA from "jssha";
 import * as _ from "lodash";
-import {logger} from "@atomist/automation-client/lib/util/logger";
 
 export const ActionRoute = "/action";
 

@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+import {GitCommandGitProject} from "@atomist/automation-client/lib/project/git/GitCommandGitProject";
+import Push = SdmGoalWithPushFields.Push;
+import {GitProject} from "@atomist/automation-client/lib/project/git/GitProject";
+import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
+import {OnPushToAnyBranch, SdmGoalWithPushFields} from "@atomist/sdm/lib/typings/types";
 import {
     errorMessage,
     infoMessage,
@@ -23,11 +28,6 @@ import { isAtomistTemporaryBranch } from "../../sdm/binding/project/FileSystemPr
 import { FileSystemRemoteRepoRef } from "../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { EventSender } from "../invocation/EventHandlerInvocation";
 import { pushFromLastCommit } from "./pushFromLastCommit";
-import Push = SdmGoalWithPushFields.Push;
-import {GitProject} from "@atomist/automation-client/lib/project/git/GitProject";
-import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
-import {GitCommandGitProject} from "@atomist/automation-client/lib/project/git/GitCommandGitProject";
-import {OnPushToAnyBranch, SdmGoalWithPushFields} from "@atomist/sdm/lib/typings/types";
 
 /**
  * Any event on a local repo

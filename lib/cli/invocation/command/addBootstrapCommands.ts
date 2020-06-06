@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {GitHubRepoRef} from "@atomist/automation-client/lib/operations/common/GitHubRepoRef";
 import {
     prompt,
     Question,
@@ -32,7 +33,6 @@ import { addEmbeddedCommand } from "./support/embeddedCommandExecution";
 import { verifyMaven } from "./support/javaVerification";
 import { YargBuilder } from "./support/yargBuilder";
 import { AddLocalMode } from "./transform/addLocalModeTransform";
-import {GitHubRepoRef} from "@atomist/automation-client/lib/operations/common/GitHubRepoRef";
 
 /**
  * Add bootstrap commands to generate a new SDM

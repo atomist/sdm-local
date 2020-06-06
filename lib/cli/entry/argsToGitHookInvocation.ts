@@ -15,12 +15,12 @@
  */
 
 import {logger} from "@atomist/automation-client/lib/util/logger";
+import {execPromise} from "@atomist/sdm/lib/api-helper/misc/child_process";
 import { WorkspaceContextResolver } from "../../common/binding/WorkspaceContextResolver";
 import {
     GitHookInvocation,
     HookEvent,
 } from "../invocation/git/handleGitHookEvent";
-import {execPromise} from "@atomist/sdm/lib/api-helper/misc/child_process";
 
 /**
  * Process the given args (probably from process.argv) into a

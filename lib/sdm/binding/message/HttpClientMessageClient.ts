@@ -16,6 +16,12 @@
 
 // this is calling a local address so it's fine
 // tslint:disable-next-line:import-blacklist
+import {
+    Destination,
+    isSlackMessage, MessageClient, MessageOptions, SlackDestination,
+    SlackMessageClient,
+} from "@atomist/automation-client/lib/spi/message/MessageClient";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 import axios from "axios";
 import { StreamedMessage } from "../../../common/ui/httpMessaging";
 import {
@@ -25,12 +31,6 @@ import {
 import { currentMachineAddress } from "../../util/currentMachineAddress";
 import { ActionStore } from "./ActionStore";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
-import {
-    Destination,
-    isSlackMessage, MessageClient, MessageOptions, SlackDestination,
-    SlackMessageClient
-} from "@atomist/automation-client/lib/spi/message/MessageClient";
-import {logger} from "@atomist/automation-client/lib/util/logger";
 
 /**
  * Server-side Message client that POSTS to an Atomist client listener (which
