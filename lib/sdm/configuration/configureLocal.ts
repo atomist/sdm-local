@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-import {
-    automationClientInstance,
-    Configuration,
-    ConfigurationPostProcessor,
-    guid,
-    HandlerResult,
-    logger,
-} from "@atomist/automation-client";
-import { eventStore } from "@atomist/automation-client/lib/globals";
+import {automationClientInstance, eventStore} from "@atomist/automation-client/lib/globals";
 import { scanFreePort } from "@atomist/automation-client/lib/util/port";
-import { OnBuildComplete } from "@atomist/sdm";
-import {
-    isInLocalMode,
-    LocalSoftwareDeliveryMachineConfiguration,
-} from "@atomist/sdm-core";
 import * as assert from "assert";
 import * as exp from "express";
 import * as exphbs from "express-handlebars";
@@ -59,6 +46,13 @@ import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInP
 import { defaultLocalSoftwareDeliveryMachineConfiguration } from "./defaultLocalSoftwareDeliveryMachineConfiguration";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 import { NotifyOnStartupAutomationEventListener } from "./support/NotifyOnStartupAutomationEventListener";
+import {Configuration, ConfigurationPostProcessor} from "@atomist/automation-client/lib/configuration";
+import {isInLocalMode} from "@atomist/sdm-core/lib/internal/machine/modes";
+import {OnBuildComplete} from "@atomist/sdm/lib/typings/types";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {guid} from "@atomist/automation-client/lib/internal/util/string";
+import {HandlerResult} from "@atomist/automation-client/lib/HandlerResult";
+import {LocalSoftwareDeliveryMachineConfiguration} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
 
 /**
  * Options that are used during configuration of an local SDM but don't get passed on to the
@@ -344,7 +338,7 @@ function decircle(result: HandlerResult): HandlerResult {
 /**
  * Use custom message client to update HTTP listeners and forward goal events back to the SDM via HTTP
  * @param {Configuration} configuration
- * @param {LocalModeConfiguration} localMachineConfig
+ * @param {LocalModeConfiguration} localMachineConfig // TODO: Update this
  */
 function configureMessageClientFactory(configuration: Configuration,
                                        teamContext: LocalWorkspaceContext,

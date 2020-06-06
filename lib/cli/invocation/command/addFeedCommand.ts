@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { toStringArray } from "@atomist/automation-client";
 import * as os from "os";
 import { AllMessagesPort } from "../../../common/ui/httpMessaging";
 import {
@@ -27,6 +26,7 @@ import {
     logExceptionsToConsole,
 } from "../../ui/consoleOutput";
 import { YargBuilder } from "./support/yargBuilder";
+import {toStringArray} from "@atomist/automation-client/lib/internal/util/string";
 
 /**
  * @param {yargs.Argv} yargs

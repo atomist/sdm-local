@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import {
-    toStringArray,
-} from "@atomist/automation-client";
+
 import { CommandHandlerMetadata } from "@atomist/automation-client/lib/metadata/automationMetadata";
 import chalk from "chalk";
 import * as _ from "lodash";
@@ -27,6 +25,7 @@ import {
     logExceptionsToConsole,
 } from "../../ui/consoleOutput";
 import { YargBuilder } from "./support/yargBuilder";
+import {toStringArray} from "@atomist/automation-client/lib/internal/util/string";
 
 const MaxColumnWidth = 30;
 

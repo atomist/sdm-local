@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
+import { TargetsParams } from "@atomist/automation-client/lib/operations/common/params/TargetsParams";
+import {andFilter, RepoFilter} from "@atomist/automation-client/lib/operations/common/repoFilter";
+import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 import {
-    logger,
     MappedParameter,
     MappedParameters,
     Parameter,
     Parameters,
-    ProjectOperationCredentials,
-    RepoFilter,
     Secret,
-    Secrets,
-    validationPatterns,
-} from "@atomist/automation-client";
-import { TargetsParams } from "@atomist/automation-client/lib/operations/common/params/TargetsParams";
-import { andFilter } from "@atomist/automation-client/lib/operations/common/repoFilter";
-import { RepoTargets } from "@atomist/sdm";
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
-import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
+    Secrets
+} from "@atomist/automation-client/lib/decorators";
+import * as validationPatterns from "@atomist/automation-client/lib/operations/common/params/validationPatterns";
+import {ProjectOperationCredentials} from "@atomist/automation-client/lib/operations/common/ProjectOperationCredentials";
+import {RepoTargets} from "@atomist/sdm/lib/api/machine/RepoTargets";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
 
 /**
  * Repo targeting for local use.

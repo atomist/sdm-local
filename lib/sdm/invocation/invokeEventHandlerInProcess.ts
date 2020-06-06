@@ -14,14 +14,6 @@
  * limitations under the License.
  */
 
-import {
-    automationClientInstance,
-    EventIncoming,
-    HandlerResult,
-    logger,
-    Secrets,
-    Success,
-} from "@atomist/automation-client";
 import { replacer } from "@atomist/automation-client/lib/internal/util/string";
 import * as stringify from "json-stringify-safe";
 import * as assert from "power-assert";
@@ -29,6 +21,11 @@ import { newCliCorrelationId } from "../../cli/invocation/http/support/newCorrel
 import { EventSender } from "../../common/invocation/EventHandlerInvocation";
 import { LocalWorkspaceContext } from "../../common/invocation/LocalWorkspaceContext";
 import { credentialsFromEnvironment } from "../binding/EnvironmentTokenCredentialsResolver";
+import {EventIncoming} from "@atomist/automation-client/lib/internal/transport/RequestProcessor";
+import {Secrets} from "@atomist/automation-client/lib/decorators";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {automationClientInstance} from "@atomist/automation-client/lib/globals";
+import {HandlerResult, Success} from "@atomist/automation-client/lib/HandlerResult";
 
 /**
  * Invoke an event handler on the automation client at the given location

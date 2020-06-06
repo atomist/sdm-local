@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-import {
-    configurationValue,
-    logger,
-    Parameters,
-    ProjectOperationCredentials,
-    TokenCredentials,
-} from "@atomist/automation-client";
-import { getUserConfig } from "@atomist/automation-client/lib/configuration";
-import {
-    CredentialsResolver,
-} from "@atomist/sdm";
+import {configurationValue, getUserConfig} from "@atomist/automation-client/lib/configuration";
 import * as _ from "lodash";
+import {Parameters} from "@atomist/automation-client/lib/decorators";
+import {
+    ProjectOperationCredentials,
+    TokenCredentials
+} from "@atomist/automation-client/lib/operations/common/ProjectOperationCredentials";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {CredentialsResolver} from "@atomist/sdm/lib/spi/credentials/CredentialsResolver";
 
 @Parameters()
 export class EnvironmentTokenCredentialsResolver implements CredentialsResolver {

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
 import * as assert from "power-assert";
 import { CommandHandlerInvoker } from "../../../common/invocation/CommandHandlerInvocation";
 import { propertiesToArgs } from "../../../common/util/propertiesToArgs";
@@ -22,6 +21,7 @@ import { credentialsFromEnvironment } from "../../../sdm/binding/EnvironmentToke
 import { AutomationClientConnectionRequest } from "./AutomationClientConnectionRequest";
 import { postToSdm } from "./support/httpInvoker";
 import { newCliCorrelationId } from "./support/newCorrelationId";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 
 /**
  * Return a command invoker using HTTP to the given address

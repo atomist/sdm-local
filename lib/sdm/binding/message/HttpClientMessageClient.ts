@@ -14,15 +14,6 @@
  * limitations under the License.
  */
 
-import {
-    Destination,
-    isSlackMessage,
-    logger,
-    MessageClient,
-    MessageOptions,
-    SlackDestination,
-    SlackMessageClient,
-} from "@atomist/automation-client";
 // this is calling a local address so it's fine
 // tslint:disable-next-line:import-blacklist
 import axios from "axios";
@@ -34,6 +25,12 @@ import {
 import { currentMachineAddress } from "../../util/currentMachineAddress";
 import { ActionStore } from "./ActionStore";
 import { isSdmGoalStoreOrUpdate } from "./GoalEventForwardingMessageClient";
+import {
+    Destination,
+    isSlackMessage, MessageClient, MessageOptions, SlackDestination,
+    SlackMessageClient
+} from "@atomist/automation-client/lib/spi/message/MessageClient";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 
 /**
  * Server-side Message client that POSTS to an Atomist client listener (which

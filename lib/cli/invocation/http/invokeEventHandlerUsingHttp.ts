@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-import {
-    logger,
-    Secrets,
-    Success,
-} from "@atomist/automation-client";
 import { replacer } from "@atomist/automation-client/lib/internal/util/string";
 import * as stringify from "json-stringify-safe";
 import { EventSender } from "../../../common/invocation/EventHandlerInvocation";
@@ -30,6 +25,9 @@ import { newCliCorrelationId } from "./support/newCorrelationId";
 
 import * as assert from "assert";
 import { AutomationClientFinder } from "./AutomationClientFinder";
+import {Success} from "@atomist/automation-client/lib/HandlerResult";
+import {Secrets} from "@atomist/automation-client/lib/decorators";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 
 /**
  * Invoke the event handler on all these clients

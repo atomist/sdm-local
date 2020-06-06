@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-import {
-    ExtensionPack,
-    metadata,
-    OnPushToAnyBranch,
-    SdmGoalEvent,
-    SdmGoalState,
-    SoftwareDeliveryMachine,
-} from "@atomist/sdm";
-import { isInLocalMode } from "@atomist/sdm-core";
 import chalk from "chalk";
 import * as _ from "lodash";
 import { isFileSystemRemoteRepoRef } from "../binding/project/FileSystemRemoteRepoRef";
 import Push = OnPushToAnyBranch.Push;
+import {metadata} from "@atomist/sdm/lib/api-helper/misc/extensionPack";
+import {ExtensionPack} from "@atomist/sdm/lib/api/machine/ExtensionPack";
+import {isInLocalMode} from "@atomist/sdm-core/lib/internal/machine/modes";
+import {SdmGoalEvent} from "@atomist/sdm/lib/api/goal/SdmGoalEvent";
+import {SoftwareDeliveryMachine} from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachine";
+import {OnPushToAnyBranch, SdmGoalState} from "@atomist/sdm/lib/typings/types";
 
 /**
  * Add Local IO to the given SDM.

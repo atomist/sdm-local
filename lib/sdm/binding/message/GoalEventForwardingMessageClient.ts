@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-import {
-    Destination,
-    logger,
-    MessageClient,
-    MessageOptions,
-    SlackMessageClient,
-} from "@atomist/automation-client";
 import { eventStore } from "@atomist/automation-client/lib/globals";
-import {
-    OnAnyRequestedSdmGoal,
-    SdmGoalState,
-} from "@atomist/sdm";
 import { SdmGoalKey } from "@atomist/sdm/lib/api/goal/SdmGoalMessage";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import { DefaultWorkspaceContextResolver } from "../../../common/binding/defaultWorkspaceContextResolver";
 import { isValidSHA1 } from "../../../common/git/handlePushBasedEventOnRepo";
 import { invokeEventHandlerInProcess } from "../../invocation/invokeEventHandlerInProcess";
+import {
+    Destination,
+    MessageClient,
+    MessageOptions,
+    SlackMessageClient
+} from "@atomist/automation-client/lib/spi/message/MessageClient";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {OnAnyRequestedSdmGoal, SdmGoalState} from "@atomist/sdm/lib/typings/types";
 
 export function isSdmGoalStoreOrUpdate(o: any): o is (SdmGoalKey & {
     state: SdmGoalState;

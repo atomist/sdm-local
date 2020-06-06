@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-import {
-    logger,
-    MappedParameters,
-} from "@atomist/automation-client";
 import { MappedParameterDeclaration } from "@atomist/automation-client/lib/metadata/automationMetadata";
 import { GitHubDotComBase } from "@atomist/automation-client/lib/operations/common/GitHubRepoRef";
 import * as os from "os";
 import { DefaultWorkspaceId } from "../../../common/binding/defaultWorkspaceContextResolver";
 import { MappedParameterResolver } from "../mapped-parameter/MappedParameterResolver";
 import { parseOwnerAndRepo } from "./expandedTreeUtils";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {MappedParameters} from "@atomist/automation-client/lib/decorators";
 
 /**
  * Resolve mapped parameters based on where we are in the directory tree

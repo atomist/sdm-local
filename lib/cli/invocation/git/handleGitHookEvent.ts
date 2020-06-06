@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import {
     EventOnRepo,
     handlePushBasedEventOnRepo,
@@ -23,6 +22,7 @@ import { InvocationTarget } from "../../../common/invocation/InvocationTarget";
 import { errorMessage } from "../../ui/consoleOutput";
 import { AutomationClientConnectionRequest } from "../http/AutomationClientConnectionRequest";
 import { invokeEventHandlerUsingHttp } from "../http/invokeEventHandlerUsingHttp";
+import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
 
 export interface GitHookInvocation extends EventOnRepo {
 

@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import {
-    CodeTransformRegistration,
-    ProgressLog,
-    spawnCodeTransform,
-} from "@atomist/sdm";
+
+import {CodeTransformRegistration} from "@atomist/sdm/lib/api/registration/CodeTransformRegistration";
+import {ProgressLog} from "@atomist/sdm/lib/spi/log/ProgressLog";
+import {spawnCodeTransform} from "@atomist/sdm/lib/api-helper/command/transform/spawnCodeTransform";
 
 export interface ModuleId {
     name?: string;

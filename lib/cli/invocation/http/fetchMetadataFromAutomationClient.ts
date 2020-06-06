@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 // tslint:disable-next-line:import-blacklist
 import axios from "axios";
 import {
@@ -22,6 +21,7 @@ import {
     ConnectedClient,
 } from "../../AutomationClientInfo";
 import { AutomationClientConnectionRequest } from "./AutomationClientConnectionRequest";
+import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
 
 /**
  * Call into an automation client at the given location and retrieve metadata

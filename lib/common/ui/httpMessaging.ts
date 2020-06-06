@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-import {
-    Destination,
-    logger,
-    MessageOptions,
-} from "@atomist/automation-client";
 // only local connections
 // tslint:disable-next-line:import-blacklist
 import axios from "axios";
@@ -26,6 +21,8 @@ import * as boxen from "boxen";
 import { sprintf } from "sprintf-js";
 import { AutomationClientConnectionRequest } from "../../cli/invocation/http/AutomationClientConnectionRequest";
 import { determineDefaultHostUrl } from "../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
+import {Destination, MessageOptions} from "@atomist/automation-client/lib/spi/message/MessageClient";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 
 export const MessageRoute = "/message";
 export const GoalRoute = "/goal";

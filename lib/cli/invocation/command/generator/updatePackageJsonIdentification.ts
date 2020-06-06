@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-import {
-    doWithJson,
-    logger,
-    Project,
-} from "@atomist/automation-client";
-import { execPromise } from "@atomist/automation-client/lib/util/child_process";
-import {
-    CodeTransform,
-} from "@atomist/sdm";
 import { NodeProjectCreationParameters } from "./NodeProjectCreationParameters";
 import {
     Author,
     PackageJson,
 } from "./PackageJson";
+import {Project} from "@atomist/automation-client/lib/project/Project";
+import {doWithJson} from "@atomist/automation-client/lib/project/util/jsonUtils";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {CodeTransform} from "@atomist/sdm/lib/api/registration/CodeTransform";
+import {execPromise} from "@atomist/sdm/lib/api-helper/misc/child_process";
 
 /**
  * Code transform to update identification fields of package.json
@@ -43,6 +39,7 @@ export const UpdatePackageJsonIdentification: CodeTransform<NodeProjectCreationP
             email: await fetchGitConfig("user.email", undefined),
         };
         return doWithJson<PackageJson, Project>(project, "package.json", pkg => {
+            // context.configuration.te
             const repoUrl = params.target.repoRef.url;
             pkg.name = `@${params.target.repoRef.owner}/${params.target.repoRef.repo}`;
             pkg.description = params.target.description;

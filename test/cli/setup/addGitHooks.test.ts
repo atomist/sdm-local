@@ -16,10 +16,6 @@
 
 import * as assert from "power-assert";
 
-import {
-    InMemoryProject,
-    LocalProject,
-} from "@atomist/automation-client";
 import * as os from "os";
 import * as path from "path";
 
@@ -30,6 +26,8 @@ import {
     reatomizeScript,
     removeGitHooksFromProject,
 } from "../../../lib/cli/setup/addGitHooks";
+import {InMemoryProject} from "@atomist/automation-client/lib/project/mem/InMemoryProject";
+import {LocalProject} from "@atomist/automation-client/lib/project/local/LocalProject";
 
 /* tslint:disable:max-file-line-count */
 

@@ -26,6 +26,7 @@ import {
 } from "../../ui/consoleOutput";
 import { renderClientInfo } from "../../ui/renderClientInfo";
 import { YargBuilder } from "./support/yargBuilder";
+import {SoftwareDeliveryMachine} from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachine";
 
 export const DefaultSdmCdPort = 2901;
 
@@ -71,7 +72,7 @@ async function startSdmMachine(host: string,
     return startEmbeddedMachine({
         repositoryOwnerParentDirectory,
         port,
-        configure: sdm => {
+        configure: (sdm: SoftwareDeliveryMachine) => {
             sdm.addExtensionPacks(sdmCd({ host: sdm.configuration.local.hostname, port }));
         },
     });

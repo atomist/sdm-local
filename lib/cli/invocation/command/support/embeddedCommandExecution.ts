@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-import {
-    ConfigureMachine,
-    ParametersDefinition,
-    toParametersListing,
-} from "@atomist/sdm";
 import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
 import {
     errorMessage,
@@ -33,6 +28,9 @@ import {
 } from "./runCommandOnColocatedAutomationClient";
 import { YargBuilder } from "./yargBuilder";
 import { Arguments } from "./yargBuilder/interfaces";
+import {toParametersListing} from "@atomist/sdm/lib/api-helper/machine/handlerRegistrations";
+import {ParametersDefinition} from "@atomist/sdm/lib/api/registration/ParametersDefinition";
+import {ConfigureMachine} from "@atomist/sdm/lib/api/machine/MachineConfigurer";
 
 /**
  * Spec for running an embedded command on an ephemeral SDM

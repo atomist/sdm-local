@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import {
-    GitProject,
-    logger,
-} from "@atomist/automation-client";
 import { runAndLog } from "./runAndLog";
+import {GitProject} from "@atomist/automation-client/lib/project/git/GitProject";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 
 /**
  * Get the last git commit message

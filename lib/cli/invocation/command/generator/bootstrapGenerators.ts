@@ -15,19 +15,15 @@
  */
 
 import {
-    GitHubRepoRef,
-    RemoteRepoRef,
-    validationPatterns,
-} from "@atomist/automation-client";
-import {
-    CodeTransform,
-    GeneratorRegistration,
-} from "@atomist/sdm";
-import {
     NodeProjectCreationParameters,
     NodeProjectCreationParametersDefinition,
 } from "./NodeProjectCreationParameters";
 import { UpdatePackageJsonIdentification } from "./updatePackageJsonIdentification";
+import {GitHubRepoRef} from "@atomist/automation-client/lib/operations/common/GitHubRepoRef";
+import {RemoteRepoRef} from "@atomist/automation-client/lib/operations/common/RepoId";
+import * as validationPatterns from "@atomist/automation-client/lib/operations/common/params/validationPatterns";
+import {CodeTransform} from "@atomist/sdm/lib/api/registration/CodeTransform";
+import {GeneratorRegistration} from "@atomist/sdm/lib/api/registration/GeneratorRegistration";
 
 /**
  * Generator that can create a new Node project. Parameterized

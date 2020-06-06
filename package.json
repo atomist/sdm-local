@@ -75,10 +75,10 @@
     "@atomist/slack-messages": "^1.1.1"
   },
   "devDependencies": {
-    "@atomist/automation-client": "2.0.0-master.20191206152722",
+    "@atomist/automation-client": "2.0.0-master.20200205130055",
     "@atomist/microgrammar": "^1.2.1",
-    "@atomist/sdm": "2.0.0-master.20191206153457",
-    "@atomist/sdm-core": "2.0.0-master.20191206160429",
+    "@atomist/sdm": "2.0.0-master.20200204153359",
+    "@atomist/sdm-core": "2.0.0-master.20200205194750",
     "@atomist/slack-messages": "^1.1.1",
     "@types/mocha": "^5.2.7",
     "@types/power-assert": "^1.5.0",

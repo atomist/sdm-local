@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-import { RemoteRepoRef } from "@atomist/automation-client";
-import {
-    CoreRepoFieldsAndChannels,
-    OnPushToAnyBranch,
-    RepoRefResolver,
-    ScmProvider,
-    SdmGoalEvent,
-} from "@atomist/sdm";
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
+import {RepoRefResolver} from "@atomist/sdm/lib/spi/repo-ref/RepoRefResolver";
+import {SdmGoalEvent} from "@atomist/sdm/lib/api/goal/SdmGoalEvent";
+import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
+import {RemoteRepoRef} from "@atomist/automation-client/lib/operations/common/RepoId";
+import {CoreRepoFieldsAndChannels, OnPushToAnyBranch, ScmProvider} from "@atomist/sdm/lib/typings/types";
 
 /**
  * Resolve RepoRefs into our expanded tree structure

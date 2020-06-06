@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-import {
-    HandlerResult,
-    logger,
-} from "@atomist/automation-client";
 // tslint:disable-next-line:import-blacklist
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import * as _ from "lodash";
 import { AutomationClientConnectionRequest } from "../AutomationClientConnectionRequest";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {HandlerResult} from "@atomist/automation-client/lib/HandlerResult";
 
 /**
  * Make a post to the SDM

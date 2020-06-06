@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
 import { CommandHandlerMetadata } from "@atomist/automation-client/lib/metadata/automationMetadata";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
@@ -30,6 +29,7 @@ import {
     promptForAChoiceWhenNecessary,
     YargBuilder,
 } from "./support/yargBuilder";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 
 /**
  * Add commands for all intents

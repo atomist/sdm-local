@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-import {
-    automationClientInstance,
-    CommandIncoming,
-    HandlerResult,
-    Success,
-} from "@atomist/automation-client";
 import { CommandHandlerInvoker } from "../../common/invocation/CommandHandlerInvocation";
 import { propertiesToArgs } from "../../common/util/propertiesToArgs";
 import { credentialsFromEnvironment } from "../binding/EnvironmentTokenCredentialsResolver";
+import {CommandIncoming} from "@atomist/automation-client/lib/internal/transport/RequestProcessor";
+import {HandlerResult, Success} from "@atomist/automation-client/lib/HandlerResult";
+import {automationClientInstance} from "@atomist/automation-client/lib/globals";
 
 export type CommandHandlerCallback = (result: Promise<HandlerResult>) => void;
 const DefaultCommandHandlerCallback = () => { /* intentionally left empty */ };

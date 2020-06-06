@@ -14,16 +14,6 @@
  * limitations under the License.
  */
 
-import {
-    GitProject,
-    LocalProject,
-    logger,
-    NodeFsLocalProject,
-    ProjectPersister,
-    RepoRef,
-} from "@atomist/automation-client";
-import { successOn } from "@atomist/automation-client/lib/action/ActionResult";
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import * as fs from "fs-extra";
 import * as path from "path";
 import { AutomationClientFinder } from "../../../cli/invocation/http/AutomationClientFinder";
@@ -39,6 +29,14 @@ import {
     sendRepoOnboardingEvent,
 } from "../event/repoOnboardingEvents";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
+import {GitProject} from "@atomist/automation-client/lib/project/git/GitProject";
+import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
+import {ProjectPersister} from "@atomist/automation-client/lib/operations/generate/generatorUtils";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {NodeFsLocalProject} from "@atomist/automation-client/lib/project/local/NodeFsLocalProject";
+import {successOn} from "@atomist/automation-client/lib/action/ActionResult";
+import {RepoRef} from "@atomist/automation-client/lib/operations/common/RepoId";
+import {LocalProject} from "@atomist/automation-client/lib/project/local/LocalProject";
 
 const InitialCommitMessage = "Initial commit from Atomist";
 

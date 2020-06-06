@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-import {
-    SdmGoalEvent,
-    SdmGoalState,
-} from "@atomist/sdm";
 import chalk from "chalk";
 import * as formatDate from "format-date";
 import * as _ from "lodash";
@@ -30,6 +26,8 @@ import {
     ProgressBar,
 } from "../../../bin/progressBar";
 import { infoMessage } from "../../cli/ui/consoleOutput";
+import {SdmGoalEvent} from "@atomist/sdm/lib/api/goal/SdmGoalEvent";
+import {SdmGoalState} from "@atomist/sdm/lib/typings/types";
 
 marked.setOptions({
     // Define custom renderer
