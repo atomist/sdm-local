@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-import { Configuration } from "@atomist/automation-client";
 import { automationClient } from "@atomist/automation-client/lib/automationClient";
 import {
+    Configuration,
     defaultConfiguration,
     invokePostProcessors,
 } from "@atomist/automation-client/lib/configuration";
-import {
-    ConfigureMachine,
-    ExtensionPack,
-    SoftwareDeliveryMachine,
-    SoftwareDeliveryMachineConfiguration,
-} from "@atomist/sdm";
-import {
-    configureSdm,
-    createSoftwareDeliveryMachine,
-    LocalSoftwareDeliveryMachineConfiguration,
-} from "@atomist/sdm-core";
+import {configureSdm} from "@atomist/sdm-core/lib/internal/machine/configureSdm";
+import {LocalSoftwareDeliveryMachineConfiguration} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
+import {createSoftwareDeliveryMachine} from "@atomist/sdm-core/lib/machine/machineFactory";
+import {ExtensionPack} from "@atomist/sdm/lib/api/machine/ExtensionPack";
+import {ConfigureMachine} from "@atomist/sdm/lib/api/machine/MachineConfigurer";
+import {SoftwareDeliveryMachine} from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachine";
+import {SoftwareDeliveryMachineConfiguration} from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachineOptions";
 import * as _ from "lodash";
 import { DefaultWorkspaceId } from "../../common/binding/defaultWorkspaceContextResolver";
 import { configureLocal } from "../../sdm/configuration/configureLocal";

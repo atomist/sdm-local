@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-import {
-    GitProject,
-    LocalProject,
-    logger,
-    NodeFsLocalProject,
-    ProjectPersister,
-    RepoRef,
-} from "@atomist/automation-client";
-import { successOn } from "@atomist/automation-client/lib/action/ActionResult";
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
+import {successOn} from "@atomist/automation-client/lib/action/ActionResult";
+import {RepoRef} from "@atomist/automation-client/lib/operations/common/RepoId";
+import {ProjectPersister} from "@atomist/automation-client/lib/operations/generate/generatorUtils";
+import {GitProject} from "@atomist/automation-client/lib/project/git/GitProject";
+import {LocalProject} from "@atomist/automation-client/lib/project/local/LocalProject";
+import {NodeFsLocalProject} from "@atomist/automation-client/lib/project/local/NodeFsLocalProject";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
 import * as fs from "fs-extra";
 import * as path from "path";
 import { AutomationClientFinder } from "../../../cli/invocation/http/AutomationClientFinder";

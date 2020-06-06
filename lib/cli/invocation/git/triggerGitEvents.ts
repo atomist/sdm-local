@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import {
-    GitCommandGitProject,
-    logger,
-} from "@atomist/automation-client";
+import {GitCommandGitProject} from "@atomist/automation-client/lib/project/git/GitCommandGitProject";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import {
     determineCwd,

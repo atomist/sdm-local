@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ProgressLog } from "@atomist/sdm";
+import {ProgressLog} from "@atomist/sdm/lib/spi/log/ProgressLog";
 import * as fileUrl from "file-url";
 import * as fs from "fs-extra";
 import * as path from "path";

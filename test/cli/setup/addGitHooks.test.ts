@@ -16,13 +16,11 @@
 
 import * as assert from "power-assert";
 
-import {
-    InMemoryProject,
-    LocalProject,
-} from "@atomist/automation-client";
 import * as os from "os";
 import * as path from "path";
 
+import {LocalProject} from "@atomist/automation-client/lib/project/local/LocalProject";
+import {InMemoryProject} from "@atomist/automation-client/lib/project/mem/InMemoryProject";
 import {
     addGitHooksToProject,
     deatomizeScript,

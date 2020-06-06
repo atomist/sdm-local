@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-import {
-    ExtensionPack,
-    metadata,
-    onAnyPush,
-    SoftwareDeliveryMachine,
-} from "@atomist/sdm";
-import { isInLocalMode } from "@atomist/sdm-core";
+import {isInLocalMode} from "@atomist/sdm-core/lib/internal/machine/modes";
+import {metadata} from "@atomist/sdm/lib/api-helper/misc/extensionPack";
+import {onAnyPush} from "@atomist/sdm/lib/api/dsl/goalDsl";
+import {ExtensionPack} from "@atomist/sdm/lib/api/machine/ExtensionPack";
+import {SoftwareDeliveryMachine} from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachine";
 
 /**
  * Extension pack that configures SDM for local

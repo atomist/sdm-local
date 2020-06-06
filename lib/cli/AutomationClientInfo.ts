@@ -15,9 +15,7 @@
  */
 
 import { CommandHandlerMetadata } from "@atomist/automation-client/lib/metadata/automationMetadata";
-import {
-    LocalSoftwareDeliveryMachineOptions,
-} from "@atomist/sdm-core";
+import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
 import { AutomationClientConnectionRequest } from "./invocation/http/AutomationClientConnectionRequest";
 
 /**

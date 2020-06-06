@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
+import {configurationValue, getUserConfig} from "@atomist/automation-client/lib/configuration";
+import {Parameters} from "@atomist/automation-client/lib/decorators";
 import {
-    configurationValue,
-    logger,
-    Parameters,
     ProjectOperationCredentials,
     TokenCredentials,
-} from "@atomist/automation-client";
-import { getUserConfig } from "@atomist/automation-client/lib/configuration";
-import {
-    CredentialsResolver,
-} from "@atomist/sdm";
+} from "@atomist/automation-client/lib/operations/common/ProjectOperationCredentials";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {CredentialsResolver} from "@atomist/sdm/lib/spi/credentials/CredentialsResolver";
 import * as _ from "lodash";
 
 @Parameters()

@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-import {
-    logger,
-} from "@atomist/automation-client";
-import {
-    DelimitedWriteProgressLogDecorator,
-    ExecuteGoal,
-    GoalInvocation,
-    GoalWithFulfillment,
-} from "@atomist/sdm";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {DelimitedWriteProgressLogDecorator} from "@atomist/sdm/lib/api-helper/log/DelimitedWriteProgressLogDecorator";
+import {ExecuteGoal, GoalInvocation} from "@atomist/sdm/lib/api/goal/GoalInvocation";
+import {GoalWithFulfillment} from "@atomist/sdm/lib/api/goal/GoalWithFulfillment";
 import {
     ChildProcess,
     spawn,

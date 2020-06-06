@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { predicatePushTest } from "@atomist/sdm";
+import {predicatePushTest} from "@atomist/sdm/lib/api/mapping/PushTest";
 
 /**
  * Is this repo an SDM?

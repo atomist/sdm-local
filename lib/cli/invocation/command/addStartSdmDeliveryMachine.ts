@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {SoftwareDeliveryMachine} from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachine";
 import chalk from "chalk";
 import { sdmCd } from "../../../pack/sdm-cd/support/SdmCd";
 import { determineDefaultRepositoryOwnerParentDirectory } from "../../../sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
@@ -71,7 +72,7 @@ async function startSdmMachine(host: string,
     return startEmbeddedMachine({
         repositoryOwnerParentDirectory,
         port,
-        configure: sdm => {
+        configure: (sdm: SoftwareDeliveryMachine) => {
             sdm.addExtensionPacks(sdmCd({ host: sdm.configuration.local.hostname, port }));
         },
     });

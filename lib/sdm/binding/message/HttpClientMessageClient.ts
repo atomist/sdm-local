@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-import {
-    Destination,
-    isSlackMessage,
-    logger,
-    MessageClient,
-    MessageOptions,
-    SlackDestination,
-    SlackMessageClient,
-} from "@atomist/automation-client";
 // this is calling a local address so it's fine
 // tslint:disable-next-line:import-blacklist
+import {
+    Destination,
+    isSlackMessage, MessageClient, MessageOptions, SlackDestination,
+    SlackMessageClient,
+} from "@atomist/automation-client/lib/spi/message/MessageClient";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 import axios from "axios";
 import { StreamedMessage } from "../../../common/ui/httpMessaging";
 import {

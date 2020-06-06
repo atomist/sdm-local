@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
+import {toStringArray} from "@atomist/automation-client/lib/internal/util/string";
 import {
     Destination,
-    isSlackMessage,
-    logger,
-    MessageClient,
-    MessageOptions,
-    SlackDestination,
+    isSlackMessage, MessageClient, MessageOptions, SlackDestination,
     SlackMessageClient,
-    toStringArray,
-} from "@atomist/automation-client";
+} from "@atomist/automation-client/lib/spi/message/MessageClient";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 import {
     Action,
     SlackMessage,

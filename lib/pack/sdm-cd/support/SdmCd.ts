@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-import {
-    ExtensionPack,
-    Goals,
-    metadata,
-    whenPushSatisfies,
-} from "@atomist/sdm";
-import { IsInLocalMode } from "@atomist/sdm-core";
+import {IsInLocalMode} from "@atomist/sdm-core/lib/internal/machine/modes";
+import {metadata} from "@atomist/sdm/lib/api-helper/misc/extensionPack";
+import {whenPushSatisfies} from "@atomist/sdm/lib/api/dsl/goalDsl";
+import {Goals} from "@atomist/sdm/lib/api/goal/Goals";
+import {ExtensionPack} from "@atomist/sdm/lib/api/machine/ExtensionPack";
 import { IsSdm } from "./IsSdm";
 import {
     executeLocalSdmDelivery,

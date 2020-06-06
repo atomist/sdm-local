@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import {
-    CodeTransformRegistration,
-    LoggingProgressLog,
-} from "@atomist/sdm";
+import {LoggingProgressLog} from "@atomist/sdm/lib/api-helper/log/LoggingProgressLog";
+import {CodeTransformRegistration} from "@atomist/sdm/lib/api/registration/CodeTransformRegistration";
 import { addDependencyTransform } from "./addDependencyTransform";
 
 /**

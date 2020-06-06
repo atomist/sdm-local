@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-import {
-    GitProject,
-    logger,
-} from "@atomist/automation-client";
-import {
-    ProjectLoader,
-    ProjectLoadingParameters,
-    WithLoadedProject,
-} from "@atomist/sdm";
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
+import {GitProject} from "@atomist/automation-client/lib/project/git/GitProject";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
+import {ProjectLoader, ProjectLoadingParameters, WithLoadedProject} from "@atomist/sdm/lib/spi/project/ProjectLoader";
 import * as fs from "fs";
 import * as _ from "lodash";
 import { logAndSend } from "../../../common/ui/httpMessaging";

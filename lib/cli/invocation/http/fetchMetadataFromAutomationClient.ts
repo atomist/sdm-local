@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 // tslint:disable-next-line:import-blacklist
+import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
 import axios from "axios";
 import {
     AutomationClientInfo,

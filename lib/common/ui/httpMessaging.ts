@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-import {
-    Destination,
-    logger,
-    MessageOptions,
-} from "@atomist/automation-client";
 // only local connections
 // tslint:disable-next-line:import-blacklist
+import {Destination, MessageOptions} from "@atomist/automation-client/lib/spi/message/MessageClient";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 import axios from "axios";
 import * as boxen from "boxen";
 import { sprintf } from "sprintf-js";

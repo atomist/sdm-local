@@ -16,22 +16,15 @@
 
 // tslint:disable:deprecation
 
+import {Configuration, configurationValue, getUserConfig} from "@atomist/automation-client/lib/configuration";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 import {
-    Configuration,
-    configurationValue,
-    logger,
-} from "@atomist/automation-client";
-import { getUserConfig } from "@atomist/automation-client/lib/configuration";
-import {
-    CachingProjectLoader,
-    SoftwareDeliveryMachineOptions,
-} from "@atomist/sdm";
-import {
-    EphemeralLocalArtifactStore,
-    FilePreferenceStoreFactory,
     LocalSoftwareDeliveryMachineConfiguration,
     LocalSoftwareDeliveryMachineOptions,
-} from "@atomist/sdm-core";
+} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
+import {FilePreferenceStoreFactory} from "@atomist/sdm-core/lib/internal/preferences/FilePreferenceStore";
+import {CachingProjectLoader} from "@atomist/sdm/lib/api-helper/project/CachingProjectLoader";
+import {SoftwareDeliveryMachineOptions} from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachineOptions";
 import * as fs from "fs-extra";
 import * as _ from "lodash";
 import * as os from "os";
@@ -67,8 +60,8 @@ export function defaultLocalSoftwareDeliveryMachineConfiguration(
 
     const localSdmConfiguration = _.merge(defaultLocalSdmConfiguration, configuration.local);
 
+    // @ts-ignore
     const sdmConfiguration: SoftwareDeliveryMachineOptions = {
-        artifactStore: new EphemeralLocalArtifactStore(),
         projectLoader: new FileSystemProjectLoader(
             new CachingProjectLoader(),
             localSdmConfiguration),

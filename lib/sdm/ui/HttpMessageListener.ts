@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-import {
-    SlackDestination,
-    toStringArray,
-} from "@atomist/automation-client";
-import {
-    PushFields,
-    SdmGoalEvent,
-} from "@atomist/sdm";
+import {toStringArray} from "@atomist/automation-client/lib/internal/util/string";
+import {SlackDestination} from "@atomist/automation-client/lib/spi/message/MessageClient";
+import {SdmGoalEvent} from "@atomist/sdm/lib/api/goal/SdmGoalEvent";
+import {PushFields} from "@atomist/sdm/lib/typings/types";
 import * as bodyParser from "body-parser";
 import * as express from "express";
 // tslint:disable-next-line:no-implicit-dependencies

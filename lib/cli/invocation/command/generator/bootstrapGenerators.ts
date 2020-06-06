@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-import {
-    GitHubRepoRef,
-    RemoteRepoRef,
-    validationPatterns,
-} from "@atomist/automation-client";
-import {
-    CodeTransform,
-    GeneratorRegistration,
-} from "@atomist/sdm";
+import {GitHubRepoRef} from "@atomist/automation-client/lib/operations/common/GitHubRepoRef";
+import * as validationPatterns from "@atomist/automation-client/lib/operations/common/params/validationPatterns";
+import {RemoteRepoRef} from "@atomist/automation-client/lib/operations/common/RepoId";
+import {CodeTransform} from "@atomist/sdm/lib/api/registration/CodeTransform";
+import {GeneratorRegistration} from "@atomist/sdm/lib/api/registration/GeneratorRegistration";
 import {
     NodeProjectCreationParameters,
     NodeProjectCreationParametersDefinition,

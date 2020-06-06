@@ -16,11 +16,11 @@
 
 import {
     Destination,
-    logger,
     MessageClient,
     MessageOptions,
     SlackMessageClient,
-} from "@atomist/automation-client";
+} from "@atomist/automation-client/lib/spi/message/MessageClient";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 import { SlackMessage } from "@atomist/slack-messages";
 
 /**

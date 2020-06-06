@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import {
-    ConfigureMachine,
-    ParametersDefinition,
-    toParametersListing,
-} from "@atomist/sdm";
+import {toParametersListing} from "@atomist/sdm/lib/api-helper/machine/handlerRegistrations";
+import {ConfigureMachine} from "@atomist/sdm/lib/api/machine/MachineConfigurer";
+import {ParametersDefinition} from "@atomist/sdm/lib/api/registration/ParametersDefinition";
 import { startEmbeddedMachine } from "../../../embedded/embeddedMachine";
 import {
     errorMessage,

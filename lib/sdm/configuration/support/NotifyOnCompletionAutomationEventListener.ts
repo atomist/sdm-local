@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-import {
-    AutomationEventListenerSupport,
-    HandlerContext,
-    HandlerResult,
-    logger,
-} from "@atomist/automation-client";
+import {HandlerContext} from "@atomist/automation-client/lib/HandlerContext";
+import {HandlerResult} from "@atomist/automation-client/lib/HandlerResult";
 import { CommandInvocation } from "@atomist/automation-client/lib/internal/invoker/Payload";
+import {AutomationEventListenerSupport} from "@atomist/automation-client/lib/server/AutomationEventListener";
+import {logger} from "@atomist/automation-client/lib/util/logger";
 import * as serializeError from "serialize-error";
 import { CommandCompletionDestination } from "../../../common/ui/CommandCompletionDestination";
 

@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-import {
-    GraphClient,
-    logger,
-    MutationOptions,
-    QueryOptions,
-} from "@atomist/automation-client";
-import { eventStore } from "@atomist/automation-client/lib/globals";
-import {
-    PushForSdmGoal,
-    SdmGoalsForCommit,
-} from "@atomist/sdm";
-import { SdmVersionForCommit } from "@atomist/sdm-core";
+import {eventStore} from "@atomist/automation-client/lib/globals";
+import {GraphClient, MutationOptions, QueryOptions} from "@atomist/automation-client/lib/spi/graph/GraphClient";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {SdmVersionForCommit} from "@atomist/sdm-core/lib/typings/types";
+import {PushForSdmGoal, SdmGoalsForCommit} from "@atomist/sdm/lib/typings/types";
 
 /**
  * Local graph client. Returns empty result set or throws an
@@ -53,8 +46,10 @@ export class LocalGraphClient implements GraphClient {
         throw new Error();
     }
 
-    public mutate<T, Q>(optionsOrName: MutationOptions<Q> | string): Promise<T> {
-        throw new Error();
+    public async mutate<T, Q>(optionsOrName: MutationOptions<Q> | string): Promise<T> {
+        logger.warn("Warning: GraphClient.mutate not supported in local mode. Returning empty object. MutationOptions: %s", optionsOrName);
+        return {} as T;
+        // throw new Error();
     }
 
     public async query<T, Q>(optionsOrName: QueryOptions<Q> | string): Promise<T> {

@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import {
-    SdmGoalEvent,
-    SdmGoalState,
-} from "@atomist/sdm";
+import {SdmGoalEvent} from "@atomist/sdm/lib/api/goal/SdmGoalEvent";
+import {SdmGoalState} from "@atomist/sdm/lib/typings/types";
 import chalk from "chalk";
 import * as formatDate from "format-date";
 import * as _ from "lodash";

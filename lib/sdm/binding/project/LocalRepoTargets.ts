@@ -15,21 +15,20 @@
  */
 
 import {
-    logger,
     MappedParameter,
     MappedParameters,
     Parameter,
     Parameters,
-    ProjectOperationCredentials,
-    RepoFilter,
     Secret,
     Secrets,
-    validationPatterns,
-} from "@atomist/automation-client";
+} from "@atomist/automation-client/lib/decorators";
 import { TargetsParams } from "@atomist/automation-client/lib/operations/common/params/TargetsParams";
-import { andFilter } from "@atomist/automation-client/lib/operations/common/repoFilter";
-import { RepoTargets } from "@atomist/sdm";
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
+import * as validationPatterns from "@atomist/automation-client/lib/operations/common/params/validationPatterns";
+import {ProjectOperationCredentials} from "@atomist/automation-client/lib/operations/common/ProjectOperationCredentials";
+import {andFilter, RepoFilter} from "@atomist/automation-client/lib/operations/common/repoFilter";
+import {logger} from "@atomist/automation-client/lib/util/logger";
+import {LocalSoftwareDeliveryMachineOptions} from "@atomist/sdm-core/lib/internal/machine/LocalSoftwareDeliveryMachineOptions";
+import {RepoTargets} from "@atomist/sdm/lib/api/machine/RepoTargets";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
 
 /**
