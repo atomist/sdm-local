@@ -46,8 +46,10 @@ export class LocalGraphClient implements GraphClient {
         throw new Error();
     }
 
-    public mutate<T, Q>(optionsOrName: MutationOptions<Q> | string): Promise<T> {
-        throw new Error();
+    public async mutate<T, Q>(optionsOrName: MutationOptions<Q> | string): Promise<T> {
+        logger.warn("Warning: GraphClient.mutate not supported in local mode. Returning empty object. MutationOptions: %s", optionsOrName);
+        return {} as T;
+        // throw new Error();
     }
 
     public async query<T, Q>(optionsOrName: QueryOptions<Q> | string): Promise<T> {
