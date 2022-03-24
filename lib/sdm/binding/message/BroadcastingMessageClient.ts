@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-import {
-    Destination,
-    logger,
-    MessageClient,
-    MessageOptions,
-    SlackMessageClient,
-} from "@atomist/automation-client";
 import { SlackMessage } from "@atomist/slack-messages";
+import { MessageClient, SlackMessageClient, MessageOptions, logger, Destination } from "@atomist/sdm/lib/client";
 
 /**
  * MessageClient implementation that delegates to many message clients

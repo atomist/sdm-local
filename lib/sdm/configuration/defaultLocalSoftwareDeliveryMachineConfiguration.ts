@@ -17,21 +17,9 @@
 // tslint:disable:deprecation
 
 import {
-    Configuration,
-    configurationValue,
-    logger,
-} from "@atomist/automation-client";
-import { getUserConfig } from "@atomist/automation-client/lib/configuration";
-import {
     CachingProjectLoader,
     SoftwareDeliveryMachineOptions,
 } from "@atomist/sdm";
-import {
-    EphemeralLocalArtifactStore,
-    FilePreferenceStoreFactory,
-    LocalSoftwareDeliveryMachineConfiguration,
-    LocalSoftwareDeliveryMachineOptions,
-} from "@atomist/sdm-core";
 import * as fs from "fs-extra";
 import * as _ from "lodash";
 import * as os from "os";
@@ -46,6 +34,9 @@ import { ExpandedTreeRepoRefResolver } from "../binding/project/ExpandedTreeRepo
 import { FileSystemProjectLoader } from "../binding/project/FileSystemProjectLoader";
 import { fileSystemProjectPersister } from "../binding/project/fileSystemProjectPersister";
 import { LocalRepoTargets } from "../binding/project/LocalRepoTargets";
+import { Configuration, configurationValue, logger } from "@atomist/sdm/lib/client";
+import { LocalSoftwareDeliveryMachineConfiguration, LocalSoftwareDeliveryMachineOptions, FilePreferenceStoreFactory } from "@atomist/sdm/lib/core";
+import { getUserConfig } from "@atomist/automation-client/lib/configuration";
 
 const DefaultAtomistRoot = path.join("atomist", "projects");
 
@@ -68,7 +59,6 @@ export function defaultLocalSoftwareDeliveryMachineConfiguration(
     const localSdmConfiguration = _.merge(defaultLocalSdmConfiguration, configuration.local);
 
     const sdmConfiguration: SoftwareDeliveryMachineOptions = {
-        artifactStore: new EphemeralLocalArtifactStore(),
         projectLoader: new FileSystemProjectLoader(
             new CachingProjectLoader(),
             localSdmConfiguration),

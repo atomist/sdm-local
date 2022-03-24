@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-import {
-    AutomationEventListenerSupport,
-    registerShutdownHook,
-} from "@atomist/automation-client";
-import { AutomationClient } from "@atomist/automation-client/lib/automationClient";
 import { codeLine } from "@atomist/slack-messages";
 import { newCliCorrelationId } from "../../../cli/invocation/http/support/newCorrelationId";
+import { AutomationEventListenerSupport, registerShutdownHook, AutomationClient } from "@atomist/sdm/lib/client";
 
 /**
  * Notify the local feed that an SDM is now connected and ready to receive traffic.

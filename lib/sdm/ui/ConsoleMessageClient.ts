@@ -15,16 +15,6 @@
  */
 
 import {
-    Destination,
-    isSlackMessage,
-    logger,
-    MessageClient,
-    MessageOptions,
-    SlackDestination,
-    SlackMessageClient,
-    toStringArray,
-} from "@atomist/automation-client";
-import {
     Action,
     SlackMessage,
 } from "@atomist/slack-messages";
@@ -40,6 +30,7 @@ import {
     ActionRoute,
 } from "../binding/message/ActionStore";
 import { isSdmGoalStoreOrUpdate } from "../binding/message/GoalEventForwardingMessageClient";
+import { MessageClient, SlackMessageClient, MessageOptions, logger, Destination, SlackDestination, toStringArray, isSlackMessage } from "@atomist/sdm/lib/client";
 
 marked.setOptions({
     // Define custom renderer

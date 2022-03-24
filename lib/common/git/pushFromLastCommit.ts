@@ -15,11 +15,6 @@
  */
 
 import {
-    GitProject,
-    LocalProject,
-    RepoRef,
-} from "@atomist/automation-client";
-import {
     CoreRepoFieldsAndChannels,
     OnPushToAnyBranch,
     OwnerType,
@@ -36,6 +31,7 @@ import After = PushFields.After;
 import Author = PushForSdmGoal.Author;
 import Before = PushForSdmGoal.Before;
 import Committer = PushForSdmGoal.Committer;
+import { RepoRef, LocalProject, GitProject } from "@atomist/sdm/lib/client";
 
 export function repoFieldsFromProject(workspaceId: string, id: RepoRef): CoreRepoFieldsAndChannels.Fragment {
     return {

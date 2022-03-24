@@ -15,9 +15,6 @@
  */
 
 import {
-    logger,
-} from "@atomist/automation-client";
-import {
     DelimitedWriteProgressLogDecorator,
     ExecuteGoal,
     GoalInvocation,
@@ -33,6 +30,7 @@ import { renderClientInfo } from "../../../cli/ui/renderClientInfo";
 import { isFileSystemRemoteRepoRef } from "../../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { runAndLog } from "../../../sdm/util/runAndLog";
 import { SdmDeliveryOptions } from "./SdmDeliveryOptions";
+import { logger } from "@atomist/sdm/lib/client";
 
 export const LocalSdmDelivery = new GoalWithFulfillment(
     { uniqueName: "sdmDelivery", name: "Deliver SDM" });

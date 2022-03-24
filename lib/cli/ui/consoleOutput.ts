@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
 import * as boxen from "boxen";
 import chalk from "chalk";
 import { sprintf } from "sprintf-js";
 import { renderProjectDocChunk } from "./docChunk";
+import { logger } from "@atomist/sdm/lib/client";
 
 /**
  * Perform the given action, logging exceptions to the console

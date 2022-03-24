@@ -213,7 +213,7 @@ function promptAndRun(runnableOnes: YargCommandWord[]): HandleInstructions {
                 name: "selection",
                 message: "There is more than one way to do that. Choose one:",
                 choices: runnableOnes.map(rc => (rc.conflictResolution as ResolveConflictWithPrompt).uniqueChoice),
-            };
+            } as any;
             const answer = await inquirer.prompt<{ selection: string }>([question]);
             const winner = runnableOnes.find(r => (r.conflictResolution as ResolveConflictWithPrompt).uniqueChoice === answer.selection);
             return handleFunctionFromInstructions(winner.runnableCommand.handleInstructions)(args);

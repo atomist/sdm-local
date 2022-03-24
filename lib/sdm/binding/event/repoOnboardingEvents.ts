@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-import {
-    HandlerResult,
-    RepoId,
-} from "@atomist/automation-client";
-import { OnRepoCreation } from "@atomist/sdm";
-import {
-    OnChannelLink,
-    OnRepoOnboarded,
-} from "@atomist/sdm-core";
+import { OnRepoCreation, OnRepoOnboarded, OnChannelLink } from "@atomist/sdm";
 import { repoFieldsFromProject } from "../../../common/git/pushFromLastCommit";
 import { EventSender } from "../../../common/invocation/EventHandlerInvocation";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
+import { RepoId, HandlerResult } from "@atomist/sdm/lib/client";
 
 export async function sendRepoCreationEvent(
     cc: LocalWorkspaceContext,

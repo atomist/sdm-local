@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CustomEventDestination } from "@atomist/automation-client";
+import { CustomEventDestination } from "@atomist/sdm/lib/client";
 
 /**
  * Well-known destination for messages on command completion.

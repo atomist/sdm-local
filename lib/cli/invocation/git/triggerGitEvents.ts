@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-import {
-    GitCommandGitProject,
-    logger,
-} from "@atomist/automation-client";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import {
     determineCwd,
@@ -32,6 +28,7 @@ import {
 } from "../../ui/consoleOutput";
 import { renderEventDispatch } from "../../ui/renderClientInfo";
 import { handleGitHookEvent } from "./handleGitHookEvent";
+import { GitCommandGitProject, logger } from "@atomist/sdm/lib/client";
 
 /**
  * Trigger git events to the given depth in the current project repo,

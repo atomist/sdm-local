@@ -20,7 +20,7 @@ import {
     onAnyPush,
     SoftwareDeliveryMachine,
 } from "@atomist/sdm";
-import { isInLocalMode } from "@atomist/sdm-core";
+import { isInLocalMode } from "@atomist/sdm/lib/core";
 
 /**
  * Extension pack that configures SDM for local

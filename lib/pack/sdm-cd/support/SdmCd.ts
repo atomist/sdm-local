@@ -20,13 +20,13 @@ import {
     metadata,
     whenPushSatisfies,
 } from "@atomist/sdm";
-import { IsInLocalMode } from "@atomist/sdm-core";
 import { IsSdm } from "./IsSdm";
 import {
     executeLocalSdmDelivery,
     LocalSdmDelivery,
 } from "./LocalSdmDelivery";
 import { SdmDeliveryOptions } from "./SdmDeliveryOptions";
+import { IsInLocalMode } from "@atomist/sdm/lib/core";
 
 /**
  * Extension pack that automatically delivers an SDM

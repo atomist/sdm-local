@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import {
-    MappedParameters,
-    SeedDrivenGeneratorParameters,
-} from "@atomist/automation-client";
+import { MappedParameters } from "@atomist/automation-client/lib/decorators";
+import { SeedDrivenGeneratorParameters } from "@atomist/automation-client/lib/operations/generate/SeedDrivenGeneratorParameters";
 import {
     DeclarationType,
     ParametersObject,

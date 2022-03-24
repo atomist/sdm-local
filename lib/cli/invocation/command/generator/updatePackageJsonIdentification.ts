@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-import {
-    doWithJson,
-    logger,
-    Project,
-} from "@atomist/automation-client";
 import { execPromise } from "@atomist/automation-client/lib/util/child_process";
 import {
     CodeTransform,
@@ -28,6 +23,11 @@ import {
     Author,
     PackageJson,
 } from "./PackageJson";
+import {
+    doWithJson,
+    logger,
+    Project,
+} from "@atomist/sdm/lib/client";
 
 /**
  * Code transform to update identification fields of package.json

@@ -15,10 +15,6 @@
  */
 
 import {
-    SlackDestination,
-    toStringArray,
-} from "@atomist/automation-client";
-import {
     PushFields,
     SdmGoalEvent,
 } from "@atomist/sdm";
@@ -46,6 +42,7 @@ import {
     ConsoleMessageClient,
     ProcessStdoutSender,
 } from "./ConsoleMessageClient";
+import { SlackDestination, toStringArray } from "@atomist/sdm/lib/client";
 
 /**
  * Construction arguments to HttpMessageListener

@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-import {
-    configurationValue,
-    logger,
-    Parameters,
-    ProjectOperationCredentials,
-    TokenCredentials,
-} from "@atomist/automation-client";
 import { getUserConfig } from "@atomist/automation-client/lib/configuration";
 import {
     CredentialsResolver,
 } from "@atomist/sdm";
 import * as _ from "lodash";
+import { ProjectOperationCredentials, TokenCredentials, configurationValue, logger, Parameters } from "@atomist/sdm/lib/client";
 
 @Parameters()
 export class EnvironmentTokenCredentialsResolver implements CredentialsResolver {

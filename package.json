@@ -68,17 +68,15 @@
     "yargs": "^13.2.4"
   },
   "peerDependencies": {
-    "@atomist/automation-client": "^2.0.0",
+    "@atomist/automation-client": "^2.2.2-main.2",
     "@atomist/microgrammar": "^1.2.1",
-    "@atomist/sdm": "^2.0.0",
-    "@atomist/sdm-core": "^2.0.0",
+    "@atomist/sdm": "^2.2.0-main.3",
     "@atomist/slack-messages": "^1.1.1"
   },
   "devDependencies": {
-    "@atomist/automation-client": "2.0.0-master.20191206152722",
+    "@atomist/automation-client": "^2.2.2-main.2",
     "@atomist/microgrammar": "^1.2.1",
-    "@atomist/sdm": "2.0.0-master.20191206153457",
-    "@atomist/sdm-core": "2.0.0-master.20191206160429",
+    "@atomist/sdm": "^2.2.0-main.3",
     "@atomist/slack-messages": "^1.1.1",
     "@types/mocha": "^5.2.7",
     "@types/power-assert": "^1.5.0",

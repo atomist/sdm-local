@@ -15,13 +15,11 @@
  */
 
 import {
-    HandlerResult,
-} from "@atomist/automation-client";
-import {
     Arg,
     Secret,
 } from "@atomist/automation-client/lib/internal/invoker/Payload";
 import { InvocationTarget } from "./InvocationTarget";
+import { HandlerResult } from "@atomist/sdm/lib/client";
 
 /**
  * Allow params to be expressed in an object for convenience

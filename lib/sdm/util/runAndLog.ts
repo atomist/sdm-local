@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
 import {
     exec,
     ExecOptions,
 } from "child_process";
 import { promisify } from "util";
+import { logger } from "@atomist/sdm/lib/client";
 
 /**
  * Shell out to the given command showing stdout and stderr

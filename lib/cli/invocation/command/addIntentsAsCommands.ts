@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
 import { CommandHandlerMetadata } from "@atomist/automation-client/lib/metadata/automationMetadata";
+import { logger } from "@atomist/automation-client/lib/util/logger";
 import { WorkspaceContextResolver } from "../../../common/binding/WorkspaceContextResolver";
 import { LocalWorkspaceContext } from "../../../common/invocation/LocalWorkspaceContext";
 import { AutomationClientInfo } from "../../AutomationClientInfo";

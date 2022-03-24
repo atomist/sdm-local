@@ -22,11 +22,11 @@ import {
     SdmGoalState,
     SoftwareDeliveryMachine,
 } from "@atomist/sdm";
-import { isInLocalMode } from "@atomist/sdm-core";
 import chalk from "chalk";
 import * as _ from "lodash";
 import { isFileSystemRemoteRepoRef } from "../binding/project/FileSystemRemoteRepoRef";
 import Push = OnPushToAnyBranch.Push;
+import { isInLocalMode } from "@atomist/sdm/lib/core";
 
 /**
  * Add Local IO to the given SDM.

@@ -15,15 +15,10 @@
  */
 
 import {
-    GitProject,
-    logger,
-} from "@atomist/automation-client";
-import {
     ProjectLoader,
     ProjectLoadingParameters,
     WithLoadedProject,
 } from "@atomist/sdm";
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
 import * as fs from "fs";
 import * as _ from "lodash";
 import { logAndSend } from "../../../common/ui/httpMessaging";
@@ -33,6 +28,8 @@ import {
     FileSystemRemoteRepoRef,
     isFileSystemRemoteRepoRef,
 } from "./FileSystemRemoteRepoRef";
+import { GitProject, logger } from "@atomist/sdm/lib/client";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm/lib/core";
 
 /**
  * Local project loader backed by expanded directory tree.

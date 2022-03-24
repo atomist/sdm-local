@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { RepoFinder } from "@atomist/automation-client";
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
+import { RepoFinder } from "@atomist/automation-client/lib/operations/common/repoFinder";
 import * as fs from "fs";
 import * as _ from "lodash";
 import * as path from "path";
 import { promisify } from "util";
 import { FileSystemRemoteRepoRef } from "./FileSystemRemoteRepoRef";
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm/lib/core";
 
 /**
  * Find all repos under the given expanded directory structure

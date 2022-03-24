@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { Configuration } from "@atomist/automation-client";
 import { automationClient } from "@atomist/automation-client/lib/automationClient";
 import {
     defaultConfiguration,
     invokePostProcessors,
+    Configuration,
 } from "@atomist/automation-client/lib/configuration";
 import {
     ConfigureMachine,
@@ -26,16 +26,12 @@ import {
     SoftwareDeliveryMachine,
     SoftwareDeliveryMachineConfiguration,
 } from "@atomist/sdm";
-import {
-    configureSdm,
-    createSoftwareDeliveryMachine,
-    LocalSoftwareDeliveryMachineConfiguration,
-} from "@atomist/sdm-core";
 import * as _ from "lodash";
 import { DefaultWorkspaceId } from "../../common/binding/defaultWorkspaceContextResolver";
 import { configureLocal } from "../../sdm/configuration/configureLocal";
 import { AutomationClientInfo } from "../AutomationClientInfo";
 import { fetchMetadataFromAutomationClient } from "../invocation/http/fetchMetadataFromAutomationClient";
+import { createSoftwareDeliveryMachine, LocalSoftwareDeliveryMachineConfiguration, configureSdm } from "@atomist/sdm/lib/core";
 
 /**
  * Default port on which to start an embedded machine.
@@ -84,7 +80,7 @@ const createMachine = (options: EmbeddedMachineOptions) => (config: SoftwareDeli
 };
 
 function configurationFor(options: EmbeddedMachineOptions): Configuration {
-    const cfg = defaultConfiguration() as LocalSoftwareDeliveryMachineConfiguration;
+    const cfg = defaultConfiguration() as any as LocalSoftwareDeliveryMachineConfiguration;
     cfg.name = options.name || "bootstrap";
     cfg.workspaceIds = [DefaultWorkspaceId];
     cfg.http.port = options.port;
@@ -113,7 +109,7 @@ function configurationFor(options: EmbeddedMachineOptions): Configuration {
         configureSdm(createMachine(options), {}),
     ];
 
-    return cfg;
+    return cfg as any;
 }
 
 /**
@@ -129,10 +125,10 @@ export async function startEmbeddedMachine(options: EmbeddedMachineOptions): Pro
     };
 
     process.env.ATOMIST_MODE = "local";
-    const config = await invokePostProcessors(configurationFor(optsToUse)) as LocalSoftwareDeliveryMachineConfiguration;
+    const config = await invokePostProcessors(configurationFor(optsToUse))  as any as LocalSoftwareDeliveryMachineConfiguration;
     _.set(config, "logging.level", "warn");
 
-    const client = automationClient(config);
+    const client = automationClient(config as any);
     await client.run();
     const coords = {
         baseEndpoint: `http://${config.local.hostname}:${optsToUse.port}`,

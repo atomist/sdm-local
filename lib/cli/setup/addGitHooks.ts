@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-import {
-    LocalProject,
-    NodeFsLocalProject,
-} from "@atomist/automation-client";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
@@ -27,6 +23,7 @@ import {
     errorMessage,
     infoMessage,
 } from "../ui/consoleOutput";
+import { NodeFsLocalProject, LocalProject } from "@atomist/sdm/lib/client";
 
 /**
  * Add Git hooks to the given repo

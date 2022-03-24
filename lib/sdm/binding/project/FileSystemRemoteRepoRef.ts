@@ -15,12 +15,6 @@
  */
 
 import {
-    logger,
-    ProjectOperationCredentials,
-    RemoteRepoRef,
-    RepoRef,
-} from "@atomist/automation-client";
-import {
     ActionResult,
     successOn,
 } from "@atomist/automation-client/lib/action/ActionResult";
@@ -32,6 +26,7 @@ import {
     dirFor,
     parseOwnerAndRepo,
 } from "./expandedTreeUtils";
+import { RemoteRepoRef, ProjectOperationCredentials, logger, RepoRef } from "@atomist/sdm/lib/client";
 
 /**
  * RemoteRepoRef working against our expanded directory structure.

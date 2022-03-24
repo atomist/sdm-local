@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import {
-    toStringArray,
-} from "@atomist/automation-client";
+import { toStringArray } from "@atomist/automation-client/lib/internal/util/string";
 import { CommandHandlerMetadata } from "@atomist/automation-client/lib/metadata/automationMetadata";
 import chalk from "chalk";
 import * as _ from "lodash";

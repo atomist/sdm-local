@@ -14,21 +14,9 @@
  * limitations under the License.
  */
 
-import {
-    automationClientInstance,
-    Configuration,
-    ConfigurationPostProcessor,
-    guid,
-    HandlerResult,
-    logger,
-} from "@atomist/automation-client";
 import { eventStore } from "@atomist/automation-client/lib/globals";
 import { scanFreePort } from "@atomist/automation-client/lib/util/port";
 import { OnBuildComplete } from "@atomist/sdm";
-import {
-    isInLocalMode,
-    LocalSoftwareDeliveryMachineConfiguration,
-} from "@atomist/sdm-core";
 import * as assert from "assert";
 import * as exp from "express";
 import * as exphbs from "express-handlebars";
@@ -59,6 +47,8 @@ import { invokeEventHandlerInProcess } from "../invocation/invokeEventHandlerInP
 import { defaultLocalSoftwareDeliveryMachineConfiguration } from "./defaultLocalSoftwareDeliveryMachineConfiguration";
 import { NotifyOnCompletionAutomationEventListener } from "./support/NotifyOnCompletionAutomationEventListener";
 import { NotifyOnStartupAutomationEventListener } from "./support/NotifyOnStartupAutomationEventListener";
+import { Configuration, ConfigurationPostProcessor, guid, automationClientInstance, logger, HandlerResult } from "@atomist/sdm/lib/client";
+import { isInLocalMode, LocalSoftwareDeliveryMachineConfiguration } from "@atomist/sdm/lib/core";
 
 /**
  * Options that are used during configuration of an local SDM but don't get passed on to the
@@ -286,7 +276,7 @@ async function configureWebEndpoints(configuration: LocalSoftwareDeliveryMachine
                     logger.error("No action key provided. Please include ?key=< actionKey that has been stored by this sdm >");
                     return res.status(404).send("Required query parameter: key");
                 }
-                const storedAction = await actionStore.getAction(actionKey);
+                const storedAction = await actionStore.getAction(actionKey as any);
                 if (!storedAction) {
                     logger.error("Action key %s not found", actionKey);
                     return res.status(404).send("Action not stored. Did you restart the SDM?");

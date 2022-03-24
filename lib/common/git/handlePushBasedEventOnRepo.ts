@@ -15,15 +15,6 @@
  */
 
 import {
-    GitCommandGitProject,
-    GitProject,
-} from "@atomist/automation-client";
-import {
-    OnPushToAnyBranch,
-    SdmGoalWithPushFields,
-} from "@atomist/sdm";
-import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm-core";
-import {
     errorMessage,
     infoMessage,
 } from "../../cli/ui/consoleOutput";
@@ -32,7 +23,10 @@ import { isAtomistTemporaryBranch } from "../../sdm/binding/project/FileSystemPr
 import { FileSystemRemoteRepoRef } from "../../sdm/binding/project/FileSystemRemoteRepoRef";
 import { EventSender } from "../invocation/EventHandlerInvocation";
 import { pushFromLastCommit } from "./pushFromLastCommit";
-import Push = SdmGoalWithPushFields.Push;
+import { LocalSoftwareDeliveryMachineOptions } from "@atomist/sdm/lib/core";
+import { GitProject, GitCommandGitProject } from "@atomist/sdm/lib/client";
+import { OnPushToAnyBranch } from "@atomist/sdm";
+
 
 /**
  * Any event on a local repo
@@ -80,7 +74,7 @@ export async function handlePushBasedEventOnRepo(workspaceId: string,
                                                  opts: LocalSoftwareDeliveryMachineOptions,
                                                  payload: EventOnRepo,
                                                  eventHandlerName: string,
-                                                 pushToPayload: (p: Push) => object = p => ({ Push: [p] }),
+                                                 pushToPayload: (p: OnPushToAnyBranch.Push) => object = p => ({ Push: [p] }),
 ): Promise<any> {
 
     // This git hook may be invoked from another git hook. This will cause these values to

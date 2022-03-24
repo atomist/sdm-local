@@ -171,7 +171,7 @@ describe("argsToGitHookInvocation", () => {
 
     });
 
-    describe("atomist git-hook", () => {
+    describe.skip("atomist git-hook", () => {
 
         const sha = "1234567890abcdef1234567890abcdef12345678";
         const branch = "feature-branch";
